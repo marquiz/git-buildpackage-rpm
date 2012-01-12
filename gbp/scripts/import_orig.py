@@ -55,7 +55,7 @@ def detect_name_and_version(repo, source, options):
             # Check the changelog file from the repository, in case
             # we're not on the debian-branch (but upstream, for
             # example).
-            cp = parse_changelog_repo(repo, options.debian_branch, 'debian/changelog')
+            cp = parse_changelog_repo(repo, options.packaging_branch, 'debian/changelog')
             sourcepackage = cp['Source']
         except NoChangeLogError:
             if options.interactive:
@@ -165,7 +165,7 @@ def build_parser(name):
     branch_group.add_option("-u", "--upstream-version", dest="version",
                       help="Upstream Version")
     branch_group.add_config_file_option(option_name="debian-branch",
-                      dest="debian_branch")
+                      dest="packaging_branch")
     branch_group.add_config_file_option(option_name="upstream-branch",
                       dest="upstream_branch")
     branch_group.add_option("--upstream-vcs-tag", dest="vcs_tag",
@@ -315,8 +315,8 @@ def main(argv):
                 repo.create_branch(options.upstream_branch, rev=commit)
                 repo.force_head(options.upstream_branch, hard=True)
             elif options.merge:
-                gbp.log.info("Merging to '%s'" % options.debian_branch)
-                repo.set_branch(options.debian_branch)
+                gbp.log.info("Merging to '%s'" % options.packaging_branch)
+                repo.set_branch(options.packaging_branch)
                 try:
                     repo.merge(tag)
                 except GitRepositoryError:
@@ -331,7 +331,7 @@ def main(argv):
                         if cp.has_epoch():
                             epoch = '%s:' % cp.epoch
                     info = { 'version': "%s%s-1" % (epoch, version) }
-                    env = { 'GBP_BRANCH': options.debian_branch }
+                    env = { 'GBP_BRANCH': options.packaging_branch }
                     gbpc.Command(format_msg(options.postimport, info), extra_env=env, shell=True)()
             # Update working copy and index if we've possibly updated the
             # checked out branch
