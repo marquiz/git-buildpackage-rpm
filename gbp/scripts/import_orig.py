@@ -55,7 +55,7 @@ def detect_name_and_version(repo, source, options):
             # Check the changelog file from the repository, in case
             # we're not on the debian-branch (but upstream, for
             # example).
-            cp = parse_changelog_repo(repo, options.debian_branch, 'debian/changelog')
+            cp = parse_changelog_repo(repo, options.packaging_branch, 'debian/changelog')
             sourcepackage = cp['Source']
         except NoChangeLogError:
             if options.interactive:
@@ -136,12 +136,12 @@ def debian_branch_merge(repo, tag, version, options):
             if cp.has_epoch():
                 epoch = '%s:' % cp.epoch
         info = {'version': "%s%s-1" % (epoch, version)}
-        env = {'GBP_BRANCH': options.debian_branch}
+        env = {'GBP_BRANCH': options.packaging_branch}
         gbpc.Command(format_str(options.postimport, info), extra_env=env, shell=True)()
 
 
 def debian_branch_merge_by_replace(repo, tag, version, options):
-    gbp.log.info("Replacing upstream source on '%s'" % options.debian_branch)
+    gbp.log.info("Replacing upstream source on '%s'" % options.packaging_branch)
 
     tree = [x for x in repo.list_tree("%s^{tree}" % tag)
             if x[-1] != 'debian']
@@ -149,7 +149,7 @@ def debian_branch_merge_by_replace(repo, tag, version, options):
 
     # Get the current debian/ tree on the debian branch
     try:
-        deb_sha = [x for x in repo.list_tree("%s^{tree}" % options.debian_branch)
+        deb_sha = [x for x in repo.list_tree("%s^{tree}" % options.packaging_branch)
                    if x[-1] == 'debian' and x[1] == 'tree'][0][2]
         tree.append(['040000', 'tree', deb_sha, 'debian'])
         msg += "\n\nwith Debian dir %s" % deb_sha
@@ -157,21 +157,21 @@ def debian_branch_merge_by_replace(repo, tag, version, options):
         pass  # no debian/ dir is fine
 
     sha = repo.make_tree(tree)
-    commit = repo.commit_tree(sha, msg, ["%s^{commit}" % options.debian_branch,
+    commit = repo.commit_tree(sha, msg, ["%s^{commit}" % options.packaging_branch,
                                          "%s^{commit}" % tag])
-    repo.update_ref("refs/heads/%s" % options.debian_branch, commit,
-                    msg="gbp: Updating %s after import of %s" % (options.debian_branch,
+    repo.update_ref("refs/heads/%s" % options.packaging_branch, commit,
+                    msg="gbp: Updating %s after import of %s" % (options.packaging_branch,
                                                                  tag))
     repo.force_head(commit, hard=True)
 
 
 def debian_branch_merge_by_merge(repo, tag, version, options):
-    gbp.log.info("Merging to '%s'" % options.debian_branch)
+    gbp.log.info("Merging to '%s'" % options.packaging_branch)
     try:
         repo.merge(tag)
     except GitRepositoryError:
         raise GbpError("Merge failed, please resolve.")
-    repo.set_branch(options.debian_branch)
+    repo.set_branch(options.packaging_branch)
 
 
 def pristine_tarball_name(source, pkg_name, pkg_version):
@@ -219,7 +219,7 @@ def build_parser(name):
     branch_group.add_option("-u", "--upstream-version", dest="version",
                       help="Upstream Version")
     branch_group.add_config_file_option(option_name="debian-branch",
-                      dest="debian_branch")
+                      dest="packaging_branch")
     branch_group.add_config_file_option(option_name="upstream-branch",
                       dest="upstream_branch")
     branch_group.add_config_file_option(option_name="upstream-vcs-tag", dest="vcs_tag",
@@ -402,8 +402,8 @@ def main(argv):
             if is_empty:
                 repo.create_branch(options.upstream_branch, rev=commit)
                 repo.force_head(options.upstream_branch, hard=True)
-                if options.debian_branch != 'master':
-                    repo.rename_branch('master', options.debian_branch)
+                if options.packaging_branch != 'master':
+                    repo.rename_branch('master', options.packaging_branch)
             elif options.merge:
                 debian_branch_merge(repo, tag, version, options)
 

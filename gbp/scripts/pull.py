@@ -118,7 +118,7 @@ def build_parser(name):
     branch_group.add_option("--redo-pq", action="store_true", dest="redo_pq", default=False,
                             help="redo the patch queue branch after a pull. Warning: this drops the old patch-queue branch")
     branch_group.add_config_file_option(option_name="upstream-branch", dest="upstream_branch")
-    branch_group.add_config_file_option(option_name="debian-branch", dest="debian_branch")
+    branch_group.add_config_file_option(option_name="debian-branch", dest="packaging_branch")
     branch_group.add_boolean_config_file_option(option_name="pristine-tar", dest="pristine_tar")
     branch_group.add_option("--depth", action="store", dest="depth", default=0,
                             help="git history depth (for deepening shallow clones)")
@@ -167,7 +167,7 @@ def main(argv):
             else:
                 raise
 
-        for branch in [options.debian_branch, options.upstream_branch]:
+        for branch in [options.packaging_branch, options.upstream_branch]:
             if repo.has_branch(branch):
                 branches.add(branch)
 
@@ -200,7 +200,7 @@ def main(argv):
                 retval = 2
 
         if options.redo_pq:
-            repo.set_branch(options.debian_branch)
+            repo.set_branch(options.packaging_branch)
             Command("gbp-pq")(["drop"])
             Command("gbp-pq")(["import"])
 
