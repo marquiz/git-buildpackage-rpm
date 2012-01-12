@@ -324,7 +324,7 @@ def build_parser(name):
     naming_group.add_config_file_option(option_name="upstream-branch", dest="upstream_branch")
     naming_group.add_config_file_option(option_name="debian-branch", dest="packaging_branch")
     naming_group.add_config_file_option(option_name="upstream-tag", dest="upstream_tag")
-    naming_group.add_config_file_option(option_name="debian-tag", dest="debian_tag")
+    naming_group.add_config_file_option(option_name="debian-tag", dest="packaging_tag")
     naming_group.add_config_file_option(option_name="snapshot-number", dest="snapshot_number",
                       help="expression to determine the next snapshot number, default is '%(snapshot-number)s'")
     parser.add_config_file_option(option_name="git-log", dest="git_log",
@@ -436,7 +436,7 @@ def main(argv):
         else:
             since = ''
             if options.auto:
-                since = guess_documented_commit(cp, repo, options.debian_tag)
+                since = guess_documented_commit(cp, repo, options.packaging_tag)
                 if since:
                     msg = "Continuing from commit '%s'" % since
                 else:
@@ -444,7 +444,7 @@ def main(argv):
                 gbp.log.info(msg)
                 found_snapshot_banner = has_snapshot_banner(cp)
             else: # Fallback: continue from last tag
-                since = repo.find_version(options.debian_tag, cp['Version'])
+                since = repo.find_version(options.packaging_tag, cp['Version'])
                 if not since:
                     raise GbpError("Version %s not found" % cp['Version'])
 
