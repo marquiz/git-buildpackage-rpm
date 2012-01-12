@@ -29,7 +29,7 @@ from gbp.git import GitRepositoryError
 from gbp.deb.git import DebianGitRepository
 import gbp.log
 
-def fast_forward_branch(branch, repo, options):
+def update_branch(branch, repo, options):
     """
     update branch to its remote branch, fail on non fast forward updates
     unless --force is given
@@ -63,10 +63,17 @@ def fast_forward_branch(branch, repo, options):
         gbp.log.info("Updating '%s'" % branch)
         if repo.branch == branch:
             repo.merge(remote)
-        else:
+        elif can_fast_forward:
             sha1 = repo.rev_parse(remote)
             repo.update_ref("refs/heads/%s" % branch, sha1,
                             msg="gbp: forward %s to %s" % (branch, remote))
+        else:
+            # Merge other branch, if it cannot be fast-forwarded
+            current_branch=repo.branch
+            repo.set_branch(branch)
+            repo.merge(remote)
+            repo.set_branch(current_branch)
+
     return update
 
 def parse_args(argv):
@@ -157,7 +164,7 @@ def main(argv):
         repo.fetch(depth=options.depth)
         repo.fetch(depth=options.depth, tags=True)
         for branch in branches:
-            if not fast_forward_branch(branch, repo, options):
+            if not update_branch(branch, repo, options):
                 retval = 2
 
         if options.redo_pq:
