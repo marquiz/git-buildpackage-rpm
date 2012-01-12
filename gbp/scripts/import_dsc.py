@@ -159,8 +159,8 @@ def apply_debian_patch(repo, unpack_dir, src, options, tag):
                                  other_parents = parents,
                                  author=author,
                                  committer=committer)
-        if not options.skip_debian_tag:
-            repo.create_tag(repo.version_to_tag(options.debian_tag, src.version),
+        if not options.skip_packaging_tag:
+            repo.create_tag(repo.version_to_tag(options.packaging_tag, src.version),
                             msg="Debian release %s" % src.version,
                             commit=commit,
                             sign=options.sign_tags,
@@ -244,10 +244,10 @@ def parse_args(argv):
     tag_group.add_config_file_option(option_name="keyid",
                       dest="keyid")
     tag_group.add_config_file_option(option_name="debian-tag",
-                      dest="debian_tag")
+                      dest="packaging_tag")
     tag_group.add_config_file_option(option_name="upstream-tag",
                       dest="upstream_tag")
-    tag_group.add_option("--skip-debian-tag",dest="skip_debian_tag",
+    tag_group.add_option("--skip-debian-tag",dest="skip_packaging_tag",
                          action="store_true", default=False,
                          help="Don't add a tag after importing the Debian patch")
 
@@ -330,15 +330,15 @@ def main(argv):
             upstream = DebianUpstreamSource(src.tgz)
             upstream = upstream.unpack(dirs['tmp'], options.filters)
 
-            format = [(options.upstream_tag, "Upstream"), (options.debian_tag, "Debian")][src.native]
+            format = [(options.upstream_tag, "Upstream"), (options.packaging_tag, "Debian")][src.native]
             tag = repo.version_to_tag(format[0], src.upstream_version)
             msg = "%s version %s" % (format[1], src.upstream_version)
 
-            if repo.find_version(options.debian_tag, src.version):
+            if repo.find_version(options.packaging_tag, src.version):
                  gbp.log.warn("Version %s already imported." % src.version)
                  if options.allow_same_version:
                     gbp.log.info("Moving tag of version '%s' since import forced" % src.version)
-                    move_tag_stamp(repo, options.debian_tag, src.version)
+                    move_tag_stamp(repo, options.packaging_tag, src.version)
                  else:
                     raise SkipImport
 
@@ -370,7 +370,7 @@ def main(argv):
                                          author=author,
                                          committer=committer)
 
-                if not (src.native and options.skip_debian_tag):
+                if not (src.native and options.skip_packaging_tag):
                     repo.create_tag(name=tag,
                                     msg=msg,
                                     commit=commit,
