@@ -415,7 +415,7 @@ def build_parser(name, prefix=None):
                       help="don't fail if the tag already exists")
     tag_group.add_boolean_config_file_option(option_name="sign-tags", dest="sign_tags")
     tag_group.add_config_file_option(option_name="keyid", dest="keyid")
-    tag_group.add_config_file_option(option_name="debian-tag", dest="debian_tag")
+    tag_group.add_config_file_option(option_name="debian-tag", dest="packaging_tag")
     tag_group.add_config_file_option(option_name="debian-tag-msg", dest="debian_tag_msg")
     tag_group.add_config_file_option(option_name="upstream-tag", dest="upstream_tag")
     orig_group.add_config_file_option(option_name="upstream-tree", dest="upstream_tree")
