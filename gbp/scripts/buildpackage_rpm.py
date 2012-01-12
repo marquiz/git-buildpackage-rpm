@@ -147,7 +147,7 @@ def pristine_tar_build_orig(repo, orig_file, output_dir, options):
 def get_upstream_tree(repo, spec, options):
     """Determine the upstream tree from the given options"""
     if options.upstream_tree.upper() == 'TAG':
-        upstream_tree = repo.version_to_tag(options.upstream_tag, spec.version)
+        upstream_tree = repo.version_to_tag(options.upstream_tag, spec.version, vendor="Upstream")
     elif options.upstream_tree.upper() == 'BRANCH':
         if not repo.has_branch(options.upstream_branch):
             raise GbpError("%s is not a valid branch" % options.upstream_branch)
@@ -250,6 +250,7 @@ def parse_args(argv, prefix):
                       help="verbose command execution")
     parser.add_config_file_option(option_name="color", dest="color", type='tristate')
     parser.add_config_file_option(option_name="notify", dest="notify", type='tristate')
+    parser.add_config_file_option(option_name="vendor", action="store", dest="vendor")
     tag_group.add_option("--git-tag", action="store_true", dest="tag", default=False,
                       help="create a tag after a successful build")
     tag_group.add_option("--git-tag-only", action="store_true", dest="tag_only", default=False,
@@ -470,10 +471,10 @@ def main(argv):
         # Tag (note: tags the exported version)
         if options.tag or options.tag_only:
             gbp.log.info("Tagging %s" % spec.version)
-            tag = repo.version_to_tag(options.packaging_tag, spec.version)
+            tag = repo.version_to_tag(options.packaging_tag, spec.version, vendor=options.vendor)
             if options.retag and repo.has_tag(tag):
                 repo.delete_tag(tag)
-            repo.create_tag(name=tag, msg="Distribution release %s" % spec.version,
+            repo.create_tag(name=tag, msg="%s release %s" % (options.vendor, spec.version),
                             sign=options.sign_tags, keyid=options.keyid, commit=tree)
             if options.posttag:
                 sha = repo.rev_parse("%s^{}" % tag)

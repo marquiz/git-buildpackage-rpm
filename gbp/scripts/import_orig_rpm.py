@@ -266,7 +266,7 @@ def main(argv):
                 gbp.log.info("Pristine-tar: commiting %s" % pristine_orig)
                 repo.pristine_tar.commit(pristine_orig, options.upstream_branch)
 
-            tag = repo.version_to_tag(options.upstream_tag, version)
+            tag = repo.version_to_tag(options.upstream_tag, version, vendor="Upstream")
             repo.create_tag(name=tag,
                             msg="Upstream version %s" % version,
                             commit=commit,

@@ -142,7 +142,7 @@ def export_patches(repo, branch, options):
         raise GbpError, "Can't parse spec"
 
     # Find upstream version
-    upstream_commit = repo.find_version(options.upstream_tag, spec.version)
+    upstream_commit = repo.find_version(options.upstream_tag, spec.version, vendor="Upstream")
     if not upstream_commit:
         raise GbpError, ("Couldn't find upstream version %s. Don't know on what base to import." % spec.version)
 
@@ -233,7 +233,7 @@ def import_spec_patches(repo, branch, options):
         raise GbpError, "Can't parse spec"
 
     # Find upstream version
-    commit = repo.find_version(options.upstream_tag, spec.version)
+    commit = repo.find_version(options.upstream_tag, spec.version, vendor="Upstream")
     if commit:
         commits=[commit]
     else:
@@ -295,7 +295,7 @@ def rebase_pq(repo, branch, options):
         raise GbpError, "Can't parse spec"
 
     # Find upstream version
-    upstream_commit = repo.find_version(options.upstream_tag, spec.version)
+    upstream_commit = repo.find_version(options.upstream_tag, spec.version, vendor="Upstream")
     if not upstream_commit:
         raise GbpError, ("Couldn't find upstream version %s. Don't know on what base to import." % spec.version)
 
@@ -334,6 +334,7 @@ def main(argv):
                       help="Verbose command execution")
     parser.add_option("--force", dest="force", action="store_true", default=False,
                       help="In case of import even import if the branch already exists")
+    parser.add_config_file_option(option_name="vendor", action="store", dest="vendor")
     parser.add_config_file_option(option_name="color", dest="color", type='tristate')
     parser.add_config_file_option(option_name="upstream-tag", dest="upstream_tag")
     parser.add_config_file_option(option_name="spec-file", dest="spec_file")

@@ -84,11 +84,11 @@ def committer_from_author(author, options):
     return committer
 
 
-def move_tag_stamp(repo, format, version):
+def move_tag_stamp(repo, format, version, vendor):
     "Move tag out of the way appending the current timestamp"
-    old = repo.version_to_tag(format, version)
+    old = repo.version_to_tag(format, version, vendor)
     timestamped = "%s~%s" % (version, int(time.time()))
-    new = repo.version_to_tag(format, timestamped)
+    new = repo.version_to_tag(format, timestamped, vendor)
     repo.move_tag(old, new)
 
 
@@ -123,6 +123,7 @@ def parse_args(argv):
     parser.add_config_file_option(option_name="color", dest="color", type='tristate')
     parser.add_option("--download", action="store_true", dest="download", default=False,
                       help="download source package")
+    parser.add_config_file_option(option_name="vendor", action="store", dest="vendor")
     branch_group.add_config_file_option(option_name="packaging-branch",
                       dest="packaging_branch")
     branch_group.add_config_file_option(option_name="upstream-branch",
@@ -266,14 +267,14 @@ def main(argv):
             else:
                 upstream = None
 
-            format = [(options.upstream_tag, "Upstream"), (options.packaging_tag, "Distribution")][options.native]
-            tag = repo.version_to_tag(format[0], upstream_version)
+            format = [(options.upstream_tag, "Upstream"), (options.packaging_tag, options.vendor)][options.native]
+            tag = repo.version_to_tag(format[0], upstream_version, options.vendor)
 
-            if repo.find_version(options.packaging_tag, pkgver):
+            if repo.find_version(options.packaging_tag, pkgver, options.vendor):
                 gbp.log.warn("Version %s already imported." % pkgver)
                 if options.allow_same_version:
                     gbp.log.info("Moving tag of version '%s' since import forced" % pkgver)
-                    move_tag_stamp(repo, options.packaging_tag, pkgver)
+                    move_tag_stamp(repo, options.packaging_tag, pkgver, options.vendor)
                 else:
                     raise SkipImport
 
@@ -294,7 +295,7 @@ def main(argv):
 
             # Import upstream sources
             if upstream:
-                upstream_commit = repo.find_version(format[0], upstream_version)
+                upstream_commit = repo.find_version(format[0], upstream_version, options.vendor)
                 if not upstream_commit:
                     gbp.log.info("Tag %s not found, importing %s tarball" % (tag, format[1]))
 
@@ -340,8 +341,8 @@ def main(argv):
                                     "\nAlso check the --create-missing-branches option.")
                         raise GbpError
 
-                tag = repo.version_to_tag(options.packaging_tag, pkgver)
-                msg = "Distribution release %s" % pkgver
+                tag = repo.version_to_tag(options.packaging_tag, pkgver, options.vendor)
+                msg = "%s release %s" % (options.vendor, pkgver)
 
                 if options.orphan_packaging or not upstream:
                     parents = []

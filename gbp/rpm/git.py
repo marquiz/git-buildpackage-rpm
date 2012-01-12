@@ -27,7 +27,7 @@ class RpmGitRepository(GitRepository):
         super(RpmGitRepository, self).__init__(path)
         self.pristine_tar = PristineTar(self)
 
-    def find_version(self, format, version):
+    def find_version(self, format, version, vendor="vendor"):
         """
         Check if a certain version is stored in this repo and return the SHA1
         of the related commit. That is, an annotated tag is dereferenced to the
@@ -39,20 +39,23 @@ class RpmGitRepository(GitRepository):
         @type version: C{str}
         @return: sha1 of the commit the tag references to
         """
-        tag = self.version_to_tag(format, version)
+        tag = self.version_to_tag(format, version, vendor)
         if self.has_tag(tag): # new tags are injective
             # dereference to a commit object
             return self.rev_parse("%s^0" % tag)
         return None
 
     @staticmethod
-    def version_to_tag(format, version):
+    def version_to_tag(format, version, vendor="vendor"):
         """Generate a tag from a given format and a version
 
         >>> RpmGitRepository.version_to_tag("packaging/%(version)s", "0:0~0")
         'packaging/0%0_0'
+        >>> RpmGitRepository.version_to_tag("%(vendor)s/v%(version)s", "1.0", "myvendor")
+        'myvendor/v1.0'
         """
-        return format % dict(version=RpmGitRepository._sanitize_version(version))
+        return format % dict(version=RpmGitRepository._sanitize_version(version),
+                             vendor=vendor)
 
     @staticmethod
     def _sanitize_version(version):
