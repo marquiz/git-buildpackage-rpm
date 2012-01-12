@@ -24,7 +24,10 @@
       &man.common.options.synopsis;
       <arg><option>--all</option></arg>
       <arg><option>--[no-]pristine-tar</option></arg>
-      <arg><option>--debian-branch=</option><replaceable>branch_name</replaceable></arg>
+      <group>
+        <arg><option>--debian-branch=</option><replaceable>branch_name</replaceable></arg>
+        <arg><option>--packaging-branch=</option><replaceable>branch_name</replaceable></arg>
+      </group>
       <arg><option>--upstream-branch=</option><replaceable>branch_name</replaceable></arg>
       <arg><option>--depth=</option><replaceable>depth</replaceable></arg>
       <arg choice="plain"><replaceable>remote_uri</replaceable></arg>
@@ -59,6 +62,14 @@
         <listitem>
 	  <para>The branch in the Git repository the Debian package is being
 	  developed on, default is <replaceable>master</replaceable>.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--packaging-branch</option>=<replaceable>branch_name</replaceable>
+        </term>
+        <listitem>
+          <para>The branch the packaging is being maintained on.
+          Alternative to the <emphasis>--debian-branch</emphasis> option.</para>
         </listitem>
       </varlistentry>
       <varlistentry>
