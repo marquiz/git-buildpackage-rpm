@@ -420,7 +420,7 @@ def parse_args(argv, prefix):
                       help="don't fail if the tag already exists")
     tag_group.add_boolean_config_file_option(option_name="sign-tags", dest="sign_tags")
     tag_group.add_config_file_option(option_name="keyid", dest="keyid")
-    tag_group.add_config_file_option(option_name="debian-tag", dest="debian_tag")
+    tag_group.add_config_file_option(option_name="debian-tag", dest="packaging_tag")
     tag_group.add_config_file_option(option_name="upstream-tag", dest="upstream_tag")
     orig_group.add_config_file_option(option_name="upstream-tree", dest="upstream_tree")
     orig_group.add_boolean_config_file_option(option_name="pristine-tar", dest="pristine_tar")
@@ -600,7 +600,7 @@ def main(argv):
                                    'GBP_BUILD_DIR': build_dir})()
         if options.tag or options.tag_only:
             gbp.log.info("Tagging %s" % source.changelog.version)
-            tag = repo.version_to_tag(options.debian_tag, source.changelog.version)
+            tag = repo.version_to_tag(options.packaging_tag, source.changelog.version)
             if options.retag and repo.has_tag(tag):
                 repo.delete_tag(tag)
             repo.create_tag(name=tag,
