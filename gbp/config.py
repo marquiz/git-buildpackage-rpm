@@ -536,12 +536,15 @@ class GbpOptionParserRpm(GbpOptionParser):
                        'builder'                : '',
                        'cleaner'                : '',
                        'packaging-dir'          : '',
+                       'packaging-tag'          : 'packaging/%(version)s',
                      } )
 
     help = dict(GbpOptionParser.help)
     help.update( {
                    'packaging-dir':
                         "subdir where packaging files are stored, default is '%(packaging-dir)s'",
+                   'packaging-tag':
+                        "format string for packaging tags, rpm counterpart of the 'debian-tag' option, default is '%(packaging-tag)s'",
                  } )
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
