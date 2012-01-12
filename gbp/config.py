@@ -576,6 +576,7 @@ class GbpOptionParserRpm(GbpOptionParser):
     Handles commandline options and parsing of config files for rpm tools
     """
     defaults = dict(GbpOptionParser.defaults)
+<<<<<<< HEAD
     defaults.update( {
                        'vendor'                 : 'vendor',
                        'native'                 : 'auto',
