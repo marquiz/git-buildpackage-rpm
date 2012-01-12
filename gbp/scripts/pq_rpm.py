@@ -125,7 +125,11 @@ def export_patches(repo, branch, options):
     if not upstream_commit:
         raise GbpError, ("Couldn't find upstream version %s. Don't know on what base to import." % spec.version)
 
-    update_patch_series(repo, spec, upstream_commit, pq_branch, options)
+    export_treeish = options.export_rev if options.export_rev else pq_branch
+    if not repo.has_treeish(export_treeish):
+        raise GbpError('Invalid treeish object %s' % export_treeish)
+
+    update_patch_series(repo, spec, upstream_commit, export_treeish, options)
 
     GitCommand('status')(['--', spec.specdir])
 
@@ -313,6 +317,9 @@ def main(argv):
     parser.add_config_file_option(option_name="upstream-tag", dest="upstream_tag")
     parser.add_config_file_option(option_name="spec-file", dest="spec_file")
     parser.add_config_file_option(option_name="packaging-dir", dest="packaging_dir")
+    parser.add_option("--export-rev", action="store", dest="export_rev", default="",
+                      help="Export patches from treeish object TREEISH instead "
+                           "of head of patch-queue branch", metavar="TREEISH")
 
     (options, args) = parser.parse_args(argv)
     gbp.log.setup(options.color, options.verbose)
