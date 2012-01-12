@@ -22,7 +22,7 @@
       &gbp-pull;
 
       <arg><option>--verbose</option></arg>
-      <arg><option>--force</option></arg>
+      <arg><option>--force=</option><replaceable>[merge|clean]</replaceable></arg>
       <arg><option>--all</option></arg>
       <arg><option>--redo-pq</option></arg>
       <arg><option>--[no-]pristine-tar</option></arg>
@@ -46,11 +46,14 @@
 
     <variablelist>
       <varlistentry>
-        <term><option>--force</option></term>
+        <term><option>--force=</option><replaceable>[merge|clean]</replaceable></term>
         <listitem>
-	  <para>force a branch update even if this results in a non fast
-	  forward update. <warning><para>Forcing a branch update
-	  makes you lose your modifications.</para></warning></para>
+          <para>Force a branch update even if this results in a non fast
+	      forward update.
+          <emphasis>merge</emphasis> does a git-merge.
+          <emphasis>clean</emphasis> checks out a clean copy from upstream.
+          <warning><para>using <emphasis>clean</emphasis>
+          makes you lose your modifications.</para></warning></para>
         </listitem>
       </varlistentry>
       <varlistentry>
