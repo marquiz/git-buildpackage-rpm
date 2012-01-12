@@ -530,8 +530,13 @@ class GbpOptionParserRpm(GbpOptionParser):
     defaults.update( {
                        'builder'                : '',
                        'cleaner'                : '',
+                       'packaging-dir'          : '',
                      } )
 
     help = dict(GbpOptionParser.help)
+    help.update( {
+                   'packaging-dir':
+                        "subdir where packaging files are stored, default is '%(packaging-dir)s'",
+                 } )
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
