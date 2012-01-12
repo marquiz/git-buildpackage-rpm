@@ -258,7 +258,7 @@ def parse_args(argv, sections=[]):
     branch_group.add_config_file_option(option_name="upstream-branch",
                                         dest="upstream_branch")
     branch_group.add_config_file_option(option_name="debian-branch",
-                                        dest="debian_branch")
+                                        dest="packaging_branch")
     branch_group.add_boolean_config_file_option(option_name="pristine-tar",
                                                 dest="pristine_tar")
     branch_group.add_boolean_config_file_option(option_name="track",
@@ -308,7 +308,7 @@ def main(argv):
     try:
         branches = []
 
-        for branch in [ options.debian_branch, options.upstream_branch ]:
+        for branch in [ options.packaging_branch, options.upstream_branch ]:
             if repo.has_branch(branch):
                 branches += [ branch ]
 
