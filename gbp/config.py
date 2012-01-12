@@ -94,6 +94,7 @@ class GbpOptionParser(OptionParser):
     @type def_config_files: list
     """
     defaults = { 'debian-branch'   : 'master',
+                 'packaging-branch' : 'master',
                  'upstream-branch' : 'upstream',
                  'upstream-tree'   : 'TAG',
                  'pristine-tar'    : 'False',
@@ -168,6 +169,10 @@ class GbpOptionParser(OptionParser):
              'debian-branch':
                   ("Branch the Debian package is being developed on, "
                    "default is '%(debian-branch)s'"),
+             'packaging-branch':
+                  ("Branch the packaging is being maintained on, "
+                   "rpm counterpart of the 'debian-branch' option, "
+                   "default is '%(packaging-branch)s'"),
              'upstream-branch':
                   "Upstream branch, default is '%(upstream-branch)s'",
              'upstream-tree':
