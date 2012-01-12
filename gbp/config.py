@@ -672,4 +672,5 @@ class GbpOptionParserRpm(GbpOptionParser):
                          "'%(meta-bts)s'"),
                  } )
 
+
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
