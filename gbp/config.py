@@ -704,6 +704,8 @@ class GbpOptionParserRpm(GbpOptionParser):
             'patch-import'              : 'True',
             'import-files'              : ['.gbp.conf',
                                            'debian/gbp.conf'],
+            'merge'                     : 'False',
+            'pristine-tarball-name'     : 'auto',
                     })
 
     help = dict(GbpOptionParser.help)
@@ -763,6 +765,9 @@ class GbpOptionParserRpm(GbpOptionParser):
                 "Comma-separated list of additional file(s) to import from "
                 "packaging branch. These will appear as one monolithic patch "
                 "in the pq/development branch. Default is %(import-files)s",
+            'pristine-tarball-name':
+                "Filename to record to pristine-tar, set to 'auto' to not "
+                "mangle the file name, default is '%(pristine-tarball-name)s'",
                  })
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
