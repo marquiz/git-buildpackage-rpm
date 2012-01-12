@@ -44,6 +44,7 @@ def parse_args (argv):
                             help="track all branches, not only debian and upstream")
     branch_group.add_config_file_option(option_name="upstream-branch", dest="upstream_branch")
     branch_group.add_config_file_option(option_name="debian-branch", dest="packaging_branch")
+    branch_group.add_config_file_option(option_name="packaging-branch", dest="packaging_branch")
     branch_group.add_boolean_config_file_option(option_name="pristine-tar", dest="pristine_tar")
     branch_group.add_option("--depth", action="store", dest="depth", default=0,
                             help="git history depth (for creating shallow clones)")
