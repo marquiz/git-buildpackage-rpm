@@ -120,7 +120,6 @@ class GbpOptionParser(OptionParser):
                  'snapshot-number' : 'snapshot + 1',
                  'git-log'         : '--no-merges',
                  'export'          : 'HEAD',
-                 'export-dir'      : '',
                  'overlay'         : 'False',
                  'tarball-dir'     : '',
                  'ignore-new'      : 'False',
@@ -582,6 +581,7 @@ class GbpOptionParserDebian(GbpOptionParser):
     defaults.update( {
                        'builder'            : 'debuild -i -I',
                        'cleaner'            : '/bin/true',
+                       'export-dir'         : '',
                      } )
 
 
@@ -598,6 +598,16 @@ class GbpOptionParserRpm(GbpOptionParser):
             'packaging-tag'             : 'packaging/%(version)s',
             'pq-branch'                 : 'development/%(branch)s',
             'spec-file'                 : 'auto',
+            'builder'                   : 'rpmbuild',
+            'cleaner'                   : '/bin/true',
+            'export-dir'                : '../rpmbuild',
+            'rpmbuild-builddir'         : 'BUILD',
+            'rpmbuild-rpmdir'           : 'RPMS',
+            'rpmbuild-sourcedir'        : 'SOURCES',
+            'rpmbuild-specdir'          : 'SPECS',
+            'rpmbuild-srpmdir'          : 'SRPMS',
+            'rpmbuild-buildrootdir'     : 'BUILDROOT',
+            'patch-export'              : 'False',
                     })
 
     help = dict(GbpOptionParser.help)
@@ -624,6 +634,9 @@ class GbpOptionParserRpm(GbpOptionParser):
                 "Spec file to use, 'auto' makes gbp to guess, other values "
                 "make the packaging-dir option to be ignored, default is "
                 "'%(spec-file)s'",
+            'patch-export':
+                "Create patches between upstream and export-treeish, default "
+                "is '%(patch-export)s'",
                  })
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
