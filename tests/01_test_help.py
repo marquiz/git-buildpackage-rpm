@@ -28,7 +28,8 @@ class TestHelp(unittest.TestCase):
     def testHelpRpm(self):
         for script in ['import_srpm',
                        'pq_rpm',
-                       'buildpackage_rpm']:
+                       'buildpackage_rpm',
+                       'import_orig_rpm']:
             module = 'gbp.scripts.%s' % script
             m = __import__(module, globals(), locals(), ['main'], -1)
             self.assertRaises(SystemExit,
