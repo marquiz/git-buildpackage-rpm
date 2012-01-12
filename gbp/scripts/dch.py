@@ -314,7 +314,7 @@ def main(argv):
     parser.add_option_group(custom_group)
 
     parser.add_boolean_config_file_option(option_name = "ignore-branch", dest="ignore_branch")
-    naming_group.add_config_file_option(option_name="debian-branch", dest="debian_branch")
+    naming_group.add_config_file_option(option_name="debian-branch", dest="packaging_branch")
     naming_group.add_config_file_option(option_name="upstream-tag", dest="upstream_tag")
     naming_group.add_config_file_option(option_name="debian-tag", dest="debian_tag")
     naming_group.add_config_file_option(option_name="snapshot-number", dest="snapshot_number",
@@ -392,9 +392,11 @@ def main(argv):
             if not options.ignore_branch:
                 raise
 
-        if options.debian_branch != branch and not options.ignore_branch:
-            gbp.log.err("You are not on branch '%s' but on '%s'" % (options.debian_branch, branch))
-            raise GbpError("Use --ignore-branch to ignore or --debian-branch to set the branch name.")
+        if options.packaging_branch != branch and not options.ignore_branch:
+            gbp.log.err("You are not on branch '%s' but on '%s'" %
+                        (options.packaging_branch, branch))
+            raise GbpError("Use --ignore-branch to ignore or --debian-branch "
+                           "to set the branch name.")
 
         source = DebianSource('.')
         cp = source.changelog

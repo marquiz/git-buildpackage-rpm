@@ -437,7 +437,7 @@ def parse_args(argv, prefix):
     orig_group.add_config_file_option(option_name="compression-level", dest="comp_level",
                       help="Compression level, default is '%(compression-level)s'")
     branch_group.add_config_file_option(option_name="upstream-branch", dest="upstream_branch")
-    branch_group.add_config_file_option(option_name="debian-branch", dest="debian_branch")
+    branch_group.add_config_file_option(option_name="debian-branch", dest="packaging_branch")
     branch_group.add_boolean_config_file_option(option_name = "ignore-branch", dest="ignore_branch")
     branch_group.add_boolean_config_file_option(option_name = "submodules", dest="with_submodules")
     cmd_group.add_config_file_option(option_name="builder", dest="builder",
@@ -529,8 +529,8 @@ def main(argv):
                 raise
 
         if not options.ignore_new and not options.ignore_branch:
-            if branch != options.debian_branch:
-                gbp.log.err("You are not on branch '%s' but on '%s'" % (options.debian_branch, branch))
+            if branch != options.packaging_branch:
+                gbp.log.err("You are not on branch '%s' but on '%s'" % (options.packaging_branch, branch))
                 raise GbpError("Use --git-ignore-branch to ignore or --git-debian-branch to set the branch name.")
 
         tree = write_tree(repo, options)
