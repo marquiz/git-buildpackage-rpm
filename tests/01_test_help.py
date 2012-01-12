@@ -26,7 +26,8 @@ class TestHelp(unittest.TestCase):
 
     """Test help output of RPM-specific commands"""
     def testHelpRpm(self):
-        for script in ['import_srpm']:
+        for script in ['import_srpm',
+                       'pq_rpm']:
             module = 'gbp.scripts.%s' % script
             m = __import__(module, globals(), locals(), ['main'], -1)
             self.assertRaises(SystemExit,
