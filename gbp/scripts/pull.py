@@ -36,7 +36,7 @@ def update_branch(branch, repo, options):
     @return: branch updated or already up to date
     @rtype: boolean
     """
-    update = False
+    update = None
 
     remote = repo.get_merge_branch(branch)
     if not remote:
@@ -50,11 +50,14 @@ def update_branch(branch, repo, options):
         return True
 
     if can_fast_forward:
-        update = True
+        update = 'merge'
     else:
-        if options.force:
-            gbp.log.info("Non-fast forwarding '%s' due to --force" % branch)
-            update = True
+        if options.force == 'merge':
+            gbp.log.info("Non-fast forwarding '%s' due to --force=merge" % branch)
+            update = 'merge'
+        elif options.force == 'clean':
+            gbp.log.info("Checking out clean copy of '%s' due to --force=clean" % branch)
+            update = 'clean'
         else:
             gbp.log.warn("Skipping non-fast forward of '%s' - use --force or "
                          "update manually" % branch)
@@ -62,19 +65,32 @@ def update_branch(branch, repo, options):
     if update:
         gbp.log.info("Updating '%s'" % branch)
         if repo.branch == branch:
-            repo.merge(remote)
-        elif can_fast_forward:
-            sha1 = repo.rev_parse(remote)
-            repo.update_ref("refs/heads/%s" % branch, sha1,
-                            msg="gbp: forward %s to %s" % (branch, remote))
+            if update == 'merge':
+                repo.merge(remote)
+            elif update == 'clean':
+                # Have to drop our current branch
+                tmpbranch = "_gbptmp-"+branch
+                gbp.log.debug("Checking out '%s' to '%s'" % (remote, tmpbranch))
+                repo.create_branch(tmpbranch, remote)
+                gbp.log.debug("Switching current branch to '%s'" % (tmpbranch))
+                repo.set_branch(tmpbranch)
+                gbp.log.debug("Dropping branch '%s'" % branch)
+                repo.delete_branch(branch)
+                gbp.log.info("Renaming branch '%s' to '%s'" % (tmpbranch, branch))
+                repo.rename_branch(tmpbranch, branch)
         else:
-            # Merge other branch, if it cannot be fast-forwarded
-            current_branch=repo.branch
-            repo.set_branch(branch)
-            repo.merge(remote)
-            repo.set_branch(current_branch)
+            if can_fast_forward or (update == 'clean'):
+                sha1 = repo.rev_parse(remote)
+                repo.update_ref("refs/heads/%s" % branch, sha1,
+                                msg="gbp: forward %s to %s" % (branch, remote))
+            elif update == 'merge':
+                # Merge other branch, if it cannot be fast-forwarded
+                current_branch=repo.branch
+                repo.set_branch(branch)
+                repo.merge(remote)
+                repo.set_branch(current_branch)
 
-    return update
+    return (update != None)
 
 def parse_args(argv):
     try:
@@ -87,8 +103,11 @@ def parse_args(argv):
     branch_group = GbpOptionGroup(parser, "branch options", "branch update and layout options")
     parser.add_option_group(branch_group)
     branch_group.add_boolean_config_file_option(option_name = "ignore-branch", dest="ignore_branch")
-    branch_group.add_option("--force", action="store_true", dest="force", default=False,
-                      help="force a branch update even if it can't be fast forwarded")
+    branch_group.add_option("--force", action="store", dest="force",
+                      default=None,
+                      help="force a branch update even if it can't be fast "
+                           "forwarded (valid ACTIONs are 'merge', 'clean')",
+                      metavar='ACTION')
     branch_group.add_option("--all", action="store_true", default=False,
                             help="update all remote-tracking branches that "
                                  "have identical name in the remote")
