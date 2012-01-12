@@ -608,6 +608,8 @@ class GbpOptionParserRpm(GbpOptionParser):
             'rpmbuild-srpmdir'          : 'SRPMS',
             'rpmbuild-buildrootdir'     : 'BUILDROOT',
             'patch-export'              : 'False',
+            'merge'                     : 'False',
+            'pristine-tarball-name'     : 'auto',
                     })
 
     help = dict(GbpOptionParser.help)
@@ -637,6 +639,9 @@ class GbpOptionParserRpm(GbpOptionParser):
             'patch-export':
                 "Create patches between upstream and export-treeish, default "
                 "is '%(patch-export)s'",
+            'pristine-tarball-name':
+                "Filename to record to pristine-tar, set to 'auto' to not "
+                "mangle the file name, default is '%(pristine-tarball-name)s'",
                  })
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
