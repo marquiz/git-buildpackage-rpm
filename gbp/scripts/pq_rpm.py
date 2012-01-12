@@ -269,6 +269,8 @@ def export_patches(repo, options):
     upstream_commit = find_upstream_commit(repo, spec, options.upstream_tag)
 
     export_treeish = options.export_rev if options.export_rev else pq_branch
+    if not repo.has_treeish(export_treeish):
+        raise GbpError('Invalid treeish object %s' % export_treeish)
 
     update_patch_series(repo, spec, upstream_commit, export_treeish, options)
 
@@ -655,6 +657,9 @@ def main(argv):
             dest="patch_export_squash_until")
     parser.add_config_file_option("patch-export-ignore-path",
             dest="patch_export_ignore_path")
+    parser.add_option("--export-rev", action="store", dest="export_rev", default="",
+                      help="Export patches from treeish object TREEISH instead "
+                           "of head of patch-queue branch", metavar="TREEISH")
 
     (options, args) = parser.parse_args(argv)
     gbp.log.setup(options.color, options.verbose, options.color_scheme)
