@@ -1,1 +1,18 @@
 See https://honk.sigxcpu.org/piki/projects/git-buildpackage/
+
+RPM-related things:
+- unit tests:
+  - add unit tests for the rpm command line tools
+- manpages for rpm tools
+  - git-buildpackage-rpm
+  - git-import-srpm
+  - git-import-orig-rpm
+  - gbp-pq-rpm
+- better html-documentation for rpm support
+- write a tool for automatic changelog creation/updating
+- bare-repo support
+  - buildpackage-rpm
+  - import-orig
+  - import-srpm
+  - pristine-tar
+  - gbp-pq (very limited, if any)
