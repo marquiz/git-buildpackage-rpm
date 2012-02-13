@@ -522,4 +522,16 @@ class GbpOptionParserDebian(GbpOptionParser):
                        'cleaner'            : '/bin/true',
                      } )
 
+class GbpOptionParserRpm(GbpOptionParser):
+    """
+    Handles commandline options and parsing of config files for rpm tools
+    """
+    defaults = dict(GbpOptionParser.defaults)
+    defaults.update( {
+                       'builder'                : '',
+                       'cleaner'                : '',
+                     } )
+
+    help = dict(GbpOptionParser.help)
+
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
