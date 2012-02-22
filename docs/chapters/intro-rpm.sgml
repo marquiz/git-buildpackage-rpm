@@ -1,0 +1,69 @@
+<chapter id="gbp.rpm.intro">
+    <title>Introduction</title>
+    <para>
+        Git-buildpackage is a <ulink url="http://www.debian.org/">Debian</ulink>
+        toolset for maintaining and building packages in/from git repositories.
+        The (still experimental) RPM variants of the tool, extend the support
+        from Debian-only to building and maintaining RPM packages, too.
+        The documentation of git-buildpackage-rpm reflects the the
+        <xref linkend="gbp">Debian git-buildpackage documentation</xref>.
+    </para>
+    <para>
+        The RPM versions of the tools can do basically all the same tasks as
+        the Debian versions, except for changelog generation. However, the
+        philosophy is somewhat different in some parts. One clear difference is
+        that git-buildpackage-rpm will always build in a separate build
+        directory whereas git-buildpackage (the Debian) tool builds in the
+        git working dir by default. The Debian/RPM tool equivalence is:
+        <itemizedlist>
+            <listitem>git-buildpackage –> rpm: <emphasis>git-buildpackage-rpm</></listitem>
+            <listitem>git-import-dsc –> rpm: <emphasis>git-import-srpm</></listitem>
+            <listitem>git-import-orig –> rpm: <emphasis>git-import-orig-rpm</></listitem>
+            <listitem>gbp-pq –> rpm: <emphasis>gbp-pq-rpm</></listitem>
+            <listitem>gbp-clone –> rpm: <emphasis>gbp-clone</> (the same tool)</listitem>
+            <listitem>gbp-pull –> rpm: <emphasis>gbp-pull</> (the same tool)</listitem>
+            <listitem>git-dch –> rpm: not available</listitem>
+            <listitem>git-import-dscs –> rpm: not available</listitem>
+        </itemizedlist>
+    </para>
+
+<sect1 id="gbp.rpm.repository">
+	<title>RPM Repository Layout</title>
+    <para>
+        The required repository layout is similar to Debian: basically the only
+        requirement is that non-native packages must have clean upstream sources
+        in a separate branch. Other branches are:
+    </para>
+	<itemizedlist>
+        <listitem><option>packaging-branch</> contains packaging files (spec
+        and source files, e.g. patches, needed by rpmbuild, except for the orig
+        tarball). This branch can contain the development sources as well
+        (always true for native packages).</listitem>
+        <listitem><option>upstream-branch</> contains upstream sources.
+        This can either be a branch you import to or a branch of an upstream
+        repository you pull from.</listitem>
+        <listitem><option>pristine-tar-branch</> contains pristine-tar data to
+        recreate the original upstream tarball from the upstream-branch.</listitem>
+        <listitem><option>patch-queue/* branches</> are related to 
+        <option>packaging-branch(es)</>. The patch-queue branch is the upstream
+        plus the patches from packaging branch applied.</listitem>
+	</itemizedlist>
+</sect1>
+
+<sect1 id="gbp.rpm.workflow">
+    <title>RPM Workflow</title>
+    <para>
+    	The basic workflow is very similar to Debian:
+    </para>
+    <orderedlist>
+        <listitem>Import a package via &git-import-srpm; OR clone from the 
+        distro git with gbp-clone if the package is already maintained with
+        &git-buildpackage-rpm;.</listitem>
+        <listitem>Develop, test, commit changes.</listitem>
+        <listitem>Once satisfied you can build the final package with
+        &git-buildpackage-rpm; (optionally with --git-tag to create a tag in
+        git) and push it to git server.</listitem>
+    </orderedlist>
+</sect1>
+
+</chapter>
