@@ -1,0 +1,24 @@
+<book id="gbp-rpm">
+  <bookinfo>
+    <title>Building RPM Packages with git-buildpackage-rpm</title>
+    <author><firstname>Markus</firstname> <surname>Lehtonen</surname></author>
+    <address><email>markus.lehtonen@linux.intel.com</email></address>
+    <subtitle>Version: &gbp-version;</subtitle>
+  </bookinfo>
+
+  &ch.intro-rpm;
+  &ch.development-rpm;
+  &ch.building-rpm;
+
+  <appendix id="man.rpm.reference">
+    <title>Command Reference</title>
+    &man.gbp.buildpackage.rpm;
+    &man.gbp.import.srpm;
+    &man.gbp.pq.rpm;
+  </appendix>
+  <appendix id="gbp.rpm.copyleft">
+    <title>Copyright</title>
+    &gbp.copyright;
+  </appendix>
+</book>
+

@@ -1,0 +1,104 @@
+<chapter id="gbp.rpm.intro">
+    <title>Introduction</title>
+
+    <para>
+    Git-buildpackage is a <ulink url="http://www.debian.org/">Debian</ulink>
+    toolset for maintaining and building packages in/from git repositories.
+    The still experimental RPM variants of the tool, extend the support
+    from Debian-only to building and maintaining RPM packages, too.
+    The documentation of git-buildpackage-rpm here reflects the the
+    <ulink url="gbp.html">Debian git-buildpackage documentation</>
+    <!--<xref linkend="gbp">Debian git-buildpackage documentation</xref>.-->
+    </para>
+
+    <para>
+    The RPM versions of the tools can in their current state
+    do basically all the same tasks as the Debian versions, except for changelog generation.
+    However, the philosophy is somewhat different in some parts. The RPM tools
+    read the .spec file instead of changelog in determining packaging
+    information (version number, name etc). Another clear difference is
+    that &gbp-buildpackage-rpm; will always build in a separate build
+    directory whereas &gbp-buildpackage; (the Debian) tool builds in the
+    git working dir, by default.
+    Third, conceptual, difference (for non-native packages) is that you may
+    have packaging files in an orphan branch, without development sources:
+    i.e. you develop code in 'patch-queue' branch that doesn't contain any
+    packaging files, and, do 'pq-rpm export' to 'packaging' branch that only
+    contains packaging files (.spec file, patches etc.) but no sources.
+    The Debian/RPM tool equivalence is:
+    <itemizedlist>
+        <listitem><para>&gbp-buildpackage; -> RPM: &gbp-buildpackage-rpm;</para></listitem>
+        <listitem><para>&gbp-import-dsc; -> RPM: &gbp-import-srpm;</para></listitem>
+        <listitem><para>&gbp-import-orig; -> RPM: &gbp-import-orig-rpm;</para></listitem>
+        <listitem><para>&gbp-pq; -> RPM: &gbp-pq-rpm;</para></listitem>
+        <listitem><para>&gbp-clone; -> RPM: &gbp-clone; (the same tool)</para></listitem>
+        <listitem><para>&gbp-pull; -> RPM: &gbp-pull; (the same tool)</para></listitem>
+        <listitem><para>&gbp-dch; -> RPM: not available</para></listitem>
+        <listitem><para>&gbp-import-dscs; -> RPM: not available</para></listitem>
+    </itemizedlist>
+    </para>
+
+<sect1 id="gbp.rpm.repository">
+	<title>RPM Repository Layout</title>
+
+    <para>
+    The required repository layout is similar to Debian: basically the only
+    requirement is that non-native packages must have clean upstream sources
+    in a separate branch. Other branches are:
+    </para>
+
+	<itemizedlist>
+        <listitem><para>
+        <option>packaging-branch</> contains packaging files (spec
+        and source files, e.g. patches, needed by rpmbuild, except for the orig
+        tarball). This branch <emphasis>may</> contain the development sources as well
+        (always true for native packages).
+        </para></listitem>
+
+        <listitem><para>
+        <option>upstream-branch</> contains upstream sources.
+        This can either be a branch you import to or a branch of an upstream
+        repository you pull from.
+        </para></listitem>
+
+        <listitem><para>
+        <option>pristine-tar-branch</> contains pristine-tar data to
+        recreate the original upstream tarball from the upstream-branch.
+        </para></listitem>
+
+        <listitem><para>
+        <option>patch-queue-branch(es)</> are related to
+        <option>packaging-branch(es)</>. These are also called the
+        <emphasis>development</> branhces in the RPM tools.
+        The development/patch-queue branch is the upstream
+        plus the patches from packaging branch applied. In RPM tools the
+        default branch name of the development/patch-queue branch is
+        <option>development/&lt;packaging-branch-name&gt;</>.
+        </para></listitem>
+	</itemizedlist>
+</sect1>
+
+<sect1 id="gbp.rpm.workflow">
+    <title>RPM Workflow</title>
+
+    <para>
+	The basic workflow is very similar to Debian:
+    </para>
+
+    <orderedlist>
+        <listitem><para>
+        Import a package via &gbp-import-srpm; OR clone from the
+        distro git with &gbp-clone; if the package is already maintained with
+        &gbp-buildpackage-rpm;.
+        </para></listitem>
+
+        <listitem><para>
+        Develop, test, commit changes.</para></listitem>
+        <listitem><para>Once satisfied you can build the final package with
+        &gbp-buildpackage-rpm; (optionally with --git-tag to create a tag in
+        git) and push it to git server.
+        </para></listitem>
+    </orderedlist>
+</sect1>
+
+</chapter>
