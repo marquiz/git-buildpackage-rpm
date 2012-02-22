@@ -1,0 +1,3 @@
+<!ENTITY ch.intro-rpm SYSTEM "intro-rpm.sgml">
+<!ENTITY ch.development-rpm SYSTEM "development-rpm.sgml">
+<!ENTITY ch.building-rpm SYSTEM "building-rpm.sgml">

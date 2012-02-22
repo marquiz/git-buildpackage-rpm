@@ -1,15 +1,3 @@
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
-  <!ENTITY % COMMON SYSTEM "common.ent">
-  %COMMON;
-  <!ENTITY % VERSION SYSTEM "version.ent">
-  %VERSION;
-  <!ENTITY % MANPAGES SYSTEM "manpages/manpages.ent">
-  %MANPAGES;
-  <!ENTITY % CHAPTERS SYSTEM "chapters/chapters.ent">
-  %CHAPTERS;
-  <!ENTITY gbp.copyright SYSTEM "copyright.sgml">
-]>
-
 <book id="gbp">
   <bookinfo>
     <title>Building Debian Packages with git-buildpackage</title>
