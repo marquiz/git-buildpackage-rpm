@@ -31,9 +31,11 @@ GTK_DOC_CATALOG_FILE ?= /usr/share/sgml/gtk-doc/gtk-doc.cat
 
 all: $(MANUAL) $(MANPAGES)
 
-$(MANUAL): manual.sgml chapters/*.sgml manpages/*.sgml
+$(MANUAL): main.sgml manual.sgml manual-rpm.sgml chapters/*.sgml manpages/*.sgml
 ifeq ($(HAVE_SGML2X),1)
 	docbook-2-html -s local $<
+	rm -rf $(MANUAL)
+	mv main-html $(MANUAL)
 else
 	docbook2html -d local-nosgml2x.dsl -c $(GTK_DOC_CATALOG_FILE) -o $(MANUAL) $<
 endif
@@ -55,7 +57,7 @@ manpage.refs: $(BUILD_MAN_XREF_PAGES)
 git-pbuilder.1: ../bin/git-pbuilder
 	pod2man $< $@
 
-manual.sgml: $(VERSION_ENT)
+main.sgml: $(VERSION_ENT)
 
 $(VERSION_ENT): $(GBP_VERSION)
 	echo '<!ENTITY gbp-version "$(DEB_VERSION)">' > $(VERSION_ENT)
