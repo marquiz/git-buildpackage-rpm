@@ -23,6 +23,12 @@
   <!ENTITY debuildcmd		"<command>debuild</command>">
   <!ENTITY gbp.conf		"<filename>gbp.conf</filename>">
 
+  <!ENTITY git-buildpackage-rpm 	"<command>git-buildpackage-rpm</command>">
+  <!ENTITY git-import-orig-rpm	"<command>git-import-orig-rpm</command>">
+  <!ENTITY git-import-srpm	"<command>git-import-srpm</command>">
+  <!ENTITY gbp-pq-rpm		"<command>gbp-pq-rpm</command>">
+  <!ENTITY rpmbuild		"<command>rpmbuild</command>">
+
   <!ENTITY debian      "<productname>Debian</productname>">
   <!ENTITY git	       "<productname>Git</productname>">
   <!ENTITY dch	       "<productname>dch</productname>">

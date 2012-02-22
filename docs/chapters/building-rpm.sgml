@@ -1,0 +1,10 @@
+<chapter id="gbp.rpm.building">
+    <title>Building RPM packages from the &git; repository</title>
+    <para>
+    The &git-buildpackage-rpm; tool is used for building.
+    The tool creates the source tarball and copies it and the packaging files
+    to a separate build directory and builds the package there. By default, 
+    &rpmbuild; is used as the builder command. You can define a different builder
+    command with the <option>--git-builder</option> option.
+    </para>
+</chapter>
