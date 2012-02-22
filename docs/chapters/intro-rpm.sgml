@@ -3,27 +3,36 @@
     <para>
         Git-buildpackage is a <ulink url="http://www.debian.org/">Debian</ulink>
         toolset for maintaining and building packages in/from git repositories.
-        The (still experimental) RPM variants of the tool, extend the support
+        The still experimental RPM variants of the tool, extend the support
         from Debian-only to building and maintaining RPM packages, too.
-        The documentation of git-buildpackage-rpm reflects the the
-        <xref linkend="gbp">Debian git-buildpackage documentation</xref>.
+        The documentation of git-buildpackage-rpm here reflects the the
+        <ulink url="gbp.html">Debian git-buildpackage documentation</>
+        <!--<xref linkend="gbp">Debian git-buildpackage documentation</xref>.-->
     </para>
     <para>
-        The RPM versions of the tools can do basically all the same tasks as
-        the Debian versions, except for changelog generation. However, the
-        philosophy is somewhat different in some parts. One clear difference is
-        that git-buildpackage-rpm will always build in a separate build
-        directory whereas git-buildpackage (the Debian) tool builds in the
-        git working dir by default. The Debian/RPM tool equivalence is:
+        The RPM versions of the tools can in their current state 
+        do basically all the same tasks as the Debian versions, except for changelog generation.
+        However, the philosophy is somewhat different in some parts. The RPM tools
+        read the .spec file instead of changelog in determining packaging
+        information (version number, name etc). Another clear difference is
+        that &git-buildpackage-rpm; will always build in a separate build
+        directory whereas &git-buildpackage; (the Debian) tool builds in the
+        git working dir, by default.
+        Third, conceptual, difference (for non-native packages) is that you may
+        have packaging files in an orphan branch, without development sources:
+        i.e. you develop code in 'patch-queue' branch that doesn't contain any
+        packaging files, and, do 'pq-rpm export' to 'packaging' branch that only
+        contains packaging files (.spec file, patches etc.) but no sources.
+        The Debian/RPM tool equivalence is:
         <itemizedlist>
-            <listitem>git-buildpackage –> rpm: <emphasis>git-buildpackage-rpm</></listitem>
-            <listitem>git-import-dsc –> rpm: <emphasis>git-import-srpm</></listitem>
-            <listitem>git-import-orig –> rpm: <emphasis>git-import-orig-rpm</></listitem>
-            <listitem>gbp-pq –> rpm: <emphasis>gbp-pq-rpm</></listitem>
-            <listitem>gbp-clone –> rpm: <emphasis>gbp-clone</> (the same tool)</listitem>
-            <listitem>gbp-pull –> rpm: <emphasis>gbp-pull</> (the same tool)</listitem>
-            <listitem>git-dch –> rpm: not available</listitem>
-            <listitem>git-import-dscs –> rpm: not available</listitem>
+            <listitem><para>&git-buildpackage; -> RPM: &git-buildpackage-rpm;</para></listitem>
+            <listitem><para>&git-import-dsc; -> RPM: &git-import-srpm;</para></listitem>
+            <listitem><para>&git-import-orig; -> RPM: &git-import-orig-rpm;</para></listitem>
+            <listitem><para>&gbp-pq; -> RPM: &gbp-pq-rpm;</para></listitem>
+            <listitem><para>&gbp-clone; -> RPM: &gbp-clone; (the same tool)</para></listitem>
+            <listitem><para>&gbp-pull; -> RPM: &gbp-pull; (the same tool)</para></listitem>
+            <listitem><para>&git-dch; -> RPM: not available</para></listitem>
+            <listitem><para>&git-import-dscs; -> RPM: not available</para></listitem>
         </itemizedlist>
     </para>
 
@@ -35,18 +44,18 @@
         in a separate branch. Other branches are:
     </para>
 	<itemizedlist>
-        <listitem><option>packaging-branch</> contains packaging files (spec
+        <listitem><para><option>packaging-branch</> contains packaging files (spec
         and source files, e.g. patches, needed by rpmbuild, except for the orig
-        tarball). This branch can contain the development sources as well
-        (always true for native packages).</listitem>
-        <listitem><option>upstream-branch</> contains upstream sources.
+        tarball). This branch <emphasis>may</> contain the development sources as well
+        (always true for native packages).</para></listitem>
+        <listitem><para><option>upstream-branch</> contains upstream sources.
         This can either be a branch you import to or a branch of an upstream
-        repository you pull from.</listitem>
-        <listitem><option>pristine-tar-branch</> contains pristine-tar data to
-        recreate the original upstream tarball from the upstream-branch.</listitem>
-        <listitem><option>patch-queue/* branches</> are related to 
+        repository you pull from.</para></listitem>
+        <listitem><para><option>pristine-tar-branch</> contains pristine-tar data to
+        recreate the original upstream tarball from the upstream-branch.</para></listitem>
+        <listitem><para><option>patch-queue/* branches</> are related to 
         <option>packaging-branch(es)</>. The patch-queue branch is the upstream
-        plus the patches from packaging branch applied.</listitem>
+        plus the patches from packaging branch applied.</para></listitem>
 	</itemizedlist>
 </sect1>
 
@@ -56,13 +65,13 @@
     	The basic workflow is very similar to Debian:
     </para>
     <orderedlist>
-        <listitem>Import a package via &git-import-srpm; OR clone from the 
-        distro git with gbp-clone if the package is already maintained with
-        &git-buildpackage-rpm;.</listitem>
-        <listitem>Develop, test, commit changes.</listitem>
-        <listitem>Once satisfied you can build the final package with
+        <listitem><para>Import a package via &git-import-srpm; OR clone from the 
+        distro git with &gbp-clone; if the package is already maintained with
+        &git-buildpackage-rpm;.</para></listitem>
+        <listitem><para>Develop, test, commit changes.</para></listitem>
+        <listitem><para>Once satisfied you can build the final package with
         &git-buildpackage-rpm; (optionally with --git-tag to create a tag in
-        git) and push it to git server.</listitem>
+        git) and push it to git server.</para></listitem>
     </orderedlist>
 </sect1>
 

@@ -1,7 +1,7 @@
-<chapter id="gbp.rpm.setup">
-    <title>Project/Git setup</title>
+<chapter id="gbp.rpm.development">
+    <title>Development flow</title>
 
-    <sect1 id="gbp.setup-rpm.models">
+    <sect1 id="gbp.rpm.setup.models">
         <title>Development models</title>
         <para>The &git-buildpackage-rpm; toolset basically supports three different
         models of package maintenance.</para>
@@ -21,7 +21,7 @@
             All changes (packaging and source code) are done to the same branch,
             i.e., the <option>packaging-branch</>, based on the <option>upstream-branch</>.
             When package is built,
-            &git-build-package-rpm; can automatically generate patches from
+            &git-buildpackage-rpm; can automatically generate patches from
             upstream version to packaging branch head (one patch per commit).
             and modify the spec file accordingly.
             </para>
@@ -42,7 +42,7 @@
         </sect2>
     </sect1>
 
-    <sect1 id="gbp.setup-rpm.scratch">
+    <sect1 id="gbp.rpm.setup.scratch">
         <title>Starting from scratch with a non-native package</title>
         <para>In this case, you most probably want to package software not yet
         found in your distro. First, create an empty repository:
@@ -78,9 +78,10 @@
             </screen></para>
             </listitem>
         </orderedlist>
+        </para>
     </sect1>
 
-    <sect1 id="gbp.setup-rpm.convert">
+    <sect1 id="gbp.rpm.setup.convert">
         <title>Converting an existing git repository of a non-native package</title>
         <para>In this case, you already have a git repository containing the 
         upstream source, but it was created neither with &gbp-clone; nor &git-import-srpm;.
@@ -92,6 +93,7 @@
         OR just add the name of your upstream branch to gbp.conf.
         Then, you just create a packaging/development branch(es) with git and
         add packaging files to the packaging branch.
+        </para>
     </sect1>
 </chapter>
 
