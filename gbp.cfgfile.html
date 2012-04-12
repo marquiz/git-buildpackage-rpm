@@ -1,0 +1,435 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Configuration files</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Building Debian Packages with git-buildpackage"
+HREF="gbp.html"><LINK
+REL="PREVIOUS"
+TITLE="Releases and Snapshots"
+HREF="gbp.releases.html"><LINK
+REL="NEXT"
+TITLE="Special use cases"
+HREF="gbp.special.html"><STYLE
+TYPE="text/css"
+>.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE
+></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><TABLE
+WIDTH="100%"
+CLASS="navigation"
+SUMMARY="Navigation header"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+><A
+ACCESSKEY="p"
+HREF="gbp.releases.html"
+><IMG
+SRC="left.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Prev"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
+HREF="gbp.html"
+><IMG
+SRC="home.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Home"></A
+></TD
+><TH
+WIDTH="100%"
+align="center"
+>Building Debian Packages with git-buildpackage: Version: 0.6.0~git20120324</TH
+><TD
+><A
+ACCESSKEY="n"
+HREF="gbp.special.html"
+><IMG
+SRC="right.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Next"></A
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="GBP.CFGFILE"
+></A
+>Configuration files</H1
+><P
+>The configuration files are parsed in this order:
+    <P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN561"><SPAN
+STYLE="white-space: nowrap"
+>/etc/git-buildpackage/gbp.conf</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>system wide configuraton</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN565"><SPAN
+STYLE="white-space: nowrap"
+>~/.gbp.conf</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>per user configuration</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN569"><SPAN
+STYLE="white-space: nowrap"
+>.gbp.conf</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>per repository/branch configuration (deprecated)</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN573"><SPAN
+STYLE="white-space: nowrap"
+>debian/gbp.conf</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>per repository/branch configuration</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN577"><SPAN
+STYLE="white-space: nowrap"
+>.git/gbp.conf</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>per (local) repository configuration</P
+></TD
+></TR
+></TBODY
+></TABLE
+>
+    All have the same format. They consist of several sections, all of them are optional:
+    <P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN582"><SPAN
+STYLE="white-space: nowrap"
+>[DEFAULT]</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Options in this section apply to <B
+CLASS="COMMAND"
+>git-buildpackage</B
+>,
+      <B
+CLASS="COMMAND"
+>git-import-orig</B
+>, <B
+CLASS="COMMAND"
+>git-import-dsc</B
+> and <B
+CLASS="COMMAND"
+>git-dch</B
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN590"><SPAN
+STYLE="white-space: nowrap"
+>[git-buildpackage]</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Options in this section apply to <B
+CLASS="COMMAND"
+>git-buildpackage</B
+> only and override options from the
+      [DEFAULT] section.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN595"><SPAN
+STYLE="white-space: nowrap"
+>[git-import-orig]</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Options in this section apply to <B
+CLASS="COMMAND"
+>git-import-orig</B
+> only and override options from the
+      [DEFAULT] section.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN600"><SPAN
+STYLE="white-space: nowrap"
+>[git-import-dsc]</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Options in this section apply to <B
+CLASS="COMMAND"
+>git-import-dsc</B
+> only and override options from the
+      [DEFAULT] section.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN605"><SPAN
+STYLE="white-space: nowrap"
+>[git-dch]</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Options in this section apply to <B
+CLASS="COMMAND"
+>git-dch</B
+> only and override options from the
+      [DEFAULT] section.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN610"><SPAN
+STYLE="white-space: nowrap"
+>...</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Same for the other <B
+CLASS="COMMAND"
+>git-*</B
+> and <B
+CLASS="COMMAND"
+>gbp-*</B
+> commands</P
+></TD
+></TR
+></TBODY
+></TABLE
+>
+    The actual options in these sections are the command line options without
+    the '--' prefix. So <CODE
+CLASS="OPTION"
+>--upstream-branch=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>dfsgfree</I
+></TT
+> would read:
+    </P
+><PRE
+CLASS="SCREEN"
+><CODE
+CLASS="OPTION"
+>upstream-branch</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>dfsgfree</I
+></TT
+></PRE
+><P
+>    in the config file. In the special case of <B
+CLASS="COMMAND"
+>git-buildpackage</B
+> the stripped
+    prefix is not '--' but '--git-'. Here's a more complete example:</P
+><PRE
+CLASS="PROGRAMLISTING"
+>[DEFAULT]
+# the default build command
+builder=debuild -i\.git -I.git
+# the default branch for upstream sources
+upstream-branch=upstream
+# the default branch for the debian patch
+debian-branch=master
+
+[git-buildpackage]
+upstream-branch=dfsgclean
+# Sign tags with GPG:
+sign-tags = True
+# Keyid to sign tags with
+#keyid = 0xdeadbeef
+
+[git-import-orig]
+upstream-branch=notdfsgclean
+
+[git-import-dsc]
+upstream-branch=notdfsgclean
+
+[git-dch]
+git-log=--no-merges</PRE
+><P
+>For more details see the <A
+HREF="gbp.man.gbp.conf.html"
+>gbp.conf(5)</A
+> manual page.</P
+></DIV
+><TABLE
+CLASS="navigation"
+WIDTH="100%"
+SUMMARY="Navigation footer"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+ALIGN="left"
+><A
+ACCESSKEY="p"
+HREF="gbp.releases.html"
+><B
+>&lt;&lt;&lt;&nbsp;Releases and Snapshots</B
+></A
+></TD
+><TD
+ALIGN="right"
+><A
+ACCESSKEY="n"
+HREF="gbp.special.html"
+><B
+>Special use cases&nbsp;&gt;&gt;&gt;</B
+></A
+></TD
+></TR
+></TABLE
+></BODY
+></HTML
+>

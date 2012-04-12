@@ -1,0 +1,1704 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>git-buildpackage</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Building Debian Packages with git-buildpackage"
+HREF="gbp.html"><LINK
+REL="UP"
+TITLE="Command Reference"
+HREF="gbp.man.reference.html"><LINK
+REL="PREVIOUS"
+TITLE="Command Reference"
+HREF="gbp.man.reference.html"><LINK
+REL="NEXT"
+TITLE="git-import-dsc"
+HREF="gbp.man.git.import.dsc.html"><STYLE
+TYPE="text/css"
+>.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE
+></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><TABLE
+WIDTH="100%"
+CLASS="navigation"
+SUMMARY="Navigation header"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+><A
+ACCESSKEY="p"
+HREF="gbp.man.reference.html"
+><IMG
+SRC="left.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Prev"></A
+></TD
+><TD
+><A
+ACCESSKEY="u"
+HREF="gbp.man.reference.html"
+><IMG
+SRC="up.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Up"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
+HREF="gbp.html"
+><IMG
+SRC="home.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Home"></A
+></TD
+><TH
+WIDTH="100%"
+align="center"
+>Building Debian Packages with git-buildpackage: Version: 0.6.0~git20120324</TH
+><TD
+><A
+ACCESSKEY="n"
+HREF="gbp.man.git.import.dsc.html"
+><IMG
+SRC="right.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Next"></A
+></TD
+></TR
+></TABLE
+><H1
+><A
+NAME="GBP.MAN.GIT.BUILDPACKAGE"
+></A
+>git-buildpackage</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN751"
+></A
+><H2
+>Name</H2
+><B
+CLASS="COMMAND"
+>git-buildpackage</B
+>&nbsp;--&nbsp;Build Debian packages from a Git repository</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN755"
+></A
+><H2
+>Synopsis</H2
+><P
+><B
+CLASS="COMMAND"
+>git-buildpackage</B
+>  [<CODE
+CLASS="OPTION"
+>--git-[no-]ignore-new</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-tag</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-verbose</CODE
+>] [<CODE
+CLASS="OPTION"
+>--color=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>[auto|on|off]</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--notify=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>[auto|on|off]</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-upstream-branch=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>treeish</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-debian-branch=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>branch_name</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-ignore-branch</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-builder=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>BUILD_CMD</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-cleaner=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>CLEAN_CMD</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-[no-]pbuilder</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-[no-]qemubuilder</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-dist=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>DIST</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-arch=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>ARCH</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-[no-]pbuilder-autoconf</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-pbuilder-options</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-[no-]sign-tags</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-keyid=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>gpg-keyid</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-posttag=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>command</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-postbuild=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>command</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-postexport=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>command</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-prebuild=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>command</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-debian-tag=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>tag-format</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-upstream-tag=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>tag-format</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-force-create</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-no-create-orig</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-upstream-tree=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>[TAG|BRANCH|treeish]</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-tarball-dir=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>directory</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-compression=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>type</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-compression-level=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>level</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-export-dir=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>directory</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-export=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>treeish</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-[no-]pristine-tar</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-dont-purge</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-tag-only</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-retag</CODE
+>]</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN851"
+></A
+><H2
+>DESCRIPTION</H2
+><P
+>    <B
+CLASS="COMMAND"
+>git-buildpackage</B
+> is used to build Debian source and .deb packages from a <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> repository.
+    </P
+><P
+>        <B
+CLASS="COMMAND"
+>git-buildpackage</B
+> will, in order:
+   </P
+><P
+></P
+><UL
+><LI
+><P
+>Verify that it is being executed from the
+            proper location.</P
+></LI
+><LI
+><P
+>Verify that the repository doesn't contain any
+	uncommitted source changes.</P
+></LI
+><LI
+><P
+>Verify that it is being executed from the
+        correct branch.</P
+></LI
+><LI
+><P
+>	(Optionally) export the source tree to a separate build area
+	</P
+></LI
+><LI
+><P
+>Build an orig tarball if it doesn't exist.</P
+></LI
+><LI
+><P
+>Call <SPAN
+CLASS="APPLICATION"
+>debuild</SPAN
+>(1)
+            (or the application specified via <CODE
+CLASS="OPTION"
+>--git-builder</CODE
+>)
+            with arguments instructing it to ignore <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> meta-data in
+            the diff.gz, passing along all arguments given to
+            <B
+CLASS="COMMAND"
+>git-buildpackage</B
+> that don't start with --git-.
+          </P
+></LI
+><LI
+><P
+>	(Optionally) tag the tree after a successful build
+	</P
+></LI
+><LI
+><P
+>	(Optionally) call a post build hook - e.g. to run <SPAN
+CLASS="PRODUCTNAME"
+>lintian</SPAN
+>
+	</P
+></LI
+><LI
+><P
+>	(Optionally) call a post tag hook - e.g. to push the results to a remote
+	repository after creating the tag
+	</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN882"
+></A
+><H2
+>OPTIONS</H2
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN885"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-[no-]ignore-new</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Don't abort if there are uncommitted changes in the source tree
+          or the current branch doesn't match the
+          <TT
+CLASS="REPLACEABLE"
+><I
+>debian-branch</I
+></TT
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN891"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-tag</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Add a git tag after a successful build.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN896"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-builder=<TT
+CLASS="REPLACEABLE"
+><I
+>BUILD_CMD</I
+></TT
+></CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Use <TT
+CLASS="REPLACEABLE"
+><I
+>BUILD_CMD</I
+></TT
+> instead of <B
+CLASS="COMMAND"
+>debuild -i\.git -I.git</B
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN904"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-cleaner=<TT
+CLASS="REPLACEABLE"
+><I
+>CLEAN_CMD</I
+></TT
+></CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Use <TT
+CLASS="REPLACEABLE"
+><I
+>CLEAN_CMD</I
+></TT
+> instead of <B
+CLASS="COMMAND"
+>debuild clean</B
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN912"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-pbuilder</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Build package using <B
+CLASS="COMMAND"
+>git-pbuilder</B
+>. Note that
+	  this overwrites any <CODE
+CLASS="OPTION"
+>--git-builder</CODE
+> and
+	  <CODE
+CLASS="OPTION"
+>--git-cleaner</CODE
+> options.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN920"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-qemubuilder</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Build package using <B
+CLASS="COMMAND"
+>git-pbuilder</B
+> with
+	  <B
+CLASS="COMMAND"
+>qemubuilder</B
+>. Note that this overwrites any
+	  <CODE
+CLASS="OPTION"
+>--git-builder</CODE
+> and <CODE
+CLASS="OPTION"
+>--git-cleaner</CODE
+>
+	  options.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN929"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-dist=<TT
+CLASS="REPLACEABLE"
+><I
+>DIST</I
+></TT
+></CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Build for distribution <TT
+CLASS="REPLACEABLE"
+><I
+>DIST</I
+></TT
+> when
+	  using <B
+CLASS="COMMAND"
+>--git-pbuilder</B
+>. If unset build for the
+	  unstable distribution.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN937"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-arch=<TT
+CLASS="REPLACEABLE"
+><I
+>ARCH</I
+></TT
+></CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Build for architecture <TT
+CLASS="REPLACEABLE"
+><I
+>ARCH</I
+></TT
+> when
+	  using <B
+CLASS="COMMAND"
+>--git-pbuilder</B
+>. If unset no architecture is
+	  passed to <B
+CLASS="COMMAND"
+>git-pbuilder</B
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN946"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-pbuilder-autoconf</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Whether to try to autoconfigure
+	  <B
+CLASS="COMMAND"
+>git-pbuilder</B
+> or to rely on the settings in
+	  .pbuilderrc. See the <B
+CLASS="COMMAND"
+>git-pbuilder</B
+>
+          manpage for details.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN953"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-pbuilder-options</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Options to pass to pbuilder</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN958"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-verbose</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>verbose execution</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN963"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--color=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>[auto|on|off]</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Whether to use colored output.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN969"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--notify=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>[auto|on|off]</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Whether to send a desktop notification after the build.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN975"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-upstream-branch</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>branch_name</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Branch to build the orig tarball from if <CODE
+CLASS="OPTION"
+>--git-upstream-tree</CODE
+>
+	  is set to <TT
+CLASS="REPLACEABLE"
+><I
+>BRANCH</I
+></TT
+>. Default is
+	  <TT
+CLASS="REPLACEABLE"
+><I
+>upstream</I
+></TT
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN984"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-debian-branch</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>branch_name</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>If you're not on this branch when invoking <B
+CLASS="COMMAND"
+>git-buildpackage</B
+>
+	  it will fail. Default is <TT
+CLASS="REPLACEABLE"
+><I
+>master</I
+></TT
+>. This is
+	  done to make sure you don't accidentally release from a topic branch.
+	  Not being on this branch will be ignored when using
+	  <CODE
+CLASS="OPTION"
+>--git-ignore-new</CODE
+>.
+	  </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN993"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-ignore-branch</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Don't check if the current branch matches
+            <TT
+CLASS="REPLACEABLE"
+><I
+>debian-branch</I
+></TT
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN999"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-[no-]sign-tags</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>GPG sign all created tags</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1004"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-keyid=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>gpg-keyid</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>use this keyid for gpg signing tags</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1010"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-posttag=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>command</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>excecute <TT
+CLASS="REPLACEABLE"
+><I
+>command</I
+></TT
+> after tagging a new
+	  version.</P
+><P
+>Exported environment variables are:
+	  <CODE
+CLASS="ENVAR"
+>GBP_TAG</CODE
+> (the name of the generated tag),
+	  <CODE
+CLASS="ENVAR"
+>GBP_BRANCH</CODE
+> (the branch the package was build from) and
+	  <CODE
+CLASS="ENVAR"
+>GBP_SHA1</CODE
+> (the sha1 of the commit the tag was created
+	  at).</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1021"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-postbuild=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>command</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>execute <TT
+CLASS="REPLACEABLE"
+><I
+>command</I
+></TT
+> after successful
+	  build.</P
+><P
+> Exported environment variables are:
+	  <CODE
+CLASS="ENVAR"
+>GBP_CHANGES_FILE</CODE
+> (the name of the generated changes
+	  file), <CODE
+CLASS="ENVAR"
+>GBP_BUILD_DIR</CODE
+> (the build dir).</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1031"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-postexport=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>command</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>execute <TT
+CLASS="REPLACEABLE"
+><I
+>command</I
+></TT
+> after exporting the source
+	  tree - valid only if --git-export-dir has been specified.</P
+><P
+> Exported environment variables are:
+	  <CODE
+CLASS="ENVAR"
+>GBP_GIT_DIR</CODE
+> (the repository the package is being built
+	  from), <CODE
+CLASS="ENVAR"
+>GBP_TMP_DIR</CODE
+> (the temporary directory where the
+	  sources have been initially exported).</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1041"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-prebuild=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>command</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>execute <TT
+CLASS="REPLACEABLE"
+><I
+>command</I
+></TT
+> from the build
+          directory before calling <SPAN
+CLASS="APPLICATION"
+>debuild</SPAN
+>
+          or the application specified via <CODE
+CLASS="OPTION"
+>--git-builder</CODE
+>.</P
+><P
+>Exported environment variables are:
+          <CODE
+CLASS="ENVAR"
+>GBP_GIT_DIR</CODE
+> (the repository the package is being built from),
+          <CODE
+CLASS="ENVAR"
+>GBP_BUILD_DIR</CODE
+> (the build dir).</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1053"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-debian-tag=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>tag-format</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>use this tag format when tagging Debian versions,
+  	  default is <TT
+CLASS="REPLACEABLE"
+><I
+>debian/%(version)s</I
+></TT
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1060"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-upstream-tag=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>tag-format</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>use this tag format when looking for tags of upstream versions,
+  	  default is <TT
+CLASS="REPLACEABLE"
+><I
+>upstream/%(version)s</I
+></TT
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1067"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-force-create</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Force creation of an orig tarball (overwriting a pre-existing one if present)</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1072"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-no-create-orig</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Don't try to create any orig tarball</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1077"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-overlay</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Extract orig tarball when using export-dir option (analog to mergeWithUpstream in svn-bp)</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1082"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-export-dir=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>directory</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Export the current branch head (or the treeish object given via
+	  <CODE
+CLASS="OPTION"
+>--git-export</CODE
+> to <TT
+CLASS="REPLACEABLE"
+><I
+>directory</I
+></TT
+>
+	  before building.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1090"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-export=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>treeish</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Instead of exporting the current branch head, export the
+	  treeish object <TT
+CLASS="REPLACEABLE"
+><I
+>treeish</I
+></TT
+>. The special name
+	  <TT
+CLASS="REPLACEABLE"
+><I
+>INDEX</I
+></TT
+> exports the current index whereas
+          the special name <TT
+CLASS="REPLACEABLE"
+><I
+>WC</I
+></TT
+> exports the current working
+          copy as is.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1099"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-upstream-tree=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>[tag|branch]</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>How to find the upstream sources used to generate the tarball.
+	  <TT
+CLASS="REPLACEABLE"
+><I
+>TAG</I
+></TT
+> looks at a tag corresponding to the
+	  version in the changelog. <TT
+CLASS="REPLACEABLE"
+><I
+>BRANCH</I
+></TT
+> looks at
+	  the upstream branch given via the <CODE
+CLASS="OPTION"
+>--git-upstream-branch</CODE
+>
+	  option. Other values are interpreted as treeishs.
+	  </P
+><P
+>	  This doesn't have any effect if <CODE
+CLASS="OPTION"
+>--git-pristine-tar</CODE
+>
+	  is being used.
+	  </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1110"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-tarball-dir=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>directory</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Search for original tarballs in <TT
+CLASS="REPLACEABLE"
+><I
+>directory</I
+></TT
+> instead of generating them</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1117"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-compression=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>type</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Specifies the upstream tarball compression type. This will be
+	  used to locate and build the upstream tarball if necessary. The
+	  default is <TT
+CLASS="REPLACEABLE"
+><I
+>auto</I
+></TT
+> which derives the
+	  compression type from the pristine-tar branch if available and falls
+	  back to gzip otherwise. Other options are
+	  <TT
+CLASS="REPLACEABLE"
+><I
+>gzip</I
+></TT
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>bzip2</I
+></TT
+>, 
+	  <TT
+CLASS="REPLACEABLE"
+><I
+>lzma</I
+></TT
+> and <TT
+CLASS="REPLACEABLE"
+><I
+>xz</I
+></TT
+>.
+	  </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1128"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-compression-level=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>level</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Specifies the upstream tarball compression level if an upstream tarball needs to be built.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1134"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-dont-purge</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>retain exported build directory after build</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1139"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-tag-only</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>don't build, only tag and run post-tag hooks</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1144"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-retag</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>don't fail tag operations if a tag with the same version
+	  already exists</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1149"
+></A
+><H2
+>CONFIGURATION FILES</H2
+><P
+>Several <TT
+CLASS="FILENAME"
+>gbp.conf</TT
+> files are parsed 
+    to set defaults for the above commandline arguments. See the
+    <A
+HREF="gbp.man.gbp.conf.html"
+>gbp.conf(5)</A
+> manpage for details.</P
+><P
+>All options in the config files are specified without the 'git-' prefix.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1155"
+></A
+><H2
+>SEE ALSO</H2
+><P
+>      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>git-import-dsc</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>git-import-dscs</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>git-import-orig</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>git-dch</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>git-pbuilder</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>gbp.conf</SPAN
+>(5)</SPAN
+>
+            <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>debuild</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>git</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>pristine-tar</SPAN
+>(1)</SPAN
+>,
+      <A
+HREF="file:///usr/share/doc/git-buildpackage/manual-html/index.html"
+TARGET="_top"
+>      <I
+CLASS="CITETITLE"
+>The Git-Buildpackage Manual</I
+></A
+>
+
+    </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1187"
+></A
+><H2
+>AUTHOR</H2
+><P
+>Guido Guenther <CODE
+CLASS="EMAIL"
+>&#60;<A
+HREF="mailto:agx@sigxcpu.org"
+>agx@sigxcpu.org</A
+>&#62;</CODE
+></P
+></DIV
+><TABLE
+CLASS="navigation"
+WIDTH="100%"
+SUMMARY="Navigation footer"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+ALIGN="left"
+><A
+ACCESSKEY="p"
+HREF="gbp.man.reference.html"
+><B
+>&lt;&lt;&lt;&nbsp;Command Reference</B
+></A
+></TD
+><TD
+ALIGN="right"
+><A
+ACCESSKEY="n"
+HREF="gbp.man.git.import.dsc.html"
+><B
+>git-import-dsc&nbsp;&gt;&gt;&gt;</B
+></A
+></TD
+></TR
+></TABLE
+></BODY
+></HTML
+>

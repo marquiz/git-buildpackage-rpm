@@ -1,0 +1,541 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Releases and Snapshots</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Building Debian Packages with git-buildpackage"
+HREF="gbp.html"><LINK
+REL="PREVIOUS"
+TITLE="Building packages from the Git repository"
+HREF="gbp.building.html"><LINK
+REL="NEXT"
+TITLE="Configuration files"
+HREF="gbp.cfgfile.html"><STYLE
+TYPE="text/css"
+>.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE
+></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><TABLE
+WIDTH="100%"
+CLASS="navigation"
+SUMMARY="Navigation header"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+><A
+ACCESSKEY="p"
+HREF="gbp.building.html"
+><IMG
+SRC="left.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Prev"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
+HREF="gbp.html"
+><IMG
+SRC="home.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Home"></A
+></TD
+><TH
+WIDTH="100%"
+align="center"
+>Building Debian Packages with git-buildpackage: Version: 0.6.0~git20120324</TH
+><TD
+><A
+ACCESSKEY="n"
+HREF="gbp.cfgfile.html"
+><IMG
+SRC="right.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Next"></A
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="GBP.RELEASES"
+></A
+>Releases and Snapshots</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="gbp.releases.html#GBP.RELEASE.NUMBERS"
+>Customizing snapshot numbers</A
+></DT
+><DT
+><A
+HREF="gbp.releases.html#GBP.RELEASE.COMMIT"
+>More on commit messages</A
+></DT
+></DL
+></DIV
+><P
+>When branching and merging frequently, the different Debian changelog
+    entries on the different branches tend to get into the way of the automatic
+    merge and the the merge fails - leaving the (pathological) merge to the
+    committer. In order to avoid this <B
+CLASS="COMMAND"
+>git-dch</B
+> offers a way for creating
+    changelog entries from <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> commits before doing a
+    release or anytime between releases.</P
+><P
+>    The simplest way is doing all the changes to the
+    <CODE
+CLASS="OPTION"
+>debian-branch</CODE
+> without touching
+    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>debian/changelog</I
+></SPAN
+> at all. Then, when done, do:
+    </P
+><PRE
+CLASS="SCREEN"
+><B
+CLASS="COMMAND"
+>git-dch</B
+> <CODE
+CLASS="OPTION"
+>--release</CODE
+></PRE
+><P
+> This will look up the latest released version in the changelog,
+    increment the version in the <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> changelog, generate changelog
+    messages from the corresponding <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> commit id up to the branch head and
+    finally spawns an editor for final changelog file editing by invoking <SPAN
+CLASS="PRODUCTNAME"
+>dch</SPAN
+>
+    <CODE
+CLASS="OPTION"
+>--release</CODE
+>.</P
+><P
+>    But what if you want to have an (unreleased) snapshot for intermediate testing:
+    </P
+><PRE
+CLASS="SCREEN"
+><B
+CLASS="COMMAND"
+>git-dch</B
+> <CODE
+CLASS="OPTION"
+>--snapshot</CODE
+></PRE
+><P
+>will generate a snapshot release with a specially crafted version number
+   and a warning in the changelog that this is a snapshort release:
+   </P
+><PRE
+CLASS="PROGRAMLISTING"
+>git-buildpackage (0.3.7~1.gbp470ce2) UNRELEASED; urgency=low
+
+  ** SNAPSHOT build @470ce29ec7877705c844474a2fd89869aea0406d **
+
+  * add support for automatic snapshot </PRE
+><P
+>During subsequent calls with <CODE
+CLASS="OPTION"
+>--snapshot</CODE
+> this version
+   number will continue to increase. Since the snapshot banners contains the
+   commit id of the current branch head, <B
+CLASS="COMMAND"
+>git-dch</B
+> can figure out what to
+   append to the changelog by itself:
+<PRE
+CLASS="SCREEN"
+><B
+CLASS="COMMAND"
+>git-dch</B
+> <CODE
+CLASS="OPTION"
+>--snapshot</CODE
+> <CODE
+CLASS="OPTION"
+>--auto</CODE
+></PRE
+>
+   will fetch the commit id and add changelog entries from that point to the
+   current HEAD - again auto incrementing the version number. If you don't want
+   to start at that commit id, you can specify any id or tag with:</P
+><PRE
+CLASS="SCREEN"
+><B
+CLASS="COMMAND"
+>git-dch</B
+> <CODE
+CLASS="OPTION"
+>--since</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>e76a6a180a57701ae4ae381f74523cacb3152780</I
+></TT
+> <CODE
+CLASS="OPTION"
+>--snapshot</CODE
+></PRE
+><P
+>   After testing you can remove the snapshot header by a final <B
+CLASS="COMMAND"
+>git-dch</B
+> call:
+   </P
+><PRE
+CLASS="SCREEN"
+><B
+CLASS="COMMAND"
+>git-dch</B
+> <CODE
+CLASS="OPTION"
+>--since</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>HEAD</I
+></TT
+> <CODE
+CLASS="OPTION"
+>--release</CODE
+></PRE
+><P
+>   This will add no further entries but simply remove the specially crafted
+   version number and the snapshort header. Again you can use any commit id
+   or tag instead of <CODE
+CLASS="OPTION"
+>HEAD</CODE
+> if you want to add further changelog
+   entries - or you can (of course) use <CODE
+CLASS="OPTION"
+>--auto</CODE
+> again.
+   </P
+><BR
+CLEAR="all"><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="GBP.RELEASE.NUMBERS"
+>Customizing snapshot numbers</A
+></H1
+><P
+>If the auto incrementing of the snapshot number doesn't suite you needs you
+    can give any python expression that evaluates to a positive integer to
+    calculate the new snapshot number:</P
+><PRE
+CLASS="SCREEN"
+><B
+CLASS="COMMAND"
+>git-dch</B
+> <CODE
+CLASS="OPTION"
+>-S</CODE
+> <CODE
+CLASS="OPTION"
+>-a</CODE
+> <CODE
+CLASS="OPTION"
+>--snapshot-number</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>1</I
+></TT
+>
+<B
+CLASS="COMMAND"
+>git-dch</B
+> <CODE
+CLASS="OPTION"
+>-S</CODE
+> <CODE
+CLASS="OPTION"
+>-a</CODE
+> <CODE
+CLASS="OPTION"
+>--snapshot-number</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>'snapshot + 2'</I
+></TT
+>
+<B
+CLASS="COMMAND"
+>git-dch</B
+> <CODE
+CLASS="OPTION"
+>-S</CODE
+> <CODE
+CLASS="OPTION"
+>-a</CODE
+> <CODE
+CLASS="OPTION"
+>--snapshot-number</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>'os.popen("git-log --pretty=oneline | wc -l").readlines()[0]'</I
+></TT
+>
+<B
+CLASS="COMMAND"
+>git-dch</B
+> <CODE
+CLASS="OPTION"
+>-S</CODE
+> <CODE
+CLASS="OPTION"
+>-a</CODE
+> <CODE
+CLASS="OPTION"
+>--snapshot-number</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>`git-log --pretty=oneline debian/0.3.3 | wc -l`</I
+></TT
+></PRE
+><P
+>You can also add the snapshot-number calculation to <TT
+CLASS="FILENAME"
+>gbp.conf</TT
+>:</P
+><PRE
+CLASS="PROGRAMLISTING"
+>[DEFAULT]
+snapshot-number = os.popen("git-log --pretty=oneline | wc -l").readlines()[0]</PRE
+></DIV
+><BR
+CLEAR="all"><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="GBP.RELEASE.COMMIT"
+>More on commit messages</A
+></H1
+><P
+>You can use <CODE
+CLASS="OPTION"
+>--full</CODE
+> to include the full commit
+    message in the changelog, note that you will lose the formatting though,
+    since <SPAN
+CLASS="PRODUCTNAME"
+>dch</SPAN
+> wraps lines by itself.</P
+><P
+>Additionally there are tags <CODE
+CLASS="OPTION"
+>Closes:</CODE
+> and
+<CODE
+CLASS="OPTION"
+>Thanks:</CODE
+> available to customize the commit message. Each tag
+has to start at the beginning of a single line. For example the git commit message
+<PRE
+CLASS="SCREEN"
+>New upstream version
+
+Closes: #1000
+Thanks: cool upstream</PRE
+>
+    would result in a changelog entry:
+<PRE
+CLASS="SCREEN"
+>    * New upstream version (Closes: #1000) - thanks to cool upstream</PRE
+>
+You can use the <CODE
+CLASS="OPTION"
+>Closes:</CODE
+> tag multiple times.</P
+><P
+>There are several tags to further customize what (and how) commit messages get
+included into the changelog:</P
+><P
+>To exclude a commit from the generated changelog use:</P
+><P
+><PRE
+CLASS="SCREEN"
+>Git-Dch: Ignore</PRE
+>
+This is e.g. useful if you're just fixing up a previous commit and couldn't
+ammend it or for other janitorial commits that really don't need to end up in
+the changelog. For example, the following git commit message
+<PRE
+CLASS="SCREEN"
+>Set correct branchnames in debian/gbp.conf
+
+Git-Dch: Ignore</PRE
+>
+will not show up in the generated changelog in any way.</P
+><P
+>To only include the short description in the commit and skip the body use:
+<PRE
+CLASS="SCREEN"
+>Git-Dch: Short</PRE
+>
+This only takes effect when running <B
+CLASS="COMMAND"
+>git-dch</B
+> with the <CODE
+CLASS="OPTION"
+>--full</CODE
+> option.</P
+><P
+>Usually changelog entries should correspond to a single <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> commit. In this case it's
+convenient to include the commit id in the changelog entry. 
+This has the advantage that it's easy for people to identify changes without
+having to write very extensive changelog messages - the link back to Git can be
+automated via the <CODE
+CLASS="OPTION"
+>Vcs-Browser</CODE
+> and <CODE
+CLASS="OPTION"
+>Vcs-Git</CODE
+>
+fields in <TT
+CLASS="FILENAME"
+>debian/control</TT
+>. See <A
+HREF="https://honk.sigxcpu.org/cl2vcs"
+TARGET="_top"
+>Cl2vcs</A
+> for how this looks.</P
+><P
+>The inclusion of the commit id can be done automatically
+via <B
+CLASS="COMMAND"
+>git-dch</B
+>'s <CODE
+CLASS="OPTION"
+>--id-length</CODE
+> option. Using
+<CODE
+CLASS="OPTION"
+>--id-length</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>7</I
+></TT
+>  would change the above example to:
+<PRE
+CLASS="SCREEN"
+>    * [571bfd4] New upstream version (Closes: #1000) - thanks to cool upstream</PRE
+>
+This makes it much easier to see which commit actually fixed bug #1000.</P
+></DIV
+></DIV
+><TABLE
+CLASS="navigation"
+WIDTH="100%"
+SUMMARY="Navigation footer"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+ALIGN="left"
+><A
+ACCESSKEY="p"
+HREF="gbp.building.html"
+><B
+>&lt;&lt;&lt;&nbsp;Building packages from the <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> repository</B
+></A
+></TD
+><TD
+ALIGN="right"
+><A
+ACCESSKEY="n"
+HREF="gbp.cfgfile.html"
+><B
+>Configuration files&nbsp;&gt;&gt;&gt;</B
+></A
+></TD
+></TR
+></TABLE
+></BODY
+></HTML
+>

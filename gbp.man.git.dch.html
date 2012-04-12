@@ -1,0 +1,1219 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>git-dch</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Building Debian Packages with git-buildpackage"
+HREF="gbp.html"><LINK
+REL="UP"
+TITLE="Command Reference"
+HREF="gbp.man.reference.html"><LINK
+REL="PREVIOUS"
+TITLE="git-import-orig"
+HREF="gbp.man.git.import.orig.html"><LINK
+REL="NEXT"
+TITLE="gbp-clone"
+HREF="gbp.man.gbp.clone.html"><STYLE
+TYPE="text/css"
+>.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE
+></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><TABLE
+WIDTH="100%"
+CLASS="navigation"
+SUMMARY="Navigation header"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+><A
+ACCESSKEY="p"
+HREF="gbp.man.git.import.orig.html"
+><IMG
+SRC="left.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Prev"></A
+></TD
+><TD
+><A
+ACCESSKEY="u"
+HREF="gbp.man.reference.html"
+><IMG
+SRC="up.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Up"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
+HREF="gbp.html"
+><IMG
+SRC="home.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Home"></A
+></TD
+><TH
+WIDTH="100%"
+align="center"
+>Building Debian Packages with git-buildpackage: Version: 0.6.0~git20120324</TH
+><TD
+><A
+ACCESSKEY="n"
+HREF="gbp.man.gbp.clone.html"
+><IMG
+SRC="right.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Next"></A
+></TD
+></TR
+></TABLE
+><H1
+><A
+NAME="GBP.MAN.GIT.DCH"
+></A
+>git-dch</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN1698"
+></A
+><H2
+>Name</H2
+><B
+CLASS="COMMAND"
+>git-dch</B
+>&nbsp;--&nbsp;Generate the Debian changelog from git commit messages</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN1702"
+></A
+><H2
+>Synopsis</H2
+><P
+><B
+CLASS="COMMAND"
+>git-dch</B
+>  [<CODE
+CLASS="OPTION"
+>--verbose</CODE
+>] [<CODE
+CLASS="OPTION"
+>--debian-branch=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>branch_name</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--debian-tag=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>tag-format</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--ignore-branch</CODE
+>] [<CODE
+CLASS="OPTION"
+>--since=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>commitish</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--snapshot</CODE
+>] [<CODE
+CLASS="OPTION"
+>--release</CODE
+>] [<CODE
+CLASS="OPTION"
+>--auto</CODE
+>] [<CODE
+CLASS="OPTION"
+>--[no-]full</CODE
+>] [<CODE
+CLASS="OPTION"
+>--[no-]meta</CODE
+>] [<CODE
+CLASS="OPTION"
+>--meta-closes=bug-close-tags</CODE
+>] [<CODE
+CLASS="OPTION"
+>--snapshot-number=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-log=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>git-log-options</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--[no-]git-author</CODE
+>] [<CODE
+CLASS="OPTION"
+>--[no-]multimaint-merge</CODE
+>] [<CODE
+CLASS="OPTION"
+>--spawn-editor=[always|snapshot|release]</CODE
+>]  <TT
+CLASS="REPLACEABLE"
+><I
+>[path1 path2]</I
+></TT
+> </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1744"
+></A
+><H2
+>DESCRIPTION</H2
+><P
+>    <B
+CLASS="COMMAND"
+>git-dch</B
+> reads git commit messages and generates the Debian changelog from
+    it. If no arguments are given <B
+CLASS="COMMAND"
+>git-dch</B
+> starts from the last tagged Debian
+    package version up to the current tip of the current branch. If the
+    distribution of the topmost section in
+    <TT
+CLASS="FILENAME"
+>debian/changelog</TT
+> is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>UNRELEASED</I
+></SPAN
+>
+    the changelog entries will be inserted into this section. Otherwise a new
+    section will be created.</P
+><P
+>If <CODE
+CLASS="OPTION"
+>--auto</CODE
+> is given <B
+CLASS="COMMAND"
+>git-dch</B
+> tries to guess the
+    last <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> commit documented in the changelog - this only works in snapshot
+    mode. Otherwise <CODE
+CLASS="OPTION"
+>--since</CODE
+> can be used to tell <B
+CLASS="COMMAND"
+>git-dch</B
+>
+    at which point it should start in the <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> history.</P
+><P
+>    The additional path arguments can be used to restrict the repository paths
+    <B
+CLASS="COMMAND"
+>git-dch</B
+> looks at. Setting <TT
+CLASS="REPLACEABLE"
+><I
+>path</I
+></TT
+> to
+    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>debian/</I
+></SPAN
+> is a good choice if upstream uses <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> and
+    all Debian packaging changes are restricted to the
+    <TT
+CLASS="REPLACEABLE"
+><I
+>debian/</I
+></TT
+> subdir. In more sophisticated cases
+    (like backports) you can use <CODE
+CLASS="OPTION"
+>--git-log</CODE
+> to restrict the
+    generated changelog entries further. E.g. by using 
+    <CODE
+CLASS="OPTION"
+>--git-log=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>"--author=Foo Bar"</I
+></TT
+>.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1767"
+></A
+><H2
+>OPTIONS</H2
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1770"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--debian-branch</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>branch_name</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>The branch in the Git repository the Debian package is being
+	  developed on, default is <TT
+CLASS="REPLACEABLE"
+><I
+>master</I
+></TT
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1777"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--ignore-branch</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Don't check if the current branch matches
+            <TT
+CLASS="REPLACEABLE"
+><I
+>debian-branch</I
+></TT
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1783"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--verbose</CODE
+></SPAN
+>, <SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>-v</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>verbose execution</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1790"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--debian-tag=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>tag-format</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>tag format used, when tagging debian versions,
+  	  default is <TT
+CLASS="REPLACEABLE"
+><I
+>debian/%(version)s</I
+></TT
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1797"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--since=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>committish</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Start reading commit messages at <TT
+CLASS="REPLACEABLE"
+><I
+>committish</I
+></TT
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1804"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--auto</CODE
+>,
+	      <CODE
+CLASS="OPTION"
+>-a</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Guess the last commit documented in the changelog from the
+	  snapshot banner (or from the last tag if no snapshot banner exists).
+	  </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1810"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--[no-]meta</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Parse meta tags like <CODE
+CLASS="OPTION"
+>Closes:</CODE
+>,
+	  <CODE
+CLASS="OPTION"
+>Thanks:</CODE
+> and <CODE
+CLASS="OPTION"
+>Git-Dch:</CODE
+>. See META TAGS below.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1818"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--meta-closes=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>bug-close-tags</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>What meta tags to look for to generate bug-closing changelog
+	  entries.  The default is 'Closes|LP' to support Debian and
+	  Launchpad.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1824"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--[no-]full</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Include the full commit message in the changelog output.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1829"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--snapshot</CODE
+>,
+              <CODE
+CLASS="OPTION"
+>-S</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Create a snapshot release entry. This adds a snapshot release
+	  number and a warning banner to the changelog entry. The release
+	  version number is being autoincremented with every new snapshot
+	  release to avoid packages downgrades during snapshot testing.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1835"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--snapshot-number=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Python expression that gets eval()ed to the new snapshot number.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1841"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--release</CODE
+>,
+              <CODE
+CLASS="OPTION"
+>-R</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Remove any snapshot release banners and version suffixes, set
+	  the current distribution to <TT
+CLASS="REPLACEABLE"
+><I
+>unstable</I
+></TT
+> and
+	  open the changelog for final tweaking.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1848"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--new-version=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>version</I
+></TT
+>,
+              <CODE
+CLASS="OPTION"
+>-N</CODE
+> <TT
+CLASS="REPLACEABLE"
+><I
+>version</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Add a new changelog section with version
+	  <TT
+CLASS="REPLACEABLE"
+><I
+>newversion</I
+></TT
+>. Together with
+	  <CODE
+CLASS="OPTION"
+>--snapshot</CODE
+> the snapshot number will be appended to
+	  <TT
+CLASS="REPLACEABLE"
+><I
+>newversion</I
+></TT
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1859"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-log=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>git-log-options</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Options passed on verbatim to git-log(1).</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1865"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--id-length=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>N</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Include <TT
+CLASS="REPLACEABLE"
+><I
+>N</I
+></TT
+> digits of the commit id in
+	  the changelog entry. Default is to not include any commit ids at
+	  all.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1872"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--ignore-regex=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>regex</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Ignore commit lines matching <TT
+CLASS="REPLACEABLE"
+><I
+>regex</I
+></TT
+>
+	  when generating the changelog.
+	  </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1879"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-author</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Use user.name and user.email from <SPAN
+CLASS="APPLICATION"
+>git-config</SPAN
+>(1) for changelog trailer.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1885"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--[no]-multimaintmerge</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Merge commits by maintainer.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1890"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--spawn-editor=<TT
+CLASS="REPLACEABLE"
+><I
+>[always|snapshot|release]</I
+></TT
+></CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Whether to spawn an editor: always, when doing snapshots or
+	  when doing a release.</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1896"
+></A
+><H2
+>Snapshot mode</H2
+><P
+>      Snapshot mode can be used for quick test and install cycles without
+      having to worry about version numbers or changelog entries.
+      </P
+><P
+>      When using <CODE
+CLASS="OPTION"
+>--snapshot</CODE
+> or <CODE
+CLASS="OPTION"
+>-S</CODE
+> <B
+CLASS="COMMAND"
+>git-dch</B
+>
+      uses a pseudo header in the Debian changelog to remember the last git
+      commit it added a changelog entry for. It also sets a version number
+      ending in
+      <TT
+CLASS="REPLACEABLE"
+><I
+>~&lt;snaspshotnumber&gt;.gbp&lt;commitid&gt;</I
+></TT
+>.
+      It automatically increments the snapshot number on subsequent invocations
+      of <B
+CLASS="COMMAND"
+>git-dch</B
+> <CODE
+CLASS="OPTION"
+>-S</CODE
+> so that later snapshots automatically
+      have a higher version number. To leave snapshot mode invoke <B
+CLASS="COMMAND"
+>git-dch</B
+>
+      with the <CODE
+CLASS="OPTION"
+>--release</CODE
+> option. This removes the pseudo
+      heaader and unmangles the version number so the released version has a
+      higher version number than the snapshots.
+      </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1908"
+></A
+><H2
+>META TAGS</H2
+><P
+>Additional to the above options the formatting of the commit message
+    in <TT
+CLASS="FILENAME"
+>debian/changelog</TT
+> can be modified by special tags
+    (called Meta Tags)
+    given in the git commit message. Meta Tag processing can be activated via
+    the <CODE
+CLASS="OPTION"
+>--meta</CODE
+> option. The tags must start at the first column of
+    a commit message but can appear on any line.
+    They are of the form <CODE
+CLASS="OPTION"
+>Tagname</CODE
+>:
+    <TT
+CLASS="REPLACEABLE"
+><I
+>value</I
+></TT
+>. Valid Meta Tags are:
+    </P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1916"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>Git-Dch</CODE
+>: <TT
+CLASS="REPLACEABLE"
+><I
+>action</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>	Supported actions are: <TT
+CLASS="REPLACEABLE"
+><I
+>Ignore</I
+></TT
+> which will ignore
+	this commit when generating <TT
+CLASS="FILENAME"
+>debian/changelog</TT
+> and
+	<TT
+CLASS="REPLACEABLE"
+><I
+>Short</I
+></TT
+> which will only use the description 
+	(the first line) of the commit message when generating the changelog entry.
+        </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1925"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>Thanks</CODE
+>: <TT
+CLASS="REPLACEABLE"
+><I
+>msg</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>	      Add a thanks message after the commit message.
+	    </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1931"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>Closes</CODE
+>: <TT
+CLASS="REPLACEABLE"
+><I
+>bugnumber</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>	      Indicate in the <TT
+CLASS="FILENAME"
+>debian/changelog</TT
+> that the bug was 
+	      closed by this commit. See the <CODE
+CLASS="OPTION"
+>--meta-closes</CODE
+>
+	      on howto extend this for other bugtrackers.
+	    </P
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+>The following git commit message:</P
+><PRE
+CLASS="SCREEN"
+>      Document meta tags
+
+      so one doesn't have to consult the manual
+
+      Git-Dch: Short
+      Closes: #636088
+      Thanks: Raphaël Hertzog for the suggestion
+    </PRE
+><P
+>      Results in this <TT
+CLASS="FILENAME"
+>debian/changelog</TT
+> entry:
+    </P
+><PRE
+CLASS="SCREEN"
+>      * Document meta tags.
+        Thanks to Raphaël Hertzog for the suggestion (Closes: #636088)
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1944"
+></A
+><H2
+>CONFIGURATION FILES</H2
+><P
+>Several <TT
+CLASS="FILENAME"
+>gbp.conf</TT
+> files are parsed 
+    to set defaults for the above commandline arguments. See the
+    <A
+HREF="gbp.man.gbp.conf.html"
+>gbp.conf(5)</A
+> manpage for details.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1949"
+></A
+><H2
+>SEE ALSO</H2
+><P
+>      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>git-buildpackage</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>git-import-dsc</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>git-import-dscs</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>git-import-orig</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>gbp.conf</SPAN
+>(5)</SPAN
+>,
+            <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>debuild</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>git</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>pristine-tar</SPAN
+>(1)</SPAN
+>,
+      <A
+HREF="file:///usr/share/doc/git-buildpackage/manual-html/index.html"
+TARGET="_top"
+>      <I
+CLASS="CITETITLE"
+>The Git-Buildpackage Manual</I
+></A
+>
+
+      <A
+HREF="https://honk.sigxcpu.org/cl2vcs"
+TARGET="_top"
+>      <I
+CLASS="CITETITLE"
+>Cl2vcs</I
+></A
+>,
+    </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1980"
+></A
+><H2
+>AUTHOR</H2
+><P
+>Guido Guenther <CODE
+CLASS="EMAIL"
+>&#60;<A
+HREF="mailto:agx@sigxcpu.org"
+>agx@sigxcpu.org</A
+>&#62;</CODE
+></P
+></DIV
+><TABLE
+CLASS="navigation"
+WIDTH="100%"
+SUMMARY="Navigation footer"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+ALIGN="left"
+><A
+ACCESSKEY="p"
+HREF="gbp.man.git.import.orig.html"
+><B
+>&lt;&lt;&lt;&nbsp;git-import-orig</B
+></A
+></TD
+><TD
+ALIGN="right"
+><A
+ACCESSKEY="n"
+HREF="gbp.man.gbp.clone.html"
+><B
+>gbp-clone&nbsp;&gt;&gt;&gt;</B
+></A
+></TD
+></TR
+></TABLE
+></BODY
+></HTML
+>

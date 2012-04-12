@@ -1,0 +1,535 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>gbp-clone</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Building Debian Packages with git-buildpackage"
+HREF="gbp.html"><LINK
+REL="UP"
+TITLE="Command Reference"
+HREF="gbp.man.reference.html"><LINK
+REL="PREVIOUS"
+TITLE="git-dch"
+HREF="gbp.man.git.dch.html"><LINK
+REL="NEXT"
+TITLE="gbp-pull"
+HREF="gbp.man.gbp.pull.html"><STYLE
+TYPE="text/css"
+>.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE
+></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><TABLE
+WIDTH="100%"
+CLASS="navigation"
+SUMMARY="Navigation header"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+><A
+ACCESSKEY="p"
+HREF="gbp.man.git.dch.html"
+><IMG
+SRC="left.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Prev"></A
+></TD
+><TD
+><A
+ACCESSKEY="u"
+HREF="gbp.man.reference.html"
+><IMG
+SRC="up.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Up"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
+HREF="gbp.html"
+><IMG
+SRC="home.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Home"></A
+></TD
+><TH
+WIDTH="100%"
+align="center"
+>Building Debian Packages with git-buildpackage: Version: 0.6.0~git20120324</TH
+><TD
+><A
+ACCESSKEY="n"
+HREF="gbp.man.gbp.pull.html"
+><IMG
+SRC="right.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Next"></A
+></TD
+></TR
+></TABLE
+><H1
+><A
+NAME="GBP.MAN.GBP.CLONE"
+></A
+>gbp-clone</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN1994"
+></A
+><H2
+>Name</H2
+><B
+CLASS="COMMAND"
+>gbp-clone</B
+>&nbsp;--&nbsp;Clone a repository from remote</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN1998"
+></A
+><H2
+>Synopsis</H2
+><P
+><B
+CLASS="COMMAND"
+>gbp-clone</B
+>  [<CODE
+CLASS="OPTION"
+>--verbose</CODE
+>] [<CODE
+CLASS="OPTION"
+>--all</CODE
+>] [<CODE
+CLASS="OPTION"
+>--[no-]pristine-tar</CODE
+>] [<CODE
+CLASS="OPTION"
+>--debian-branch=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>branch_name</I
+></TT
+> | <CODE
+CLASS="OPTION"
+>--packaging-branch=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>branch_name</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--upstream-branch=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>branch_name</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--depth=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>depth</I
+></TT
+>]  <TT
+CLASS="REPLACEABLE"
+><I
+>remote_uri</I
+></TT
+> </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2022"
+></A
+><H2
+>DESCRIPTION</H2
+><P
+>    <B
+CLASS="COMMAND"
+>gbp-clone</B
+> clones a remote repository and sets up tracking branches for
+    the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>debian</I
+></SPAN
+>, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>upstream</I
+></SPAN
+> and
+    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pristine-tar</I
+></SPAN
+> branches. This way you can easily update
+    later using <B
+CLASS="COMMAND"
+>gbp-pull</B
+>.
+    </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2030"
+></A
+><H2
+>OPTIONS</H2
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2033"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--all</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Track all branches, not only <TT
+CLASS="REPLACEABLE"
+><I
+>debian</I
+></TT
+>
+	  and <TT
+CLASS="REPLACEABLE"
+><I
+>upstream</I
+></TT
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2040"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--debian-branch</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>branch_name</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>The branch in the Git repository the Debian package is being
+	  developed on, default is <TT
+CLASS="REPLACEABLE"
+><I
+>master</I
+></TT
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2047"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--packaging-branch</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>branch_name</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>The branch the packaging is being maintained on.
+          Alternative to the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>--debian-branch</I
+></SPAN
+> option.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2054"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--upstream-branch</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>branch_name</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>The branch in the <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> repository the upstream sources are put
+	  onto. Default is <TT
+CLASS="REPLACEABLE"
+><I
+>upstream</I
+></TT
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2062"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--depth</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>depth</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Git history depth, for creating shallow git clones.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2068"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--verbose</CODE
+></SPAN
+>, <SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>-v</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>verbose execution</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2075"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--pristine-tar</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Track pristine tar branch.</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2080"
+></A
+><H2
+>CONFIGURATION FILES</H2
+><P
+>Several <TT
+CLASS="FILENAME"
+>gbp.conf</TT
+> files are parsed 
+    to set defaults for the above commandline arguments. See the
+    <A
+HREF="gbp.man.gbp.conf.html"
+>gbp.conf(5)</A
+> manpage for details.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2085"
+></A
+><H2
+>SEE ALSO</H2
+><P
+>      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>git-buildpackage</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>gbp-pull</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>gbp.conf</SPAN
+>(5)</SPAN
+>
+    </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2097"
+></A
+><H2
+>AUTHOR</H2
+><P
+>Guido Guenther <CODE
+CLASS="EMAIL"
+>&#60;<A
+HREF="mailto:agx@sigxcpu.org"
+>agx@sigxcpu.org</A
+>&#62;</CODE
+></P
+></DIV
+><TABLE
+CLASS="navigation"
+WIDTH="100%"
+SUMMARY="Navigation footer"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+ALIGN="left"
+><A
+ACCESSKEY="p"
+HREF="gbp.man.git.dch.html"
+><B
+>&lt;&lt;&lt;&nbsp;git-dch</B
+></A
+></TD
+><TD
+ALIGN="right"
+><A
+ACCESSKEY="n"
+HREF="gbp.man.gbp.pull.html"
+><B
+>gbp-pull&nbsp;&gt;&gt;&gt;</B
+></A
+></TD
+></TR
+></TABLE
+></BODY
+></HTML
+>

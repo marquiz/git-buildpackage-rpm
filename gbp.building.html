@@ -1,0 +1,853 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Building packages from the Git repository</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Building Debian Packages with git-buildpackage"
+HREF="gbp.html"><LINK
+REL="PREVIOUS"
+TITLE="Importing Sources"
+HREF="gbp.import.html"><LINK
+REL="NEXT"
+TITLE="Releases and Snapshots"
+HREF="gbp.releases.html"><STYLE
+TYPE="text/css"
+>.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE
+></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><TABLE
+WIDTH="100%"
+CLASS="navigation"
+SUMMARY="Navigation header"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+><A
+ACCESSKEY="p"
+HREF="gbp.import.html"
+><IMG
+SRC="left.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Prev"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
+HREF="gbp.html"
+><IMG
+SRC="home.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Home"></A
+></TD
+><TH
+WIDTH="100%"
+align="center"
+>Building Debian Packages with git-buildpackage: Version: 0.6.0~git20120324</TH
+><TD
+><A
+ACCESSKEY="n"
+HREF="gbp.releases.html"
+><IMG
+SRC="right.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Next"></A
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="GBP.BUILDING"
+></A
+>Building packages from the <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> repository</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="gbp.building.html#GBP.BUILDING.EXPORT"
+>Using a separate build dir</A
+></DT
+><DT
+><A
+HREF="gbp.building.html#GBP.BUILDING.HOOKS"
+>Invoking external programs</A
+></DT
+><DT
+><A
+HREF="gbp.building.html#GBP.BUILDING.PATCH"
+>Working with patches</A
+></DT
+></DL
+></DIV
+><P
+>    In order to build a <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> package from the <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> repository you use:
+    <B
+CLASS="COMMAND"
+>git-buildpackage</B
+>. This builds the upstream tarball as will be described below and
+    invokes <SPAN
+CLASS="PRODUCTNAME"
+>Debuild</SPAN
+> to build the package. To use another build command you
+    can use the <CODE
+CLASS="OPTION"
+>--git-builder</CODE
+> option as described later in the manual
+    but <SPAN
+CLASS="PRODUCTNAME"
+>Debuild</SPAN
+> is nice since it can invoke <SPAN
+CLASS="PRODUCTNAME"
+>lintian</SPAN
+>.
+    During the development phase (when you're either not on the
+    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>debian-branch</I
+></SPAN
+> or when you have uncommitted changes in
+    your repository) you'll usually use:
+    </P
+><PRE
+CLASS="SCREEN"
+><B
+CLASS="COMMAND"
+>git-buildpackage</B
+> <CODE
+CLASS="OPTION"
+>--git-ignore-new</CODE
+></PRE
+><P
+>If <B
+CLASS="COMMAND"
+>git-buildpackage</B
+> doesn't find a valid upstream tarball it will
+    create one by looking at the tag matching the upstream version. To change
+    this behaviour see the <CODE
+CLASS="OPTION"
+>--git-upstream-tree</CODE
+> option.
+    </P
+><P
+>    If you want to recreate the original tarball using the additional
+    information from the <CODE
+CLASS="OPTION"
+>pristine-tar branch</CODE
+> you have to
+    specify the <CODE
+CLASS="OPTION"
+>--git-pristine-tar</CODE
+> option. This will make sure
+    the upstream tarball matches exactly the one imported. Using this option is
+    the recommended way of recreating the upstream tarball.
+    </P
+><P
+>Once you're satisfied with the build and want to do a release you commit all
+    your changes and issue:</P
+><PRE
+CLASS="SCREEN"
+><B
+CLASS="COMMAND"
+>git-buildpackage</B
+> <CODE
+CLASS="OPTION"
+>--git-tag</CODE
+></PRE
+><P
+>This will again build the debian package and tag the final result after
+    extracting the current version from the changelog. If you want <SPAN
+CLASS="PRODUCTNAME"
+>GPG</SPAN
+> signed
+    tags you can use the <CODE
+CLASS="OPTION"
+>--git-sign</CODE
+> and
+    <CODE
+CLASS="OPTION"
+>--git-keyid</CODE
+> options. To save typing these option can be
+    specified via the configuration files. You can futhermore change the tag
+    format used when creating tags with the <CODE
+CLASS="OPTION"
+>debian-tag</CODE
+>
+    option, the default is <TT
+CLASS="REPLACEABLE"
+><I
+>debian/&lt;version&gt;</I
+></TT
+>.</P
+><BR
+CLEAR="all"><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="GBP.BUILDING.EXPORT"
+>Using a separate build dir</A
+></H1
+><P
+>Tools like <SPAN
+CLASS="PRODUCTNAME"
+>svn-buildpackage</SPAN
+> use a separate build-area. To achieve a similar behaviour
+    with <B
+CLASS="COMMAND"
+>git-buildpackage</B
+> use the <CODE
+CLASS="OPTION"
+>--git-export-dir</CODE
+> option:</P
+><PRE
+CLASS="SCREEN"
+><B
+CLASS="COMMAND"
+>git-buildpackage</B
+> <CODE
+CLASS="OPTION"
+>--git-export-dir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>../build-area/</I
+></TT
+></PRE
+><P
+>This will export the head of the ecurrent branch to
+    <TT
+CLASS="REPLACEABLE"
+><I
+>../build-area/package-version</I
+></TT
+>, build the
+    package. If you don't want to export the current branch head you can use
+    <CODE
+CLASS="OPTION"
+>--git-export</CODE
+> to export any treeish object, here are some
+    examples:</P
+><PRE
+CLASS="SCREEN"
+><B
+CLASS="COMMAND"
+>git-buildpackage</B
+> <CODE
+CLASS="OPTION"
+>--git-export-dir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>../build-area</I
+></TT
+> <CODE
+CLASS="OPTION"
+>--git-export</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>debian/0.4.3</I
+></TT
+>
+<B
+CLASS="COMMAND"
+>git-buildpackage</B
+> <CODE
+CLASS="OPTION"
+>--git-export-dir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>../build-area</I
+></TT
+> <CODE
+CLASS="OPTION"
+>--git-export</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>etch</I
+></TT
+>
+<B
+CLASS="COMMAND"
+>git-buildpackage</B
+> <CODE
+CLASS="OPTION"
+>--git-export-dir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>../build-area</I
+></TT
+> <CODE
+CLASS="OPTION"
+>--git-export</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>8caed309653d69b7ab440e3d35abc090eb4c6697</I
+></TT
+>
+<B
+CLASS="COMMAND"
+>git-buildpackage</B
+> <CODE
+CLASS="OPTION"
+>--git-export-dir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>../build-area</I
+></TT
+> <CODE
+CLASS="OPTION"
+>--git-export</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>INDEX</I
+></TT
+>
+<B
+CLASS="COMMAND"
+>git-buildpackage</B
+> <CODE
+CLASS="OPTION"
+>--git-export-dir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>../build-area</I
+></TT
+> <CODE
+CLASS="OPTION"
+>--git-export</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>WC</I
+></TT
+></PRE
+><P
+>The special argument <TT
+CLASS="REPLACEABLE"
+><I
+>INDEX</I
+></TT
+> exports the
+    state of the current index which can be used to include staged but uncommitted
+    changes in the build. Whereas the special argument
+    <TT
+CLASS="REPLACEABLE"
+><I
+>WC</I
+></TT
+> exports the current working copy as is.</P
+><P
+>If you want to default to build in a separate build area you can
+    specify the directory to use in the gbp.conf.
+<PRE
+CLASS="PROGRAMLISTING"
+>[git-buildpackage]
+# use a build area relative to the git repository
+export-dir=../build-area
+# to use the same build area for all packages use an absolute path:
+#export-dir=/home/debian-packages/build-area</PRE
+>
+    <B
+CLASS="COMMAND"
+>git-buildpackage</B
+> will cleanup the build-area after a successful build. If
+    you want to keep the build tree use <TT
+CLASS="REPLACEABLE"
+><I
+>--git-dont-purge</I
+></TT
+>.
+    </P
+></DIV
+><BR
+CLEAR="all"><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="GBP.BUILDING.HOOKS"
+>Invoking external programs</A
+></H1
+><P
+>    Besides the commands for cleaning the package build dir
+    (<CODE
+CLASS="OPTION"
+>cleaner</CODE
+>) and building the package
+    (<CODE
+CLASS="OPTION"
+>builder</CODE
+>) you can also invoke hooks during the package
+    build: immediately before a build (<CODE
+CLASS="OPTION"
+>prebuild</CODE
+>),
+    after a successful build (<CODE
+CLASS="OPTION"
+>postbuild</CODE
+>) and after
+    creating a tag (<CODE
+CLASS="OPTION"
+>posttag</CODE
+>). Typical applications are running
+    <SPAN
+CLASS="PRODUCTNAME"
+>lintian</SPAN
+> or pushing changes into a remote
+    repository.
+    </P
+><BR
+CLEAR="all"><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="GBP.BUILDING.LINTIAN"
+>Running lintian</A
+></H2
+><P
+><B
+CLASS="COMMAND"
+>git-buildpackage</B
+> exports several variables into the
+	<CODE
+CLASS="OPTION"
+>posttag</CODE
+>'s environment (for details see the <A
+HREF="gbp.man.git.buildpackage.html"
+>git-buildpackage(1)</A
+>).
+	To invoke <SPAN
+CLASS="PRODUCTNAME"
+>lintian</SPAN
+> we need to tell it where to find the changes file:
+<PRE
+CLASS="PROGRAMLISTING"
+><B
+CLASS="COMMAND"
+>git-buildpackage</B
+> <CODE
+CLASS="OPTION"
+>--git-postbuild</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>'lintian $GBP_CHANGES_FILE'</I
+></TT
+></PRE
+>
+        To call <SPAN
+CLASS="PRODUCTNAME"
+>lintian</SPAN
+> automatically after each successful build add:
+<PRE
+CLASS="PROGRAMLISTING"
+><CODE
+CLASS="OPTION"
+>postbuild</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>lintian $GBP_CHANGES_FILE</I
+></TT
+></PRE
+>
+	to your <TT
+CLASS="FILENAME"
+>.gbp.conf</TT
+>.
+    </P
+></DIV
+><BR
+CLEAR="all"><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="GBP.BUILDING.PUSH"
+>Pushing into a remote repository</A
+></H2
+><P
+>If you want to push your changes automatically after a successful build and tag
+	you can use <B
+CLASS="COMMAND"
+>git-buildpackage</B
+>'s posttag hook. A very simple invocation would look like this:
+<PRE
+CLASS="PROGRAMLISTING"
+><B
+CLASS="COMMAND"
+>git-buildpackage</B
+> <CODE
+CLASS="OPTION"
+>--git-tag</CODE
+> <CODE
+CLASS="OPTION"
+>--git-posttag</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>"git push &#38;&#38; git push --tags"</I
+></TT
+></PRE
+>
+	This assumes you have set up a remote repository to push to in
+        <TT
+CLASS="FILENAME"
+>.git/config</TT
+>.</P
+><P
+>Usually you want to make sure you don't push out any
+        unrelated changes into the remote repository. This is handled by the
+        following hook which only pushes out the created tag to where you pulled
+        from and also forwards the corresponding remote branch to that position:
+<PRE
+CLASS="PROGRAMLISTING"
+>#!/bin/sh -e
+#
+# gbp-posttag-push: post tag hook to push out the newly created tag and to
+# forward the remote branch to that position
+
+if ! REMOTE=$(git config --get branch."${GBP_BRANCH}".remote); then
+    REMOTE=origin
+fi
+
+if [ "$GBP_TAG" ]; then
+     echo "Pushing $GBP_TAG to $REMOTE"
+     git push "$REMOTE" "$GBP_TAG"
+else
+     echo "GBP_TAG not set."
+     exit 1
+fi
+
+if [ "$GBP_SHA1" ] &#38;&#38; [ "$GBP_BRANCH" ]; then
+    git push "$REMOTE" "$GBP_SHA1":"$GBP_BRANCH"
+else
+    echo "GBP_SHA1 or GBP_BRANCH not set."
+    exit 1
+fi
+echo "done."</PRE
+>
+	<CODE
+CLASS="ENVAR"
+>GBP_TAG</CODE
+>, <CODE
+CLASS="ENVAR"
+>GBP_SHA1</CODE
+>
+        and <CODE
+CLASS="ENVAR"
+>GBP_BRANCH</CODE
+> are passed to the hook via the
+        environment. To call this hook automatically upon tag creation add:
+<PRE
+CLASS="PROGRAMLISTING"
+><CODE
+CLASS="OPTION"
+>posttag</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>"gbp-posttag-push"</I
+></TT
+></PRE
+>
+	to your <TT
+CLASS="FILENAME"
+>.gbp.conf</TT
+> and make sure <TT
+CLASS="FILENAME"
+>gbp-push</TT
+>
+	is somewhere in your <CODE
+CLASS="ENVAR"
+>$PATH</CODE
+>. On Debian
+	systems a more complete example can be found in
+	<TT
+CLASS="FILENAME"
+>/usr/share/doc/examples/git-buildpackage/examples/gbp-posttag-push</TT
+>.
+    </P
+></DIV
+><BR
+CLEAR="all"><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="GBP.BUILDING.POSTEXPORT"
+>Running postexport hook</A
+></H2
+><P
+><B
+CLASS="COMMAND"
+>git-buildpackage</B
+> exports several variables into the
+	<CODE
+CLASS="OPTION"
+>postexport</CODE
+>'s environment (for details see
+	the <A
+HREF="gbp.man.git.buildpackage.html"
+>git-buildpackage(1)</A
+>). The motivation
+	for the postexport action is to allow further adjustment of
+	the sources prior to building the package. A typical use case
+	scenario is to allow creating multiple source and binary
+	packages from one Debian branch - e.g. the bootstrap gcc and
+	in the next stage the full gcc.
+    </P
+><P
+> The postexport action, postpones the creation of the
+      upstream tarball, so that the metadata for creating it is
+      already present in the exported source tree. The example
+      postexport script below (crosstoolchain-expand.sh) expands
+      changelog, lintian override files, rules and control files
+      according to an environment variable 'PKG_FLAVOR'.
+    </P
+><P
+>Sample gbp.conf - enables source tree export by specifying
+    the export directory:
+    </P
+><PRE
+CLASS="PROGRAMLISTING"
+>[git-buildpackage]
+# use a build area relative to the git repository
+export-dir = ../build-area
+# disable the since the sources are being exported first
+cleaner =
+# post export script that handles expansion of Debian specific files
+postexport = crosstoolchain-expand.sh</PRE
+><P
+>Sample postexport script: crosstoolchain-expand.sh</P
+><PRE
+CLASS="PROGRAMLISTING"
+>#!/bin/sh
+#
+# Purpose: this script is intended for creating multiple source and
+# binary Debian packages from one source tree. It can be used in
+# conjunction with git-buildpackage that support a postexport hook
+#
+# A typical use is preparing a bootstrap gcc package that is needed
+# for building newlib and then preparing a full gcc package from the
+# same source tree. The user may specify the package flavor via
+# PKG_FLAVOR environmental variable. 
+#
+#
+# The script expands/processes the following files:
+#
+# - changelog.tmpl is converted to standard Debian changelog
+#
+#
+# - all binary package lintian override template files are expanded
+#   and renamed to the requested package flavor
+#
+# - source package lintian override template file is expanded and
+#   renamed
+#
+# - rules.$PKG_FLAVOR and control.$PKG_FLAVOR are renamed to rules and
+#   control resp.
+
+
+# the template string has been carefully chosen, so that
+# e.g. changelogs that refer to the source package can still be
+# processed by dch/git-dch resp.
+TMPL_STR=-XXXXXX
+
+# by default replace string for the template is empty
+REPLACE_STR=
+
+if [ -n "$PKG_FLAVOR" ]; then
+    REPLACE_STR=-$PKG_FLAVOR
+fi
+
+REPLACE_EXPR="s/$TMPL_STR/$REPLACE_STR/g"
+
+
+# actual processing of relevant files
+cd debian
+
+# expand the template changelog
+# remove the symlinked version
+rm changelog
+chglog_tmpl=changelog.tmpl
+[ -f "$chglog_tmpl" ] || {
+    echo "Missing changelog template (debian/$chglog_tmpl)"
+    exit 1
+}
+cat changelog.tmpl | sed -e "$REPLACE_EXPR" &#62; changelog
+rm changelog.tmpl
+
+# process binary package lintian overrides - each override must match
+# its package name
+for f in *.lintian-overrides.tmpl; do
+    outfile=${f%.tmpl}
+    [ -f "$f" ] || {
+	echo "Missing lintian override files for binary packages"
+	exit 1
+    }
+    cat $f | sed -e "$REPLACE_EXPR" &#62; ${outfile/$TMPL_STR/$REPLACE_STR}
+    rm $f
+done
+
+# process the only source package lintian override
+source_lintian=source/lintian-overrides.tmpl
+cat $source_lintian | sed -e "$REPLACE_EXPR" &#62; ${source_lintian%.tmpl}
+rm $source_lintian
+
+# rules and control file are package flavor specific
+[ -f rules.$PKG_FLAVOR ] &#38;&#38; mv rules.$PKG_FLAVOR rules
+[ -f control.$PKG_FLAVOR ] &#38;&#38; mv control.$PKG_FLAVOR control
+rm -f rules.* control.*
+
+exit 0</PRE
+></DIV
+></DIV
+><BR
+CLEAR="all"><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="GBP.BUILDING.PATCH"
+>Working with patches</A
+></H1
+><P
+>    You can use <B
+CLASS="COMMAND"
+>gbp-pq</B
+> to handle patches. See
+    <A
+HREF="https://honk.sigxcpu.org/piki/development/debian_packages_in_git/"
+TARGET="_top"
+>https://honk.sigxcpu.org/piki/development/debian_packages_in_git/</A
+>
+    for an example workflow.
+    </P
+><P
+>    In order to avoid a patched (unclean) source tree after the build you
+    can use <SPAN
+CLASS="PRODUCTNAME"
+>Dpkg-source</SPAN
+>'s <CODE
+CLASS="OPTION"
+>unapply-patches</CODE
+> option and
+    tell <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> to ignore the <TT
+CLASS="FILENAME"
+>.pc</TT
+> directory.
+    <TT
+CLASS="FILENAME"
+>/usr/share/doc/git-buildpackage/examples/gbp-configure-unpatched-source</TT
+>
+    sets up these two files for you.
+    </P
+></DIV
+></DIV
+><TABLE
+CLASS="navigation"
+WIDTH="100%"
+SUMMARY="Navigation footer"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+ALIGN="left"
+><A
+ACCESSKEY="p"
+HREF="gbp.import.html"
+><B
+>&lt;&lt;&lt;&nbsp;Importing Sources</B
+></A
+></TD
+><TD
+ALIGN="right"
+><A
+ACCESSKEY="n"
+HREF="gbp.releases.html"
+><B
+>Releases and Snapshots&nbsp;&gt;&gt;&gt;</B
+></A
+></TD
+></TR
+></TABLE
+></BODY
+></HTML
+>

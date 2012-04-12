@@ -1,0 +1,645 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>gbp.conf</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Building Debian Packages with git-buildpackage"
+HREF="gbp.html"><LINK
+REL="UP"
+TITLE="Command Reference"
+HREF="gbp.man.reference.html"><LINK
+REL="PREVIOUS"
+TITLE="gbp-create-remote-repo"
+HREF="gbp.man.gbp.create.remote.repo.html"><LINK
+REL="NEXT"
+TITLE="Copyright"
+HREF="gbp.copyleft.html"><STYLE
+TYPE="text/css"
+>.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE
+></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><TABLE
+WIDTH="100%"
+CLASS="navigation"
+SUMMARY="Navigation header"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+><A
+ACCESSKEY="p"
+HREF="gbp.man.gbp.create.remote.repo.html"
+><IMG
+SRC="left.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Prev"></A
+></TD
+><TD
+><A
+ACCESSKEY="u"
+HREF="gbp.man.reference.html"
+><IMG
+SRC="up.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Up"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
+HREF="gbp.html"
+><IMG
+SRC="home.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Home"></A
+></TD
+><TH
+WIDTH="100%"
+align="center"
+>Building Debian Packages with git-buildpackage: Version: 0.6.0~git20120324</TH
+><TD
+><A
+ACCESSKEY="n"
+HREF="gbp.copyleft.html"
+><IMG
+SRC="right.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Next"></A
+></TD
+></TR
+></TABLE
+><H1
+><A
+NAME="GBP.MAN.GBP.CONF"
+></A
+>gbp.conf</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN2564"
+></A
+><H2
+>Name</H2
+><TT
+CLASS="FILENAME"
+>gbp.conf</TT
+>&nbsp;--&nbsp;git-buildpackage configuration file</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN2568"
+></A
+><H2
+>Synopsis</H2
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2570"><SPAN
+STYLE="white-space: nowrap"
+>/etc/git-buildpackage/gbp.conf</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>system wide</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2574"><SPAN
+STYLE="white-space: nowrap"
+>~/.gbp.conf</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>per user</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2578"><SPAN
+STYLE="white-space: nowrap"
+>.gbp.conf</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>per branch, can be published with the
+      repository (deprecated)</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2582"><SPAN
+STYLE="white-space: nowrap"
+>debian/gbp.conf</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>per branch, can be published with the
+      repository</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2586"><SPAN
+STYLE="white-space: nowrap"
+>.git/gbp.conf</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>per repository</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2590"
+></A
+><H2
+>DESCRIPTION</H2
+><P
+>      The <TT
+CLASS="FILENAME"
+>gbp.conf</TT
+> provides default global options and specific options
+      for <B
+CLASS="COMMAND"
+>git-buildpackage</B
+> commands. All have the same format and are parsed in the above order. The
+      file consists of several sections, one for each command. Comments start with a hash sign
+      (<CODE
+CLASS="OPTION"
+>#</CODE
+>). The generic file syntax is:
+    </P
+><PRE
+CLASS="PROGRAMLISTING"
+>    [DEFAULT]
+    # This is section for global settings. Affects all commands
+    key = value
+
+    [&lt;command&gt;]
+    # Specific sections for each command, like <B
+CLASS="COMMAND"
+>git-buildpackage</B
+>
+    key = value
+
+    [remote-config &lt;name&gt;]
+    # Specific sections for a remote configuration. This can be used several
+    # times to set up remote configuration for gbp-create-remote-repo
+    key = value</PRE
+><P
+>&#13;<CODE
+CLASS="OPTION"
+>key=value</CODE
+> pairs of the command sections reflect the command line
+options and their settings. For example <A
+HREF="gbp.man.git.buildpackage.html"
+>git-buildpackage(1)</A
+>
+manualpage contains the <CODE
+CLASS="OPTION"
+>--git-export-dir</CODE
+>=<CODE
+CLASS="PARAMETER"
+>diirectory</CODE
+>
+option which can be turned into configuration file setting by dropping the
+<CODE
+CLASS="OPTION"
+>--git</CODE
+> prefix with:</P
+><PRE
+CLASS="PROGRAMLISTING"
+>    [git-buildpackage]
+    export-dir = directory</PRE
+><P
+>Notice that some option are actually repeatable, or take Python lists.
+For example the <A
+HREF="gbp.man.git.import.orig.html"
+>git-import-orig(1)</A
+> commmand has the
+<CODE
+CLASS="OPTION"
+>--filter</CODE
+>=<CODE
+CLASS="PARAMETER"
+>pattern</CODE
+> option which can
+be truned into a configuration file option like this:</P
+><PRE
+CLASS="PROGRAMLISTING"
+>    [git-import-orig]
+    filter = .svn
+    filter = .hg</PRE
+><P
+>An alternative way is to write it using Python list syntax:</P
+><PRE
+CLASS="PROGRAMLISTING"
+>    [git-import-orig]
+    filter = [ '.svn', '.hg' ]</PRE
+><P
+>Boolean options can bei either <CODE
+CLASS="OPTION"
+>True</CODE
+> or <CODE
+CLASS="OPTION"
+>False</CODE
+>. For example
+<A
+HREF="gbp.man.git.import.orig.html"
+>git-import-orig(1)</A
+>; has the <CODE
+CLASS="OPTION"
+>--pristine-tar</CODE
+> and
+<CODE
+CLASS="OPTION"
+>--no-pristine-tar</CODE
+> options which translate to:</P
+><PRE
+CLASS="PROGRAMLISTING"
+>    [git-import-orig]
+    pristine-tar = True</PRE
+><P
+>and</P
+><PRE
+CLASS="PROGRAMLISTING"
+>    [git-import-orig]
+    pristine-tar = False</PRE
+><P
+>respectively.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>To see the current set of values that would be applied after parsing the
+configuration files run the command with <CODE
+CLASS="OPTION"
+>--help</CODE
+> and check it's
+output.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> <B
+CLASS="COMMAND"
+>git-import-dscs</B
+> and <B
+CLASS="COMMAND"
+>git-pbuilder</B
+>
+can't be configured via gbp.conf.</P
+></BLOCKQUOTE
+></DIV
+><P
+><A
+HREF="gbp.man.gbp.create.remote.repo.html"
+>gbp-create-remote-repo(1)</A
+> can additionally parse remote site
+configurations from <TT
+CLASS="FILENAME"
+>gbp.conf</TT
+>. For example a configration like:</P
+><PRE
+CLASS="PROGRAMLISTING"
+>[remote-config pkg-libvirt]
+# Location of the repository
+remote-url-pattern = ssh://git.debian.org/git/pkg-libvirt/%(pkg)s
+# Template dir to passed to git-init
+template-dir = /srv/alioth.debian.org/chroot/home/groups/pkg-libvirt/git-template</PRE
+><P
+>Can be used to create remote repositories for the pkg-libvirt project using:</P
+><PRE
+CLASS="PROGRAMLISTING"
+>gbp-create-remote-repo --remote-config=pkg-libvirt</PRE
+><P
+>This can be useful if you're often creating new remote repositores for
+different projects.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2636"
+></A
+><H2
+>EXAMPLES</H2
+><P
+>An example set up for packaging work:</P
+><PRE
+CLASS="PROGRAMLISTING"
+> # $HOME/gbp.conf
+
+ [DEFAULT]
+ pristine-tar = True
+ cleaner = fakeroot debian/rules clean
+
+ [git-buildpackage]
+ export-dir  = ../build-area/
+
+ [git-import-orig]
+ dch = False
+ filter = .svn
+ filter = .hg
+ filter = .bzr
+ filter = CVS
+ filter = debian/*
+ filter = */debian/*
+ filter-pristine-tar = True
+
+ [git-import-dsc]
+ filter = [
+        'CVS',
+        '.cvsignore',
+        '.hg',
+        '.hgignore'
+        '.bzr',
+        '.bzrignore',
+        '.gitignore'
+        ]
+
+ # End of file</PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2640"
+></A
+><H2
+>ENVIRONMENT</H2
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2643"><SPAN
+STYLE="white-space: nowrap"
+>GBP_CONF_FILES</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Colon separated list of files to parse. The default is
+the above list of configuration files.</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2647"
+></A
+><H2
+>FILES</H2
+><P
+>  See See <TT
+CLASS="FILENAME"
+>/etc/git-buildpackage/gbp.conf</TT
+> for an example.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2651"
+></A
+><H2
+>STANDARDS</H2
+><P
+>  The at <A
+HREF="file:///usr/share/doc/git-buildpackage/manual-html/index.html"
+TARGET="_top"
+>    <I
+CLASS="CITETITLE"
+>The Git-Buildpackage Manual</I
+></A
+> at
+  <TT
+CLASS="FILENAME"
+>/usr/share/doc/git-buildpackage/manual-html/index.html</TT
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2657"
+></A
+><H2
+>SEE ALSO</H2
+><P
+>    <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>gbp-clone</SPAN
+>(1)</SPAN
+>,
+    <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>gbp-create-remote-repo</SPAN
+>(1)</SPAN
+>,
+    <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>gbp-pq</SPAN
+>(1)</SPAN
+>
+    <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>gbp-pull</SPAN
+>(1)</SPAN
+>,
+    <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>git-dch</SPAN
+>(1)</SPAN
+>,
+    <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>git-import-dsc</SPAN
+>(1)</SPAN
+>,
+    <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>git-import-orig</SPAN
+>(1)</SPAN
+>,
+    <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>git-buildpackage</SPAN
+>(1)</SPAN
+>
+  </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2684"
+></A
+><H2
+>AUTHORS</H2
+><P
+>Guido Guenther <CODE
+CLASS="EMAIL"
+>&#60;<A
+HREF="mailto:agx@sigxcpu.org"
+>agx@sigxcpu.org</A
+>&#62;</CODE
+></P
+><P
+>This manual page is based on a POD version by Jari Aalto <CODE
+CLASS="EMAIL"
+>&#60;<A
+HREF="mailto:jari.aalto@cante.net"
+>jari.aalto@cante.net</A
+>&#62;</CODE
+>.
+	Released under license GNU GPL version 2 or (at your option) any later.
+    version.
+  </P
+></DIV
+><TABLE
+CLASS="navigation"
+WIDTH="100%"
+SUMMARY="Navigation footer"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+ALIGN="left"
+><A
+ACCESSKEY="p"
+HREF="gbp.man.gbp.create.remote.repo.html"
+><B
+>&lt;&lt;&lt;&nbsp;gbp-create-remote-repo</B
+></A
+></TD
+><TD
+ALIGN="right"
+><A
+ACCESSKEY="n"
+HREF="gbp.copyleft.html"
+><B
+>Copyright&nbsp;&gt;&gt;&gt;</B
+></A
+></TD
+></TR
+></TABLE
+></BODY
+></HTML
+>
