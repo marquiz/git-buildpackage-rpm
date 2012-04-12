@@ -5,3 +5,12 @@ For more documentation see the manual. On Debian systems this can be found in
 It can be found online at
 
     http://honk.sigxcpu.org/projects/git-buildpackage/manual-html/gbp.html
+
+
+The limited documentation available for the RPM support can be found at
+
+    http://marquiz.github.com/git-buildpackage-rpm/
+
+Unfortunately, the manpages for RPM tools are still missing. Refer to
+--help option of the commands, for the most detailed description of different
+options.
