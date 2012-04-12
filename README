@@ -12,9 +12,6 @@ The API documentation of the gbp module can be found at:
 
     http://honk.sigxcpu.org/projects/git-buildpackage/apidocs/
 
-The mailing list is at:
+The documentation available for the RPM support can be found at
 
-    http://lists.sigxcpu.org/mailman/listinfo/git-buildpackage
-    git-buildpackage at lists.sigxcpu.org
-
-See the HACKING document for details on contributing to gbp development.
+    http://marquiz.github.com/git-buildpackage-rpm/
