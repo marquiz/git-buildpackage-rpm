@@ -142,7 +142,7 @@ def export_patches(repo, branch, options):
         raise GbpError, "Can't parse spec"
 
     # Find upstream version
-    upstream_commit = repo.find_version(options.upstream_tag, spec.version, vendor="Upstream")
+    upstream_commit = repo.find_version(options.upstream_tag, dict(upstreamversion=spec.version), "Upstream")
     if not upstream_commit:
         raise GbpError, ("Couldn't find upstream version %s. Don't know on what base to import." % spec.version)
 
@@ -233,7 +233,7 @@ def import_spec_patches(repo, branch, options):
         raise GbpError, "Can't parse spec"
 
     # Find upstream version
-    commit = repo.find_version(options.upstream_tag, spec.version, vendor="Upstream")
+    commit = repo.find_version(options.upstream_tag, dict(upstreamversion=spec.version), "Upstream")
     if commit:
         commits=[commit]
     else:
@@ -295,7 +295,7 @@ def rebase_pq(repo, branch, options):
         raise GbpError, "Can't parse spec"
 
     # Find upstream version
-    upstream_commit = repo.find_version(options.upstream_tag, spec.version, vendor="Upstream")
+    upstream_commit = repo.find_version(options.upstream_tag, dict(upstreamversion=spec.version), "Upstream")
     if not upstream_commit:
         raise GbpError, ("Couldn't find upstream version %s. Don't know on what base to import." % spec.version)
 

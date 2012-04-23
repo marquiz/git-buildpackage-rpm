@@ -147,7 +147,7 @@ def pristine_tar_build_orig(repo, orig_file, output_dir, options):
 def get_upstream_tree(repo, spec, options):
     """Determine the upstream tree from the given options"""
     if options.upstream_tree.upper() == 'TAG':
-        upstream_tree = repo.version_to_tag(options.upstream_tag, spec.version, vendor="Upstream")
+        upstream_tree = repo.version_to_tag(options.upstream_tag, dict(upstreamversion=spec.version), "Upstream")
     elif options.upstream_tree.upper() == 'BRANCH':
         if not repo.has_branch(options.upstream_branch):
             raise GbpError("%s is not a valid branch" % options.upstream_branch)
@@ -472,7 +472,7 @@ def main(argv):
         # Tag (note: tags the exported version)
         if options.tag or options.tag_only:
             gbp.log.info("Tagging %s" % spec.version)
-            tag = repo.version_to_tag(options.packaging_tag, spec.version, vendor=options.vendor)
+            tag = repo.version_to_tag(options.packaging_tag, dict(upstreamversion=spec.version), options.vendor)
             if options.retag and repo.has_tag(tag):
                 repo.delete_tag(tag)
             repo.create_tag(name=tag, msg="%s release %s" % (options.vendor, spec.version),
