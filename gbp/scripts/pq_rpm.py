@@ -242,6 +242,7 @@ def parse_spec(options, repo, treeish=None):
             else:
                 spec = spec_from_repo(repo, treeish, options.spec_file)
         else:
+<<<<<<< HEAD
             preferred_name = os.path.basename(repo.path) + '.spec'
             if not treeish:
                 spec = guess_spec(options.packaging_dir, True, preferred_name)
@@ -261,6 +262,17 @@ def find_upstream_commit(repo, spec, upstream_tag):
     tag_str_fields = {'upstreamversion': spec.upstreamversion,
                       'vendor': 'Upstream'}
     upstream_commit = repo.find_version(upstream_tag, tag_str_fields)
+=======
+            specfilename = guess_spec(options.packaging_dir,
+                                      True,
+                                      os.path.basename(repo.path) + '.spec')
+        spec = SpecFile(specfilename)
+    except KeyError:
+        raise GbpError, "Can't parse spec"
+
+    # Find upstream version
+    upstream_commit = repo.find_version(options.upstream_tag, dict(upstreamversion=spec.version), "Upstream")
+>>>>>>> 96a8aae... rpm: add version parsing functions to pkg policy
     if not upstream_commit:
         raise GbpError("Couldn't find upstream version %s" %
                        spec.upstreamversion)
@@ -404,10 +416,26 @@ def import_spec_patches(repo, options):
         if repo.get_branch() == pq_branch:
             repo.force_head(upstream_commit, hard=True)
         else:
+<<<<<<< HEAD
             repo.create_branch(pq_branch, upstream_commit, force=True)
     except GitRepositoryError as err:
         raise GbpError("Cannot create patch-queue branch '%s': %s" %
                         (pq_branch, err))
+=======
+            specfilename = guess_spec(options.packaging_dir,
+                                      True,
+                                      os.path.basename(repo.path) + '.spec')
+        spec = SpecFile(specfilename)
+    except KeyError:
+        raise GbpError, "Can't parse spec"
+
+    # Find upstream version
+    commit = repo.find_version(options.upstream_tag, dict(upstreamversion=spec.version), "Upstream")
+    if commit:
+        commits=[commit]
+    else:
+        raise GbpError, ("Couldn't find upstream version %s. Don't know on what base to import." % spec.version)
+>>>>>>> 96a8aae... rpm: add version parsing functions to pkg policy
 
     # Put patches in a safe place
     if spec_treeish:
@@ -440,6 +468,7 @@ def import_spec_patches(repo, options):
                                                               pq_branch))
 
 
+<<<<<<< HEAD
 def rebase_pq(repo, options):
     """Rebase pq branch on the correct upstream version (from spec file)."""
     current = repo.get_branch()
@@ -450,6 +479,35 @@ def rebase_pq(repo, options):
         base = current
         spec = parse_spec(options, repo)
     upstream_commit = find_upstream_commit(repo, spec, options.upstream_tag)
+=======
+    return os.path.basename(spec.specfile)
+
+
+def rebase_pq(repo, branch, options):
+    if is_pq_branch(branch, options):
+        base = pq_branch_base(branch, options)
+        gbp.log.info("On '%s', switching to '%s'" % (branch, base))
+        branch = base
+        repo.set_branch(branch)
+
+    # Find and parse .spec file
+    try:
+        if options.spec_file != 'auto':
+            specfilename = options.spec_file
+            options.packaging_dir = os.path.dirname(specfilename)
+        else:
+            specfilename = guess_spec(options.packaging_dir,
+                                      True,
+                                      os.path.basename(repo.path) + '.spec')
+        spec = SpecFile(specfilename)
+    except KeyError:
+        raise GbpError, "Can't parse spec"
+
+    # Find upstream version
+    upstream_commit = repo.find_version(options.upstream_tag, dict(upstreamversion=spec.version), "Upstream")
+    if not upstream_commit:
+        raise GbpError, ("Couldn't find upstream version %s. Don't know on what base to import." % spec.version)
+>>>>>>> 96a8aae... rpm: add version parsing functions to pkg policy
 
     switch_to_pq_branch(repo, base, options)
     GitCommand("rebase")([upstream_commit])

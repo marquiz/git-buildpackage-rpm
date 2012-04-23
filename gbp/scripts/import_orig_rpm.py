@@ -299,12 +299,8 @@ def main(argv):
                 gbp.log.info("Pristine-tar: commiting %s" % pristine_orig)
                 repo.pristine_tar.commit(pristine_orig, options.upstream_branch)
 
-<<<<<<< HEAD
             tag_str_fields = dict(upstreamversion=version, vendor="Upstream")
             tag = repo.version_to_tag(options.upstream_tag, tag_str_fields)
-=======
-            tag = repo.version_to_tag(options.upstream_tag, version, vendor="Upstream")
->>>>>>> 1a96ba7... rpm: add 'vendor' config option
             repo.create_tag(name=tag,
                             msg="Upstream version %s" % version,
                             commit=commit,
