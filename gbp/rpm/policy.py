@@ -67,3 +67,73 @@ class RpmPkgPolicy(PkgPolicy):
             return True
         return False
 
+    @classmethod
+    def split_full_version(cls, version):
+        """
+        Parse full version string and split it into individual "version
+        components", i.e. upstreamversion, epoch and release
+
+        @param version: full version of a package
+        @type version: C{str}
+        @return: individual version components
+        @rtype: C{dict}
+
+        >>> RpmPkgPolicy.split_full_version("1")
+        {'release': None, 'epoch': None, 'upstreamversion': '1'}
+        >>> RpmPkgPolicy.split_full_version("1.2.3-5.3")
+        {'release': '5.3', 'epoch': None, 'upstreamversion': '1.2.3'}
+        >>> RpmPkgPolicy.split_full_version("3:1.2.3")
+        {'release': None, 'epoch': '3', 'upstreamversion': '1.2.3'}
+        >>> RpmPkgPolicy.split_full_version("3:1-0")
+        {'release': '0', 'epoch': '3', 'upstreamversion': '1'}
+        """
+        epoch = None
+        upstreamversion = None
+        release = None
+
+        e_vr = version.split(":", 1)
+        if len(e_vr) == 1:
+            v_r = e_vr[0].split("-", 1)
+        else:
+            epoch = e_vr[0]
+            v_r = e_vr[1].split("-", 1)
+        upstreamversion = v_r[0]
+        if len(v_r) > 1:
+            release = v_r[1]
+
+        return {'epoch': epoch,
+                'upstreamversion': upstreamversion,
+                'release': release}
+
+    @classmethod
+    def compose_full_version(cls, evr):
+        """
+        Compose a full version string from individual "version components",
+        i.e. epoch, version and release
+
+        @param evr: dict of version components
+        @type evr: C{dict} of C{str}
+        @return: full version
+        @rtype: C{str}
+
+        >>> RpmPkgPolicy.compose_full_version({'epoch': '', 'upstreamversion': '1.0'})
+        '1.0'
+        >>> RpmPkgPolicy.compose_full_version({'epoch': '2', 'upstreamversion': '1.0', 'release': None})
+        '2:1.0'
+        >>> RpmPkgPolicy.compose_full_version({'epoch': None, 'upstreamversion': '1', 'release': '0'})
+        '1-0'
+        >>> RpmPkgPolicy.compose_full_version({'epoch': '2', 'upstreamversion': '1.0', 'release': '2.3'})
+        '2:1.0-2.3'
+        >>> RpmPkgPolicy.compose_full_version({'epoch': '2', 'upstreamversion': '', 'release': '2.3'})
+        """
+        if 'upstreamversion' in evr and evr['upstreamversion']:
+            version = ""
+            if 'epoch' in evr and evr['epoch']:
+                version += "%s:" % evr['epoch']
+            version += evr['upstreamversion']
+            if 'release' in evr and evr['release']:
+                version += "-%s" % evr['release']
+            if version:
+                return version
+        return None
+
