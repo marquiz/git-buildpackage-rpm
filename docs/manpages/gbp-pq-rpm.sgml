@@ -20,6 +20,7 @@
     <cmdsynopsis>
       &gbp-pq-rpm;
       &man.common.options.synopsis;
+      <arg><option>--pq-branch=</option><replaceable>BRANCH-NAME</replaceable></arg>
       <arg><option>--packaging-dir=</option><replaceable>DIRECTORY</replaceable></arg>
       <arg><option>--spec-file=</option><replaceable>FILEPATH</replaceable></arg>
       <arg><option>--upstream-tag=</option><replaceable>TAG-FORMAT</replaceable></arg>
@@ -128,6 +129,20 @@
     <title>OPTIONS</title>
     <variablelist>
       &man.common.options.description;
+      <varlistentry>
+        <term><option>--pq-branch</option>=<replaceable>BRANCH_NAME</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Name (format string) of the development (patch-queue) branch. The
+          following string fields are accepted: "%(branch)s" (the base branch,
+          i.e. the packaging branch that the development branch is associated
+          to), "%(upstreamversion)s" (the upstream version), "%(release)s" (the
+          rpm patchlevel, i.e. Release), "%(version)s" (full rpm package
+          version).
+          </para>
+        </listitem>
+      </varlistentry>
       <varlistentry>
         <term><option>--packaging-dir=</option><replaceable>DIRECTORY</replaceable>
         </term>

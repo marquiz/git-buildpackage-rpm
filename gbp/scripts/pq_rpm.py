@@ -39,8 +39,7 @@ from gbp.rpm import (SpecFile, NoSpecError, guess_spec, guess_spec_repo,
                      spec_from_repo)
 from gbp.scripts.common.pq import (is_pq_branch, pq_branch_name, pq_branch_base,
             parse_gbp_commands, format_patch, format_diff,
-            switch_to_pq_branch, apply_single_patch, apply_and_commit_patch,
-            drop_pq, switch_pq)
+            apply_and_commit_patch, drop_pq)
 from gbp.scripts.common.buildpackage import dump_tree
 
 
@@ -318,7 +317,7 @@ def import_spec_patches(repo, options):
         base = current
     upstream_commit = find_upstream_commit(repo, spec, options.upstream_tag)
     packager = get_packager(spec)
-    pq_branch = pq_branch_name(base, options)
+    pq_branch = pq_branch_name(base, options, spec.version)
 
     # Create pq-branch
     if repo.has_branch(pq_branch) and not options.force:
@@ -379,6 +378,57 @@ def rebase_pq(repo, options):
     GitCommand("rebase")([upstream_commit])
 
 
+def switch_pq(repo, options):
+    """Switch to patch-queue branch if on base branch and vice versa"""
+    current = repo.get_branch()
+    if is_pq_branch(current, options):
+        base = pq_branch_base(current, options)
+        gbp.log.info("Switching to branch '%s'" % base)
+        repo.checkout(base)
+    else:
+        switch_to_pq_branch(repo, current, options)
+
+
+def drop_pq_rpm(repo, options):
+    """Remove pq branch"""
+    current = repo.get_branch()
+    if is_pq_branch(current, options):
+        base = pq_branch_base(current, options)
+        spec = parse_spec(options, repo, base)
+    else:
+        spec = parse_spec(options, repo)
+    drop_pq(repo, current, options, spec.version)
+
+
+def switch_to_pq_branch(repo, branch, options):
+    """
+    Switch to patch-queue branch if not already there, create it if it
+    doesn't exist yet
+    """
+    if is_pq_branch(branch, options):
+        return
+
+    spec = parse_spec(options, repo, branch)
+    pq_branch = pq_branch_name(branch, options, spec.version)
+    if not repo.has_branch(pq_branch):
+        upstream_commit = find_upstream_commit(repo, spec, options.upstream_tag)
+        try:
+            repo.create_branch(pq_branch, rev=upstream_commit)
+        except GitRepositoryError as err:
+            raise GbpError("Cannot create patch-queue branch: %s" % err)
+
+    gbp.log.info("Switching to branch '%s'" % pq_branch)
+    repo.set_branch(pq_branch)
+
+def apply_single_patch(repo, patchfile, options):
+    """Apply a single patch onto the pq branch"""
+    current = repo.get_branch()
+    if not is_pq_branch(current, options):
+        switch_to_pq_branch(repo, current, options)
+    patch = Patch(patchfile)
+    apply_and_commit_patch(repo, patch, fallback_author=None)
+
+
 def build_parser(name):
     """Construct command line parser"""
     try:
@@ -419,6 +469,7 @@ switch         Switch to patch-queue branch and vice versa.""")
     parser.add_config_file_option(option_name="spec-file", dest="spec_file")
     parser.add_config_file_option(option_name="packaging-dir",
             dest="packaging_dir")
+    parser.add_config_file_option(option_name="pq-branch", dest="pq_branch")
     parser.add_option("--export-rev", dest="export_rev",
             metavar="TREEISH",
             help="Export patches from treeish object TREEISH instead of head "
@@ -481,20 +532,18 @@ def main(argv):
     try:
         # Create base temporary directory for this run
         init_tmpdir(options.tmp_dir, prefix='pq-rpm_')
-        current = repo.get_branch()
         if action == "export":
             export_patches(repo, options)
         elif action == "import":
             import_spec_patches(repo, options)
         elif action == "drop":
-            drop_pq(repo, current, options)
+            drop_pq_rpm(repo, options)
         elif action == "rebase":
             rebase_pq(repo, options)
         elif action == "apply":
-            patch = Patch(patchfile)
-            apply_single_patch(repo, current, patch, None, options)
+            apply_single_patch(repo, patchfile, options)
         elif action == "switch":
-            switch_pq(repo, current, options)
+            switch_pq(repo, options)
     except CommandExecFailed:
         retval = 1
     except GitRepositoryError as err:
