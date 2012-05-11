@@ -91,7 +91,8 @@ class TestApplySinglePatch(testutils.DebianGitTestRepo):
 
         patch = gbp.patch_series.Patch(_patch_path('foo.patch'))
 
-        pq.apply_single_patch(self.repo, 'master', patch, None)
+        dummy_opts = object()
+        pq.apply_single_patch(self.repo, 'master', patch, None, dummy_opts)
         self.assertIn('foo', self.repo.list_files())
 
 class TestWritePatch(testutils.DebianGitTestRepo):

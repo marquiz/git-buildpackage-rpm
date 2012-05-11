@@ -32,43 +32,99 @@ from gbp.git.modifier import GitModifier, GitTz
 from gbp.errors import GbpError
 import gbp.log
 
-PQ_BRANCH_PREFIX = "patch-queue/"
+DEFAULT_PQ_BRANCH_NAME = "patch-queue/%(branch)s"
 
 
-def is_pq_branch(branch):
+def is_pq_branch(branch, options):
     """
     is branch a patch-queue branch?
 
-    >>> is_pq_branch("foo")
+    >>> from optparse import OptionParser
+    >>> (opts, args) = OptionParser().parse_args([])
+    >>> is_pq_branch("foo", opts)
     False
-    >>> is_pq_branch("patch-queue/foo")
+    >>> is_pq_branch("patch-queue/foo", opts)
+    True
+    >>> opts.pq_branch = "%(branch)s/development"
+    >>> is_pq_branch("foo/development/bar", opts)
+    False
+    >>> is_pq_branch("bar/foo/development", opts)
+    True
+    >>> opts.pq_branch = "development"
+    >>> is_pq_branch("development", opts)
+    True
+    >>> opts.pq_branch = "my/%(branch)s/pq"
+    >>> is_pq_branch("my/foo/pqb", opts)
+    False
+    >>> is_pq_branch("my/foo/pq", opts)
     True
     """
-    return [False, True][branch.startswith(PQ_BRANCH_PREFIX)]
+    pq_format_str = DEFAULT_PQ_BRANCH_NAME
+    if hasattr(options, 'pq_branch'):
+        pq_format_str = options.pq_branch
+
+    pq_re = re.compile(r'^%s$' % (pq_format_str % dict(branch="(?P<base>\S+)")))
+    if pq_re.match(branch):
+        return True
+    return False
 
 
-def pq_branch_name(branch):
+def pq_branch_name(branch, options):
     """
     get the patch queue branch corresponding to branch
 
-    >>> pq_branch_name("patch-queue/master")
-    >>> pq_branch_name("foo")
+    >>> from optparse import OptionParser
+    >>> (opts, args) = OptionParser().parse_args([])
+    >>> pq_branch_name("patch-queue/master", opts)
+    >>> pq_branch_name("foo", opts)
     'patch-queue/foo'
+    >>> opts.pq_branch = "%(branch)s/development"
+    >>> pq_branch_name("foo", opts)
+    'foo/development'
+    >>> opts.pq_branch = "development"
+    >>> pq_branch_name("foo", opts)
+    'development'
     """
-    if not is_pq_branch(branch):
-        return PQ_BRANCH_PREFIX + branch
+    pq_format_str = DEFAULT_PQ_BRANCH_NAME
+    if hasattr(options, 'pq_branch'):
+        pq_format_str = options.pq_branch
+
+    if not is_pq_branch(branch, options):
+        return pq_format_str % dict(branch=branch)
 
 
-def pq_branch_base(pq_branch):
+def pq_branch_base(pq_branch, options):
     """
-    get the branch corresponding to the given patch queue branch
+    Get the branch corresponding to the given patch queue branch.
+    Returns the packaging/debian branch if pq format string doesn't contain
+    '%(branch)s' key.
 
-    >>> pq_branch_base("patch-queue/master")
+    >>> from optparse import OptionParser
+    >>> (opts, args) = OptionParser().parse_args([])
+    >>> opts.packaging_branch = "packaging"
+    >>> pq_branch_base("patch-queue/master", opts)
     'master'
-    >>> pq_branch_base("foo")
+    >>> pq_branch_base("foo", opts)
+    >>> opts.pq_branch = "my/%(branch)s/development"
+    >>> pq_branch_base("foo/development", opts)
+    >>> pq_branch_base("my/foo/development/bar", opts)
+    >>> pq_branch_base("my/foo/development", opts)
+    'foo'
+    >>> opts.pq_branch = "development"
+    >>> pq_branch_base("foo/development", opts)
+    >>> pq_branch_base("development", opts)
+    'packaging'
     """
-    if is_pq_branch(pq_branch):
-        return pq_branch[len(PQ_BRANCH_PREFIX):]
+    pq_format_str = DEFAULT_PQ_BRANCH_NAME
+    if hasattr(options, 'pq_branch'):
+        pq_format_str = options.pq_branch
+
+    pq_re = re.compile(r'^%s$' % (pq_format_str % dict(branch="(?P<base>\S+)")))
+    m = pq_re.match(pq_branch)
+    if m:
+        if 'base' in m.groupdict():
+            return m.group('base')
+        return options.packaging_branch
 
 
 def parse_gbp_commands(info, cmd_tag, noarg_cmds, arg_cmds):
@@ -229,15 +285,15 @@ def get_maintainer_from_control(repo):
     return GitModifier()
 
 
-def switch_to_pq_branch(repo, branch):
+def switch_to_pq_branch(repo, branch, options):
     """
     Switch to patch-queue branch if not already there, create it if it
     doesn't exist yet
     """
-    if is_pq_branch(branch):
+    if is_pq_branch(branch, options):
         return
 
-    pq_branch = pq_branch_name(branch)
+    pq_branch = pq_branch_name(branch, options)
     if not repo.has_branch(pq_branch):
         try:
             repo.create_branch(pq_branch)
@@ -249,8 +305,9 @@ def switch_to_pq_branch(repo, branch):
     repo.set_branch(pq_branch)
 
 
-def apply_single_patch(repo, branch, patch, fallback_author, topic=None):
-    switch_to_pq_branch(repo, branch)
+def apply_single_patch(repo, branch, patch, fallback_author, options):
+    switch_to_pq_branch(repo, branch, options)
+    topic = None if not hasattr(options, 'topic') else options.topic
     apply_and_commit_patch(repo, patch, fallback_author, topic)
 
 
@@ -279,12 +336,12 @@ def apply_and_commit_patch(repo, patch, fallback_author, topic=None):
     repo.update_ref('HEAD', commit, msg="gbp-pq import %s" % patch.path)
 
 
-def drop_pq(repo, branch):
-    if is_pq_branch(branch):
+def drop_pq(repo, branch, options):
+    if is_pq_branch(branch, options):
         gbp.log.err("On a patch-queue branch, can't drop it.")
         raise GbpError
     else:
-        pq_branch = pq_branch_name(branch)
+        pq_branch = pq_branch_name(branch, options)
 
     if repo.has_branch(pq_branch):
         repo.delete_branch(pq_branch)
