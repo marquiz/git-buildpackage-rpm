@@ -627,6 +627,7 @@ def main(argv):
     parser.add_config_file_option(option_name="upstream-tag",
             dest="upstream_tag")
     parser.add_config_file_option(option_name="spec-file", dest="spec_file")
+<<<<<<< HEAD
     parser.add_config_file_option(option_name="packaging-dir",
             dest="packaging_dir")
     parser.add_option("--new-packaging-dir",
