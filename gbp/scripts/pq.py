@@ -193,7 +193,7 @@ def export_patches(repo, branch, options):
         gbp.log.info("No patches on '%s' - nothing to do." % pq_branch)
 
     if options.drop:
-        drop_pq(repo, branch)
+        drop_pq(repo, branch, options)
 
 
 def safe_patches(series, tmpdir_base):
