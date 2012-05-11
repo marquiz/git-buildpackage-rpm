@@ -596,6 +596,7 @@ class GbpOptionParserRpm(GbpOptionParser):
             'packaging-branch'          : 'master',
             'packaging-dir'             : '',
             'packaging-tag'             : 'packaging/%(version)s',
+            'pq-branch'                 : 'development/%(branch)s',
             'spec-file'                 : 'auto',
                     })
 
@@ -616,6 +617,9 @@ class GbpOptionParserRpm(GbpOptionParser):
             'packaging-tag':
                 "Format string for packaging tags, RPM counterpart of the "
                 "'debian-tag' option, default is '%(packaging-tag)s'",
+            'pq-branch':
+                "format string for the patch-queue branch name, default is "
+                "'%(pq-branch)s'",
             'spec-file':
                 "Spec file to use, 'auto' makes gbp to guess, other values "
                 "make the packaging-dir option to be ignored, default is "
