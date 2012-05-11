@@ -278,7 +278,7 @@ def rebase_pq(repo, branch, options):
     if not upstream_commit:
         raise GbpError, ("Couldn't find upstream version %s. Don't know on what base to import." % spec.version)
 
-    switch_to_pq_branch(repo, branch)
+    switch_to_pq_branch(repo, branch, options)
     GitCommand("rebase")([upstream_commit])
 
 
@@ -317,6 +317,10 @@ def main(argv):
     parser.add_config_file_option(option_name="upstream-tag", dest="upstream_tag")
     parser.add_config_file_option(option_name="spec-file", dest="spec_file")
     parser.add_config_file_option(option_name="packaging-dir", dest="packaging_dir")
+    parser.add_config_file_option(option_name="packaging-branch",
+                                  dest="packaging_branch",
+                                  help="Branch the packaging is being maintained on. Only relevant if a invariable/single pq-branch is defined, in which case this is used as the 'base' branch. Default is '%(packaging-branch)s'")
+    parser.add_config_file_option(option_name="pq-branch", dest="pq_branch")
     parser.add_option("--export-rev", action="store", dest="export_rev", default="",
                       help="Export patches from treeish object TREEISH instead "
                            "of head of patch-queue branch", metavar="TREEISH")
