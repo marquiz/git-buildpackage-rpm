@@ -53,6 +53,7 @@ def sanitize_prefix(prefix):
     return '/'
 
 
+<<<<<<< HEAD
 def compress(cmd, options, output, input_data=None):
     """
     Filter data through a compressor cmd.
@@ -75,6 +76,10 @@ def compress(cmd, options, output, input_data=None):
 
 def git_archive_submodules(repo, treeish, output, tmpdir_base, prefix,
                            comp_type, comp_level, comp_opts, format='tar'):
+=======
+def git_archive_submodules(repo, treeish, output, prefix, comp_type, comp_level,
+                           comp_opts, format='tar'):
+>>>>>>> e6cea4d... common/buildpackage: support for different archive formats
     """
     Create a source tree archive with submodules.
 
@@ -84,7 +89,11 @@ def git_archive_submodules(repo, treeish, output, tmpdir_base, prefix,
     Exception handling is left to the caller.
     """
     prefix = sanitize_prefix(prefix)
+<<<<<<< HEAD
     tempdir = tempfile.mkdtemp(dir=tmpdir_base, prefix='git-archive_')
+=======
+    tempdir = tempfile.mkdtemp()
+>>>>>>> e6cea4d... common/buildpackage: support for different archive formats
     main_archive = os.path.join(tempdir, "main.%s" % format)
     submodule_archive = os.path.join(tempdir, "submodule.%s" % format)
     try:
@@ -98,8 +107,13 @@ def git_archive_submodules(repo, treeish, output, tmpdir_base, prefix,
             subrepo = GitRepository(os.path.join(repo.path, subdir))
 
             gbp.log.debug("Processing submodule %s (%s)" % (subdir, commit[0:8]))
+<<<<<<< HEAD
             subrepo.archive(format=format, prefix='%s%s/' % (prefix, tarpath),
                             output=submodule_archive, treeish=commit)
+=======
+            repo.archive(format=format, prefix='%s%s/' % (prefix, tarpath),
+                         output=submodule_archive, treeish=commit, cwd=subdir)
+>>>>>>> e6cea4d... common/buildpackage: support for different archive formats
             if format == 'tar':
                 CatenateTarArchive(main_archive)(submodule_archive)
             elif format == 'zip':
@@ -107,22 +121,33 @@ def git_archive_submodules(repo, treeish, output, tmpdir_base, prefix,
 
         # compress the output
         if comp_type:
+<<<<<<< HEAD
             compress(comp_type, ['--stdout', '-%s' % comp_level] + comp_opts +
                      [main_archive], output)
+=======
+            ret = os.system("%s --stdout -%s %s %s > %s" % (comp_type, comp_level, comp_opts, main_archive, output))
+            if ret:
+                raise GbpError("Error creating %s: %d" % (output, ret))
+>>>>>>> e6cea4d... common/buildpackage: support for different archive formats
         else:
             shutil.move(main_archive, output)
     finally:
         shutil.rmtree(tempdir)
 
 
+<<<<<<< HEAD
 def git_archive_single(repo, treeish, output, prefix, comp_type, comp_level,
                        comp_opts, format='tar'):
+=======
+def git_archive_single(treeish, output, prefix, comp_type, comp_level, comp_opts, format='tar'):
+>>>>>>> e6cea4d... common/buildpackage: support for different archive formats
     """
     Create an archive without submodules
 
     Exception handling is left to the caller.
     """
     prefix = sanitize_prefix(prefix)
+<<<<<<< HEAD
     if comp_type:
         cmd = comp_type
         opts = ['--stdout', '-%s' % comp_level] + comp_opts
@@ -141,6 +166,15 @@ def untar_data(outdir, data):
     popen.stdin.close()
     if popen.wait():
         raise GbpError("Error extracting tar to %s" % outdir)
+=======
+    pipe = pipes.Template()
+    pipe.prepend("git archive --format=%s --prefix=%s %s" % (format, prefix, treeish), '.-')
+    if comp_type:
+        pipe.append('%s -c -%s %s' % (comp_type, comp_level, comp_opts),  '--')
+    ret = pipe.copy('', output)
+    if ret:
+        raise GbpError("Error creating %s: %d" % (output, ret))
+>>>>>>> e6cea4d... common/buildpackage: support for different archive formats
 
 
 #{ Functions to handle export-dir
