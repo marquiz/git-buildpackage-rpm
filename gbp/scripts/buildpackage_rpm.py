@@ -77,7 +77,7 @@ def git_archive(repo, spec, output_dir, treeish, prefix, comp_level,
                                    spec.orig_src['archive_fmt'])
 
         else:
-            git_archive_single(treeish, output, prefix,
+            git_archive_single(repo, treeish, output, prefix,
                                spec.orig_src['compression'], comp_level,
                                comp_opts, spec.orig_src['archive_fmt'])
     except (GitRepositoryError, CommandExecFailed):

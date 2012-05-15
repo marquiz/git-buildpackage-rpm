@@ -138,7 +138,7 @@ def test_create_zip_archives():
     contents = ls_zip('with-submodules.zip')
     ok_('test/test_submodule/testfile' in contents)
 
-    git_archive_single('HEAD', 'without-submodules.zip', 'test',
+    git_archive_single(REPO, 'HEAD', 'without-submodules.zip', 'test',
                        '', '', '', 'zip')
     contents = ls_zip('without-submodules.zip')
     ok_('test/test_submodule/testfile' not in contents)

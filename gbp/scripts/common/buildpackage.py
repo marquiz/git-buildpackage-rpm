@@ -21,6 +21,7 @@
 import os, os.path
 import pipes
 import tempfile
+import subprocess
 import shutil
 import subprocess
 
@@ -100,21 +101,26 @@ def git_archive_submodules(repo, treeish, output, prefix, comp_type, comp_level,
         shutil.rmtree(tempdir)
 
 
-def git_archive_single(treeish, output, prefix, comp_type, comp_level, comp_opts, format='tar'):
+def git_archive_single(repo, treeish, output, prefix, comp_type, comp_level,
+                       comp_opts, format='tar'):
     """
     Create an archive without submodules
 
     Exception handling is left to the caller.
     """
     prefix = sanitize_prefix(prefix)
-    pipe = pipes.Template()
-    pipe.prepend("git archive --format=%s --prefix=%s %s" % (format, prefix, treeish), '.-')
-    if comp_type:
-        pipe.append('%s -c -%s %s' % (comp_type, comp_level,
-                                      " ".join(comp_opts)),  '--')
-    ret = pipe.copy('', output)
-    if ret:
-        raise GbpError("Error creating %s: %d" % (output, ret))
+    with open(output, 'w') as archive_fd:
+        if comp_type:
+            cmd = [comp_type, '--stdout', '-%s' % comp_level] + comp_opts
+        else:
+            cmd = ['cat']
+
+        popen = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=archive_fd)
+        for chunk in repo.archive(format, prefix, None, treeish):
+            popen.stdin.write(chunk)
+        popen.stdin.close()
+        if popen.wait():
+            raise GbpError("Error creating %s: compressor cmd failed" % output)
 
 
 def untar_data(outdir, data):
