@@ -46,6 +46,11 @@ override_dh_auto_install:
 
 override_dh_auto_clean:
 	dh_auto_clean
+	# Remove renamed files - renames are not correctly expressed in debian.diff
+	rm -f debian/doc-base
+	rm -f debian/docs
+	rm -f debian/examples
+	rm -f debian/manpages
 	rm -rf build/
 	make -C docs/ clean
 	-rm gbp/version.py
