@@ -1,0 +1,12 @@
+usr/bin/gbp
+usr/bin/gbp-clone
+usr/bin/gbp-pull
+usr/lib/python*/dist-packages/gbp/*.py*
+usr/lib/python*/dist-packages/gbp/scripts/__init__.py*
+usr/lib/python*/dist-packages/gbp/scripts/clone.py*
+usr/lib/python*/dist-packages/gbp/scripts/pull.py*
+usr/lib/python*/dist-packages/gbp/scripts/supercommand.py*
+usr/lib/python*/dist-packages/gbp/scripts/common/*.py*
+usr/lib/python*/dist-packages/gbp/git/*.py*
+usr/lib/python*/dist-packages/gbp/pkg/*.py*
+etc/git-buildpackage/gbp.conf
