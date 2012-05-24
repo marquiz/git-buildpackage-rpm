@@ -1,0 +1,3 @@
+usr/bin/*rpm*
+usr/lib/python*/dist-packages/gbp/rpm/*.py*
+usr/lib/python*/dist-packages/gbp/scripts/*rpm*.py*
