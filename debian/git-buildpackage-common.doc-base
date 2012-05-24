@@ -7,5 +7,5 @@ Abstract: git-buildpackage is a suite to help with Debian packages in Git
 Section: Programming
 
 Format: HTML
-Index: /usr/share/doc/git-buildpackage/manual-html/index.html
-Files: /usr/share/doc/git-buildpackage/manual-html/*.html
+Index: /usr/share/doc/git-buildpackage-common/manual-html/index.html
+Files: /usr/share/doc/git-buildpackage-common/manual-html/*.html

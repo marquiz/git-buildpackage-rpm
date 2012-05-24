@@ -33,17 +33,28 @@ Vcs-Browser: https://honk.sigxcpu.org/gitweb/?p=git-buildpackage.git
 Homepage: https://honk.sigxcpu.org/piki/projects/git-buildpackage/
 X-Python-Version: >= 2.6
 
+
+Package: git-buildpackage-common
+Architecture: all
+Depends: ${python:Depends},
+ ${shlibs:Depends},
+ ${misc:Depends},
+ git (>= 1:1.7.9.1-1~),
+ man-db,
+ python-pkg-resources
+Recommends: pristine-tar (>= 0.5)
+Suggests: python-notify, unzip, zipmerge
+Description: Suite to help with packaging in Git repositories
+ This package contains the common API and scripts for Debian and rpm packaging
+
 Package: git-buildpackage
 Architecture: all
 Depends: ${python:Depends},
  ${shlibs:Depends},
  ${misc:Depends},
  devscripts (>= 2.13.5~),
- git (>= 1:1.7.9.1-1~),
- man-db,
- python-pkg-resources,
-Recommends: pristine-tar (>= 0.5), cowbuilder
-Suggests: python-notify, unzip, zipmerge
+ git-buildpackage-common (= ${binary:Version})
+Recommends: cowbuilder
 Description: Suite to help with Debian packages in Git repositories
  This package contains the following tools:
   * gbp import-{dsc,dscs}: import existing Debian source packages into a git
@@ -60,12 +71,14 @@ Package: git-buildpackage-rpm
 Architecture: all
 Depends: ${python:Depends},
  ${misc:Depends},
- git-buildpackage (= ${binary:Version}),
+ git-buildpackage-common (= ${binary:Version}),
  python-rpm,
  rpm,
-Recommends: pristine-tar (>= 0.5)
-Suggests: python-notify, unzip
 Description: Suite to help with RPM packages in Git repositories
  This package contains the following tools:
   * gbp import-srpm: import existing RPM source packages into a git
     repository
+  * git-import-orig-rpm: import a new upstream version into the git repository
+  * git-buildpackage-rpm: build a package out of a git repository, check for local
+    modifications and tag appropriately
+  * gbp-pq-rpm: manage separate development and packaging branches
