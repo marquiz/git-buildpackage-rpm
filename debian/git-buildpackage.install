@@ -1,0 +1,16 @@
+usr/bin/gbp-pq
+usr/bin/git-buildpackage
+usr/bin/git-dch
+usr/bin/git-import-dsc
+usr/bin/git-import-dscs
+usr/bin/git-import-orig
+usr/bin/git-pbuilder
+usr/bin/gbp-create-remote-repo
+usr/lib/python*/dist-packages/gbp/deb/*.py*
+usr/lib/python*/dist-packages/gbp/scripts/pq.py*
+usr/lib/python*/dist-packages/gbp/scripts/buildpackage.py*
+usr/lib/python*/dist-packages/gbp/scripts/dch.py*
+usr/lib/python*/dist-packages/gbp/scripts/import_dsc.py*
+usr/lib/python*/dist-packages/gbp/scripts/import_dscs.py*
+usr/lib/python*/dist-packages/gbp/scripts/import_orig.py*
+usr/lib/python*/dist-packages/gbp/scripts/create_remote_repo.py*
