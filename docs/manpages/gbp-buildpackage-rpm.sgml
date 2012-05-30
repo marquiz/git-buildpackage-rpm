@@ -19,6 +19,7 @@
     <cmdsynopsis>
       &gbp-buildpackage-rpm;
       <arg><option>--git-[no-]ignore-new</option></arg>
+      <arg><option>--git-[no-]ignore-untracked</option></arg>
       <arg><option>--git-tag</option></arg>
       <arg><option>--git-verbose</option></arg>
       <arg><option>--git-color=</option><replaceable>[auto|on|off]</replaceable></arg>
@@ -140,6 +141,15 @@
           Don't abort if there are uncommitted changes in the source tree or
           the current branch doesn't match the
           <replaceable>PACKAGING-BRANCH</replaceable>.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--git-[no-]ignore-untracked</option>
+        </term>
+        <listitem>
+          <para>
+          Don't abort if there are untracked files in the source tree.
           </para>
         </listitem>
       </varlistentry>

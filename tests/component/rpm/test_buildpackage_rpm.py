@@ -166,11 +166,15 @@ class TestGbpRpm(RpmRepoTestBase):
         with open('untracked-file', 'w') as fobj:
             fobj.write('this file is not tracked\n')
 
+        eq_(mock_gbp([]), 1)
+        eq_(mock_gbp(['--git-ignore-untracked']), 0)
+        self.check_rpms('../rpmbuild/RPMS/*')
+
         # Modify tracked file
         with open('README', 'a') as fobj:
             fobj.write('new stuff\n')
 
-        eq_(mock_gbp([]), 1)
+        eq_(mock_gbp(['--git-ignore-untracked']), 1)
         eq_(mock_gbp(['--git-ignore-new']), 0)
 
     @mock.patch('gbp.notifications.notify', mock_notify)
@@ -388,14 +392,14 @@ class TestGbpRpm(RpmRepoTestBase):
 
         # Test the "no" option
         eq_(mock_gbp(['--git-no-submodules', '--git-upstream-tree=%s' %
-                      upstr_branch, '--git-ignore-new']), 0)
+                      upstr_branch, '--git-ignore-untracked']), 0)
         tar_files = ls_tar('../rpmbuild/SOURCES/gbp-test-1.1.tar.bz2', False)
         self.check_files(upstr_files, tar_files)
         shutil.rmtree('../rpmbuild')
 
         # Test the "yes" option
         eq_(mock_gbp(['--git-submodules', '--git-upstream-tree=%s' %
-                      upstr_branch, '--git-ignore-new']), 0)
+                      upstr_branch, '--git-ignore-untracked']), 0)
         tar_files = ls_tar('../rpmbuild/SOURCES/gbp-test-1.1.tar.bz2', False)
         ref_files = upstr_files + ['gbp-test/gbp-test-native.repo/' + path for
                                         path in sub_files]
@@ -406,7 +410,7 @@ class TestGbpRpm(RpmRepoTestBase):
         shutil.rmtree('gbp-test-native.repo')
         repo.create('gbp-test-native.repo')
         eq_(mock_gbp(['--git-submodules', '--git-upstream-tree=%s' %
-                      upstr_branch, '--git-ignore-new']), 2)
+                      upstr_branch, '--git-ignore-untracked']), 2)
 
     def test_option_submodules_native(self):
         """Test the --git-submodules option for native packages"""
@@ -432,7 +436,7 @@ class TestGbpRpm(RpmRepoTestBase):
         # Test submodule failure
         shutil.rmtree('gbp-test-native2.repo')
         repo.create('gbp-test-native2.repo')
-        eq_(mock_gbp(['--git-submodules', '--git-ignore-new']), 1)
+        eq_(mock_gbp(['--git-submodules', '--git-ignore-untracked']), 1)
 
     def test_option_builder(self):
         """Test --git-builder option and it's args"""

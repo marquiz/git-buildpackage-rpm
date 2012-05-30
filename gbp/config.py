@@ -125,6 +125,7 @@ class GbpOptionParser(OptionParser):
                  'overlay'         : 'False',
                  'tarball-dir'     : '',
                  'ignore-new'      : 'False',
+                 'ignore-untracked': 'False',
                  'ignore-branch'   : 'False',
                  'meta'            : 'True',
                  'meta-closes'     : 'Closes|LP',
@@ -220,6 +221,9 @@ class GbpOptionParser(OptionParser):
                   "Meta bug number format, default is '%(meta-closes-bugnum)s'",
              'ignore-new':
                   "Build with uncommited changes in the source tree, default is '%(ignore-new)s'",
+             'ignore-untracked':
+                  "Build with untracked files in the source tree, default is "
+                  "'%(ignore-untracked)s'",
              'ignore-branch':
                   ("Build although debian-branch != current branch, "
                    "default is '%(ignore-branch)s'"),
