@@ -12,7 +12,6 @@ Build-Depends:
  pychecker,
  python (>> 2.6.6-3~),
  python-coverage,
- python-dateutil,
  python-epydoc,
  python-nose,
  python-nosexcover,
@@ -39,7 +38,6 @@ Depends: ${python:Depends},
  devscripts (>= 2.13.5~),
  git (>= 1:1.7.9.1-1~),
  man-db,
- python-dateutil,
  python-pkg-resources,
 Recommends: pristine-tar (>= 0.5), cowbuilder
 Suggests: python-notify, unzip
