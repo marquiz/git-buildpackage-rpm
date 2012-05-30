@@ -538,6 +538,7 @@ class GbpOptionParserRpm(GbpOptionParser):
                        'cleaner'                : '/bin/true',
                        'packaging-dir'          : '',
                        'packaging-tag'          : '%(vendor)s/%(version)s',
+                       'upstream-tag'           : 'upstream/%(upstreamversion)s',
                        'pq-branch'              : 'development/%(branch)s',
                        'spec-file'              : 'auto',
                        'export-dir'             : 'rpmbuild',

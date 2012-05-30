@@ -142,9 +142,9 @@ def export_patches(repo, branch, options):
         raise GbpError, "Can't parse spec"
 
     # Find upstream version
-    upstream_commit = repo.find_version(options.upstream_tag, dict(upstreamversion=spec.version), "Upstream")
+    upstream_commit = repo.find_version(options.upstream_tag, dict(upstreamversion=spec.upstreamversion), "Upstream")
     if not upstream_commit:
-        raise GbpError, ("Couldn't find upstream version %s. Don't know on what base to import." % spec.version)
+        raise GbpError, ("Couldn't find upstream version %s. Don't know on what base to import." % spec.upstreamversion)
 
     export_treeish = options.export_rev if options.export_rev else pq_branch
     if not repo.has_treeish(export_treeish):
@@ -233,11 +233,11 @@ def import_spec_patches(repo, branch, options):
         raise GbpError, "Can't parse spec"
 
     # Find upstream version
-    commit = repo.find_version(options.upstream_tag, dict(upstreamversion=spec.version), "Upstream")
+    commit = repo.find_version(options.upstream_tag, dict(upstreamversion=spec.upstreamversion), "Upstream")
     if commit:
         commits=[commit]
     else:
-        raise GbpError, ("Couldn't find upstream version %s. Don't know on what base to import." % spec.version)
+        raise GbpError, ("Couldn't find upstream version %s. Don't know on what base to import." % spec.upstreamversion)
 
     queue = spec.patchseries()
     packager = get_packager(spec)
@@ -295,9 +295,9 @@ def rebase_pq(repo, branch, options):
         raise GbpError, "Can't parse spec"
 
     # Find upstream version
-    upstream_commit = repo.find_version(options.upstream_tag, dict(upstreamversion=spec.version), "Upstream")
+    upstream_commit = repo.find_version(options.upstream_tag, dict(upstreamversion=spec.upstreamversion), "Upstream")
     if not upstream_commit:
-        raise GbpError, ("Couldn't find upstream version %s. Don't know on what base to import." % spec.version)
+        raise GbpError, ("Couldn't find upstream version %s. Don't know on what base to import." % spec.upstreamversion)
 
     switch_to_pq_branch(repo, branch, options)
     GitCommand("rebase")([upstream_commit])
