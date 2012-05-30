@@ -17,7 +17,8 @@
 """Accessing Git from python"""
 
 import calendar
-import dateutil.parser
+import datetime
+import rfc822
 
 from gbp.git.modifier import GitModifier
 from gbp.git.commit import GitCommit
@@ -26,6 +27,23 @@ from gbp.git.repository import GitRepository, GitRepositoryError
 from gbp.git.fastimport import FastImport
 from gbp.git.args import GitArgs
 from gbp.git.vfs import GitVfs
+
+
+class FixedOffset(datetime.tzinfo):
+    """Fixed offset in seconds east from UTC."""
+
+    ZERO = datetime.timedelta(0)
+
+    def __init__(self, offset):
+        datetime.tzinfo.__init__(self)
+        self._offset = datetime.timedelta(seconds=offset)
+
+    def utcoffset(self, dtime):
+        return self._offset + self.dst(dtime)
+
+    def dst(self, dtime):
+        assert dtime.tzinfo is self
+        return self.ZERO
 
 
 def rfc822_date_to_git(rfc822_date):
@@ -38,9 +56,10 @@ def rfc822_date_to_git(rfc822_date):
     >>> rfc822_date_to_git('Sat, 5 Apr 2008 17:01:32 +0200')
     '1207407692 +0200'
     """
-    d = dateutil.parser.parse(rfc822_date)
-    seconds = calendar.timegm(d.utctimetuple())
-    tz = d.strftime("%z")
-    return '%d %s' % (seconds, tz)
+    parsed = rfc822.parsedate_tz(rfc822_date)
+    date = datetime.datetime(*parsed[:6], tzinfo=FixedOffset(parsed[-1]))
+    seconds = calendar.timegm(date.utctimetuple())
+    tzone = date.strftime("%z")
+    return '%d %s' % (seconds, tzone)
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
