@@ -596,6 +596,7 @@ class GbpOptionParserRpm(GbpOptionParser):
             'packaging-branch'          : 'master',
             'packaging-dir'             : '',
             'packaging-tag'             : 'packaging/%(version)s',
+            'upstream-tag'              : 'upstream/%(upstreamversion)s',
             'pq-branch'                 : 'development/%(branch)s',
             'spec-file'                 : 'auto',
             'builder'                   : 'rpmbuild',
