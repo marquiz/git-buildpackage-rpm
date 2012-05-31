@@ -28,7 +28,7 @@ class RpmGitRepository(GitRepository):
         super(RpmGitRepository, self).__init__(path)
         self.pristine_tar = PristineTar(self)
 
-    def find_version(self, format, version, vendor="vendor"):
+    def find_version(self, format, str_fields):
         """
         Check if a certain version is stored in this repo and return the SHA1
         of the related commit. That is, an annotated tag is dereferenced to the
@@ -36,39 +36,34 @@ class RpmGitRepository(GitRepository):
 
         @param format: tag pattern
         @type format: C{str}
-        @param version: rpm version components ('epoch', 'upstreamversion', 'release',...)
-        @type version: C{dict} of C{str}
-        @param vendor: distribution vendor
-        @type vendor: C{str}
+        @param str_fields: arguments for format string ('upstreamversion', 'release', 'vendor'...)
+        @type str_fields: C{dict} of C{str}
         @return: sha1 of the commit the tag references to
         """
-        tag = self.version_to_tag(format, version, vendor)
+        tag = self. version_to_tag(format, str_fields)
         if self.has_tag(tag): # new tags are injective
             # dereference to a commit object
             return self.rev_parse("%s^0" % tag)
         return None
 
     @staticmethod
-    def version_to_tag(format, version, vendor="vendor"):
+    def version_to_tag(format, str_fields):
         """
         Generate a tag from a given format and a version
 
         @param format: tag pattern
         @type format: C{str}
-        @param version: rpm version components ('epoch', 'upstreamversion', 'release',...)
-        @type version: C{dict} of C{str}
-        @param vendor: distribution vendor
-        @type vendor: C{str}
+        @param str_fields: arguments for format string ('upstreamversion', 'release', 'vendor'...)
+        @type str_fields: C{dict} of C{str}
         @return: version tag
 
         >>> RpmGitRepository.version_to_tag("packaging/%(version)s", dict(epoch='0', upstreamversion='0~0'))
         'packaging/0%0_0'
-        >>> RpmGitRepository.version_to_tag("%(vendor)s/v%(version)s", dict(upstreamversion='1.0', release='2'), "myvendor")
+        >>> RpmGitRepository.version_to_tag("%(vendor)s/v%(version)s", dict(upstreamversion='1.0', release='2', vendor="myvendor"))
         'myvendor/v1.0-2'
         """
-        version_tag = format % dict(version,
-                                    version=RpmPkgPolicy.compose_full_version(version),
-                                    vendor=vendor)
+        version_tag = format % dict(str_fields,
+                                    version=RpmPkgPolicy.compose_full_version(str_fields))
         return RpmGitRepository._sanitize_tag(version_tag)
 
     @staticmethod
