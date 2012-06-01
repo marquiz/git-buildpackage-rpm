@@ -22,6 +22,9 @@ from gbp.pkg import PkgPolicy, parse_archive_filename
 class RpmPkgPolicy(PkgPolicy):
     """Packaging policy for RPM"""
 
+    # Special rpmlib python module for GBP (only)
+    python_rpmlib_module_name = "rpmlibgbp"
+
     alnum = 'a-zA-Z0-9'
     # Valid characters for RPM pkg name
     name_whitelist_chars = '._+%{}\-'
