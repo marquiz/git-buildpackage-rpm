@@ -77,29 +77,47 @@ class GitRepository(object):
         all methods.
     """
 
-    def _check_bare(self):
-        """Check whether this is a bare repository"""
-        out, dummy, ret = self._git_inout('rev-parse', ['--is-bare-repository'],
-                                          capture_stderr=True)
+    def _check_dirs(self):
+        """Get top level dir and git meta data dir"""
+        out, dummy, ret = self._git_inout('rev-parse', ['--git-dir'],
+                                      capture_stderr=True)
         if ret:
             raise GitRepositoryError(
-                "Failed to get repository state at '%s'" % self.path)
-        self._bare = False if out.strip() != 'true' else True
-        self._git_dir = '' if self._bare else '.git'
+                "Failed to get repository git dir at '%s'" % self.path)
+
+        # Set git meta data dir
+        git_dir = out.strip()
+        if os.path.isabs(git_dir):
+            self._git_dir = git_dir
+        else:
+            self._git_dir = os.path.abspath(os.path.join(self.path, git_dir))
+
+        # Set top level dir correctly (in case repo was initialized
+        # from a subdir, for example)
+        if self.bare:
+            self._path = self._git_dir
+        else:
+            out, dummy, ret = self._git_inout('rev-parse', ['--show-toplevel'],
+                                              capture_stderr=True)
+            self._path = os.path.abspath(out.strip())
 
     def __init__(self, path):
         self._path = os.path.abspath(path)
-        self._bare = False
         try:
-            out, dummy, ret = self._git_inout('rev-parse', ['--show-cdup'],
+            # Check for bare repository
+            out, dummy, ret = self._git_inout('rev-parse', ['--is-bare-repository'],
                                               capture_stderr=True)
-            if ret or out.strip():
+            if ret:
                 raise GitRepositoryError("No Git repository at '%s': '%s'" % (self.path, out))
+            self._bare = False if out.strip() != 'true' else True
+
+            self._check_dirs()
+
         except GitRepositoryError:
             raise # We already have a useful error message
         except:
-            raise GitRepositoryError("No Git repository at '%s'" % self.path)
-        self._check_bare()
+            raise GitRepositoryError("No Git repository at '%s' (or any parent dir)" % self.path)
+
 
     @staticmethod
     def __build_env(extra_env):
