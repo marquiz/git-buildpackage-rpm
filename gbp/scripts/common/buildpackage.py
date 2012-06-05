@@ -22,8 +22,11 @@ import os, os.path
 import pipes
 import tempfile
 import shutil
+import subprocess
+
 from gbp.command_wrappers import (CatenateTarArchive, CatenateZipArchive)
 from gbp.errors import GbpError
+from gbp.git.repository import GitRepository, GitRepositoryError
 import gbp.log
 
 # when we want to reference the index in a treeish context we call it:
@@ -112,53 +115,42 @@ def git_archive_single(treeish, output, prefix, comp_type, comp_level, comp_opts
         raise GbpError("Error creating %s: %d" % (output, ret))
 
 
+def untar_data(outdir, data):
+    """Extract tar provided as an iterable"""
+    popen = subprocess.Popen(['tar', '-C', outdir, '-x'],
+                             stdin=subprocess.PIPE)
+    for chunk in data:
+        popen.stdin.write(chunk)
+    popen.stdin.close()
+    if popen.wait():
+        raise GbpError("Error extracting tar to %s" % outdir)
+
+
 #{ Functions to handle export-dir
 def dump_tree(repo, export_dir, treeish, with_submodules, recursive=True):
-    "dump a tree to output_dir"
-    output_dir = os.path.dirname(export_dir)
-    prefix = sanitize_prefix(os.path.basename(export_dir))
+    """Dump a git tree-ish to output_dir"""
+    if not os.path.exists(export_dir):
+        os.makedirs(export_dir)
     if recursive:
-        paths = []
+        paths = ''
     else:
-        paths = ["'%s'" % nam for _mod, typ, _sha, nam in
-                    repo.list_tree(treeish) if typ == 'blob']
-
-    pipe = pipes.Template()
-    pipe.prepend('git archive --format=tar --prefix=%s %s -- %s' %
-                 (prefix, treeish, ' '.join(paths)), '.-')
-    pipe.append('tar -C %s -xf -' % output_dir,  '-.')
-    top = os.path.abspath(os.path.curdir)
+        paths = [nam for _mod, typ, _sha, nam in repo.list_tree(treeish) if
+                    typ == 'blob']
     try:
-        ret = pipe.copy('', '')
-        if ret:
-            raise GbpError("Error in dump_tree archive pipe")
-
-        if recursive and with_submodules:
-            if repo.has_submodules():
-                repo.update_submodules()
+        data = repo.archive('tar', '', None, treeish, paths)
+        untar_data(export_dir, data)
+        if recursive and with_submodules and repo.has_submodules():
+            repo.update_submodules()
             for (subdir, commit) in repo.get_submodules(treeish):
-                gbp.log.info("Processing submodule %s (%s)" % (subdir, commit[0:8]))
-                tarpath = [subdir, subdir[2:]][subdir.startswith("./")]
-                os.chdir(subdir)
-                pipe = pipes.Template()
-                pipe.prepend('git archive --format=tar --prefix=%s%s/ %s' %
-                             (prefix, tarpath, commit), '.-')
-                pipe.append('tar -C %s -xf -' % output_dir,  '-.')
-                ret = pipe.copy('', '')
-                os.chdir(top)
-                if ret:
-                     raise GbpError("Error in dump_tree archive pipe in submodule %s" % subdir)
-    except OSError as err:
-        gbp.log.err("Error dumping tree to %s: %s" % (output_dir, err[0]))
+                gbp.log.info("Processing submodule %s (%s)" % (subdir,
+                                                               commit[0:8]))
+                subrepo = GitRepository(os.path.join(repo.path, subdir))
+                prefix = [subdir, subdir[2:]][subdir.startswith("./")] + '/'
+                data = subrepo.archive('tar', prefix, None, treeish)
+                untar_data(export_dir, data)
+    except GitRepositoryError as err:
+        gbp.log.err("Git error when dumping tree: %s" % err)
         return False
-    except GbpError as err:
-        gbp.log.err(err)
-        return False
-    except Exception as e:
-        gbp.log.err("Error dumping tree to %s: %s" % (output_dir, e))
-        return False
-    finally:
-        os.chdir(top)
     return True
 
 
