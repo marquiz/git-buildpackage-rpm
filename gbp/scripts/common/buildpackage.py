@@ -19,7 +19,6 @@
 """Common functionality for Debian and RPM buildpackage scripts"""
 
 import os, os.path
-import pipes
 import tempfile
 import subprocess
 import shutil
@@ -144,21 +143,15 @@ def untar_data(outdir, data):
     if popen.wait():
         raise GbpError("Error extracting tar to %s" % outdir)
 
-
 #{ Functions to handle export-dir
-def dump_tree(repo, export_dir, treeish, with_submodules, recursive=True):
+def dump_tree(repo, export_dir, treeish, with_submodules):
     """Dump a git tree-ish to output_dir"""
     if not os.path.exists(export_dir):
         os.makedirs(export_dir)
-    if recursive:
-        paths = ''
-    else:
-        paths = [nam for _mod, typ, _sha, nam in repo.list_tree(treeish) if
-                    typ == 'blob']
     try:
-        data = repo.archive('tar', '', None, treeish, paths)
+        data = repo.archive('tar', '', None, treeish)
         untar_data(export_dir, data)
-        if recursive and with_submodules and repo.has_submodules():
+        if with_submodules and repo.has_submodules():
             repo.update_submodules()
             for (subdir, commit) in repo.get_submodules(treeish):
                 gbp.log.info("Processing submodule %s (%s)" % (subdir,
