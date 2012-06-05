@@ -664,7 +664,7 @@ def test_create_bare():
     >>> bare = gbp.git.GitRepository.create(bare_dir, bare=True, description="msg")
     >>> bare.path == bare_dir
     True
-    >>> bare.git_dir[:-1] == bare_dir
+    >>> bare.git_dir == bare_dir
     True
     >>> type(bare) == gbp.git.GitRepository
     True
@@ -685,7 +685,7 @@ def test_nonexistant():
     >>> bare = gbp.git.GitRepository("/does/not/exist")
     Traceback (most recent call last):
     ...
-    GitRepositoryError: No Git repository at '/does/not/exist'
+    GitRepositoryError: No Git repository at '/does/not/exist' (or any parent dir)
     """
 
 def test_create_noperm():
