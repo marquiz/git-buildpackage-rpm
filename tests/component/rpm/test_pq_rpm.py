@@ -372,6 +372,19 @@ class TestPqRpm(RpmRepoTestBase):
         eq_(mock_pq(['export', '--export-rev=%s' % tree]), 1)
         self._check_log(-1, "gbp:error: Start commit .* not an ancestor of end")
 
+    def test_option_patch_compress(self):
+        """Test the --patch-compress cmdline option"""
+        repo = self.init_test_repo('gbp-test')
+        repo.rename_branch('pq/master', 'development/master')
+        branches = repo.get_local_branches()
+
+        # Export, all generated patches should be compressed
+        eq_(mock_pq(['export', '--patch-compress=1']), 0)
+        files = ['.gbp.conf', '.gitignore', 'bar.tar.gz', 'foo.txt',
+                 'gbp-test.spec', '0001-my-gz.patch.gz',
+                 '0002-my-bzip2.patch.gz', '0003-my2.patch.gz', 'my.patch']
+        self._check_repo_state(repo, 'master', branches, files)
+
     def test_export_with_merges(self):
         """Test exporting pq-branch with merge commits"""
         repo = self.init_test_repo('gbp-test')

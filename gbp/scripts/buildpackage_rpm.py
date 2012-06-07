@@ -510,6 +510,7 @@ def build_parser(name, prefix=None, git_treeish=None):
                     help="Export patches from TREEISH")
     export_group.add_boolean_config_file_option(option_name="patch-numbers",
                     dest="patch_numbers")
+    export_group.add_config_file_option("patch-compress", dest="patch_compress")
     return parser
 
 
@@ -536,6 +537,8 @@ def parse_args(argv, prefix, git_treeish=None):
             gbp.log.err("'--%sretag' needs either '--%stag' or '--%stag-only'" %
                         (prefix, prefix, prefix))
             return None, None, None
+
+    options.patch_compress = rpm.string_to_int(options.patch_compress)
 
     return options, args, builder_args
 

@@ -702,6 +702,7 @@ class GbpOptionParserRpm(GbpOptionParser):
             'native'                    : 'auto',
             'spec-vcs-tag'              : '',
             'patch-export'              : 'False',
+            'patch-compress'            : '0',
             'patch-import'              : 'True',
             'import-files'              : ['.gbp.conf',
                                            'debian/gbp.conf'],
@@ -762,6 +763,10 @@ class GbpOptionParserRpm(GbpOptionParser):
             'patch-export':
                 "Create patches between upstream and export-treeish, default "
                 "is '%(patch-export)s'",
+            'patch-compress':
+                "Compress (auto-generated) patches larger than given number of "
+                "bytes, 0 never compresses, default is "
+                "'%(patch-compress)s'",
             'patch-import':
                 "Import patches to the packaging branch, default is "
                 "'%(patch-import)s'",

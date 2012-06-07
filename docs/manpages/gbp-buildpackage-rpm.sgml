@@ -67,6 +67,7 @@
       <arg><option>--git-[no-]patch-export</option></arg>
       <arg><option>--git-patch-export-rev=</option><replaceable>TREEISH</replaceable></arg>
       <arg><option>--git-[no-]patch-numbers</option></arg>
+      <arg><option>--git-patch-compress=</option><replaceable>THRESHOLD</replaceable></arg>
       <arg><option>--git-spec-vcs-tag</option>=<replaceable>TAG_FORMAT</replaceable></arg>
     </cmdsynopsis>
   </refsynopsisdiv>
@@ -660,6 +661,17 @@
         <listitem>
           <para>
           Whether the patch files should start with a number or not.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--git-patch-compress=</option><replaceable>THRESHOLD</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Compress (auto-generated) patches larger than given
+          <replaceable>THRESHOLD</replaceable> bytes. Special value 0 disabled
+          patch compression.
           </para>
         </listitem>
       </varlistentry>

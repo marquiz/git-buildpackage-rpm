@@ -28,6 +28,7 @@
       <arg><option>--[no-]patch-numbers</option></arg>
       <arg><option>--import-files=</option><replaceable>FILES</replaceable></arg>
       <arg><option>--export-rev=</option><replaceable>TREEISH</replaceable></arg>
+      <arg><option>--patch-compress=</option><replaceable>THRESHOLD</replaceable></arg>
       <group choice="plain">
         <arg><option>drop</option></arg>
         <arg><option>export</option></arg>
@@ -203,6 +204,17 @@
           <para>
           Export patches from <replaceable>TREEISH</replaceable> instead of the
           default which is HEAD of the development (patch-queue) branch.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--patch-compress=</option><replaceable>THRESHOLD</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Compress patches larger than given
+          <replaceable>THRESHOLD</replaceable> bytes. Special value 0 disabled
+          patch compression.
           </para>
         </listitem>
       </varlistentry>

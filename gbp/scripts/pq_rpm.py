@@ -24,6 +24,7 @@ import errno
 import gzip
 import os
 import re
+import subprocess
 import sys
 
 import gbp.log
@@ -36,7 +37,7 @@ from gbp.errors import GbpError
 from gbp.patch_series import PatchSeries, Patch
 from gbp.pkg import parse_archive_filename
 from gbp.rpm import (SpecFile, NoSpecError, guess_spec, guess_spec_repo,
-                     spec_from_repo)
+                     spec_from_repo, string_to_int)
 from gbp.scripts.common.pq import (is_pq_branch, pq_branch_name, pq_branch_base,
             parse_gbp_commands, format_patch, format_diff,
             apply_and_commit_patch, drop_pq)
@@ -52,6 +53,24 @@ def is_ancestor(repo, parent, child):
     except GitRepositoryError:
         merge_base = None
     return merge_base == parent_sha1
+
+
+def compress_patches(patches, compress_size=0):
+    """
+    Rename and/or compress patches
+    """
+    ret_patches = []
+    for patch in patches:
+        # Compress if patch file is larger than "threshold" value
+        suffix = ''
+        if compress_size and os.path.getsize(patch) > compress_size:
+            gbp.log.debug("Compressing %s" % os.path.basename(patch))
+            subprocess.Popen(['gzip', '-n', patch]).communicate()
+            suffix = '.gz'
+
+        ret_patches.append(os.path.basename(patch) + suffix)
+    return ret_patches
+
 
 def generate_patches(repo, start, end, outdir, options):
     """
@@ -120,6 +139,9 @@ def generate_patches(repo, start, end, outdir, options):
                                options.patch_export_ignore_path)
         if patch_fn:
             patches.append(patch_fn)
+
+    # Compress
+    patches = compress_patches(patches, options.patch_compress)
 
     return patches, commands
 
@@ -477,6 +499,8 @@ switch         Switch to patch-queue branch and vice versa.""")
     parser.add_config_file_option(option_name="import-files",
             dest="import_files", type="string", action="callback",
             callback=optparse_split_cb)
+    parser.add_config_file_option("patch-compress",
+                                  dest="patch_compress")
 
     return parser
 
@@ -486,7 +510,10 @@ def parse_args(argv):
     parser = build_parser(argv[0])
     if not parser:
         return None, None
-    return parser.parse_args(argv)
+
+    options, args = parser.parse_args(argv)
+    options.patch_compress = string_to_int(options.patch_compress)
+    return options, args
 
 
 def main(argv):
