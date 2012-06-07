@@ -538,4 +538,33 @@ def guess_spec_repo(repo, branch, packaging_dir):
     raise NoSpecError, "Searching spec from other branch not implemented yet"
 
 
+def string_to_int(val_str):
+    """
+    Convert string of possible unit identifier to int.
+
+    @param val_str: value to be converted
+    @type val_str: C{str}
+    @return: value as integer
+    @rtype: C{int}
+
+    >>> string_to_int("1234")
+    1234
+    >>> string_to_int("123k")
+    125952
+    >>> string_to_int("1234K")
+    1263616
+    >>> string_to_int("1M")
+    1048576
+    """
+    units = {'k': 1024,
+             'm': 1024**2,
+             'g': 1024**3,
+             't': 1024**4}
+
+    if val_str[-1].lower() in units:
+        return int(val_str[:-1]) * units[val_str[-1].lower()]
+    else:
+        return int(val_str)
+
+
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:

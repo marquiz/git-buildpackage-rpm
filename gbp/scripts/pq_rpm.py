@@ -25,6 +25,7 @@ import sys
 import tempfile
 import re
 import gzip
+import subprocess
 from gbp.config import (GbpOptionParserRpm, GbpOptionGroup)
 from gbp.rpm.git import (GitRepositoryError, RpmGitRepository)
 from gbp.git import GitModifier
@@ -34,12 +35,29 @@ from gbp.errors import GbpError
 import gbp.log
 from gbp.patch_series import (PatchSeries, Patch)
 from gbp.pkg import parse_archive_filename
-from gbp.rpm import (SpecFile, guess_spec)
+from gbp.rpm import (SpecFile, guess_spec, string_to_int)
 from gbp.scripts.common.pq import (is_pq_branch, pq_branch_name, pq_branch_base,
                                    parse_gbp_commands, format_patch,
                                    format_diff,
                                    switch_to_pq_branch, apply_single_patch,
                                    apply_and_commit_patch, drop_pq)
+
+
+def compress_patches(patches, compress_size=0):
+    """
+    Rename and/or compress patches
+    """
+    ret_patches = []
+    for patch in patches:
+        # Compress if patch file is larger than "threshold" value
+        suffix = ''
+        if compress_size and os.path.getsize(patch) > compress_size:
+            gbp.log.debug("Compressing %s" % os.path.basename(patch))
+            subprocess.Popen(['gzip', '-n', patch]).communicate()
+            suffix = '.gz'
+
+        ret_patches.append(os.path.basename(patch) + suffix)
+    return ret_patches
 
 
 def generate_patches(repo, start, end, outdir, options):
@@ -84,6 +102,9 @@ def generate_patches(repo, start, end, outdir, options):
         patch_fn = format_diff(outdir, None, repo, end_commit, end)
         if patch_fn:
             patches.append(patch_fn)
+
+    # Compress
+    patches = compress_patches(patches, options.patch_export_compress)
 
     return patches, commands
 
@@ -365,9 +386,12 @@ def main(argv):
     parser.add_option("--export-rev", action="store", dest="export_rev", default="",
                       help="Export patches from treeish object TREEISH instead "
                            "of head of patch-queue branch", metavar="TREEISH")
+    parser.add_config_file_option("patch-export-compress",
+                                  dest="patch_export_compress")
 
     (options, args) = parser.parse_args(argv)
     gbp.log.setup(options.color, options.verbose)
+    options.patch_export_compress = string_to_int(options.patch_export_compress)
 
     if len(args) < 2:
         gbp.log.err("No action given.")

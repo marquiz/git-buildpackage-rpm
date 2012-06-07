@@ -26,6 +26,7 @@ import tempfile
 import shutil
 import re
 import datetime
+import gzip
 
 import gbp.rpm as rpm
 from gbp.rpm.policy import RpmPkgPolicy
@@ -355,8 +356,11 @@ def parse_args(argv, prefix):
     export_group.add_option("--git-export-only", action="store_true", dest="export_only", default=False,
                       help="only export packaging files, don't build")
     export_group.add_boolean_config_file_option("patch-export", dest="patch_export")
+    export_group.add_config_file_option("patch-export-compress", dest="patch_export_compress")
     export_group.add_boolean_config_file_option(option_name="patch-numbers", dest="patch_numbers")
     options, args = parser.parse_args(args)
+
+    options.patch_export_compress = rpm.string_to_int(options.patch_export_compress)
 
     gbp.log.setup(options.color, options.verbose)
     if options.retag:
