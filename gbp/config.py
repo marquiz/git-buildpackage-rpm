@@ -610,6 +610,7 @@ class GbpOptionParserRpm(GbpOptionParser):
             'rpmbuild-srpmdir'          : 'SRPMS',
             'rpmbuild-buildrootdir'     : 'BUILDROOT',
             'patch-export'              : 'False',
+            'patch-export-compress'     : '0',
             'merge'                     : 'False',
             'pristine-tarball-name'     : 'auto',
                     })
@@ -644,6 +645,10 @@ class GbpOptionParserRpm(GbpOptionParser):
             'patch-export':
                 "Create patches between upstream and export-treeish, default "
                 "is '%(patch-export)s'",
+            'patch-export-compress':
+                "Compress (auto-generated) patches larger than given number of "
+                "bytes, 0 never compresses, default is "
+                "'%(patch-export-compress)s'",
             'pristine-tarball-name':
                 "Filename to record to pristine-tar, set to 'auto' to not "
                 "mangle the file name, default is '%(pristine-tarball-name)s'",
