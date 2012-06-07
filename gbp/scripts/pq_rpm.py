@@ -24,6 +24,7 @@ import shutil
 import sys
 import tempfile
 import re
+import gzip
 from gbp.config import (GbpOptionParserRpm, GbpOptionGroup)
 from gbp.rpm.git import (GitRepositoryError, RpmGitRepository)
 from gbp.git import GitModifier
@@ -32,6 +33,7 @@ from gbp.command_wrappers import (Command, GitCommand, RunAtCommand,
 from gbp.errors import GbpError
 import gbp.log
 from gbp.patch_series import (PatchSeries, Patch)
+from gbp.pkg import parse_archive_filename
 from gbp.rpm import (SpecFile, guess_spec)
 from gbp.scripts.common.pq import (is_pq_branch, pq_branch_name, pq_branch_base,
                                    parse_gbp_commands, format_patch,
@@ -159,7 +161,7 @@ def export_patches(repo, branch, options):
 def safe_patches(queue, tmpdir_base):
     """
     Safe the current patches in a temporary directory
-    below 'tmpdir_base'
+    below 'tmpdir_base'. Also, uncompress compressed patches here.
 
     @param queue: an existing patch queue
     @param tmpdir_base: base under which to create tmpdir
@@ -173,10 +175,24 @@ def safe_patches(queue, tmpdir_base):
     if len(queue) > 0:
         gbp.log.debug("Safeing patches '%s' in '%s'" % (os.path.dirname(queue[0].path), tmpdir))
         for p in queue:
-            dst = os.path.join(tmpdir, os.path.basename(p.path))
-            shutil.copy(p.path, dst)
+            (base, archive_fmt, comp) = parse_archive_filename(p.path)
+            if comp == 'gzip':
+                gbp.log.debug("Uncompressing '%s'" % os.path.basename(p.path))
+                src = gzip.open(p.path, 'r')
+                dst_name = os.path.join(tmpdir, os.path.basename(base))
+            elif comp:
+                raise GbpError, ("Unsupported compression of a patch, giving up")
+            else:
+                src = open(p.path, 'r')
+                dst_name = os.path.join(tmpdir, os.path.basename(p.path))
+
+            dst = open(dst_name, 'w')
+            dst.writelines(src)
+            src.close()
+            dst.close()
+
             safequeue.append(p)
-            safequeue[-1].path = dst;
+            safequeue[-1].path = dst_name;
 
     return (tmpdir, safequeue)
 
