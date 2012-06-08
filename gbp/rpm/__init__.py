@@ -49,6 +49,10 @@ class NoSpecError(Exception):
     """Spec file parsing error"""
     pass
 
+class MacroExpandError(Exception):
+    """Macro expansion in spec file failed"""
+    pass
+
 
 class RpmUpstreamSource(UpstreamSource):
     """Upstream source class for RPM packages"""
@@ -154,6 +158,7 @@ class SpecFile(object):
     source_re = re.compile(r'^Source(?P<srcnum>[0-9]+)?\s*:\s*(?P<name>[^\s].*[^\s])\s*$', flags=re.I)
     patchtag_re = re.compile(r'^Patch(?P<patchnum>[0-9]+)?\s*:\s*(?P<name>\S.*)$', flags=re.I)
     patchmacro_re = re.compile(r'^%patch(?P<patchnum>[0-9]+)?(\s+(?P<args>.*))?$')
+    setupmacro_re = re.compile(r'^%setup(\s+(?P<args>.*))?$')
     marker_re = re.compile(r'^#\s+(?P<marker>>>|<<)\s+(?P<what>gbp-[^\s]+)\s*(?P<comment>.*)$')
     gbptag_re = re.compile(r'^\s*#\s*gbp(?P<tagname>[a-z]+)\s*:\s*(?P<data>\S.*)\s*$', flags=re.I)
 
@@ -201,7 +206,18 @@ class SpecFile(object):
                 num = 0
             if typ == 1:
                 if num in self.sources:
-                    self.sources[num]['filename'] = name
+                    self.sources[num]['full_path'] = name
+                    self.sources[num]['filename'] = os.path.basename(name)
+                    self.sources[num]['filename_base'],\
+                    self.sources[num]['archive_fmt'],\
+                    self.sources[num]['compression'] = parse_archive_filename(os.path.basename(name))
+                    # Make a guess about the prefix in the archive
+                    if self.sources[num]['archive_fmt']:
+                        _name, _version = RpmPkgPolicy.guess_upstream_src_version(name)
+                        if _name and _version:
+                            self.sources[num]['prefix'] = "%s-%s/" % (_name, _version)
+                        else:
+                            self.sources[num]['prefix'] = self.sources[num]['filename_base'] + "/"
                 else:
                     gbp.log.err("BUG: we didn't correctly parse all 'Source' tags!")
             if typ == 2:
@@ -210,7 +226,7 @@ class SpecFile(object):
                 else:
                     gbp.log.err("BUG: we didn't correctly parse all 'Patch' tags!")
 
-        (self.orig_file, self.orig_base, self.orig_archive_fmt, self.orig_comp) = self.guess_orig_file()
+        self.orig_src_num = self.guess_orig_file()
 
 
     def _get_version(self):
@@ -223,6 +239,38 @@ class SpecFile(object):
             version['epoch'] = self.epoch
         return version
     version = property(_get_version)
+
+    def _get_orig_src(self):
+        """
+        Get the orig src
+        """
+        if self.orig_src_num != None:
+            return self.sources[self.orig_src_num]
+        return None
+    orig_src = property(_get_orig_src)
+
+    def _macro_replace(self, matchobj):
+        macro_dict = {'name': self.name,
+                      'version': self.upstreamversion,
+                      'release': self.release}
+
+        if matchobj.group(2) in macro_dict:
+            return macro_dict[matchobj.group(2)]
+        raise MacroExpandError("Unknown macro '%s'" % matchobj.group(0))
+
+
+    def macro_expand(self, text):
+        """
+        Expand the rpm macros (that gbp knows of) in the given text.
+
+        @param text: text to check for macros
+        @type text: C{str}
+        @return: text with macros expanded
+        @rtype: C{str}
+        """
+        # regexp to match '%{macro}' and '%macro'
+        macro_re = re.compile(r'%({)?(?P<macro_name>[a-z_][a-z0-9_]*)(?(1)})', flags=re.I)
+        return macro_re.sub(self._macro_replace, text)
 
 
     def write_spec_file(self):
@@ -270,6 +318,16 @@ class SpecFile(object):
         patchparser.add_option("-b", dest="backup")
         patchparser.add_option("-E", dest="removeempty")
 
+        # Parser for patch macros
+        setupparser = OptionParser()
+        setupparser.add_option("-n", dest="name")
+        setupparser.add_option("-c", dest="create_dir", action="store_true")
+        setupparser.add_option("-D", dest="no_delete_dir", action="store_true")
+        setupparser.add_option("-T", dest="no_unpack_default", action="store_true")
+        setupparser.add_option("-b", dest="unpack_before")
+        setupparser.add_option("-a", dest="unpack_after")
+        setupparser.add_option("-q", dest="quiet", action="store_true")
+
         numlines = len(self.content)
         for i in range(numlines):
             line = self.content[i]
@@ -293,7 +351,11 @@ class SpecFile(object):
                 if srcnum in self.sources:
                     self.sources[srcnum]['tag_linenum'] = i
                 else:
-                    self.sources[srcnum] = {'name': m.group('name'), 'filename': m.group('name'), 'tag_linenum': i}
+                    self.sources[srcnum] = {'full_path': m.group('name'),
+                                            'filename': os.path.basename(m.group('name')),
+                                            'tag_linenum': i,
+                                            'prefix': None,
+                                            'setup_options': None, }
                 continue
 
             # Find 'Patch' tags
@@ -311,7 +373,13 @@ class SpecFile(object):
                         gbp.log.err("Patch%s found multiple times, aborting as gbp spec/patch autoupdate likely fails" % patchnum)
                         raise GbpError, "RPM error while parsing spec, duplicate patches found"
                 else:
-                    new_patch = {'name': m.group('name').strip(), 'filename': m.group('name'), 'apply': False, 'strip': '0', 'macro_linenum': None, 'autoupdate': not patchnum in ignorepatch, 'tag_linenum': i}
+                    new_patch = {'name': m.group('name').strip(),
+                                 'filename': m.group('name'),
+                                 'apply': False,
+                                 'strip': '0',
+                                 'macro_linenum': None,
+                                 'autoupdate': not patchnum in ignorepatch,
+                                 'tag_linenum': i}
                     self.patches[patchnum] = new_patch
                 continue
 
@@ -332,10 +400,26 @@ class SpecFile(object):
                 self.patches[patchnum]['apply'] = True
                 continue
 
+            # Find setup macros
+            m = self.setupmacro_re.match(line)
+            if m:
+                (options, args) = setupparser.parse_args(m.group('args').split())
+                srcnum = None
+                if options.no_unpack_default:
+                    if options.unpack_before:
+                        srcnum = int(options.unpack_before)
+                    elif options.unpack_after:
+                        srcnum = int(options.unpack_after)
+                else:
+                    srcnum = 0
+                if srcnum != None and srcnum in self.sources:
+                    self.sources[srcnum]['setup_options'] = options
+                # Save the occurrence of last setup macro
+                ret['setupmacro'] = i
+                continue
+
             # Only search for the last occurrence of the following
             if re.match("^\s*Name:.*$", line, flags=re.I):
-                ret['setupmacro'] = i
-            if re.match("^%setup(\s.*)?$", line):
                 ret['setupmacro'] = i
             if re.match("^%prep(\s.*)?$", line):
                 ret['prepmacro'] = i
@@ -461,23 +545,40 @@ class SpecFile(object):
         returns a tuple with full file path, filename base, archive format and
         compression method.
         """
-        full_path, base, archive_fmt, comp = None, None, None, None
-
+        orig_num = None
         for (num, src) in sorted(self.sources.iteritems()):
-            _full_path = src['filename']
-            filename = os.path.basename(_full_path)
-            _base, _archive_fmt, _comp = parse_archive_filename(filename)
+            filename = os.path.basename(src['filename'])
             if filename.startswith(self.name):
                 # Take the first archive that starts with pkg name
-                if _archive_fmt:
-                    full_path, base, archive_fmt, comp = _full_path, _base, _archive_fmt, _comp
+                if src['archive_fmt']:
+                    orig_num = num
                     break
             # otherwise we take the first archive
-            elif not full_path and _archive_fmt:
-                full_path, base, archive_fmt, comp = _full_path, _base, _archive_fmt, _comp
+            elif orig_num == None and src['archive_fmt']:
+                orig_num = num
             # else don't accept
 
-        return (full_path, base, archive_fmt, comp)
+        # Refine our guess about the prefix
+        if orig_num != None:
+            orig = self.sources[orig_num]
+            setup_opts = orig['setup_options']
+            if setup_opts:
+                if setup_opts.create_dir:
+                    orig['prefix'] = ''
+                elif setup_opts.name:
+                    try:
+                        orig['prefix'] = self.macro_expand(setup_opts.name) + \
+                                         '/'
+                    except MacroExpandError as err:
+                        gbp.log.warn("Couldn't determine prefix from %%setup "\
+                                     "macro (%s). Using filename base as a "  \
+                                     "fallback" % err)
+                        orig['prefix'] = orig['filename_base'] + '/'
+                else:
+                    # RPM default
+                    orig['prefix'] = "%s-%s/" % (self.name,
+                                                 self.upstreamversion)
+        return orig_num
 
 
 def parse_srpm(srpmfile):

@@ -243,8 +243,8 @@ def main(argv):
             orig_tarball = None
             if unpacked:
                 files = [os.path.basename(patch['filename']) for patch in spec.patches.itervalues()]
-                for src in spec.sources.itervalues():
-                    if src['filename'] != spec.orig_file:
+                for num, src in spec.sources.iteritems():
+                    if num != spec.orig_src_num:
                         files.append(src['filename'])
                 files.append(spec.specfile)
                 for fname in files:
@@ -254,8 +254,8 @@ def main(argv):
                     else:
                         gbp.log.err("File '%s' listed in spec not found" % fname)
                         raise GbpError
-                if spec.orig_base:
-                    orig_tarball=os.path.join(dirs['src'], os.path.basename(spec.orig_file))
+                if spec.orig_src:
+                    orig_tarball=os.path.join(dirs['src'], spec.orig_src['filename'])
             else:
                 gbp.log.info("Extracting src rpm...")
                 src.unpack(dirs['pkgextract-packaging'], dirs['srctarball'])

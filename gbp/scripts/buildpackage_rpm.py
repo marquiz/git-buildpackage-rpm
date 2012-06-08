@@ -49,23 +49,23 @@ from gbp.scripts.pq_rpm import update_patch_series
 def git_archive(repo, spec, output_dir, treeish, comp_level, with_submodules):
     "create a compressed orig tarball in output_dir using git_archive"
     comp_opts = ''
-    if spec.orig_comp:
-        comp_opts = compressor_opts[spec.orig_comp][0]
+    if spec.orig_src['compression']:
+        comp_opts = compressor_opts[spec.orig_src['compression']][0]
 
-    output = os.path.join(output_dir, os.path.basename(spec.orig_file))
-    prefix = spec.orig_base
+    output = os.path.join(output_dir, spec.orig_src['filename'])
+    prefix = spec.orig_src['prefix']
 
     try:
         if repo.has_submodules() and with_submodules:
             repo.update_submodules()
             git_archive_submodules(repo, treeish, output, prefix,
-                                   spec.orig_comp, comp_level, comp_opts,
-                                   spec.orig_archive_fmt)
+                                   spec.orig_src['compression'], comp_level, comp_opts,
+                                   spec.orig_src['archive_fmt'])
 
         else:
             git_archive_single(repo, treeish, output, prefix,
-                               spec.orig_comp, comp_level, comp_opts,
-                               spec.orig_archive_fmt)
+                               spec.orig_src['compression'], comp_level, comp_opts,
+                               spec.orig_src['archive_fmt'])
     except (GitRepositoryError, CommandExecFailed):
         gbp.log.err("Error generating submodules' archives")
         return False
@@ -86,7 +86,7 @@ def prepare_upstream_tarball(repo, spec, options, output_dir):
     tarball_dir, symlinking or building it.
     """
     # look in tarball_dir first, if found force a symlink to it
-    orig_file = os.path.basename(spec.orig_file)
+    orig_file = spec.orig_src['filename']
     if options.tarball_dir:
         gbp.log.debug("Looking for orig tarball '%s' at '%s'" % (orig_file, options.tarball_dir))
         if not RpmPkgPolicy.symlink_orig(orig_file, options.tarball_dir, output_dir, force=True):
@@ -178,11 +178,11 @@ def git_archive_build_orig(repo, spec, output_dir, options):
     @rtype: C{str}
     """
     upstream_tree = get_upstream_tree(repo, spec, options)
-    gbp.log.info("%s does not exist, creating from '%s'" % (spec.orig_file,
+    gbp.log.info("%s does not exist, creating from '%s'" % (spec.orig_src['filename'],
                                                             upstream_tree))
-    if spec.orig_comp:
+    if spec.orig_src['compression']:
         gbp.log.debug("Building upstream source archive with compression '%s -%s'" %
-                      (spec.orig_comp, options.comp_level))
+                      (spec.orig_src['compression'], options.comp_level))
     if not git_archive(repo, spec, output_dir, upstream_tree,
                        options.comp_level,
                        options.with_submodules):
@@ -476,16 +476,16 @@ def main(argv):
 
             # Get/build the orig tarball
             if is_native(repo, options):
-                if spec.orig_file:
+                if spec.orig_src:
                     # Just build source archive from the exported tree
-                    gbp.log.info("Creating (native) source archive %s from '%s'" % (spec.orig_file, tree))
-                    if spec.orig_comp:
-                        gbp.log.debug("Building source archive with compression '%s -%s'" % (spec.orig_comp, options.comp_level))
+                    gbp.log.info("Creating (native) source archive %s from '%s'" % (spec.orig_src['filename'], tree))
+                    if spec.orig_src['compression']:
+                        gbp.log.debug("Building source archive with compression '%s -%s'" % (spec.orig_src['compression'], options.comp_level))
                     if not git_archive(repo, spec, source_dir, tree,
                                        options.comp_level, options.with_submodules):
                         raise GbpError, "Cannot create source tarball at '%s'" % export_dir
             # Non-native packages: create orig tarball from upstream
-            elif spec.orig_file:
+            elif spec.orig_src:
                  prepare_upstream_tarball(repo, spec, options, source_dir)
 
             # Run postexport hook
