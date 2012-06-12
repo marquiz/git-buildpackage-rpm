@@ -28,7 +28,7 @@ import gzip
 import subprocess
 from gbp.config import (GbpOptionParserRpm, GbpOptionGroup)
 from gbp.rpm.git import (GitRepositoryError, RpmGitRepository)
-from gbp.git import GitModifier
+from gbp.git.modifier import GitModifier, GitTz
 from gbp.command_wrappers import (Command, GitCommand, RunAtCommand,
                                   CommandExecFailed)
 from gbp.errors import GbpError
@@ -60,7 +60,7 @@ def compress_patches(patches, compress_size=0):
     return ret_patches
 
 
-def generate_patches(repo, start, end, outdir, options):
+def generate_patches(repo, start, squash, end, outdir, options):
     """
     Generate patch files from git
     """
@@ -71,6 +71,7 @@ def generate_patches(repo, start, end, outdir, options):
         if not repo.has_treeish(treeish):
             raise GbpError('%s not a valid tree-ish' % treeish)
 
+    start_sha1 = repo.rev_parse("%s^0" % start)
     try:
         end_commit = end
         end_commit_sha1 = repo.rev_parse("%s^0" % end_commit)
@@ -84,6 +85,26 @@ def generate_patches(repo, start, end, outdir, options):
     if repo.get_merge_base(start_sha1, end_commit_sha1) != start_sha1:
         raise GbpError("Start commit '%s' not an ancestor of end commit "
                        "'%s'" % (start, end_commit))
+    # Squash commits, if requested
+    if squash[0]:
+        if squash[0] == 'HEAD':
+            squash[0] = end_commit
+        squash_sha1 = repo.rev_parse("%s^0" % squash[0])
+        if start_sha1 != squash_sha1:
+            if not squash_sha1 in repo.get_commits(start, end_commit):
+                raise GbpError("Given squash point '%s' not in the history "
+                               "of end commit '%s'" % (squash[0], end_commit))
+            # Shorten SHA1s
+            squash_sha1 = repo.rev_parse(squash_sha1, short=7)
+            start_sha1 = repo.rev_parse(start_sha1, short=7)
+            gbp.log.info("Squashing commits %s..%s into one monolithic diff" %
+                         (start_sha1, squash_sha1))
+            patch_fn = format_diff(outdir, squash[1], repo,
+                                   start_sha1, squash_sha1)
+            if patch_fn:
+                patches.append(patch_fn)
+                start = squash_sha1
+
     # Generate patches
     for commit in reversed(repo.get_commits(start, end_commit)):
         info = repo.get_commit_info(commit)
@@ -132,10 +153,16 @@ def update_patch_series(repo, spec, start, end, options):
     """
     Export patches to packaging directory and update spec file accordingly.
     """
+    squash = options.patch_export_squash_until.split(':', 1)
+    if len(squash) == 1:
+        squash.append(None)
+    else:
+        squash[1] += '.diff'
+
     # Unlink old patch files and generate new patches
     rm_patch_files(spec)
 
-    patches, _commands = generate_patches(repo, start, end,
+    patches, _commands = generate_patches(repo, start, squash, end,
                                           spec.specdir, options)
     spec.update_patches(patches)
     spec.write_spec_file()
@@ -388,6 +415,7 @@ def main(argv):
                            "of head of patch-queue branch", metavar="TREEISH")
     parser.add_config_file_option("patch-export-compress",
                                   dest="patch_export_compress")
+    parser.add_config_file_option("patch-export-squash-until", dest="patch_export_squash_until")
 
     (options, args) = parser.parse_args(argv)
     gbp.log.setup(options.color, options.verbose)

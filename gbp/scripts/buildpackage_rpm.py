@@ -360,6 +360,7 @@ def parse_args(argv, prefix):
                       help="only export packaging files, don't build")
     export_group.add_boolean_config_file_option("patch-export", dest="patch_export")
     export_group.add_config_file_option("patch-export-compress", dest="patch_export_compress")
+    export_group.add_config_file_option("patch-export-squash-until", dest="patch_export_squash_until")
     export_group.add_boolean_config_file_option(option_name="patch-numbers", dest="patch_numbers")
     options, args = parser.parse_args(args)
 

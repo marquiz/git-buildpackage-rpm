@@ -551,6 +551,7 @@ class GbpOptionParserRpm(GbpOptionParser):
                        'rpmbuild-buildrootdir'  : 'BUILDROOT',
                        'patch-export'           : 'False',
                        'patch-export-compress'  : '0',
+                       'patch-export-squash-until'  : '',
                        'pristine-tarball-name'  : 'auto',
                        'orig-prefix'            : 'auto',
                      } )
@@ -573,6 +574,11 @@ class GbpOptionParserRpm(GbpOptionParser):
                         "Create patches between upstream and export-treeish, default is '%(patch-export)s'",
                    'patch-export-compress':
                         "Compress (auto-generated) patches larger than given number of bytes, 0 never compresses, default is '%(patch-export-compress)s'",
+                   'patch-export-squash-until':
+                        ("Squash commits (from upstream) until given tree-ish "
+                         "into one big diff, format is "
+                         "'<commit_ish>[:<filename_base>]'. "
+                         "Default is '%(patch-export-squash-until)s'"),
                    'pristine-tarball-name':
                         "Filename to record to pristine-tar, set to 'auto' to not mangle the file name, default is '%(pristine-tarball-name)s'",
                    'orig-prefix':
