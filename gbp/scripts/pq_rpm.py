@@ -27,7 +27,6 @@ import re
 import gzip
 import bz2
 import subprocess
-
 import gbp.tmpfile as tempfile
 from gbp.config import GbpOptionParserRpm
 from gbp.rpm.git import GitRepositoryError, RpmGitRepository
@@ -149,6 +148,7 @@ def generate_patches(repo, start, squash, end, outdir, options):
             start = merge_sha1
             print start
 
+    start_sha1 = repo.rev_parse("%s^0" % start)
     try:
         end_commit = end
         end_commit_sha1 = repo.rev_parse("%s^0" % end_commit)
@@ -162,6 +162,26 @@ def generate_patches(repo, start, squash, end, outdir, options):
     if repo.get_merge_base(start_sha1, end_commit_sha1) != start_sha1:
         raise GbpError("Start commit '%s' not an ancestor of end commit "
                        "'%s'" % (start, end_commit))
+    # Squash commits, if requested
+    if squash[0]:
+        if squash[0] == 'HEAD':
+            squash[0] = end_commit
+        squash_sha1 = repo.rev_parse("%s^0" % squash[0])
+        if start_sha1 != squash_sha1:
+            if not squash_sha1 in repo.get_commits(start, end_commit):
+                raise GbpError("Given squash point '%s' not in the history "
+                               "of end commit '%s'" % (squash[0], end_commit))
+            # Shorten SHA1s
+            squash_sha1 = repo.rev_parse(squash_sha1, short=7)
+            start_sha1 = repo.rev_parse(start_sha1, short=7)
+            gbp.log.info("Squashing commits %s..%s into one monolithic diff" %
+                         (start_sha1, squash_sha1))
+            patch_fn = format_diff(outdir, squash[1], repo,
+                                   start_sha1, squash_sha1)
+            if patch_fn:
+                patches.append(patch_fn)
+                start = squash_sha1
+
     # Generate patches
     for commit in reversed(repo.get_commits(start, end_commit)):
         info = repo.get_commit_info(commit)
