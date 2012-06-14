@@ -46,15 +46,16 @@ from gbp.pkg import (compressor_opts, compressor_aliases)
 from gbp.scripts.pq_rpm import update_patch_series
 
 
-def git_archive(repo, spec, output_dir, treeish, comp_level, with_submodules):
+def git_archive(repo, spec, output_dir, treeish, prefix, comp_level, with_submodules):
     "create a compressed orig tarball in output_dir using git_archive"
     comp_opts = ''
     if spec.orig_src['compression']:
         comp_opts = compressor_opts[spec.orig_src['compression']][0]
 
     output = os.path.join(output_dir, spec.orig_src['filename'])
-    prefix = spec.orig_src['prefix']
 
+    # Remove extra slashes from prefix, will be added by git_archive_x funcs
+    prefix = prefix.strip('/')
     try:
         if repo.has_submodules() and with_submodules:
             repo.update_submodules()
@@ -184,6 +185,7 @@ def git_archive_build_orig(repo, spec, output_dir, options):
         gbp.log.debug("Building upstream source archive with compression '%s -%s'" %
                       (spec.orig_src['compression'], options.comp_level))
     if not git_archive(repo, spec, output_dir, upstream_tree,
+                       options.orig_prefix,
                        options.comp_level,
                        options.with_submodules):
         raise GbpError("Cannot create upstream tarball at '%s'" % output_dir)
@@ -316,6 +318,7 @@ def parse_args(argv, prefix):
                       help="location to look for external tarballs")
     orig_group.add_config_file_option(option_name="compression-level", dest="comp_level",
                       help="Compression level, default is '%(compression-level)s'")
+    orig_group.add_config_file_option(option_name="orig-prefix", dest="orig_prefix")
     branch_group.add_config_file_option(option_name="upstream-branch", dest="upstream_branch")
     branch_group.add_config_file_option(option_name="packaging-branch", dest="packaging_branch")
     branch_group.add_boolean_config_file_option(option_name = "ignore-branch", dest="ignore_branch")
@@ -474,6 +477,14 @@ def main(argv):
                     raise GbpError, "Error exporting files: %s" % err
             spec.specdir = spec_dir
 
+            if options.orig_prefix != 'auto':
+                options.orig_prefix = options.orig_prefix % dict(spec.version,
+                                                                 version=RpmPkgPolicy.compose_full_version(spec.version),
+                                                                 name=spec.name,
+                                                                 vendor=options.vendor)
+            elif spec.orig_src:
+                options.orig_prefix = spec.orig_src['prefix']
+
             # Get/build the orig tarball
             if is_native(repo, options):
                 if spec.orig_src:
@@ -481,7 +492,7 @@ def main(argv):
                     gbp.log.info("Creating (native) source archive %s from '%s'" % (spec.orig_src['filename'], tree))
                     if spec.orig_src['compression']:
                         gbp.log.debug("Building source archive with compression '%s -%s'" % (spec.orig_src['compression'], options.comp_level))
-                    if not git_archive(repo, spec, source_dir, tree,
+                    if not git_archive(repo, spec, source_dir, tree, options.orig_prefix,
                                        options.comp_level, options.with_submodules):
                         raise GbpError, "Cannot create source tarball at '%s'" % export_dir
             # Non-native packages: create orig tarball from upstream

@@ -552,6 +552,7 @@ class GbpOptionParserRpm(GbpOptionParser):
                        'patch-export'           : 'False',
                        'patch-export-compress'  : '0',
                        'pristine-tarball-name'  : 'auto',
+                       'orig-prefix'            : 'auto',
                      } )
 
     help = dict(GbpOptionParser.help)
@@ -574,6 +575,8 @@ class GbpOptionParserRpm(GbpOptionParser):
                         "Compress (auto-generated) patches larger than given number of bytes, 0 never compresses, default is '%(patch-export-compress)s'",
                    'pristine-tarball-name':
                         "Filename to record to pristine-tar, set to 'auto' to not mangle the file name, default is '%(pristine-tarball-name)s'",
+                   'orig-prefix':
+                        "Prefix (dir) to be used when generating/importing tarballs, default is '%(orig-prefix)s'",
                  } )
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
