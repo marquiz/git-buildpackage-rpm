@@ -174,6 +174,8 @@ def parse_args(argv):
                       dest="filter_pristine_tar")
     import_group.add_config_file_option(option_name="pristine-tarball-name",
                       dest="pristine_tarball_name")
+    import_group.add_config_file_option(option_name="orig-prefix",
+                      dest="orig_prefix")
     import_group.add_config_file_option(option_name="import-msg",
                       dest="import_msg")
     cmd_group.add_config_file_option(option_name="postimport", dest="postimport")
@@ -234,7 +236,7 @@ def main(argv):
                 prepare_sources(source, sourcepackage, version,
                                 prepare_pristine, options.filters,
                                 options.filter_pristine_tar,
-                                None, tmpdir)
+                                options.orig_prefix, tmpdir)
 
         # Don't mess up our repo with git metadata from an upstream tarball
         if os.path.isdir(os.path.join(unpacked_orig, '.git/')):
