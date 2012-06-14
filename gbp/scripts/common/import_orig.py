@@ -111,9 +111,9 @@ def ask_package_version(default, ver_validator_func, err_msg):
         gbp.log.warn("\nNot a valid upstream version: '%s'.\n%s" % (version, err_msg))
 
 
-def repack_source(source, new_name, unpack_dir, filters):
+def repack_source(source, new_name, unpack_dir, filters, new_prefix=None):
     """Repack the source tree"""
-    repacked = source.pack(new_name, filters)
+    repacked = source.pack(new_name, filters, new_prefix)
     if source.is_orig(): # the tarball was filtered on unpack
         repacked.unpacked = source.unpacked
     else: # otherwise unpack the generated tarball get a filtered tree

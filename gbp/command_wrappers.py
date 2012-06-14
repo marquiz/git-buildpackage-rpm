@@ -171,7 +171,8 @@ class UnpackTarArchive(Command):
 
 class PackTarArchive(Command):
     """Wrap tar to pack a compressed tar archive"""
-    def __init__(self, archive, dir, dest, filters=[], compression=None):
+    def __init__(self, archive, dir, dest, filters=[], compression=None,
+                 transform=None):
         self.archive = archive
         self.dir = dir
         exclude = [("--exclude=%s" % _filter) for _filter in filters]
@@ -179,8 +180,14 @@ class PackTarArchive(Command):
         if not compression:
             compression = '-a'
 
-        Command.__init__(self, 'tar', exclude +
-                         ['-C', dir, compression, '-cf', archive, dest])
+        args = exclude + ['-C', dir, compression, '-cf', archive ]
+
+        if transform != None:
+            args.append('--transform=%s' % transform)
+
+        args.append(dest)
+
+        Command.__init__(self, 'tar', args)
         self.run_error = 'Couldn\'t repack "%s"' % self.archive
 
 
