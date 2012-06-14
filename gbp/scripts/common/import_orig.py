@@ -222,4 +222,12 @@ def prepare_sources(source, pkg_name, pkg_version, pristine_commit_name,
                                             tmpdir)
     pristine_path = pristine.path if pristine else ''
     return (filtered.unpacked, pristine_path)
+def repack_source(source, new_name, unpack_dir, filters, new_prefix=None):
+    """Repack the source tree"""
+    repacked = source.pack(new_name, filters, new_prefix)
+    if source.is_orig(): # the tarball was filtered on unpack
+        repacked.unpacked = source.unpacked
+    else: # otherwise unpack the generated tarball get a filtered tree
+        repacked.unpack(unpack_dir, filters)
+    return repacked
 
