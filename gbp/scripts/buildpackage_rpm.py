@@ -221,7 +221,6 @@ def git_archive_build_orig(repo, spec, output_dir, options):
     @rtype: C{str}
     """
     try:
-        orig_prefix = spec.orig_src['prefix']
         upstream_tree = get_upstream_tree(repo, spec.upstreamversion, options)
         gbp.log.info("%s does not exist, creating from '%s'" %
                      (spec.orig_src['filename'], upstream_tree))
@@ -230,7 +229,7 @@ def git_archive_build_orig(repo, spec, output_dir, options):
                           "'%s -%s'" % (spec.orig_src['compression'],
                                         options.comp_level))
         if not git_archive(repo, spec, output_dir, upstream_tree,
-                           orig_prefix, options.comp_level,
+                           options.orig_prefix, options.comp_level,
                            options.with_submodules):
             raise GbpError("Cannot create upstream tarball at '%s'" %
                            output_dir)
@@ -450,6 +449,8 @@ def build_parser(name, prefix=None, git_treeish=None):
                     dest="comp_level",
                     help="Compression level, default is "
                          "'%(compression-level)s'")
+    orig_group.add_config_file_option(option_name="orig-prefix",
+                    dest="orig_prefix")
     branch_group.add_config_file_option(option_name="upstream-branch",
                     dest="upstream_branch")
     branch_group.add_config_file_option(option_name="packaging-branch",
@@ -638,6 +639,15 @@ def main(argv):
                     raise GbpError("Error exporting packaging files: %s" % err)
             spec.specdir = os.path.abspath(spec_dir)
 
+            if options.orig_prefix != 'auto':
+                orig_prefix_fields = dict(spec.version,
+                                          version = spec.upstreamversion,
+                                          name=spec.name)
+                options.orig_prefix = format_str(options.orig_prefix,
+                                                 orig_prefix_fields)
+            elif spec.orig_src:
+                options.orig_prefix = spec.orig_src['prefix']
+
             # Get/build the orig tarball
             if is_native(repo, options):
                 if spec.orig_src and not options.no_create_orig:
@@ -649,9 +659,8 @@ def main(argv):
                                       "compression '%s -%s'" %
                                       (spec.orig_src['compression'],
                                        options.comp_level))
-                    orig_prefix = spec.orig_src['prefix']
                     if not git_archive(repo, spec, source_dir, tree,
-                                       orig_prefix, options.comp_level,
+                                       options.orig_prefix, options.comp_level,
                                        options.with_submodules):
                         raise GbpError("Cannot create source tarball at '%s'" %
                                        source_dir)

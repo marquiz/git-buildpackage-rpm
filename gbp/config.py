@@ -708,6 +708,7 @@ class GbpOptionParserRpm(GbpOptionParser):
                                            'debian/gbp.conf'],
             'merge'                     : 'False',
             'pristine-tarball-name'     : 'auto',
+            'orig-prefix'               : 'auto',
                     })
 
     help = dict(GbpOptionParser.help)
@@ -777,6 +778,9 @@ class GbpOptionParserRpm(GbpOptionParser):
             'pristine-tarball-name':
                 "Filename to record to pristine-tar, set to 'auto' to not "
                 "mangle the file name, default is '%(pristine-tarball-name)s'",
+            'orig-prefix':
+                "Prefix (dir) to be used when generating/importing tarballs, "
+                "default is '%(orig-prefix)s'",
                  })
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:

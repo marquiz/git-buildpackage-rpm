@@ -53,6 +53,7 @@
       <arg><option>--git-export=</option><replaceable>TREEISH</replaceable></arg>
       <arg><option>--git-packaging-dir=</option><replaceable>DIRECTORY</replaceable></arg>
       <arg><option>--git-spec-file=</option><replaceable>FILEPATH</replaceable></arg>
+      <arg><option>--git-orig-prefix=</option><replaceable>PREFIX</replaceable></arg>
       <arg><option>--git-export-sourcedir</option>=<replaceable>DIRECTORY</replaceable></arg>
       <arg><option>--git-export-specdir</option>=<replaceable>DIRECTORY</replaceable></arg>
       <arg><option>--git-[no-]pristine-tar</option></arg>
@@ -538,6 +539,17 @@
           <para>
           Specifies the upstream tarball compression level if an upstream
           tarball needs to be built.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--git-orig-prefix=</option><replaceable>PREFIX</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Prefix (directory) to be used when generating tarballs. Special value
+          <replaceable>auto</replaceable> causes &gbp-buildpackage-rpm; to
+          guess the prefix.
           </para>
         </listitem>
       </varlistentry>
