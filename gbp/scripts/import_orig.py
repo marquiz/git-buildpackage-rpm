@@ -265,7 +265,7 @@ def parse_args(argv):
 
 def main(argv):
     ret = 0
-    tmpdir = ''
+    tmpdir = tempfile.mkdtemp(dir='../')
     pristine_orig = None
     linked = False
 
@@ -305,13 +305,14 @@ def main(argv):
             set_bare_repo_options(options)
 
         if not source.is_dir():
-            tmpdir = tempfile.mkdtemp(dir='../')
-            source.unpack(tmpdir, options.filters)
+            unpack_dir = tempfile.mkdtemp(prefix='unpack', dir=tmpdir)
+            source.unpack(unpack_dir, options.filters)
             gbp.log.debug("Unpacked '%s' to '%s'" % (source.path, source.unpacked))
 
         if orig_needs_repack(source, options):
             gbp.log.debug("Filter pristine-tar: repacking '%s' from '%s'" % (source.path, source.unpacked))
-            (source, tmpdir)  = repack_source(source, sourcepackage, version, tmpdir, options.filters)
+            repack_dir = tempfile.mkdtemp(prefix='repack', dir=tmpdir)
+            source = repack_source(source, sourcepackage, version, repack_dir, options.filters)
 
         (pristine_orig, linked) = prepare_pristine_tar(source.path,
                                                        sourcepackage,
