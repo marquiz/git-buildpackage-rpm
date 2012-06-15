@@ -126,16 +126,13 @@ def repacked_tarball_name(source, name, version):
     return name
 
 
-def repack_source(source, name, version, tmpdir, filters):
+def repack_source(source, name, version, unpack_dir, filters):
     """Repack the source tree"""
     name = repacked_tarball_name(source, name, version)
     repacked = source.pack(name, filters)
     if source.is_orig(): # the tarball was filtered on unpack
         repacked.unpacked = source.unpacked
     else: # otherwise unpack the generated tarball get a filtered tree
-        if tmpdir:
-            cleanup_tmp_tree(tmpdir)
-        tmpdir = tempfile.mkdtemp(dir='../')
-        repacked.unpack(tmpdir, filters)
-    return (repacked, tmpdir)
+        repacked.unpack(unpack_dir, filters)
+    return repacked
 
