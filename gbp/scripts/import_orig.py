@@ -227,6 +227,21 @@ def debian_branch_merge_by_merge(repo, tag, version, options):
     repo.set_branch(options.debian_branch)
 
 
+def repacked_tarball_name(source, name, version):
+    if source.is_orig():
+        # Repacked orig tarball needs a different name since there's already
+        # one with that name
+        name = os.path.join(
+                    os.path.dirname(source.path),
+                    os.path.basename(source.path).replace(".tar", ".gbp.tar"))
+    else:
+        # Repacked sources or other archives get canonical name
+        name = os.path.join(
+                    os.path.dirname(source.path),
+                    "%s_%s.orig.tar.bz2" % (name, version))
+    return name
+
+
 def set_bare_repo_options(options):
     """Modify options for import into a bare repository"""
     if options.pristine_tar or options.merge:
@@ -400,7 +415,8 @@ def main(argv):
         if orig_needs_repack(source, options):
             gbp.log.debug("Filter pristine-tar: repacking '%s' from '%s'" % (source.path, source.unpacked))
             repack_dir = tempfile.mkdtemp(prefix='repack', dir=tmpdir)
-            source = repack_source(source, sourcepackage, version, repack_dir, options.filters)
+            repack_name = repacked_tarball_name(source, sourcepackage, version)
+            source = repack_source(source, repack_name, repack_dir, options.filters)
 
         (pristine_orig, linked) = prepare_pristine_tar(source.path,
                                                        sourcepackage,
