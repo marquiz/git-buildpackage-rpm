@@ -318,7 +318,8 @@ def main(argv):
         if orig_needs_repack(source, options):
             gbp.log.debug("Filter pristine-tar: repacking '%s' from '%s'" % (source.path, source.unpacked))
             repack_dir = tempfile.mkdtemp(prefix='repack', dir=tmpdir)
-            source = repack_source(source, sourcepackage, version, repack_dir, options.filters)
+            repack_name = repacked_tarball_name(source, sourcepackage, version)
+            source = repack_source(source, repack_name, repack_dir, options.filters)
 
         (pristine_orig, linked) = prepare_pristine_tar(source.path,
                                                        sourcepackage,
