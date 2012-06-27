@@ -38,6 +38,8 @@ from gbp.config import (GbpOptionParserRpm, GbpOptionGroup,
                        no_upstream_branch_msg)
 from gbp.errors import GbpError
 import gbp.log
+from gbp.scripts.pq_rpm import safe_patches, rm_patch_files, get_packager
+from gbp.scripts.common.pq import apply_and_commit_patch
 from gbp.pkg import parse_archive_filename
 
 no_packaging_branch_msg = """
@@ -45,8 +47,19 @@ Repository does not have branch '%s' for packaging/distribution sources.
 You need to reate it or use --packaging-branch to specify it.
 """
 
+PATCH_AUTODELETE_COMMIT_MSG = """
+Autoremove imported patches from packaging
+
+Removed all imported patches from %s
+and patch files from the packaging dir.
+"""
+
 class SkipImport(Exception):
     """Nothing imported"""
+    pass
+
+class PatchImportError(Exception):
+    """Patch import failed"""
     pass
 
 
@@ -105,6 +118,45 @@ def set_bare_repo_options(options):
     if options.pristine_tar:
         gbp.log.info("Bare repository: setting %s option '--no-pristine-tar'")
         options.pristine_tar = False
+    if options.patch_import:
+        gbp.log.info("Bare repository: setting %s option '--no-patch-import')")
+        options.patch_import = False
+
+
+def import_spec_patches(repo, spec):
+    """
+    Import patches from a spec file to the current branch
+    """
+    queue = spec.patchseries()
+    if len(queue) == 0:
+        return
+
+    gbp.log.info("Importing patches to '%s' branch" % repo.get_branch())
+    orig_head = repo.rev_parse("HEAD")
+    packager = get_packager(spec)
+
+    # Put patches in a safe place
+    queue = safe_patches(queue)
+    for patch in queue:
+        gbp.log.debug("Applying %s" % patch.path)
+        try:
+            apply_and_commit_patch(repo, patch, packager)
+        except (GbpError, GitRepositoryError):
+            repo.force_head(orig_head, hard=True)
+            raise PatchImportError("Patch(es) didn't apply, you need apply "
+                                   "and commit manually")
+
+    # Remove patches from spec and packaging directory
+    gbp.log.info("Removing imported patch files from spec and packaging dir")
+    rm_patch_files(spec)
+    try:
+        spec.update_patches([], {})
+        spec.write_spec_file()
+    except GbpError:
+        repo.force_head('HEAD', hard=True)
+        raise PatchImportError("Unable to update spec file, you need to edit"
+                               "and commit it  manually")
+    repo.commit_all(msg=PATCH_AUTODELETE_COMMIT_MSG % spec.specfile)
 
 
 def force_to_branch_head(repo, branch):
@@ -190,6 +242,8 @@ def build_parser(name):
                       dest="author_is_committer")
     import_group.add_config_file_option(option_name="packaging-dir",
                       dest="packaging_dir")
+    import_group.add_boolean_config_file_option(option_name="patch-import",
+                                                dest="patch_import")
     return parser
 
 def parse_args(argv):
@@ -449,6 +503,11 @@ def main(argv):
                 # Import patches on top of the source tree
                 # (only for non-native packages with non-orphan packaging)
                 force_to_branch_head(repo, options.packaging_branch)
+                if options.patch_import:
+                    spec = SpecFile(os.path.join(repo.path,
+                                        options.packaging_dir, spec.specfile))
+                    import_spec_patches(repo, spec)
+                    commit = options.packaging_branch
 
             # Create packaging tag
             if not options.skip_packaging_tag:
@@ -477,6 +536,9 @@ def main(argv):
     except NoSpecError as err:
         gbp.log.err("Failed determine spec file: %s" % err)
         ret = 1
+    except PatchImportError as err:
+        gbp.log.err(err)
+        ret = 2
     except SkipImport:
         skipped = True
     finally:

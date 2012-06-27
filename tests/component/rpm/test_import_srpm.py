@@ -55,10 +55,11 @@ class TestImportPacked(ComponentTestBase):
         # Check repository state
         repo = GitRepository('gbp-test')
         files =  {'Makefile', 'README', 'bar.tar.gz', 'dummy.sh', 'foo.txt',
-                  'gbp-test.spec', 'my.patch', 'my2.patch', 'my3.patch'}
+                  'gbp-test.spec', 'my.patch', 'mydir/myfile.txt'}
         self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
-        # Two commits: upstream and packaging files
-        eq_(len(repo.get_commits()), 2)
+        # Four commits: upstream, packaging files, one patch and the removal
+        # of imported patches
+        eq_(len(repo.get_commits()), 4)
 
     def test_basic_import2(self):
         """Import package with multiple spec files and full url patch"""
@@ -68,11 +69,12 @@ class TestImportPacked(ComponentTestBase):
         repo = GitRepository('gbp-test2')
         files = {'Makefile', 'README', 'bar.tar.gz', 'dummy.sh', 'foo.txt',
                  'gbp-test2.spec', 'gbp-test2-alt.spec', 'my.patch',
-                 'my2.patch', 'my3.patch'}
+                 'mydir/myfile.txt'}
         self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
 
-        # Two commits: upstream and packaging files
-        eq_(len(repo.get_commits()), 2)
+        # Four commits: upstream, packaging files, one patch and the removal
+        # of imported patches
+        eq_(len(repo.get_commits()), 4)
 
     def test_basic_import_orphan(self):
         """
@@ -111,6 +113,20 @@ class TestImportPacked(ComponentTestBase):
         # Only one commit: packaging files
         eq_(len(repo.get_commits()), 1)
 
+    def test_import_compressed_patches(self):
+        """Test importing of non-native src.rpm with compressed patches"""
+        srpm = os.path.join(DATA_DIR, 'gbp-test-1.1-2.src.rpm')
+        eq_(import_srpm.main(['arg0', srpm]), 0)
+        # Check repository state
+        repo = GitRepository('gbp-test')
+        files =  set(['Makefile', 'README', 'AUTHORS', 'NEWS', 'bar.tar.gz',
+                    'dummy.sh', 'foo.txt', 'gbp-test.spec', 'my.patch',
+                    'mydir/myfile.txt'])
+        self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
+        # Four commits: upstream, packaging files, three patches and the removal
+        # of imported patches
+        eq_(len(repo.get_commits()), 6)
+
     def test_multiple_versions(self):
         """Test importing of multiple versions"""
         srpms = [ os.path.join(DATA_DIR, 'gbp-test-1.0-1.src.rpm'),
@@ -119,21 +135,22 @@ class TestImportPacked(ComponentTestBase):
         eq_(mock_import(['--no-pristine-tar', srpms[0]]), 0)
         repo = GitRepository('gbp-test')
         self._check_repo_state(repo, 'master', ['master', 'upstream'])
-        eq_(len(repo.get_commits()), 2)
+        eq_(len(repo.get_commits()), 4)
         # Try to import same version again
         eq_(mock_import([srpms[1]]), 0)
-        eq_(len(repo.get_commits()), 2)
+        eq_(len(repo.get_commits()), 4)
         eq_(len(repo.get_commits(until='upstream')), 1)
-        eq_(mock_import(['--no-pristine-tar', '--allow-same-version', srpms[1]]), 0)
-        # Added new version of packaging
-        eq_(len(repo.get_commits()), 3)
+        eq_(mock_import(['--no-pristine-tar', '--allow-same-version',
+                         srpms[1]]), 0)
+        # Added new versio packaging plus one patch
+        eq_(len(repo.get_commits()), 7)
         eq_(len(repo.get_commits(until='upstream')), 1)
         # Import new version
         eq_(mock_import(['--no-pristine-tar', srpms[2]]), 0)
         files = {'Makefile', 'README', 'bar.tar.gz', 'dummy.sh', 'foo.txt',
-                 'gbp-test.spec', 'my.patch', 'my2.patch', 'my3.patch'}
+                 'gbp-test.spec', 'my.patch', 'mydir/myfile.txt'}
         self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
-        eq_(len(repo.get_commits()), 5)
+        eq_(len(repo.get_commits()), 11)
         eq_(len(repo.get_commits(until='upstream')), 2)
         # Check number of tags
         eq_(len(repo.get_tags('upstream/*')), 2)
@@ -162,8 +179,9 @@ class TestImportPacked(ComponentTestBase):
         self._check_log(-1, 'Also check the --create-missing-branches')
         eq_(mock_import(['--no-pristine-tar', '--create-missing', srpm]), 0)
         self._check_repo_state(repo, 'master', ['master', 'upstream'])
-        # Four commits: our initial, upstream and packaging files
-        eq_(len(repo.get_commits()), 3)
+        # Four commits: our initial, upstream, packaging files, one patch,
+        # and the removal of imported patches
+        eq_(len(repo.get_commits()), 5)
 
         # The import should fail because missing packaging-branch
         srpm = os.path.join(DATA_DIR, 'gbp-test-1.1-1.src.rpm')
@@ -178,7 +196,7 @@ class TestImportPacked(ComponentTestBase):
         # Check repository state
         repo = GitRepository('gbp-test')
         files = set(['Makefile', 'dummy.sh', 'bar.tar.gz', 'foo.txt',
-                 'gbp-test.spec', 'my.patch', 'my2.patch', 'my3.patch'])
+                 'gbp-test.spec', 'my.patch', 'mydir/myfile.txt'])
         self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
 
     def test_tagging(self):
@@ -248,6 +266,7 @@ class TestImportPacked(ComponentTestBase):
         srpm = os.path.join(DATA_DIR, 'gbp-test2-2.0-0.src.rpm')
 
         eq_(mock_import(['--no-pristine-tar',
+                    '--no-patch-import',
                     '--packaging-branch=pack',
                     '--upstream-branch=orig',
                     '--packaging-dir=packaging',
@@ -373,8 +392,9 @@ class TestPristineTar(ComponentTestBase):
         repo = GitRepository('gbp-test')
         self._check_repo_state(repo, 'master', ['master', 'upstream',
                                'pristine-tar'])
-        # Two commits: upstream and packaging files
-        eq_(len(repo.get_commits()), 2)
+        # Four commits: upstream, packaging files, one patch and the removal
+        # of imported patches
+        eq_(len(repo.get_commits()), 4)
 
     def test_unsupported_archive(self):
         """Test importing of src.rpm with a zip source archive"""

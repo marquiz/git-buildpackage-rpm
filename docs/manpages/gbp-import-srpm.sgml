@@ -27,6 +27,7 @@
       <arg><option>--packaging-tag=</option><replaceable>TAG-FORMAT</replaceable></arg>
       <arg><option>--download</option></arg>
       <arg><option>--packaging-dir=</option><replaceable>DIRECTORY</replaceable></arg>
+      <arg><option>--[no-]patch-import</option></arg>
       <arg><option>--filter=</option><replaceable>PATTERN</replaceable></arg>
       <arg><option>--keyid=</option><replaceable>GPG-KEYID</replaceable></arg>
       <arg><option>--[no-]create-missing-branches</option></arg>
@@ -136,6 +137,20 @@
         <listitem>
           <para>
           Subdirectory where to put the RPM packaging files.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--[no-]patch-import</option>
+        </term>
+        <listitem>
+          <para>
+          Import patches to the packaging branch. That is, apply and commit all
+          patches (that are not marked for manual maintenance) into the
+          packaging branch after importing other packaging files. The patch
+          files are automatically removed from the packaging directory and the
+          spec file if all patches are successufully applied.  This option is
+          ignored if <option>--orphan-packaging</option> is used.
           </para>
         </listitem>
       </varlistentry>
