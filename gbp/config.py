@@ -554,6 +554,7 @@ class GbpOptionParserRpm(GbpOptionParser):
                        'patch-export-squash-until'  : '',
                        'pristine-tarball-name'  : 'auto',
                        'orig-prefix'            : 'auto',
+                       'patch-import'           : 'True',
                      } )
 
     help = dict(GbpOptionParser.help)
@@ -583,6 +584,8 @@ class GbpOptionParserRpm(GbpOptionParser):
                         "Filename to record to pristine-tar, set to 'auto' to not mangle the file name, default is '%(pristine-tarball-name)s'",
                    'orig-prefix':
                         "Prefix (dir) to be used when generating/importing tarballs, default is '%(orig-prefix)s'",
+                   'patch-import':
+                        "Import patches to the packaging branch, default is '%(patch-import)s'",
                  } )
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
