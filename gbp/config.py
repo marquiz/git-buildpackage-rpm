@@ -613,6 +613,7 @@ class GbpOptionParserRpm(GbpOptionParser):
             'patch-export-compress'     : '0',
             'patch-export-ignore-path'  : '',
             'patch-export-squash-until' : '',
+            'patch-import'              : 'True',
             'spec-vcs-tag'              : '',
             'merge'                     : 'False',
             'pristine-tarball-name'     : 'auto',
@@ -660,6 +661,9 @@ class GbpOptionParserRpm(GbpOptionParser):
                 "Squash commits (from upstream) until given tree-ish into one "
                 "big diff, format is '<commit_ish>[:<filename_base>]'. "
                 "Default is '%(patch-export-squash-until)s'",
+            'patch-import':
+                "Import patches to the packaging branch, default is "
+                "'%(patch-import)s'",
             'spec-vcs-tag':
                 "Set/update the 'VCS:' tag in the spec file, empty value "
                 "removes the tag entirely, default is '%(spec-vcs-tag)s'",
