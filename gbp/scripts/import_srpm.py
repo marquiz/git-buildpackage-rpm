@@ -56,7 +56,7 @@ def download_source(pkg, dirs):
     else:
         mode = 'yumdownloader'
 
-    dirs['download'] = os.path.abspath(tempfile.mkdtemp())
+    dirs['download'] = tempfile.mkdtemp(prefix='download', dir=dirs['tmp_base'])
     gbp.log.info("Downloading '%s' using '%s'..." % (pkg, mode))
     if mode == 'yumdownloader':
         gbpc.RunAtCommand('yumdownloader',
@@ -165,229 +165,214 @@ def parse_args(argv):
 
 def main(argv):
     dirs = dict(top=os.path.abspath(os.curdir))
-    needs_repo = False
+
     ret = 0
     skipped = False
     parents = None
 
     options, args = parse_args(argv)
 
+    if len(args) != 1:
+        gbp.log.err("Need to give exactly one package to import. Try --help.")
+        return 1
     try:
-        if len(args) != 1:
-            gbp.log.err("Need to give exactly one package to import. Try --help.")
-            raise GbpError
+        dirs['tmp_base'] = os.path.abspath(tempfile.mkdtemp())
+    except GbpError as err:
+        gbp.log.err(err)
+        return 1
+    try:
+        srpm = args[0]
+        if options.download:
+            srpm = download_source(srpm, dirs)
+
+        # Real srpm, we need to unpack, first
+        if not os.path.isdir(srpm) and not srpm.endswith(".spec"):
+            src = parse_srpm(srpm)
+            dirs['pkgextract'] = tempfile.mkdtemp(prefix='pkgextract', dir=dirs['tmp_base'])
+            gbp.log.info("Extracting src rpm to '%s'" % dirs['pkgextract'])
+            src.unpack(dirs['pkgextract'])
+            srpm = dirs['pkgextract']
+
+        # Find and parse spec file
+        if os.path.isdir(srpm):
+            gbp.log.debug("Trying to import an unpacked srpm from '%s'" % srpm)
+            dirs['src'] = os.path.abspath(srpm)
+            spec = parse_spec(guess_spec(srpm, True))
         else:
-            pkg = args[0]
-            if options.download:
-                srpm = download_source(pkg, dirs=dirs)
+            gbp.log.debug("Trying to import an srpm from '%s' with spec file '%s'" % (os.path.dirname(srpm), srpm))
+            dirs['src'] = os.path.abspath(os.path.dirname(srpm))
+            spec = parse_spec(srpm)
+
+        # Check the repository state
+        try:
+            repo = RpmGitRepository('.')
+            is_empty = repo.is_empty()
+
+            (clean, out) = repo.is_clean()
+            if not clean and not is_empty:
+                gbp.log.err("Repository has uncommitted changes, commit these first: ")
+                raise GbpError, out
+
+        except GitRepositoryError:
+            gbp.log.info("No git repository found, creating one.")
+            is_empty = True
+            repo = RpmGitRepository.create(spec.name)
+            os.chdir(repo.path)
+
+        if repo.bare:
+            set_bare_repo_options(options)
+
+        # Create more tempdirs
+        dirs['origsrc'] = tempfile.mkdtemp(prefix='origsrc', dir=dirs['tmp_base'])
+        dirs['packaging_base'] = tempfile.mkdtemp(prefix='packaging', dir=dirs['tmp_base'])
+        dirs['packaging'] = os.path.join(dirs['packaging_base'], options.packaging_dir)
+        try:
+            os.mkdir(dirs['packaging'])
+        except OSError, (e, emsg):
+            if e != errno.EEXIST:
+                raise
+
+        # Need to copy files to the packaging directory given by caller
+        files = [os.path.basename(patch['filename']) for patch in spec.patches.itervalues()]
+        for num, src in spec.sources.iteritems():
+            if num != spec.orig_src_num:
+                files.append(src['filename'])
+        files.append(spec.specfile)
+        for fname in files:
+            fpath = os.path.join(dirs['src'], fname)
+            if os.path.exists(fpath):
+                shutil.copy2(fpath, dirs['packaging'])
             else:
-                srpm = pkg
+                gbp.log.err("File '%s' listed in spec not found" % fname)
+                raise GbpError
 
-            if os.path.isdir(pkg) or pkg.endswith(".spec"):
-                if os.path.isdir(pkg):
-                    gbp.log.debug("Trying to import an unpacked srpm from '%s'" % pkg)
-                    dirs['src'] = os.path.abspath(pkg)
-                    spec = parse_spec(guess_spec(pkg, True))
-                else:
-                    gbp.log.debug("Trying to import an srpm from '%s' with spec file '%s'" % (os.path.dirname(pkg), pkg))
-                    dirs['src'] = os.path.abspath(os.path.dirname(pkg))
-                    spec = parse_spec(pkg)
+        # Unpack orig source archive
+        if spec.orig_src:
+            orig_tarball=os.path.join(dirs['src'], spec.orig_src['filename'])
+            upstream = RpmUpstreamSource(orig_tarball)
+            upstream = upstream.unpack(dirs['origsrc'], options.filters)
+        else:
+            upstream = None
 
-                pkgname = spec.name
-                pkgver = spec.version
-                upstream_version = spec.upstreamversion
-                packager = spec.packager
-                unpacked = True
+        format = [(options.upstream_tag, "Upstream"), (options.packaging_tag, options.vendor)][options.native]
+        tag_str_fields = dict(spec.version, vendor=options.vendor)
+        tag = repo.version_to_tag(format[0], tag_str_fields)
+
+        if repo.find_version(options.packaging_tag, tag_str_fields):
+            gbp.log.warn("Version %s already imported." % RpmPkgPolicy.compose_full_version(spec.version))
+            if options.allow_same_version:
+                gbp.log.info("Moving tag of version '%s' since import forced" % RpmPkgPolicy.compose_full_version(spec.version))
+                move_tag_stamp(repo, options.packaging_tag, tag_str_fields)
             else:
-                gbp.log.debug("Trying to import an source rpm '%s'" % srpm)
-                dirs['src'] = os.path.abspath(os.path.dirname(pkg))
-                src = parse_srpm(srpm)
-                pkgname = src.name
-                pkgver = src.version
-                upstream_version = src.upstreamversion
-                packager = src.packager
-                unpacked = False
+                raise SkipImport
 
-            try:
-                repo = RpmGitRepository('.')
-                is_empty = repo.is_empty()
+        if is_empty:
+            options.create_missing_branches = True
 
-                (clean, out) = repo.is_clean()
-                if not clean and not is_empty:
-                    gbp.log.err("Repository has uncommitted changes, commit these first: ")
-                    raise GbpError, out
+        # Determine author and committer info, currently same info is used
+        # for both upstream sources and packaging files
+        author=None
+        if spec.packager:
+            match = re.match('(?P<name>.*[^ ])\s*<(?P<email>\S*)>', spec.packager.strip())
+            if match:
+                author=GitModifier(match.group('name'), match.group('email'))
+        if not author:
+            author=GitModifier()
+            gbp.log.debug("Couldn't determine packager info")
+        committer = committer_from_author(author, options)
 
-            except GitRepositoryError:
-                # no repo found, create one
-                needs_repo = True
-                is_empty = True
+        # Import upstream sources
+        if upstream:
+            upstream_commit = repo.find_version(format[0], tag_str_fields)
+            if not upstream_commit:
+                gbp.log.info("Tag %s not found, importing %s upstream sources" % (tag, format[1]))
 
-            if needs_repo:
-                gbp.log.info("No git repository found, creating one.")
-                repo = RpmGitRepository.create(pkgname)
-                os.chdir(repo.path)
-
-            if repo.bare:
-                set_bare_repo_options(options)
-
-            dirs['pkgextract'] = os.path.abspath(tempfile.mkdtemp(dir='..'))
-            dirs['pkgextract-packaging'] = os.path.join(dirs['pkgextract'], options.packaging_dir)
-            try:
-                os.mkdir(dirs['pkgextract-packaging'])
-            except OSError, (e, emsg):
-                if e == errno.EEXIST:
-                    pass
-            dirs['srctarball'] = os.path.abspath(tempfile.mkdtemp(dir='..'))
-            dirs['srcunpack'] = os.path.abspath(tempfile.mkdtemp(dir='..'))
-
-            orig_tarball = None
-            if unpacked:
-                files = [os.path.basename(patch['filename']) for patch in spec.patches.itervalues()]
-                for num, src in spec.sources.iteritems():
-                    if num != spec.orig_src_num:
-                        files.append(src['filename'])
-                files.append(spec.specfile)
-                for fname in files:
-                    fpath = os.path.join(dirs['src'], fname)
-                    if os.path.exists(fpath):
-                        shutil.copy2(fpath, dirs['pkgextract-packaging'])
-                    else:
-                        gbp.log.err("File '%s' listed in spec not found" % fname)
-                        raise GbpError
-                if spec.orig_src:
-                    orig_tarball=os.path.join(dirs['src'], spec.orig_src['filename'])
-            else:
-                gbp.log.info("Extracting src rpm...")
-                src.unpack(dirs['pkgextract-packaging'], dirs['srctarball'])
-                if src.orig_file:
-                    orig_tarball = os.path.join(dirs['srctarball'], src.orig_file)
-
-            if orig_tarball:
-                upstream = RpmUpstreamSource(orig_tarball)
-                upstream = upstream.unpack(dirs['srcunpack'], options.filters)
-            else:
-                upstream = None
-
-            format = [(options.upstream_tag, "Upstream"), (options.packaging_tag, options.vendor)][options.native]
-            tag_str_fields = dict(pkgver, vendor=options.vendor)
-            tag = repo.version_to_tag(format[0], tag_str_fields)
-
-            if repo.find_version(options.packaging_tag, tag_str_fields):
-                gbp.log.warn("Version %s already imported." % RpmPkgPolicy.compose_full_version(pkgver))
-                if options.allow_same_version:
-                    gbp.log.info("Moving tag of version '%s' since import forced" % RpmPkgPolicy.compose_full_version(pkgver))
-                    move_tag_stamp(repo, options.packaging_tag, tag_str_fields)
-                else:
-                    raise SkipImport
-
-            if is_empty:
-                options.create_missing_branches = True
-
-            # Determine author and committer info, currently same info is used
-            # for both upstream sources and packaging files
-            author=None
-            if packager:
-                match = re.match('(?P<name>.*[^ ])\s*<(?P<email>\S*)>', packager.strip())
-                if match:
-                    author=GitModifier(match.group('name'), match.group('email'))
-            if not author:
-                author=GitModifier()
-                gbp.log.debug("Couldn't determine packager info")
-            committer = committer_from_author(author, options)
-
-            # Import upstream sources
-            if upstream:
-                upstream_commit = repo.find_version(format[0], tag_str_fields)
-                if not upstream_commit:
-                    gbp.log.info("Tag %s not found, importing %s tarball" % (tag, format[1]))
-
-                    branch = [options.upstream_branch,
-                              options.packaging_branch][options.native]
-                    if not repo.has_branch(branch):
-                        if options.create_missing_branches:
-                            gbp.log.info("Will create missing branch '%s'" % branch)
-                        else:
-                            gbp.log.err(no_upstream_branch_msg % branch +
-                                "\nAlso check the --create-missing-branches option.")
-                            raise GbpError
-
-                    msg = "%s version %s" % (format[1], upstream_version)
-                    upstream_commit = repo.commit_dir(upstream.unpacked,
-                                                      "Imported %s" % msg,
-                                                       branch,
-                                                       author=author,
-                                                       committer=committer,
-                                                       create_missing_branch=options.create_missing_branches)
-                    repo.create_tag(name=tag,
-                                    msg=msg,
-                                    commit=upstream_commit,
-                                    sign=options.sign_tags,
-                                    keyid=options.keyid)
-
-                    if not options.native:
-                        if options.pristine_tar:
-                            repo.pristine_tar.commit(orig_tarball, 'refs/heads/%s' % options.upstream_branch)
-                        parents = [ options.upstream_branch ]
-            else:
-                gbp.log.info("No source tarball imported")
-
-            if not options.native or not upstream:
-                # Import packaging files
-                gbp.log.info("Importing packaging files...")
-                branch = options.packaging_branch
+                branch = [options.upstream_branch,
+                          options.packaging_branch][options.native]
                 if not repo.has_branch(branch):
                     if options.create_missing_branches:
                         gbp.log.info("Will create missing branch '%s'" % branch)
                     else:
-                        gbp.log.err(no_packaging_branch_msg % branch +
-                                    "\nAlso check the --create-missing-branches option.")
+                        gbp.log.err(no_upstream_branch_msg % branch +
+                            "\nAlso check the --create-missing-branches option.")
                         raise GbpError
 
-                tag_str_fields = dict(pkgver, vendor=options.vendor)
-                tag = repo.version_to_tag(options.packaging_tag, tag_str_fields)
-                msg = "%s release %s" % (options.vendor, RpmPkgPolicy.compose_full_version(pkgver))
-
-                if options.orphan_packaging or not upstream:
-                    parents = []
-                    commit = repo.commit_dir(dirs['pkgextract'],
-                                                 "Imported %s" % msg,
-                                                 branch,
-                                                 author=author,
-                                                 committer=committer,
-                                                 create_missing_branch=options.create_missing_branches)
-                else:
-                    # Copy packaging files to the unpacked sources dir
-                    try:
-                        pkgsubdir = os.path.join(upstream.unpacked, options.packaging_dir)
-                        os.mkdir(pkgsubdir)
-                    except OSError, (e, emsg):
-                        if e == errno.EEXIST:
-                            pass
-                        else:
-                            raise
-                    for f in os.listdir(dirs['pkgextract-packaging']):
-                        shutil.copy2(os.path.join(dirs['pkgextract-packaging'], f),
-                                     pkgsubdir)
-                    commit = repo.commit_dir(upstream.unpacked,
-                                                 "Imported %s" % msg,
-                                                 branch,
-                                                 other_parents=[upstream_commit],
-                                                 author=author,
-                                                 committer=committer,
-                                                 create_missing_branch=options.create_missing_branches)
-
+                msg = "%s version %s" % (format[1], spec.upstreamversion)
+                upstream_commit = repo.commit_dir(upstream.unpacked,
+                                                  "Imported %s" % msg,
+                                                   branch,
+                                                   author=author,
+                                                   committer=committer,
+                                                   create_missing_branch=options.create_missing_branches)
                 repo.create_tag(name=tag,
                                 msg=msg,
-                                commit=commit,
+                                commit=upstream_commit,
                                 sign=options.sign_tags,
                                 keyid=options.keyid)
 
-            if repo.get_branch() == options.packaging_branch:
-                # Update HEAD if we modified the checked out branch
-                repo.force_head(options.packaging_branch, hard=True)
-            # Checkout packaging branch
-            repo.set_branch(options.packaging_branch)
+                if not options.native:
+                    if options.pristine_tar:
+                        repo.pristine_tar.commit(orig_tarball, 'refs/heads/%s' % options.upstream_branch)
+                    parents = [ options.upstream_branch ]
+        else:
+            gbp.log.info("No orig source archive imported")
 
+        # Import packaging files. For native packages we assume that also
+        # packaging files are found in the source tarball
+        if not options.native or not upstream:
+            gbp.log.info("Importing packaging files")
+            branch = options.packaging_branch
+            if not repo.has_branch(branch):
+                if options.create_missing_branches:
+                    gbp.log.info("Will create missing branch '%s'" % branch)
+                else:
+                    gbp.log.err(no_packaging_branch_msg % branch +
+                                "\nAlso check the --create-missing-branches option.")
+                    raise GbpError
+
+            tag_str_fields = dict(spec.version, vendor=options.vendor)
+            tag = repo.version_to_tag(options.packaging_tag, tag_str_fields)
+            msg = "%s release %s" % (options.vendor, RpmPkgPolicy.compose_full_version(spec.version))
+
+            if options.orphan_packaging or not upstream:
+                parents = []
+                commit = repo.commit_dir(dirs['packaging_base'],
+                                             "Imported %s" % msg,
+                                             branch,
+                                             author=author,
+                                             committer=committer,
+                                             create_missing_branch=options.create_missing_branches)
+            else:
+                # Copy packaging files to the unpacked sources dir
+                try:
+                    pkgsubdir = os.path.join(upstream.unpacked, options.packaging_dir)
+                    os.mkdir(pkgsubdir)
+                except OSError, (e, emsg):
+                    if e != errno.EEXIST:
+                        raise
+                for f in os.listdir(dirs['packaging']):
+                    shutil.copy2(os.path.join(dirs['packaging'], f),
+                                 pkgsubdir)
+                commit = repo.commit_dir(upstream.unpacked,
+                                         "Imported %s" % msg,
+                                         branch,
+                                         other_parents=[upstream_commit],
+                                         author=author,
+                                         committer=committer,
+                                         create_missing_branch=options.create_missing_branches)
+
+            # Create packaging tag
+            repo.create_tag(name=tag,
+                            msg=msg,
+                            commit=commit,
+                            sign=options.sign_tags,
+                            keyid=options.keyid)
+
+        if repo.get_branch() == options.packaging_branch:
+            # Update HEAD if we modified the checked out branch
+            repo.force_head(options.packaging_branch, hard=True)
+        # Checkout packaging branch
+        repo.set_branch(options.packaging_branch)
 
     except KeyboardInterrupt:
         ret = 1
@@ -408,13 +393,10 @@ def main(argv):
         skipped = True
     finally:
         os.chdir(dirs['top'])
-
-    for d in [ 'pkgextract', 'srctarball', 'srcunpack', 'download' ]:
-        if dirs.has_key(d):
-            gbpc.RemoveTree(dirs[d])()
+        gbpc.RemoveTree(dirs['tmp_base'])()
 
     if not ret and not skipped:
-        gbp.log.info("Version '%s' imported under '%s'" % (RpmPkgPolicy.compose_full_version(pkgver), pkgname))
+        gbp.log.info("Version '%s' imported under '%s'" % (RpmPkgPolicy.compose_full_version(spec.version), spec.name))
     return ret
 
 if __name__ == '__main__':
