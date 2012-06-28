@@ -75,7 +75,6 @@ class SrcRpmFile(object):
         self.rpmhdr = rpm.ts(vsflags=ts_vsflags).hdrFromFdno(srpmfp.fileno())
         srpmfp.close()
         self.srpmfile = os.path.abspath(srpmfile)
-        (self.orig_file, self.orig_base, self.orig_archive_fmt, self.orig_comp) = self.guess_orig_file()
 
     def _get_version(self):
         """
@@ -109,48 +108,14 @@ class SrcRpmFile(object):
         return self.rpmhdr[rpm.RPMTAG_PACKAGER]
     packager = property(_get_packager)
 
-    def unpack(self, dest_dir, srctarballdir=None):
+    def unpack(self, dest_dir):
         """
-        Unpack the source rpm to tmpdir, move source tarball to srctallbardir.
-        Leave the cleanup to the caller in case of an error
+        Unpack the source rpm to tmpdir.
+        Leave the cleanup to the caller in case of an error.
         """
         gbpc.RunAtCommand('rpm2cpio',
                           [self.srpmfile, '|', 'cpio', '-id'],
                           shell=True)(dir=dest_dir)
-
-        # Unpack source tarball
-        if self.orig_file:
-            orig_tarball = os.path.join(dest_dir, self.orig_file)
-            if srctarballdir:
-                if os.path.isdir(srctarballdir):
-                    shutil.move(orig_tarball, srctarballdir)
-                else:
-                    raise GbpError, "Src tarball destination dir not found or not a directory"
-        else:
-            gbp.log.warn("Failed to detect source tarball. Import may be incorrect")
-            #raise GbpError, "Failed to detect source tarball"
-
-    def guess_orig_file(self):
-        """
-        Try to guess the name of the primary upstream/source archive
-        returns a tuple with full file path, filename base, archive format and
-        compression method.
-        """
-        full_path, base, archive_fmt, comp = None, None, None, None
-
-        for _full_path in self.rpmhdr[rpm.RPMTAG_SOURCE]:
-            filename = os.path.basename(_full_path)
-            _base, _archive_fmt, _comp = parse_archive_filename(filename)
-            if RpmPkgPolicy.is_valid_orig_archive(filename):
-                if filename.startswith(self.name):
-                    # Take the first archive that starts with pkg name
-                    full_path, base, archive_fmt, comp = _full_path, _base, _archive_fmt, _comp
-                    break
-                # otherwise we take the first archive
-                elif not full_path:
-                    full_path, base, archive_fmt, comp = _full_path, _base, _archive_fmt, _comp
-                # else don't accept
-        return (full_path, base, archive_fmt, comp)
 
 
 class SpecFile(object):
