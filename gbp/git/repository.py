@@ -1326,10 +1326,9 @@ class GitRepository(object):
         """
         extra_env = {}
 
-        if isinstance(paths, basestring):
-            paths = [ paths ]
-
-        args = [ '-f' ] if force else []
+        args = GitArgs()
+        args.add_true(force, '-f')
+        args.add(paths)
 
         if index_file:
             extra_env['GIT_INDEX_FILE'] =  index_file
@@ -1337,7 +1336,7 @@ class GitRepository(object):
         if work_tree:
             extra_env['GIT_WORK_TREE'] = work_tree
 
-        self._git_command("add", args + paths, extra_env)
+        self._git_command("add", args.args, extra_env)
 
     def remove_files(self, paths, verbose=False):
         """
