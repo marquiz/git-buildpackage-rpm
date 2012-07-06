@@ -1313,7 +1313,7 @@ class GitRepository(object):
 
 #{ Files
 
-    def add_files(self, paths, force=False, index_file=None, work_tree=None):
+    def add_files(self, paths, force=False, untracked=True, index_file=None, work_tree=None):
         """
         Add files to a the repository
 
@@ -1321,6 +1321,8 @@ class GitRepository(object):
         @type paths: list or C{str}
         @param force: add files even if they would be ignored by .gitignore
         @type force: C{bool}
+        @param untracked: add also previously untracked files
+        @type untracked: C{bool}
         @param index_file: alternative index file to use
         @param work_tree: alternative working tree to use
         """
@@ -1328,7 +1330,7 @@ class GitRepository(object):
 
         args = GitArgs()
         args.add_true(force, '-f')
-        args.add('-A')
+        args.add_cond(untracked, '-A', '-u')
         args.add(paths)
 
         if index_file:

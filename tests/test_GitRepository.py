@@ -68,6 +68,7 @@ def test_add_files():
          - L{gbp.git.GitRepository.add_files}
          - L{gbp.git.GitRepository.commit_all}
          - L{gbp.git.GitRepository.is_clean}
+         - L{gbp.git.GitRepository.status}
 
     Properties tested:
          - L{gbp.git.GitRepository.head}
@@ -80,7 +81,12 @@ def test_add_files():
     False
     >>> repo.is_clean(ignore_untracked=True)[0]
     True
+    >>> repo.add_files(repo.path, force=True, untracked=False)
+    >>> repo.status().items()
+    [('??', ['testfile'])]
     >>> repo.add_files(repo.path, force=True)
+    >>> repo.status().items()
+    [('A ', ['testfile'])]
     >>> repo.commit_all(msg="foo")
     >>> repo.is_clean()[0]
     True
