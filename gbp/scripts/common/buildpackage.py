@@ -153,9 +153,10 @@ def dump_tree(repo, export_dir, treeish, with_submodules):
     return True
 
 
-def write_wc(repo, force=True):
+def write_wc(repo, force=True, untracked=True):
     """write out the current working copy as a treeish object"""
-    repo.add_files(repo.path, force=force, index_file=wc_index)
+    clone_index()
+    repo.add_files(repo.path, force=force, untracked=untracked, index_file=wc_index)
     tree = repo.write_tree(index_file=wc_index)
     return tree
 
@@ -164,3 +165,9 @@ def drop_index():
     """drop our custom index"""
     if os.path.exists(wc_index):
         os.unlink(wc_index)
+
+def clone_index():
+    """Copy the current index file to our custom index file"""
+    indexfn = ".git/index"
+    if os.path.exists(indexfn):
+        shutil.copy2(indexfn, wc_index)
