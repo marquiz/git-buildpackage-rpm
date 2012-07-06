@@ -165,10 +165,11 @@ def wc_index(repo):
     return os.path.join(repo.git_dir, "gbp_index")
 
 
-def write_wc(repo, force=True):
+def write_wc(repo, force=True, untracked=True):
     """write out the current working copy as a treeish object"""
-    index_file = wc_index(repo)
-    repo.add_files(repo.path, force=force, index_file=index_file)
+    index_file = clone_index(repo)
+    repo.add_files(repo.path, force=force, untracked=untracked,
+                   index_file=index_file)
     tree = repo.write_tree(index_file=index_file)
     return tree
 
@@ -178,3 +179,12 @@ def drop_index(repo):
     index_file = wc_index(repo)
     if os.path.exists(index_file):
         os.unlink(index_file)
+
+
+def clone_index(repo):
+    """Copy the current index file to our custom index file"""
+    orig_index = os.path.join(repo.git_dir, "index")
+    tmp_index = wc_index(repo)
+    if os.path.exists(orig_index):
+        shutil.copy2(orig_index, tmp_index)
+    return tmp_index
