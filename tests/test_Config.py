@@ -67,14 +67,14 @@ def test_parser_fallback():
 
     >>> import os
     >>> from gbp.config import GbpOptionParser
-    >>> parser = GbpOptionParser('foo')
     >>> tmpdir = str(context.new_tmpdir('foo'))
     >>> confname = os.path.join(tmpdir, 'gbp.conf')
-    >>> parser.config_files = [confname]
     >>> f = open(confname, 'w')
     >>> f.write('[foo]\\nthere = is\\n[git-foo]\\nno = truth\\n')
     >>> f.close()
-    >>> parser._parse_config_files()
+    >>> os.environ['GBP_CONF_FILES'] = confname
+    >>> parser = GbpOptionParser('foo')
+    >>> del os.environ['GBP_CONF_FILES']
     >>> parser.config['there']
     'is'
     >>> parser.config['no']
@@ -86,21 +86,21 @@ def test_filter():
     The filter option should always parse as a list
     >>> import os
     >>> from gbp.config import GbpOptionParser
-    >>> parser = GbpOptionParser('bar')
     >>> tmpdir = str(context.new_tmpdir('bar'))
     >>> confname = os.path.join(tmpdir, 'gbp.conf')
-    >>> parser.config_files = [confname]
     >>> f = open(confname, 'w')
     >>> f.write('[bar]\\nfilter = asdf\\n')
     >>> f.close()
-    >>> parser._parse_config_files()
+    >>> os.environ['GBP_CONF_FILES'] = confname
+    >>> parser = GbpOptionParser('bar')
     >>> parser.config['filter']
     ['asdf']
     >>> f = open(confname, 'w')
     >>> f.write("[bar]\\nfilter = ['this', 'is', 'a', 'list']\\n")
     >>> f.close()
-    >>> parser._parse_config_files()
+    >>> parser = GbpOptionParser('bar')
     >>> parser.config['filter']
     ['this', 'is', 'a', 'list']
+    >>> del os.environ['GBP_CONF_FILES']
     """
 
