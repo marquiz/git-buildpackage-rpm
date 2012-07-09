@@ -253,6 +253,7 @@ class UpstreamSource(object):
     """
     def __init__(self, name, unpacked=None, pkg_policy=PkgPolicy):
         self._orig = False
+        self._tarball = False
         self._pkg_policy = pkg_policy
         self._path = name
         self.unpacked = unpacked
@@ -275,8 +276,10 @@ class UpstreamSource(object):
         """
         if self.is_dir():
             self._orig = False
+            self._tarball = False
             return
 
+        self._tarball = True if self.archive_fmt == 'tar' else False
         self._orig = self._pkg_policy.is_valid_orig_archive(os.path.basename(self.path))
 
     def is_orig(self):
@@ -286,6 +289,13 @@ class UpstreamSource(object):
         @rtype: C{bool}
         """
         return self._orig
+
+    def is_tarball(self):
+        """
+        @return: C{True} if source is a tarball, C{False} otherwise
+        @rtype: C{bool}
+        """
+        return self._tarball
 
     def is_dir(self):
         """
