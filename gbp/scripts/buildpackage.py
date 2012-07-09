@@ -34,7 +34,7 @@ from gbp.deb.upstreamsource import DebianUpstreamSource
 from gbp.errors import GbpError
 import gbp.log
 import gbp.notifications
-from gbp.scripts.common.buildpackage import (index_name, wc_name,
+from gbp.scripts.common.buildpackage import (index_name, wc_names,
                                              git_archive_submodules,
                                              git_archive_single, dump_tree,
                                              write_wc, drop_index)
@@ -121,8 +121,10 @@ def write_tree(repo, options):
     if options.export_dir:
         if options.export == index_name:
             tree = repo.write_tree()
-        elif options.export == wc_name:
-            tree = write_wc(repo)
+        elif options.export in wc_names:
+            tree = write_wc(repo,
+                            force=wc_names[options.export]['force'],
+                            untracked=wc_names[options.export]['untracked'])
         else:
             tree = options.export
         if not repo.has_treeish(tree):
