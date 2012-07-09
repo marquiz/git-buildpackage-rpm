@@ -47,7 +47,7 @@ def orig_needs_repack(upstream_source, options):
     """
     if ((options.pristine_tar and options.filter_pristine_tar and len(options.filters) > 0)):
         return True
-    elif not upstream_source.is_orig():
+    elif not upstream_source.is_tarball():
         if len(options.filters):
             return True
         elif options.pristine_tar:
@@ -225,7 +225,7 @@ def prepare_sources(source, pkg_name, pkg_version, pristine_commit_name,
 def repack_source(source, new_name, unpack_dir, filters, new_prefix=None):
     """Repack the source tree"""
     repacked = source.pack(new_name, filters, new_prefix)
-    if source.is_orig(): # the tarball was filtered on unpack
+    if source.is_tarball(): # the tarball was filtered on unpack
         repacked.unpacked = source.unpacked
     else: # otherwise unpack the generated tarball get a filtered tree
         repacked.unpack(unpack_dir, filters)
