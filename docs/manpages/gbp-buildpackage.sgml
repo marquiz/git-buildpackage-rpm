@@ -525,9 +525,13 @@
           <para>
           Instead of exporting the current branch head, export the treeish
           object <replaceable>TREEISH</replaceable>. The special name
-          <replaceable>INDEX</replaceable> exports the current index whereas
-          the special name <replaceable>WC</replaceable> exports the current
-          working copy as is.
+          <replaceable>INDEX</replaceable> exports the current index,
+          <replaceable>WC.TRACKED</replaceable> exports all files tracked by
+          Git in the current working copy as is,
+          <replaceable>WC.UNTRACKED</replaceable> exports all untracked files
+          too whereas <replaceable>WC</replaceable> (or
+          <replaceable>WC.IGNORED</replaceable>) exports all files in the
+          current working directory, even ignored files.
           </para>
         </listitem>
       </varlistentry>

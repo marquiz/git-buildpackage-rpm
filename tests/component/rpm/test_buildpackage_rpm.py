@@ -583,9 +583,23 @@ class TestGbpRpm(RpmRepoTestBase):
         ok_(not os.path.exists('../rpmbuild/SOURCES/ignored.tmp'))
         shutil.rmtree('../rpmbuild')
 
+        # Test exporting of working copy (tracked files only)
+        eq_(mock_gbp(base_args + ['--git-export=WC.TRACKED']), 0)
+        foo_txt_wc = repo.show('HEAD:foo.txt') + 'staged' + 'unstaged'
+        self.check_and_rm_file('../rpmbuild/SOURCES/foo.txt', foo_txt_wc)
+        ok_(not os.path.exists('../rpmbuild/SOURCES/untracked'))
+        ok_(not os.path.exists('../rpmbuild/SOURCES/ignored.tmp'))
+        shutil.rmtree('../rpmbuild')
+
+        # Test exporting of working copy (include untracked files)
+        eq_(mock_gbp(base_args + ['--git-export=WC.UNTRACKED']), 0)
+        self.check_and_rm_file('../rpmbuild/SOURCES/foo.txt', foo_txt_wc)
+        self.check_and_rm_file('../rpmbuild/SOURCES/untracked', 'untracked')
+        ok_(not os.path.exists('../rpmbuild/SOURCES/ignored.tmp'))
+        shutil.rmtree('../rpmbuild')
+
         # Test exporting of working copy (include all files)
         eq_(mock_gbp(base_args + ['--git-export=WC']), 0)
-        foo_txt_wc = repo.show('HEAD:foo.txt') + 'staged' + 'unstaged'
         self.check_and_rm_file('../rpmbuild/SOURCES/foo.txt', foo_txt_wc)
         self.check_and_rm_file('../rpmbuild/SOURCES/untracked', 'untracked')
         self.check_and_rm_file('../rpmbuild/SOURCES/ignored.tmp', 'ignored')

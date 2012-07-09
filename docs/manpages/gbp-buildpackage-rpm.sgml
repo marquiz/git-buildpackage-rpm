@@ -468,8 +468,12 @@
           Instead of exporting the current branch head, export the treeish
           object <replaceable>TREEISH</replaceable>. The special name
           <replaceable>INDEX</replaceable> exports the current index,
-          <replaceable>WC</replaceable>) exports all files in the
-          current working directory.
+          <replaceable>WC.TRACKED</replaceable> exports all files tracked by
+          Git in the current working copy as is,
+          <replaceable>WC.UNTRACKED</replaceable> exports all untracked files
+          too whereas <replaceable>WC</replaceable> (or
+          <replaceable>WC.IGNORED</replaceable>) exports all files in the
+          current working directory, even ignored files.
           </para>
         </listitem>
       </varlistentry>
@@ -652,7 +656,7 @@
     changes included.
     </para>
     <screen>
-      &gbp-buildpackage-rpm; --git-ignore-branch --git-export=WC
+      &gbp-buildpackage-rpm; --git-ignore-branch --git-export=WC.UNTRACKED
     </screen>
   </refsect1>
   <refsect1>

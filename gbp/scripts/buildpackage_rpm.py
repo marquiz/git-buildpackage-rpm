@@ -34,7 +34,7 @@ from gbp.pkg import compressor_opts
 from gbp.rpm.git import GitRepositoryError, RpmGitRepository
 from gbp.rpm.policy import RpmPkgPolicy
 from gbp.tmpfile import init_tmpdir, del_tmpdir, tempfile
-from gbp.scripts.common.buildpackage import (index_name, wc_name,
+from gbp.scripts.common.buildpackage import (index_name, wc_names,
                                              git_archive_submodules,
                                              git_archive_single, dump_tree,
                                              write_wc, drop_index)
@@ -163,9 +163,10 @@ def get_tree(repo, tree_name):
         if tree_name == index_name:
             # Write a tree of the index
             tree = repo.write_tree()
-        elif tree_name == wc_name:
+        elif tree_name in wc_names:
             # Write a tree of the working copy
-            tree = write_wc(repo)
+            tree = write_wc(repo, wc_names[tree_name]['force'],
+                            wc_names[tree_name]['untracked'])
         else:
             tree = tree_name
     except GitRepositoryError as err:
