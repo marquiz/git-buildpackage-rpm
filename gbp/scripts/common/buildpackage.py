@@ -31,7 +31,10 @@ import gbp.log
 # when we want to reference the index in a treeish context we call it:
 index_name = "INDEX"
 # when we want to reference the working copy in treeish context we call it:
-wc_name = "WC"
+wc_names = {'WC':           {'force': True, 'untracked': True},
+            'WC.TRACKED':   {'force': False, 'untracked': False},
+            'WC.UNTRACKED': {'force': False, 'untracked': True},
+            'WC.IGNORED':   {'force': True, 'untracked': True}}
 # index file name used to export working copy
 wc_index = ".git/gbp_index"
 
