@@ -192,6 +192,9 @@ class UpstreamSource(object):
         self._pkg_policy = pkg_policy
         self._path = name
         self.unpacked = unpacked
+        self._filename_base, \
+        self._archive_fmt, \
+        self._compression = parse_archive_filename(os.path.basename(self.path))
 
         self._check_orig()
         if self.is_dir():
@@ -231,6 +234,28 @@ class UpstreamSource(object):
     @property
     def path(self):
         return self._path.rstrip('/')
+
+    @property
+    def archive_fmt(self):
+        """
+        >>> UpstreamSource('foo/bar.tar.gz').archive_fmt
+        'tar'
+        >>> UpstreamSource('foo.bar.zip').archive_fmt
+        'zip'
+        >>> UpstreamSource('foo.bar.baz').archive_fmt
+        """
+        return self._archive_fmt
+
+    @property
+    def compression(self):
+        """
+        >>> UpstreamSource('foo/bar.tar.gz').compression
+        'gzip'
+        >>> UpstreamSource('foo.bar.zip').compression
+        >>> UpstreamSource('foo.bz2').compression
+        'bzip2'
+        """
+        return self._compression
 
     def unpack(self, dir, filters=[]):
         """
