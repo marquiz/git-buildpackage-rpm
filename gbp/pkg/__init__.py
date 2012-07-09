@@ -441,11 +441,25 @@ class UpstreamSource(object):
     @property
     def archive_fmt(self):
         """Archive format of the sources, e.g. 'tar'"""
+        """
+        >>> UpstreamSource('foo/bar.tar.gz').archive_fmt
+        'tar'
+        >>> UpstreamSource('foo.bar.zip').archive_fmt
+        'zip'
+        >>> UpstreamSource('foo.bar.baz').archive_fmt
+        """
         return self._archive_fmt
 
     @property
     def compression(self):
         """Compression format of the sources, e.g. 'gzip'"""
+        """
+        >>> UpstreamSource('foo/bar.tar.gz').compression
+        'gzip'
+        >>> UpstreamSource('foo.bar.zip').compression
+        >>> UpstreamSource('foo.bz2').compression
+        'bzip2'
+        """
         return self._compression
 
     @property
