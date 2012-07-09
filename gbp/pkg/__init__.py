@@ -131,6 +131,14 @@ class PkgPolicy(object):
             raise NotImplementedError("Class needs to provide upstreamversion_re")
         return True if cls.upstreamversion_re.match(version) else False
 
+    @classmethod
+    def is_valid_orig_archive(cls, filename):
+        "Is this a valid orig source archive"
+        (base, arch_fmt, compression) =  parse_archive_filename(filename)
+        if arch_fmt == 'tar' and compression:
+            return True
+        return False
+
     @staticmethod
     def has_orig(orig_file, dir):
         "Check if orig tarball exists in dir"
@@ -202,16 +210,7 @@ class UpstreamSource(object):
             self._orig = False
             return
 
-        parts = self._path.split('.')
-        try:
-            if parts[-1] == 'tgz':
-                self._orig = True
-            elif parts[-2] == 'tar':
-                if (parts[-1] in compressor_opts or
-                    parts[-1] in compressor_aliases):
-                        self._orig = True
-        except IndexError:
-            self._orig = False
+        self._orig = self._pkg_policy.is_valid_orig_archive(os.path.basename(self.path))
 
     def is_orig(self):
         """
