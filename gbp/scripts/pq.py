@@ -344,6 +344,7 @@ def build_parser(name):
                                   dest="color_scheme")
     parser.add_config_file_option(option_name="tmp-dir", dest="tmp_dir")
     parser.add_config_file_option(option_name="meta-closes", dest="meta_closes")
+    parser.add_config_file_option(option_name="tmp-dir", dest="tmp_dir")
     return parser
 
 

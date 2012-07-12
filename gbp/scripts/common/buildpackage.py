@@ -19,7 +19,6 @@
 """Common functionality for Debian and RPM buildpackage scripts"""
 
 import os, os.path
-import tempfile
 import subprocess
 import shutil
 

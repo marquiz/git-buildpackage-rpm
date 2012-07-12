@@ -163,6 +163,7 @@ class GbpOptionParser(OptionParser):
                  'tmp-dir' : '/var/tmp/gbp/',
                  'drop': 'False',
                  'commit': 'False',
+                 'tmp-dir' : '/var/tmp/gbp/',
              }
     help = {
              'debian-branch':
@@ -318,6 +319,9 @@ class GbpOptionParser(OptionParser):
                    "after export. Default is '%(drop)s'"),
               'commit':
                   "commit changes after export, Default is '%(commit)s'",
+              'tmp-dir':
+                  ("Base directory under which temporary directories are "
+                   "created, default is '%(tmp-dir)s'"),
            }
 
     def_config_files = [ '/etc/git-buildpackage/gbp.conf',
