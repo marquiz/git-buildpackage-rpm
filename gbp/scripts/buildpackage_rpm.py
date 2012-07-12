@@ -22,12 +22,12 @@ import ConfigParser
 import errno
 import os, os.path
 import sys
-import tempfile
 import shutil
 import re
 import datetime
 import gzip
 
+import gbp.tmpfile as tempfile
 import gbp.rpm as rpm
 from gbp.rpm.policy import RpmPkgPolicy
 from gbp.command_wrappers import (Command,
@@ -46,7 +46,8 @@ from gbp.pkg import (compressor_opts, compressor_aliases)
 from gbp.scripts.pq_rpm import update_patch_series
 
 
-def git_archive(repo, spec, output_dir, treeish, prefix, comp_level, with_submodules):
+def git_archive(repo, spec, output_dir, tmpdir_base, treeish, prefix,
+                comp_level, with_submodules):
     "create a compressed orig tarball in output_dir using git_archive"
     comp_opts = ''
     if spec.orig_src['compression']:
@@ -59,8 +60,9 @@ def git_archive(repo, spec, output_dir, treeish, prefix, comp_level, with_submod
     try:
         if repo.has_submodules() and with_submodules:
             repo.update_submodules()
-            git_archive_submodules(repo, treeish, output, prefix,
-                                   spec.orig_src['compression'], comp_level, comp_opts,
+            git_archive_submodules(repo, treeish, output, tmpdir_base,
+                                   prefix, spec.orig_src['compression'],
+                                   comp_level, comp_opts,
                                    spec.orig_src['archive_fmt'])
 
         else:
@@ -184,7 +186,7 @@ def git_archive_build_orig(repo, spec, output_dir, options):
     if spec.orig_src['compression']:
         gbp.log.debug("Building upstream source archive with compression '%s -%s'" %
                       (spec.orig_src['compression'], options.comp_level))
-    if not git_archive(repo, spec, output_dir, upstream_tree,
+    if not git_archive(repo, spec, output_dir, options.tmp_dir, upstream_tree,
                        options.orig_prefix,
                        options.comp_level,
                        options.with_submodules):
@@ -293,6 +295,7 @@ def parse_args(argv, prefix):
     parser.add_boolean_config_file_option(option_name = "ignore-new", dest="ignore_new")
     parser.add_option("--git-verbose", action="store_true", dest="verbose", default=False,
                       help="verbose command execution")
+    parser.add_config_file_option(option_name="tmp-dir", dest="tmp_dir")
     parser.add_config_file_option(option_name="color", dest="color", type='tristate')
     parser.add_config_file_option(option_name="notify", dest="notify", type='tristate')
     parser.add_config_file_option(option_name="vendor", action="store", dest="vendor")
@@ -379,7 +382,6 @@ def main(argv):
     retval = 0
     prefix = "git-"
     cp = None
-    dump_dir = None
 
     options, gbp_args, builder_args = parse_args(argv, prefix)
     if not options:
@@ -392,6 +394,14 @@ def main(argv):
         return 1
     else:
         repo_dir = os.path.abspath(os.path.curdir)
+
+    try:
+        # Create base temporary directory for this run
+        options.tmp_dir = tempfile.mkdtemp(dir=options.tmp_dir,
+                                           prefix='buildpackage-rpm_')
+    except GbpError, err:
+        gbp.log.err(err)
+        return 1
 
     try:
         branch = repo.get_branch()
@@ -428,7 +438,8 @@ def main(argv):
             raise GbpError('Invalid treeish object %s' % tree)
 
         # Dump from git to a temporary directory:
-        dump_dir = tempfile.mkdtemp(dir=".")
+        dump_dir = tempfile.mkdtemp(dir=options.tmp_dir,
+                                    prefix='dump_tree_')
         gbp.log.debug("Dumping tree '%s' to '%s'" % (options.export, dump_dir))
         if not dump_tree(repo, dump_dir, tree, options.with_submodules):
             raise GbpError
@@ -493,8 +504,10 @@ def main(argv):
                     gbp.log.info("Creating (native) source archive %s from '%s'" % (spec.orig_src['filename'], tree))
                     if spec.orig_src['compression']:
                         gbp.log.debug("Building source archive with compression '%s -%s'" % (spec.orig_src['compression'], options.comp_level))
-                    if not git_archive(repo, spec, source_dir, tree, options.orig_prefix,
-                                       options.comp_level, options.with_submodules):
+                    if not git_archive(repo, spec, source_dir, options.tmp_dir,
+                                       tree, options.orig_prefix,
+                                       options.comp_level,
+                                       options.with_submodules):
                         raise GbpError, "Cannot create source tarball at '%s'" % export_dir
             # Non-native packages: create orig tarball from upstream
             elif spec.orig_src:
@@ -557,10 +570,7 @@ def main(argv):
         retval = 1
     finally:
         drop_index(repo)
-
-    # Clean temporary dumpdir
-    if dump_dir and retval == 0:
-        shutil.rmtree(dump_dir)
+        shutil.rmtree(options.tmp_dir)
 
     if not options.tag_only:
         if options.purge and not retval and not options.export_only:

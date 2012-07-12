@@ -21,7 +21,7 @@
 import ConfigParser
 import os
 import sys
-import tempfile
+import gbp.tmpfile as tempfile
 import gbp.command_wrappers as gbpc
 import string
 from gbp.pkg import parse_archive_filename
@@ -185,6 +185,7 @@ def parse_args(argv):
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False,
                       help="verbose command execution")
     parser.add_config_file_option(option_name="color", dest="color", type='tristate')
+    parser.add_config_file_option(option_name="tmp-dir", dest="tmp_dir")
 
     (options, args) = parser.parse_args(argv[1:])
     gbp.log.setup(options.color, options.verbose)
@@ -199,7 +200,7 @@ def main(argv):
     if not options:
         return 1
 
-    tmpdir = tempfile.mkdtemp(dir='../')
+    tmpdir = tempfile.mkdtemp(dir=options.tmp_dir, prefix='import-orig-rpm_')
     try:
         source = find_source(options, args)
         try:
