@@ -107,12 +107,12 @@ def test_create_tarballs():
     """Create an upstream tarball"""
     # Tarball with submodules
     changelog = { "Source": "test", "Upstream-Version": "0.1" }
-    ok_(buildpackage.git_archive(REPO, changelog, str(TMPDIR), "HEAD", "bzip2",
-                                 "9", True))
+    ok_(buildpackage.git_archive(REPO, changelog, str(TMPDIR), str(TMPDIR),
+                                 "HEAD", "bzip2", "9", True))
     # Tarball without submodules
     changelog = { "Source": "test", "Upstream-Version": "0.2" }
-    ok_(buildpackage.git_archive(REPO, changelog, str(TMPDIR), "HEAD", "bzip2",
-                                 "9", False))
+    ok_(buildpackage.git_archive(REPO, changelog, str(TMPDIR), str(TMPDIR),
+                                 "HEAD", "bzip2", "9", False))
 
 def test_check_tarfiles():
     """Check the contents of the created tarfile"""
