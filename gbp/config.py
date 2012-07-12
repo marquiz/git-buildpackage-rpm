@@ -138,6 +138,7 @@ class GbpOptionParser(OptionParser):
                  'allow-unauthenticated': 'False',
                  'symlink-orig': 'True',
                  'purge': 'True',
+                 'tmp-dir' : '/var/tmp/gbp/',
              }
     help = {
              'debian-branch':
@@ -276,6 +277,9 @@ class GbpOptionParser(OptionParser):
                    "'%(symlink-orig)s'"),
               'purge':
                   "Purge exported package build directory. Default is '%(purge)s'",
+             'tmp-dir':
+                  ("Base directory under which temporary directories are "
+                   "created, default is '%(tmp-dir)s'"),
            }
 
     def_config_files = [ '/etc/git-buildpackage/gbp.conf',
