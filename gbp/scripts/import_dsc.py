@@ -21,10 +21,10 @@ import sys
 import re
 import os
 import shutil
-import tempfile
 import glob
 import pipes
 import time
+import gbp.tmpfile as tempfile
 import gbp.command_wrappers as gbpc
 from gbp.deb.dscfile import DscFile
 from gbp.deb.upstreamsource import DebianUpstreamSource
@@ -41,7 +41,7 @@ class SkipImport(Exception):
     pass
 
 
-def download_source(pkg, dirs, unauth):
+def download_source(pkg, dirs, unauth, tmpdir_base):
     opts = [ '--download-only' ]
     if unauth:
         opts.append('--allow-unauthenticated')
@@ -53,7 +53,8 @@ def download_source(pkg, dirs, unauth):
         cmd = 'apt-get'
         opts += ['-qq', 'source', pkg]
 
-    dirs['download'] = os.path.abspath(tempfile.mkdtemp())
+    dirs['download'] = tempfile.mkdtemp(dir=tmpdir_base,
+                                        prefix='import-dsc_download_')
     gbp.log.info("Downloading '%s' using '%s'..." % (pkg, cmd))
 
     gbpc.RunAtCommand(cmd, opts, shell=False)(dir=dirs['download'])
@@ -228,6 +229,7 @@ def parse_args(argv):
     parser.add_config_file_option(option_name="color", dest="color", type='tristate')
     parser.add_config_file_option(option_name="color-scheme",
                                   dest="color_scheme")
+    parser.add_config_file_option(option_name="tmp-dir", dest="tmp_dir")
     parser.add_option("--download", action="store_true", dest="download", default=False,
                       help="download source package")
     branch_group.add_config_file_option(option_name="debian-branch",
@@ -290,7 +292,8 @@ def main(argv):
             if options.download:
                 dsc = download_source(pkg,
                                       dirs=dirs,
-                                      unauth=options.allow_unauthenticated)
+                                      unauth=options.allow_unauthenticated,
+                                      tmpdir_base=options.tmp_dir)
             else:
                 dsc = pkg
 
@@ -322,7 +325,8 @@ def main(argv):
             if repo.bare:
                 set_bare_repo_options(options)
 
-            dirs['tmp'] = os.path.abspath(tempfile.mkdtemp(dir='..'))
+            dirs['tmp'] = tempfile.mkdtemp(dir=options.tmp_dir,
+                                           prefix='import-dsc_')
             upstream = DebianUpstreamSource(src.tgz)
             upstream = upstream.unpack(dirs['tmp'], options.filters)
 

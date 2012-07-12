@@ -40,7 +40,8 @@ from gbp.scripts.common.buildpackage import (index_name, wc_names,
                                              write_wc, drop_index)
 from gbp.pkg import compressor_opts, compressor_aliases, parse_archive_filename
 
-def git_archive(repo, cp, output_dir, treeish, comp_type, comp_level, with_submodules):
+def git_archive(repo, cp, output_dir, tmpdir_base, treeish, comp_type,
+                comp_level, with_submodules):
     "create a compressed orig tarball in output_dir using git_archive"
     try:
         comp_opts = compressor_opts[comp_type][0]
@@ -53,8 +54,8 @@ def git_archive(repo, cp, output_dir, treeish, comp_type, comp_level, with_submo
     try:
         if repo.has_submodules() and with_submodules:
             repo.update_submodules()
-            git_archive_submodules(repo, treeish, output, prefix,
-                                   comp_type, comp_level, comp_opts)
+            git_archive_submodules(repo, treeish, output, tmpdir_base,
+                                   prefix, comp_type, comp_level, comp_opts)
 
         else:
             git_archive_single(repo, treeish, output, prefix,
@@ -276,7 +277,7 @@ def git_archive_build_orig(repo, cp, output_dir, options):
                                                             upstream_tree))
     gbp.log.debug("Building upstream tarball with compression '%s -%s'" %
                   (options.comp_type, options.comp_level))
-    if not git_archive(repo, cp, output_dir, upstream_tree,
+    if not git_archive(repo, cp, output_dir, options.tmp_dir, upstream_tree,
                        options.comp_type,
                        options.comp_level,
                        options.with_submodules):
@@ -410,6 +411,7 @@ def parse_args(argv, prefix):
     parser.add_config_file_option(option_name="color-scheme",
                                   dest="color_scheme")
     parser.add_config_file_option(option_name="notify", dest="notify", type='tristate')
+    parser.add_config_file_option(option_name="tmp-dir", dest="tmp_dir")
     tag_group.add_option("--git-tag", action="store_true", dest="tag", default=False,
                       help="create a tag after a successful build")
     tag_group.add_option("--git-tag-only", action="store_true", dest="tag_only", default=False,
