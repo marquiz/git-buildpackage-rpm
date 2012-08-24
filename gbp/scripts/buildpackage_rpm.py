@@ -159,10 +159,31 @@ def get_upstream_tree(repo, spec, options):
             raise GbpError("%s is not a valid branch" % options.upstream_branch)
         upstream_tree = options.upstream_branch
     else:
-        upstream_tree = options.upstream_tree
+        upstream_tree = get_tree(repo, options.upstream_tree)
     if not repo.has_treeish(upstream_tree):
         raise GbpError('Invalid upstream treeish %s' % upstream_tree)
     return upstream_tree
+
+
+def get_tree(repo, tree_name):
+    """
+    Get/create a tree-ish to be used for exporting and diffing. Accepts
+    special keywords for git index and working copies.
+    """
+    if tree_name == index_name:
+        # Write a tree of the index
+        tree = repo.write_tree()
+    elif tree_name in wc_names:
+        # Write a tree of the working copy
+        tree = write_wc(repo,
+                        force=wc_names[tree_name]['force'],
+                        untracked=wc_names[tree_name]['untracked'])
+    else:
+        tree = tree_name
+    if not repo.has_treeish(tree):
+        raise GbpError('Invalid treeish object %s' % tree)
+
+    return tree
 
 
 def git_archive_build_orig(repo, spec, output_dir, options):
@@ -424,18 +445,7 @@ def main(argv):
                 raise GbpError, "Use --git-ignore-branch to ignore or --git-packaging-branch to set the branch name."
 
         # Determine tree-ish to be exported
-        if options.export == index_name:
-            # Write a tree of the index
-            tree = repo.write_tree()
-        elif options.export in wc_names:
-            # Write a tree of the working copy
-            tree = write_wc(repo,
-                            force=wc_names[options.export]['force'],
-                            untracked=wc_names[options.export]['untracked'])
-        else:
-            tree = options.export
-        if not repo.has_treeish(tree):
-            raise GbpError('Invalid treeish object %s' % tree)
+        tree = get_tree(repo, options.export)
 
         # Dump from git to a temporary directory:
         dump_dir = tempfile.mkdtemp(dir=options.tmp_dir,
