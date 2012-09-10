@@ -11,19 +11,12 @@ Build-Depends:
  perl,
  pychecker,
  python (>> 2.6.6-3~),
- python-coverage,
  python-epydoc,
  python-nose,
  python-nosexcover,
  python-pkg-resources,
  python-setuptools,
  sgml2x,
-# For the testsuite
- bzip2,
- devscripts (>= 2.13.8~),
- git (>= 1:1.7.9.1-1~),
- pristine-tar,
- unzip,
 # For rpm (epydoc)
  python-rpm
 Standards-Version: 3.9.4
