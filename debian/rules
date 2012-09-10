@@ -1,5 +1,9 @@
 #!/usr/bin/make -f
-  
+
+# HACK: disable checks, i.e. unit tests
+DEB_BUILD_OPTIONS += nocheck
+export WITHOUT_NOSETESTS := 1
+
 EXAMPLE_SCRIPTS=\
     gbp-add-patch          \
     gbp-cowbuilder-sid     \
