@@ -908,10 +908,11 @@ class GitRepository(object):
         args = GitArgs("--quiet", "--verify")
         args.add_cond(short, '--short=%d' % short)
         args.add(name)
-        sha, ret = self._git_getoutput('rev-parse', args.args)
+        sha, stderr, ret = self._git_inout('rev-parse', args.args,
+                                            capture_stderr=True)
         if ret:
             raise GitRepositoryError("revision '%s' not found" % name)
-        return self.strip_sha1(sha[0], short)
+        return self.strip_sha1(sha.splitlines()[0], short)
 
     @staticmethod
     def strip_sha1(sha1, length=0):
