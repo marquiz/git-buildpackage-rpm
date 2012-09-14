@@ -383,6 +383,8 @@ def parse_args(argv, prefix):
     export_group.add_option("--git-export-only", action="store_true", dest="export_only", default=False,
                       help="only export packaging files, don't build")
     export_group.add_boolean_config_file_option("patch-export", dest="patch_export")
+    export_group.add_config_file_option("patch-export-ignore-path",
+                                        dest="patch_export_ignore_path")
     export_group.add_config_file_option("patch-export-compress", dest="patch_export_compress")
     export_group.add_config_file_option("patch-export-squash-until", dest="patch_export_squash_until")
     export_group.add_boolean_config_file_option(option_name="patch-numbers", dest="patch_numbers")

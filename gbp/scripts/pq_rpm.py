@@ -100,7 +100,8 @@ def generate_patches(repo, start, squash, end, outdir, options):
             gbp.log.info("Squashing commits %s..%s into one monolithic diff" %
                          (start_sha1, squash_sha1))
             patch_fn = format_diff(outdir, squash[1], repo,
-                                   start_sha1, squash_sha1)
+                                   start_sha1, squash_sha1,
+                                   options.patch_export_ignore_path)
             if patch_fn:
                 patches.append(patch_fn)
                 start = squash_sha1
@@ -111,7 +112,8 @@ def generate_patches(repo, start, squash, end, outdir, options):
         cmds = parse_gbp_commands(info, 'gbp-rpm', ('ignore'), None)
         if not 'ignore' in cmds:
             patch_fn = format_patch(outdir, repo, info, patches,
-                                    options.patch_numbers)
+                                    options.patch_numbers,
+                                    options.patch_export_ignore_path)
             if patch_fn:
                 commands[os.path.basename(patch_fn)] = cmds
         else:
@@ -120,7 +122,8 @@ def generate_patches(repo, start, squash, end, outdir, options):
     # Generate diff to the tree-ish object
     if end_commit != end:
         gbp.log.info("Generating diff file %s..%s" % (end_commit, end))
-        patch_fn = format_diff(outdir, None, repo, end_commit, end)
+        patch_fn = format_diff(outdir, None, repo, end_commit, end,
+                               options.patch_export_ignore_path)
         if patch_fn:
             patches.append(patch_fn)
 
@@ -413,6 +416,7 @@ def main(argv):
     parser.add_config_file_option("patch-export-compress",
                                   dest="patch_export_compress")
     parser.add_config_file_option("patch-export-squash-until", dest="patch_export_squash_until")
+    parser.add_config_file_option("patch-export-ignore-path", dest="patch_export_ignore_path")
 
     (options, args) = parser.parse_args(argv)
     gbp.log.setup(options.color, options.verbose)
