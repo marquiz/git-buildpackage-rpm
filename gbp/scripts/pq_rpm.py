@@ -112,7 +112,8 @@ def generate_patches(repo, start, squash, end, outdir, options):
             gbp.log.info("Squashing commits %s..%s into one monolithic diff" %
                          (start_sha1, squash_sha1))
             patch_fn = format_diff(outdir, squash[1], repo,
-                                   start_sha1, squash_sha1)
+                                   start_sha1, squash_sha1,
+                                   options.patch_ignore_path)
             if patch_fn:
                 patches.append(patch_fn)
                 start = squash_sha1
@@ -146,7 +147,8 @@ def generate_patches(repo, start, squash, end, outdir, options):
         cmds.update(_cmds)
         if not 'ignore' in cmds:
             patch_fn = format_patch(outdir, repo, info, patches,
-                                    options.patch_numbers)
+                                    options.patch_numbers,
+                                    options.patch_ignore_path)
             if patch_fn:
                 commands[os.path.basename(patch_fn)] = cmds
         else:
@@ -156,7 +158,7 @@ def generate_patches(repo, start, squash, end, outdir, options):
     if end_commit != end:
         gbp.log.info("Generating diff file %s..%s" % (end_commit, end))
         patch_fn = format_diff(outdir, None, repo, end_commit, end,
-                               options.patch_export_ignore_path)
+                               options.patch_ignore_path)
         if patch_fn:
             patches.append(patch_fn)
 
@@ -528,6 +530,7 @@ switch         Switch to patch-queue branch and vice versa.""")
     parser.add_config_file_option("patch-compress",
                                   dest="patch_compress")
     parser.add_config_file_option("patch-squash", dest="patch_squash")
+    parser.add_config_file_option("patch-ignore-path", dest="patch_ignore_path")
 
     return parser
 

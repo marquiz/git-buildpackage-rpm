@@ -29,6 +29,7 @@
       <arg><option>--import-files=</option><replaceable>FILES</replaceable></arg>
       <arg><option>--export-rev=</option><replaceable>TREEISH</replaceable></arg>
       <arg><option>--patch-compress=</option><replaceable>THRESHOLD</replaceable></arg>
+      <arg><option>--patch-ignore-path=</option><replaceable>REGEX</replaceable></arg>
       <arg><option>--patch-squash=</option><replaceable>COMMITISH</replaceable></arg>
       <group choice="plain">
         <arg><option>drop</option></arg>
@@ -216,6 +217,16 @@
           Compress patches larger than given
           <replaceable>THRESHOLD</replaceable> bytes. Special value 0 disabled
           patch compression.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--patch-ignore-path=</option><replaceable>REGEX</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Exclude changes to path(s) matching <replaceable>REGEX</replaceable>
+          in patch generation.
           </para>
         </listitem>
       </varlistentry>

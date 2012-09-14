@@ -704,6 +704,7 @@ class GbpOptionParserRpm(GbpOptionParser):
             'patch-export'              : 'False',
             'patch-compress'            : '0',
             'patch-squash'              : '',
+            'patch-ignore-path'         : '',
             'patch-import'              : 'True',
             'import-files'              : ['.gbp.conf',
                                            'debian/gbp.conf'],
@@ -773,6 +774,9 @@ class GbpOptionParserRpm(GbpOptionParser):
                 "Squash commits (from upstream) until given tree-ish into one "
                 "big diff, format is '<commit_ish>[:<filename_base>]'. "
                 "Default is '%(patch-squash)s'",
+            'patch-ignore-path':
+                "Exclude changes to path(s) matching regex, default is "
+                "'%(patch-ignore-path)s'",
             'patch-import':
                 "Import patches to the packaging branch, default is "
                 "'%(patch-import)s'",

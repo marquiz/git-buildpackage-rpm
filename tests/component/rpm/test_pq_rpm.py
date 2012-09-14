@@ -410,6 +410,19 @@ class TestPqRpm(RpmRepoTestBase):
                  'gbp-test.spec', 'my.patch', 'squash.diff', '0002-my2.patch']
         self._check_repo_state(repo, 'master', branches, files)
 
+    def test_option_patch_ignore_path(self):
+        """Test the --patch-ignore-path cmdline option"""
+        repo = self.init_test_repo('gbp-test')
+        repo.rename_branch('pq/master', 'development/master')
+        branches = repo.get_local_branches()
+
+        # Export
+        eq_(mock_pq(['export', '--patch-ignore-path=mydir/.*']), 0)
+        files = ['.gbp.conf', '.gitignore', 'bar.tar.gz', 'foo.txt',
+                 'gbp-test.spec', '0001-my-gz.patch', '0002-my-bzip2.patch',
+                 'my.patch']
+        self._check_repo_state(repo, 'master', branches, files)
+
     def test_export_with_merges(self):
         """Test exporting pq-branch with merge commits"""
         repo = self.init_test_repo('gbp-test')

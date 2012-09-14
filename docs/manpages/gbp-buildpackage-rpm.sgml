@@ -69,6 +69,7 @@
       <arg><option>--git-patch-export-rev=</option><replaceable>TREEISH</replaceable></arg>
       <arg><option>--git-[no-]patch-numbers</option></arg>
       <arg><option>--git-patch-compress=</option><replaceable>THRESHOLD</replaceable></arg>
+      <arg><option>--git-patch-ignore-path=</option><replaceable>REGEX</replaceable></arg>
       <arg><option>--git-patch-squash=</option><replaceable>COMMITISH</replaceable></arg>
       <arg><option>--git-spec-vcs-tag</option>=<replaceable>TAG_FORMAT</replaceable></arg>
     </cmdsynopsis>
@@ -685,6 +686,16 @@
           Compress (auto-generated) patches larger than given
           <replaceable>THRESHOLD</replaceable> bytes. Special value 0 disabled
           patch compression.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--git-patch-ignore-path=</option><replaceable>REGEX</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Exclude changes to path(s) matching <replaceable>REGEX</replaceable>
+          in patch generation.
           </para>
         </listitem>
       </varlistentry>
