@@ -611,6 +611,7 @@ class GbpOptionParserRpm(GbpOptionParser):
             'rpmbuild-buildrootdir'     : 'BUILDROOT',
             'patch-export'              : 'False',
             'patch-export-compress'     : '0',
+            'patch-export-ignore-path'  : '',
             'patch-export-squash-until' : '',
             'merge'                     : 'False',
             'pristine-tarball-name'     : 'auto',
@@ -651,6 +652,9 @@ class GbpOptionParserRpm(GbpOptionParser):
                 "Compress (auto-generated) patches larger than given number of "
                 "bytes, 0 never compresses, default is "
                 "'%(patch-export-compress)s'",
+            'patch-export-ignore-path':
+                "Exclude changes to path(s) matching regex, default is "
+                "'%(patch-export-ignore-path)s'",
             'patch-export-squash-until':
                 "Squash commits (from upstream) until given tree-ish into one "
                 "big diff, format is '<commit_ish>[:<filename_base>]'. "
