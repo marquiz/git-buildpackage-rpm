@@ -83,7 +83,9 @@ def git_archive_submodules(repo, treeish, output, prefix, comp_type, comp_level,
 
         # compress the output
         if comp_type:
-            ret = os.system("%s --stdout -%s %s %s > %s" % (comp_type, comp_level, comp_opts, main_archive, output))
+            ret = os.system("%s --stdout -%s %s %s > %s" % \
+                           (comp_type, comp_level, " ".join(comp_opts),
+                            main_archive, output))
             if ret:
                 raise GbpError("Error creating %s: %d" % (output, ret))
         else:
@@ -102,7 +104,8 @@ def git_archive_single(treeish, output, prefix, comp_type, comp_level, comp_opts
     pipe = pipes.Template()
     pipe.prepend("git archive --format=%s --prefix=%s %s" % (format, prefix, treeish), '.-')
     if comp_type:
-        pipe.append('%s -c -%s %s' % (comp_type, comp_level, comp_opts),  '--')
+        pipe.append('%s -c -%s %s' % (comp_type, comp_level,
+                                      " ".join(comp_opts)),  '--')
     ret = pipe.copy('', output)
     if ret:
         raise GbpError("Error creating %s: %d" % (output, ret))
