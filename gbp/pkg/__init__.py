@@ -27,10 +27,10 @@ import gbp.command_wrappers as gbpc
 from gbp.errors import GbpError
 
 # compression types, extra options and extensions
-compressor_opts = { 'gzip'  : [ '-n', 'gz' ],
-                    'bzip2' : [ '', 'bz2' ],
-                    'lzma'  : [ '', 'lzma' ],
-                    'xz'    : [ '', 'xz' ] }
+compressor_opts = { 'gzip'  : [ ['-n'], 'gz' ],
+                    'bzip2' : [ [], 'bz2' ],
+                    'lzma'  : [ [], 'lzma' ],
+                    'xz'    : [ [], 'xz' ] }
 
 # Map frequently used names of compression types to the internal ones:
 compressor_aliases = { 'bz2' : 'bzip2',
