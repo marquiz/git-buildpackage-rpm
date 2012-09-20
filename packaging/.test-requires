@@ -1,0 +1,9 @@
+Fedora-16:tar pristine-tar unzip gnupg man-db
+Fedora-17:tar pristine-tar unzip gnupg man-db
+Fedora-18:tar pristine-tar unzip gnupg man-db
+CentOS-6.3:tar pristine-tar unzip gnupg man python-mock librpm-tizen
+CentOS-6.4:tar pristine-tar unzip gnupg man python-mock librpm-tizen
+CentOS-6.5:tar pristine-tar unzip gnupg man python-mock librpm-tizen
+openSUSE-12.1:tar pristine-tar unzip man
+openSUSE-12.2:tar pristine-tar unzip man
+openSUSE-12.3:tar pristine-tar unzip man
