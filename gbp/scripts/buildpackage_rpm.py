@@ -46,6 +46,10 @@ from gbp.pkg import (compressor_opts, compressor_aliases)
 from gbp.scripts.pq_rpm import update_patch_series
 
 
+class GbpAutoGenerateError(GbpError):
+    pass
+
+
 def git_archive(repo, spec, output_dir, tmpdir_base, treeish, prefix,
                 comp_level, with_submodules):
     "create a compressed orig tarball in output_dir using git_archive"
@@ -201,26 +205,33 @@ def git_archive_build_orig(repo, spec, output_dir, options):
     @return: the tree we built the tarball from
     @rtype: C{str}
     """
-    upstream_tree = get_upstream_tree(repo, spec, options)
-    gbp.log.info("%s does not exist, creating from '%s'" % (spec.orig_src['filename'],
-                                                            upstream_tree))
-    if spec.orig_src['compression']:
-        gbp.log.debug("Building upstream source archive with compression '%s -%s'" %
-                      (spec.orig_src['compression'], options.comp_level))
-    if not git_archive(repo, spec, output_dir, options.tmp_dir, upstream_tree,
-                       options.orig_prefix,
-                       options.comp_level,
-                       options.with_submodules):
-        raise GbpError("Cannot create upstream tarball at '%s'" % output_dir)
-    return upstream_tree
+    try:
+        upstream_tree = get_upstream_tree(repo, spec, options)
+        gbp.log.info("%s does not exist, creating from '%s'" % \
+                        (spec.orig_src['filename'], upstream_tree))
+        if spec.orig_src['compression']:
+            gbp.log.debug("Building upstream source archive with compression "\
+                          "'%s -%s'" % (spec.orig_src['compression'],
+                                        options.comp_level))
+        if not git_archive(repo, spec, output_dir, options.tmp_dir,
+                           upstream_tree, options.orig_prefix,
+                           options.comp_level, options.with_submodules):
+            raise GbpError("Cannot create upstream tarball at '%s'" % \
+                            output_dir)
+        return upstream_tree
+    except (GitRepositoryError, GbpError) as err:
+        raise GbpAutoGenerateError(str(err))
 
 
 def export_patches(repo, spec, export_treeish, options):
     """
     Generate patches and update spec file
     """
-    upstream_tree = get_upstream_tree(repo, spec, options)
-    update_patch_series(repo, spec, upstream_tree, export_treeish, options)
+    try:
+        upstream_tree = get_upstream_tree(repo, spec, options)
+        update_patch_series(repo, spec, upstream_tree, export_treeish, options)
+    except (GitRepositoryError, GbpError) as err:
+        raise GbpAutoGenerateError(str(err))
 
 
 def is_native(repo, options):
@@ -573,6 +584,10 @@ def main(argv):
     except GitRepositoryError as err:
         gbp.log.err("Git command failed: %s" % err)
         ret = 1
+    except GbpAutoGenerateError as err:
+        if len(err.__str__()):
+            gbp.log.err(err)
+        retval = 2
     except GbpError, err:
         if len(err.__str__()):
             gbp.log.err(err)
