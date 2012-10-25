@@ -296,6 +296,27 @@ git-buildpackage (0.6.0) unstable; urgency=low
 
  -- Guido Günther <agx@sigxcpu.org>  Wed, 26 Jun 2013 16:36:41 +0200
 
+git-buildpackage (0.6.0git20130530-tizen20130822) unstable; urgency=low
+
+  [ Markus Lehtonen ]
+  * GitRepository/add_files: consistently update all tracked files
+  * rpm: enhance spec parsing error messages
+  * rpm: simplify SpecFile._parse_filtered_spec()
+  * rpm: implement a wrapper module for rpm lib
+  * rpm: print a warning if importing gbp-specific librpm fails
+  * rpm: Improve logging in case of rpmlib error
+
+  [ Lingchaox Xin ]
+  * GitRepository: Add force option to push method
+  * GitRepository: Add all option to pull method
+  * GitRepository: Add refspec option to fetch method
+  * Fix pylint warnings, follow Markus' sugesstion
+  * Add tags option in git push command
+  * Add all_remotes option in git fetch command
+  * Add clean method to GitRepository class
+
+ -- Markus Lehtonen <markus.lehtonen@linux.intel.com>  Thu, 22 Aug 2013 09:47:51 +0300
+
 git-buildpackage (0.6.0~git20130530) unstable; urgency=low
 
   [ Guido Günther ]
