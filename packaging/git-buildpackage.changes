@@ -1,0 +1,14 @@
+* Thu Aug 22 2013 Markus Lehtonen <markus.lehtonen@linux.intel.com> 0.6.0git20130530
+- rpm: Improve logging in case of rpmlib error
+- Add clean method to GitRepository class
+- Add all_remotes option in git fetch command
+- Add tags option in git push command
+- rpm: print a warning if importing gbp-specific librpm fails
+- rpm: implement a wrapper module for rpm lib
+- rpm: simplify SpecFile._parse_filtered_spec()
+- Fix pylint warnings, follow Markus' sugesstion
+- rpm: enhance spec parsing error messages
+- GitRepository/add_files: consistently update all tracked files
+- GitRepository: Add refspec option to fetch method
+- GitRepository: Add all option to pull method
+- GitRepository: Add force option to push method
