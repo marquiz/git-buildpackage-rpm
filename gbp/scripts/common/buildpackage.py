@@ -35,8 +35,6 @@ wc_names = {'WC':           {'force': True, 'untracked': True},
             'WC.TRACKED':   {'force': False, 'untracked': False},
             'WC.UNTRACKED': {'force': False, 'untracked': True},
             'WC.IGNORED':   {'force': True, 'untracked': True}}
-# index file name used to export working copy
-wc_index = ".git/gbp_index"
 
 
 def sanitize_prefix(prefix):
@@ -156,21 +154,25 @@ def dump_tree(repo, export_dir, treeish, with_submodules):
     return True
 
 
+def wc_index(repo):
+    """Get path of the temporary index file used for exporting working copy"""
+    return os.path.join(repo.git_dir, "gbp_index")
+
 def write_wc(repo, force=True, untracked=True):
     """write out the current working copy as a treeish object"""
-    clone_index()
-    repo.add_files(repo.path, force=force, untracked=untracked, index_file=wc_index)
-    tree = repo.write_tree(index_file=wc_index)
+    clone_index(repo)
+    repo.add_files(repo.path, force=force, untracked=untracked, index_file=wc_index(repo))
+    tree = repo.write_tree(index_file=wc_index(repo))
     return tree
 
 
-def drop_index():
+def drop_index(repo):
     """drop our custom index"""
-    if os.path.exists(wc_index):
-        os.unlink(wc_index)
+    if os.path.exists(wc_index(repo)):
+        os.unlink(wc_index(repo))
 
-def clone_index():
+def clone_index(repo):
     """Copy the current index file to our custom index file"""
-    indexfn = ".git/index"
+    indexfn = os.path.join(repo.git_dir, "index")
     if os.path.exists(indexfn):
-        shutil.copy2(indexfn, wc_index)
+        shutil.copy2(indexfn, wc_index(repo))
