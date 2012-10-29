@@ -17,7 +17,7 @@
   </bookinfo>
 
   &ch.intro-rpm;
-  &ch.setup-rpm;
+  &ch.development-rpm;
   &ch.building-rpm;
 
   <appendix id="gbp.copyleft">

@@ -3,8 +3,130 @@
     <para>
     The &git-buildpackage-rpm; tool is used for building.
     The tool creates the source tarball and copies it and the packaging files
-    to a separate build directory and builds the package there. By default, 
-    &rpmbuild; is used as the builder command. You can define a different builder
-    command with the <option>--git-builder</option> option.
+    to a separate build directory and builds the package there. By default,
+    &rpmbuild; is used as the builder command. You can define a different
+    builder command with the <option>--git-builder</option> option.
     </para>
+
+    <para>
+    To build the (non-native) package when on <emphasis>packaging-branch</>,
+    using pristine-tar to create upstream tarball:
+    <screen>
+    $ &git-buildpackage-rpm; --pristine-tar
+    </screen>
+    During development, if you have unclean git tree (untracked files and/or
+    uncommitted changes) you may use:
+    <screen>
+    $ &git-buildpackage-rpm; --git-ignore-untracked
+    </screen>
+    or:
+    <screen>
+    $ &git-buildpackage-rpm; --git-ignore-new
+    </screen>
+    </para>
+
+    <para>
+    Git-buildpackage-rpm always builds in a separate build directory
+    (<emphasis>./rpmbuild/</emphasis> by default). You may change that and also
+    build a different revision that your current branch HEAD. The revision can
+    be any git "commit-ish", i.e. branch or tag name or a commit sha1.
+    Git-buildpackage also supports some "special revisions", i.e.
+    <emphasis>INDEX</> refer to the current index,
+    <emphasis>WC</> or <emphasis>WC.IGNORED</> refer to the current working
+    copy with all (even untracked and ignored) files,
+    <emphasis>WC.TRACKED</> refers to the current working copy of the files
+    tracked by git,
+    <emphasis>WC.UNTRACKED</> refers to the current working copy of all files
+    excluding ignore files.
+    Some examples:
+    <screen>
+    $ &git-buildpackage-rpm; --git-export-dir=/home/user/rpmbuild
+    $ &git-buildpackage-rpm; --git-export-dir=/home/user/rpmbuild --git-export=v1.2.3
+    $ &git-buildpackage-rpm; --git-export=WC.UNTRACKED
+    $ &git-buildpackage-rpm; --git-export=INDEX
+    $ &git-buildpackage-rpm; --git-export=feature/cool-new-thing
+    $ &git-buildpackage-rpm; --git-export=8d55173610f
+    </screen>
+    </para>
+
+    <sect1 id="gbp.rpm.building.patch-generation">
+        <title>Automatic patch generation</title>
+        <para>
+        When developing a non-native package with packaging and sources
+        in the same branch
+        (see <xref linkend="gbp.rpm.development.models.nonnative1">)
+        you usually want for git-buildpackage-rpm to automatically generate
+        patches. In this mode, git-buildpackage-rpm generates the upstream
+        tarball and copies packaging files to the build dir. After that it
+        generates patches from commits between <option>upstream</> and the
+        revision to be built, and, updates the spec file accordingly.
+        Git-buildpackage-rpm also have some options to alter the patch
+        generation. Build package with patch generation:
+        <screen>
+    $ &git-buildpackage-rpm; --git-patch-export
+        </screen>
+        Ignore changes to packaging/ directory and compress patches larger
+        than 100 kilobytes:
+        <screen>
+    $ &git-buildpackage-rpm; --git-patch-export --git-patch-export-compress=100k --git-patch-export-ignore-path='^packaging/.*'
+        </screen>
+        </para>
+    </sect1>
+
+    <sect1 id="gbp.rpm.building.patch-queue">
+        <title>Working with separate development branch</title>
+        <para>
+        When developing a non-native package with packaging data and source
+        code in separate branches
+        (see <xref linkend="gbp.rpm.development.models.nonnative2">)
+        you use the &gbp-pq-rpm; tool to handle the patches. You work on the
+        source code on the development branch and then <emphasis>export</>
+        the patches to the packaging branch when building the RPM package.
+        </para>
+
+        <para>
+        Create a <emphasis>development</> (or <emphasis>patch-queue</>) branch
+        by applying the patches in current packaging branch on top of the
+        upstream version. This will create a new branch, e.g.
+        <emphasis>development/master</> assuming your current branch is
+        <emphasis>master</>. Simply:
+        <screen>
+    $ &gbp-pq-rpm; import
+        </screen>
+        Now you can develop normally on the development branch (add, remove,
+        rebase, amend commits). Just make sure you stay based on the correct
+        upstream version, if doing git-rebase. After you're happy with your
+        changes and you're ready to build an RPM package, you have to
+        <emphasis>export</> the patches with &gbp-pq-rpm;. This will change
+        back to you packaging branch, generate patches from commits between
+        between <emphasis>upstream</> and the HEAD of the development branch
+        and update the spec file with the new patches:
+        <screen>
+    $ &gbp-pq-rpm; export
+        </screen>
+        Commit the changes to packaging branch, and build. For example:
+        <screen>
+    $ <command>git add</> *patch *spec
+    $ <command>git commit</> -a
+    $ &git-buildpackage-rpm
+        </screen>
+        Of course you can build even without committing by using the
+        <option>--git-export=WC.UNTRACKED</> option of &git-buildpackage-rpm;.
+        </para>
+
+        <para>
+        Moving to a new upstream version is basically simple. Assuming you
+        have imported/pulled new upstream version to your git-tree, just:
+        <screen>
+    $ <command>git checkout</> master
+    # Edit the spec file and change the 'Version:' tag to new upstream version
+    $ <command>vim</> *spec
+    $ <command>git commit</> *spec
+    $ &gbp-pq-rpm; rebase
+        </screen>
+        However, if the patches do not apply cleanly, you have to manually
+        apply and resolve the patches.
+        </para>
+    </sect1>
+
 </chapter>
