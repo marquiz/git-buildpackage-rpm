@@ -22,7 +22,6 @@ import sys
 import re
 import os
 import glob
-import pipes
 import time
 import shutil
 import errno
@@ -30,12 +29,13 @@ import urllib2
 
 import gbp.tmpfile as tempfile
 import gbp.command_wrappers as gbpc
-from gbp.rpm import (parse_srpm, SrcRpmFile, SpecFile, guess_spec, NoSpecError,
-                     parse_spec, RpmUpstreamSource)
+from gbp.rpm import (parse_srpm, guess_spec, NoSpecError, parse_spec,
+                     RpmUpstreamSource)
 from gbp.rpm.policy import RpmPkgPolicy
 from gbp.rpm.git import (RpmGitRepository, GitRepositoryError)
 from gbp.git.modifier import GitModifier
-from gbp.config import GbpOptionParserRpm, GbpOptionGroup, no_upstream_branch_msg
+from gbp.config import (GbpOptionParserRpm, GbpOptionGroup,
+                       no_upstream_branch_msg)
 from gbp.errors import GbpError
 import gbp.log
 from gbp.scripts.pq_rpm import safe_patches, rm_patch_files, get_packager
@@ -55,10 +55,12 @@ and patch files from the packaging dir.
 """
 
 class SkipImport(Exception):
+    """Nothing imported"""
     pass
 
 
 def download_source(pkg, dirs):
+    """Download package from a remote location"""
     if re.match(r'[a-z]{1,5}://', pkg):
         mode = 'python urllib2'
     else:
@@ -93,10 +95,10 @@ def committer_from_author(author, options):
     return committer
 
 
-def move_tag_stamp(repo, format, tag_str_fields):
+def move_tag_stamp(repo, tag_format, tag_str_fields):
     "Move tag out of the way appending the current timestamp"
-    old = repo.version_to_tag(format, tag_str_fields)
-    new = repo.version_to_tag('%s~%d' % (format, int(time.time())),
+    old = repo.version_to_tag(tag_format, tag_str_fields)
+    new = repo.version_to_tag('%s~%d' % (tag_format, int(time.time())),
                               tag_str_fields)
     repo.move_tag(old, new)
 
@@ -125,14 +127,15 @@ def import_spec_patches(repo, spec, dirs):
     packager = get_packager(spec)
 
     # Put patches in a safe place
-    safedir, queue = safe_patches(queue, tmpdir)
+    queue = safe_patches(queue, tmpdir)[1]
     for patch in queue:
         gbp.log.debug("Applying %s" % patch.path)
         try:
             apply_and_commit_patch(repo, patch, packager)
         except (GbpError, GitRepositoryError):
             repo.force_head(orig_head, hard=True)
-            raise GbpError, "Couldn't import patches, you need to apply and commit manually"
+            raise GbpError, "Couldn't import patches, you need to apply and "\
+                            "commit manually"
 
     # Remove patches from spec and packaging directory
     gbp.log.info("Removing imported patch files from spec and packaging dir")
@@ -157,9 +160,12 @@ def force_to_branch_head(repo, branch):
 
 
 def parse_args(argv):
+    """Parse commandline arguments"""
     try:
-        parser = GbpOptionParserRpm(command=os.path.basename(argv[0]), prefix='',
-                                    usage='%prog [options] /path/to/package.src.rpm')
+        parser = GbpOptionParserRpm(command=os.path.basename(argv[0]),
+                                    prefix='',
+                                    usage='%prog [options] /path/to/package'
+                                          '.src.rpm')
     except ConfigParser.ParsingError, err:
         gbp.log.err(err)
         return None, None
@@ -174,25 +180,29 @@ def parse_args(argv):
     for group in [import_group, branch_group, tag_group ]:
         parser.add_option_group(group)
 
-    parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False,
-                      help="verbose command execution")
-    parser.add_config_file_option(option_name="color", dest="color", type='tristate')
+    parser.add_option("-v", "--verbose", action="store_true", dest="verbose",
+                      default=False, help="verbose command execution")
+    parser.add_config_file_option(option_name="color", dest="color",
+                      type='tristate')
     parser.add_config_file_option(option_name="tmp-dir", dest="tmp_dir")
-    parser.add_option("--download", action="store_true", dest="download", default=False,
-                      help="download source package")
-    parser.add_config_file_option(option_name="vendor", action="store", dest="vendor")
+    parser.add_option("--download", action="store_true", dest="download",
+                      default=False, help="download source package")
+    parser.add_config_file_option(option_name="vendor", action="store",
+                      dest="vendor")
     branch_group.add_config_file_option(option_name="packaging-branch",
                       dest="packaging_branch")
     branch_group.add_config_file_option(option_name="upstream-branch",
                       dest="upstream_branch")
-    branch_group.add_boolean_config_file_option(option_name="create-missing-branches",
+    branch_group.add_boolean_config_file_option(
+                      option_name="create-missing-branches",
                       dest="create_missing_branches")
     branch_group.add_option("--orphan-packaging", action="store_true",
                       dest="orphan_packaging", default=False,
                       help="The packaging branch doesn't base on upstream")
     branch_group.add_option("--native", action="store_true",
                       dest="native", default=False,
-                      help="This is a dist native package, no separate upstream branch")
+                      help="This is a dist native package, no separate "
+                           "upstream branch")
 
     tag_group.add_boolean_config_file_option(option_name="sign-tags",
                       dest="sign_tags")
@@ -210,7 +220,8 @@ def parse_args(argv):
     import_group.add_option("--allow-same-version", action="store_true",
                       dest="allow_same_version", default=False,
                       help="allow to import already imported version")
-    import_group.add_boolean_config_file_option(option_name="author-is-committer",
+    import_group.add_boolean_config_file_option(
+                      option_name="author-is-committer",
                       dest="author_is_committer")
     import_group.add_config_file_option(option_name="packaging-dir",
                       dest="packaging_dir")
@@ -222,11 +233,11 @@ def parse_args(argv):
 
 
 def main(argv):
+    """Main function of the git-import-srpm script"""
     dirs = dict(top=os.path.abspath(os.curdir))
 
     ret = 0
     skipped = False
-    parents = None
 
     options, args = parse_args(argv)
 
@@ -259,7 +270,8 @@ def main(argv):
             dirs['src'] = os.path.abspath(srpm)
             spec = parse_spec(guess_spec(srpm, True))
         else:
-            gbp.log.debug("Trying to import an srpm from '%s' with spec file '%s'" % (os.path.dirname(srpm), srpm))
+            gbp.log.debug("Trying to import an srpm from '%s' with spec "\
+                          "file '%s'" % (os.path.dirname(srpm), srpm))
             dirs['src'] = os.path.abspath(os.path.dirname(srpm))
             spec = parse_spec(srpm)
 
@@ -270,7 +282,8 @@ def main(argv):
 
             (clean, out) = repo.is_clean()
             if not clean and not is_empty:
-                gbp.log.err("Repository has uncommitted changes, commit these first: ")
+                gbp.log.err("Repository has uncommitted changes, commit "
+                            "these first: ")
                 raise GbpError, out
 
         except GitRepositoryError:
@@ -287,15 +300,17 @@ def main(argv):
                                            prefix='origsrc_')
         dirs['packaging_base'] = tempfile.mkdtemp(dir=dirs['tmp_base'],
                                                   prefix='packaging_')
-        dirs['packaging'] = os.path.join(dirs['packaging_base'], options.packaging_dir)
+        dirs['packaging'] = os.path.join(dirs['packaging_base'],
+                                         options.packaging_dir)
         try:
             os.mkdir(dirs['packaging'])
-        except OSError, (e, emsg):
-            if e != errno.EEXIST:
+        except OSError as err:
+            if err.errno != errno.EEXIST:
                 raise
 
         # Need to copy files to the packaging directory given by caller
-        files = [os.path.basename(patch['filename']) for patch in spec.patches.itervalues()]
+        files = [os.path.basename(patch['filename']) \
+                for patch in spec.patches.itervalues()]
         for num, src in spec.sources.iteritems():
             if num != spec.orig_src_num:
                 files.append(src['filename'])
@@ -310,20 +325,23 @@ def main(argv):
 
         # Unpack orig source archive
         if spec.orig_src:
-            orig_tarball=os.path.join(dirs['src'], spec.orig_src['filename'])
+            orig_tarball = os.path.join(dirs['src'], spec.orig_src['filename'])
             upstream = RpmUpstreamSource(orig_tarball)
             upstream = upstream.unpack(dirs['origsrc'], options.filters)
         else:
             upstream = None
 
-        format = [(options.upstream_tag, "Upstream"), (options.packaging_tag, options.vendor)][options.native]
+        tag_format = [(options.upstream_tag, "Upstream"),
+                   (options.packaging_tag, options.vendor)][options.native]
         tag_str_fields = dict(spec.version, vendor=options.vendor)
-        tag = repo.version_to_tag(format[0], tag_str_fields)
+        tag = repo.version_to_tag(tag_format[0], tag_str_fields)
 
         if repo.find_version(options.packaging_tag, tag_str_fields):
-            gbp.log.warn("Version %s already imported." % RpmPkgPolicy.compose_full_version(spec.version))
+            gbp.log.warn("Version %s already imported." %
+                         RpmPkgPolicy.compose_full_version(spec.version))
             if options.allow_same_version:
-                gbp.log.info("Moving tag of version '%s' since import forced" % RpmPkgPolicy.compose_full_version(spec.version))
+                gbp.log.info("Moving tag of version '%s' since import forced" %
+                        RpmPkgPolicy.compose_full_version(spec.version))
                 move_tag_stamp(repo, options.packaging_tag, tag_str_fields)
             else:
                 raise SkipImport
@@ -333,39 +351,42 @@ def main(argv):
 
         # Determine author and committer info, currently same info is used
         # for both upstream sources and packaging files
-        author=None
+        author = None
         if spec.packager:
-            match = re.match('(?P<name>.*[^ ])\s*<(?P<email>\S*)>', spec.packager.strip())
+            match = re.match('(?P<name>.*[^ ])\s*<(?P<email>\S*)>',
+                             spec.packager.strip())
             if match:
-                author=GitModifier(match.group('name'), match.group('email'))
+                author = GitModifier(match.group('name'), match.group('email'))
         if not author:
-            author=GitModifier()
+            author = GitModifier()
             gbp.log.debug("Couldn't determine packager info")
         committer = committer_from_author(author, options)
 
         # Import upstream sources
         if upstream:
-            upstream_commit = repo.find_version(format[0], tag_str_fields)
+            upstream_commit = repo.find_version(tag_format[0], tag_str_fields)
             if not upstream_commit:
-                gbp.log.info("Tag %s not found, importing %s upstream sources" % (tag, format[1]))
+                gbp.log.info("Tag %s not found, importing %s upstream sources"
+                             % (tag, tag_format[1]))
 
                 branch = [options.upstream_branch,
                           options.packaging_branch][options.native]
                 if not repo.has_branch(branch):
                     if options.create_missing_branches:
-                        gbp.log.info("Will create missing branch '%s'" % branch)
+                        gbp.log.info("Will create missing branch '%s'" %
+                                     branch)
                     else:
-                        gbp.log.err(no_upstream_branch_msg % branch +
-                            "\nAlso check the --create-missing-branches option.")
+                        gbp.log.err(no_upstream_branch_msg % branch + "\n"
+                            "Also check the --create-missing-branches option.")
                         raise GbpError
 
-                msg = "%s version %s" % (format[1], spec.upstreamversion)
+                msg = "%s version %s" % (tag_format[1], spec.upstreamversion)
                 upstream_commit = repo.commit_dir(upstream.unpacked,
                                                   "Imported %s" % msg,
-                                                   branch,
-                                                   author=author,
-                                                   committer=committer,
-                                                   create_missing_branch=options.create_missing_branches)
+                                                  branch,
+                                                  author=author,
+                                                  committer=committer,
+                                                  create_missing_branch=options.create_missing_branches)
                 repo.create_tag(name=tag,
                                 msg=msg,
                                 commit=upstream_commit,
@@ -374,8 +395,9 @@ def main(argv):
 
                 if not options.native:
                     if options.pristine_tar:
-                        repo.pristine_tar.commit(orig_tarball, 'refs/heads/%s' % options.upstream_branch)
-                    parents = [ options.upstream_branch ]
+                        repo.pristine_tar.commit(orig_tarball,
+                                                'refs/heads/%s' %
+                                                 options.upstream_branch)
         else:
             gbp.log.info("No orig source archive imported")
 
@@ -388,16 +410,17 @@ def main(argv):
                 if options.create_missing_branches:
                     gbp.log.info("Will create missing branch '%s'" % branch)
                 else:
-                    gbp.log.err(no_packaging_branch_msg % branch +
-                                "\nAlso check the --create-missing-branches option.")
+                    gbp.log.err(no_packaging_branch_msg % branch + "\n"
+                                "Also check the --create-missing-branches "
+                                "option.")
                     raise GbpError
 
             tag_str_fields = dict(spec.version, vendor=options.vendor)
             tag = repo.version_to_tag(options.packaging_tag, tag_str_fields)
-            msg = "%s release %s" % (options.vendor, RpmPkgPolicy.compose_full_version(spec.version))
+            msg = "%s release %s" % (options.vendor,
+                         RpmPkgPolicy.compose_full_version(spec.version))
 
             if options.orphan_packaging or not upstream:
-                parents = []
                 commit = repo.commit_dir(dirs['packaging_base'],
                                              "Imported %s" % msg,
                                              branch,
@@ -407,13 +430,14 @@ def main(argv):
             else:
                 # Copy packaging files to the unpacked sources dir
                 try:
-                    pkgsubdir = os.path.join(upstream.unpacked, options.packaging_dir)
+                    pkgsubdir = os.path.join(upstream.unpacked,
+                                             options.packaging_dir)
                     os.mkdir(pkgsubdir)
-                except OSError, (e, emsg):
-                    if e != errno.EEXIST:
+                except OSError as err:
+                    if err.errno != errno.EEXIST:
                         raise
-                for f in os.listdir(dirs['packaging']):
-                    shutil.copy2(os.path.join(dirs['packaging'], f),
+                for fn in os.listdir(dirs['packaging']):
+                    shutil.copy2(os.path.join(dirs['packaging'], fn),
                                  pkgsubdir)
                 commit = repo.commit_dir(upstream.unpacked,
                                          "Imported %s" % msg,
@@ -446,15 +470,15 @@ def main(argv):
         gbp.log.err("Interrupted. Aborting.")
     except gbpc.CommandExecFailed:
         ret = 1
-    except GitRepositoryError, msg:
-        gbp.log.err("Git command failed: %s" % msg)
+    except GitRepositoryError as err:
+        gbp.log.err("Git command failed: %s" % err)
         ret = 1
-    except GbpError, err:
+    except GbpError as err:
         if len(err.__str__()):
             gbp.log.err(err)
         ret = 1
-    except NoSpecError, err:
-        gbp.log.err("Failed determine spec file (%s)" % err)
+    except NoSpecError as err:
+        gbp.log.err("Failed determine spec file: %s" % err)
         ret = 1
     except SkipImport:
         skipped = True
@@ -463,7 +487,9 @@ def main(argv):
         gbpc.RemoveTree(dirs['tmp_base'])()
 
     if not ret and not skipped:
-        gbp.log.info("Version '%s' imported under '%s'" % (RpmPkgPolicy.compose_full_version(spec.version), spec.name))
+        gbp.log.info("Version '%s' imported under '%s'" %
+                     (RpmPkgPolicy.compose_full_version(spec.version),
+                      spec.name))
     return ret
 
 if __name__ == '__main__':
