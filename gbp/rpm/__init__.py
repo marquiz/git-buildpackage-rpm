@@ -120,6 +120,7 @@ class SrcRpmFile(object):
 
 class SpecFile(object):
     """Class for parsing/modifying spec files"""
+    tag_re = re.compile(r'^(?P<name>[a-z][a-z0-9]*)\s*:\s*(?P<value>\S(.*\S)?)\s*$', flags=re.I)
     source_re = re.compile(r'^Source(?P<srcnum>[0-9]+)?\s*:\s*(?P<name>[^\s].*[^\s])\s*$', flags=re.I)
     patchtag_re = re.compile(r'^Patch(?P<patchnum>[0-9]+)?\s*:\s*(?P<name>\S.*)$', flags=re.I)
     patchmacro_re = re.compile(r'^%patch(?P<patchnum>[0-9]+)?(\s+(?P<args>.*))?$')
@@ -162,6 +163,13 @@ class SpecFile(object):
         self.content = f.readlines()
         f.close()
         loc = self.parse_content()
+
+
+        # Find 'Packager' tag. Needed to circumvent a bug in python-rpm where
+        # spec.sourceHeader[rpm.RPMTAG_PACKAGER] is not reset when a new spec
+        # file is parsed
+        if loc['packagertag'] is None:
+            self.packager = None
 
         # Update sources info (basically possible macros expanded by spec.__init__()
         # And, double-check that we parsed spec content correctly
@@ -256,6 +264,7 @@ class SpecFile(object):
         """
         # Check location of "interesting" tags and macros
         ret = {'nametag': None,
+               'packagertag': None,
                'setupmacro': None,
                'prepmacro': None}
 
@@ -384,12 +393,16 @@ class SpecFile(object):
                 continue
 
             # Only search for the last occurrence of the following
-            if re.match("^\s*Name:.*$", line, flags=re.I):
-                ret['setupmacro'] = i
+            m = self.tag_re.match(line)
+            if m:
+                if m.group('name').lower() == 'name':
+                    ret['nametag'] = i
+                if m.group('name').lower() == 'packager':
+                    ret['packagertag'] = i
+                continue
             if re.match("^%prep(\s.*)?$", line):
                 ret['prepmacro'] = i
                 continue
-
         return ret
 
 
