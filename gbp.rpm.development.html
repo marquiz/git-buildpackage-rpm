@@ -116,17 +116,17 @@ CLASS="TOC"
 ></DT
 ><DT
 ><A
-HREF="gbp.rpm.development.html#GBP.RPM.SETUP.MODELS"
+HREF="gbp.rpm.development.html#GBP.RPM.DEVELOPMENT.MODELS"
 >Development models</A
 ></DT
 ><DT
 ><A
-HREF="gbp.rpm.development.html#GBP.RPM.SETUP.SCRATCH"
+HREF="gbp.rpm.development.html#GBP.RPM.DEVELOPMENT.SCRATCH"
 >Starting from scratch with a non-native package</A
 ></DT
 ><DT
 ><A
-HREF="gbp.rpm.development.html#GBP.RPM.SETUP.CONVERT"
+HREF="gbp.rpm.development.html#GBP.RPM.DEVELOPMENT.CONVERT"
 >Converting an existing git repository of a non-native package</A
 ></DT
 ></DL
@@ -137,37 +137,39 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="GBP.RPM.SETUP.MODELS"
+NAME="GBP.RPM.DEVELOPMENT.MODELS"
 >Development models</A
 ></H1
 ><P
->The <B
+>        The <B
 CLASS="COMMAND"
 >git-buildpackage-rpm</B
 > toolset basically supports three different
-        models of package maintenance.</P
+        models of package maintenance.
+        </P
 ><BR
 CLEAR="all"><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN87"
+NAME="GBP.RPM.DEVELOPMENT.MODELS.NATIVE"
 >Native package</A
 ></H2
 ><P
->This means that you are the upstream, there is no separate
-            upstream with which you have to sync. Basically, only <CODE
+>            This means that you are the upstream, there is no separate
+            upstream with which you have to sync. Basically, only
+            <CODE
 CLASS="OPTION"
 >packaging-branch</CODE
->
-            is used - it contains both the source code and packaging files. No
-            patches should be present as all changes can be directly committed to
-            upstream (which is you). When building, <B
+> is used - it contains both the source
+            code and packaging files. No patches should be present as all
+            changes can be directly committed to upstream (which is you).
+            When building, <B
 CLASS="COMMAND"
 >git-buildpackage-rpm</B
-> will create 
-            the source tarball and copy it and the packaging to the build directory.
+> will create the source
+            tarball and copy it and the packaging to the build directory.
             </P
 ></DIV
 ><BR
@@ -176,20 +178,21 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN92"
->Upstream package, alternative 1: packaging and sources in the same branch</A
+NAME="GBP.RPM.DEVELOPMENT.MODELS.NONNATIVE1"
+>Upstream package, alternative 1: packaging and sources in
+                   the same branch</A
 ></H2
 ><P
->This represents somewhat Debian-style package maintenance.
-            All changes (packaging and source code) are done to the same branch,
-            i.e., the <CODE
+>            This represents somewhat Debian-style package maintenance.
+            All changes (packaging and source code) are done to the same
+            branch, i.e., the <CODE
 CLASS="OPTION"
 >packaging-branch</CODE
->, based on the <CODE
+>, based on the
+            <CODE
 CLASS="OPTION"
 >upstream-branch</CODE
->.
-            When package is built,
+>. When package is built,
             <B
 CLASS="COMMAND"
 >git-buildpackage-rpm</B
@@ -204,15 +207,17 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN98"
->Upstream package, alternative 2: packaging and sources in separate branches</A
+NAME="GBP.RPM.DEVELOPMENT.MODELS.NONNATIVE2"
+>Upstream package, alternative 2: packaging and sources in
+                   separate branches</A
 ></H2
 ><P
->In this model packaging files (spec and patches) are held in
+>            In this model packaging files (spec and patches) are held in
             <CODE
 CLASS="OPTION"
 >packaging-branch</CODE
-> and upstream sources in <CODE
+> and upstream sources in
+            <CODE
 CLASS="OPTION"
 >upstream-branch</CODE
 >.
@@ -224,18 +229,18 @@ CLASS="OPTION"
 CLASS="OPTION"
 >upstream-branch</CODE
 >, which only contains source
-            code but no packaging files. When building the package, <B
+            code but no packaging files. When building the package,
+            <B
 CLASS="COMMAND"
 >gbp-pq-rpm</B
->
-            tool is used to export patches from the patch queue branch to the
-            packaging branch and edit the spec file accordingly.
+> tool is used to export patches from the patch queue
+            branch to the packaging branch and edit the spec file accordingly.
             Finally, <B
 CLASS="COMMAND"
 >git-buildpackage-rpm</B
-> will create the upstream source 
-            tarball and export it and the packaging files to the build directory, 
-            and, build the RPM package.
+> will create the upstream source
+            tarball and export it and the packaging files to the build
+            directory, and, build the RPM package.
             </P
 ></DIV
 ></DIV
@@ -245,23 +250,23 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="GBP.RPM.SETUP.SCRATCH"
+NAME="GBP.RPM.DEVELOPMENT.SCRATCH"
 >Starting from scratch with a non-native package</A
 ></H1
 ><P
->In this case, you most probably want to package software not yet
+>        In this case, you most probably want to package software not yet
         found in your distro. First, create an empty repository:
         <PRE
 CLASS="SCREEN"
->            <B
+>    $ <B
 CLASS="COMMAND"
 >mkdir</B
 > mypackage
-            <B
+    $ <B
 CLASS="COMMAND"
 >cd</B
 > mypackage
-            <B
+    $ <B
 CLASS="COMMAND"
 >git init</B
 >
@@ -269,21 +274,22 @@ CLASS="COMMAND"
 >
         Then, import the upstream sources, create the packaging/development
         branch and add the rpm packaging files. You have two choices:
-        <P
+        </P
+><P
 ></P
 ><OL
 TYPE="1"
 ><LI
 ><P
->packaging files and development sources in the same branch
+>            packaging files and development sources in the same branch
             <PRE
 CLASS="SCREEN"
->                <B
+>    $ <B
 CLASS="COMMAND"
 >git-import-orig-rpm</B
 > ../mypackage.tar.gz
-                # Optionally (recommended): add gbp.conf  
-                <B
+    # Optionally (recommended): add gbp.conf
+    $ <B
 CLASS="COMMAND"
 >vim</B
 > .gbp.conf &#38;&#38; <B
@@ -292,24 +298,24 @@ CLASS="COMMAND"
 > .gbp.conf &#38;&#38; <B
 CLASS="COMMAND"
 >git commit</B
-> -m"Add gbp.conf"  
-                # Add packaging files to source tree under subdir 'packaging'   
-                <B
+> -m"Add gbp.conf"
+    # Add packaging files to source tree under subdir 'packaging'
+    $ <B
 CLASS="COMMAND"
 >mkdir</B
 > packaging &#38;&#38; <B
 CLASS="COMMAND"
 >cd</B
-> packaging  
-                <B
+> packaging
+    $ <B
 CLASS="COMMAND"
 >vim</B
-> mypackage.spec  
-                <B
+> mypackage.spec
+    $ <B
 CLASS="COMMAND"
 >git add</B
-> .  
-                <B
+> .
+    $ <B
 CLASS="COMMAND"
 >git commit</B
 > -m"Add packaging files"
@@ -318,15 +324,15 @@ CLASS="COMMAND"
 ></LI
 ><LI
 ><P
->development sources and packaging files in separate branches
+>            development sources and packaging files in separate branches
             <PRE
 CLASS="SCREEN"
->                <B
+>    $ <B
 CLASS="COMMAND"
 >git-import-orig-rpm</B
 > --no-merge ../mypackage.tar.gz
-                # Optionally (recommended): add gbp.conf  
-                <B
+    # Optionally (recommended): add gbp.conf
+    $ <B
 CLASS="COMMAND"
 >vim</B
 > .gbp.conf &#38;&#38; <B
@@ -335,17 +341,17 @@ CLASS="COMMAND"
 > .gbp.conf &#38;&#38; <B
 CLASS="COMMAND"
 >git commit</B
-> -m"Add gbp.conf"  
-                # Add packaging files (to root of master branch)  
-                <B
+> -m"Add gbp.conf"
+    # Add packaging files (to root of master branch)
+    $ <B
 CLASS="COMMAND"
 >vim</B
-> mypackage.spec  
-                <B
+> mypackage.spec
+    $ <B
 CLASS="COMMAND"
 >git add </B
-> .  
-                <B
+> .
+    $ <B
 CLASS="COMMAND"
 >git commit</B
 > -m"Add packaging files"
@@ -353,8 +359,6 @@ CLASS="COMMAND"
 ></P
 ></LI
 ></OL
->
-        </P
 ></DIV
 ><BR
 CLEAR="all"><DIV
@@ -362,31 +366,109 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="GBP.RPM.SETUP.CONVERT"
+NAME="GBP.RPM.DEVELOPMENT.CONVERT"
 >Converting an existing git repository of a non-native package</A
 ></H1
 ><P
->In this case, you already have a git repository containing the 
+>        In this case, you already have a git repository containing the
         upstream source, but it was created neither with <B
 CLASS="COMMAND"
 >gbp-clone</B
-> nor <B
+> nor
+        <B
 CLASS="COMMAND"
 >git-import-srpm</B
 >.
         You need to have a separate branch for upstream sources.
-        If you already have that, you can simply rename that branch to the default upstream-branch:
+        If you already have that, you can simply rename that branch to the
+        default upstream-branch:
         <PRE
 CLASS="SCREEN"
->            <B
+>    $ <B
 CLASS="COMMAND"
->$ git branch</B
+>git branch</B
 > -m my-old-upstream-branch upstream
         </PRE
 >
         OR just add the name of your upstream branch to gbp.conf.
         Then, you just create a packaging/development branch(es) with git and
-        add packaging files to the packaging branch.
+        add packaging files to the packaging branch. If you want to maintain
+        sources and packaging in the same branch
+        (<A
+HREF="gbp.rpm.development.html#GBP.RPM.DEVELOPMENT.MODELS.NONNATIVE1"
+>Non-native package, model 1</A
+>)
+        do something like:
+        <PRE
+CLASS="SCREEN"
+>    $ <B
+CLASS="COMMAND"
+>git checkout</B
+> -b master upstream
+    # Optionally (recommended): add gbp.conf
+    $ <B
+CLASS="COMMAND"
+>vim</B
+> .gbp.conf &#38;&#38; <B
+CLASS="COMMAND"
+>git add</B
+> .gbp.conf &#38;&#38; <B
+CLASS="COMMAND"
+>git commit</B
+> -m"Add gbp.conf"
+    # Add packaging files to source tree, add and commit the packaging files
+    # ...
+        </PRE
+>
+        If you want to maintain development sources and packaging in separate
+        branches
+        (<A
+HREF="gbp.rpm.development.html#GBP.RPM.DEVELOPMENT.MODELS.NONNATIVE2"
+>Non-native package, model 2</A
+>):
+        <PRE
+CLASS="SCREEN"
+>    $ <B
+CLASS="COMMAND"
+>git checkout</B
+> --orphan master
+    $ <B
+CLASS="COMMAND"
+>rm</B
+> .git/index
+    $ <B
+CLASS="COMMAND"
+>git commit</B
+> --allow-empty -m"Create packaging branch"
+    # Optionally (recommended): add gbp.conf
+    $ <B
+CLASS="COMMAND"
+>vim</B
+> .gbp.conf &#38;&#38; <B
+CLASS="COMMAND"
+>git add</B
+> .gbp.conf &#38;&#38; <B
+CLASS="COMMAND"
+>git commit</B
+> -m"Add gbp.conf"
+    # Next, add and commit the packaging files (.spec etc)
+    $ <B
+CLASS="COMMAND"
+>vim</B
+> mypackage.spec &#38;&#38; <B
+CLASS="COMMAND"
+>git add</B
+> mypackage.spec &#38;&#38; <B
+CLASS="COMMAND"
+>git commit</B
+> -m"Add packaging files"
+    # Now, you can create the development branch (and import possible patches)
+    $ <B
+CLASS="COMMAND"
+>gbp-pq-rpm</B
+> import
+        </PRE
+>
         </P
 ></DIV
 ></DIV
