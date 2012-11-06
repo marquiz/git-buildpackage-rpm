@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->git-import-dscs</TITLE
+>gbp-import-dscs</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,11 +13,11 @@ REL="UP"
 TITLE="Command Reference"
 HREF="man.reference.html"><LINK
 REL="PREVIOUS"
-TITLE="git-import-dsc"
-HREF="man.git.import.dsc.html"><LINK
+TITLE="gbp-import-dsc"
+HREF="man.gbp.import.dsc.html"><LINK
 REL="NEXT"
-TITLE="git-import-orig"
-HREF="man.git.import.orig.html"><STYLE
+TITLE="gbp-import-orig"
+HREF="man.gbp.import.orig.html"><STYLE
 TYPE="text/css"
 >.synopsis, .classsynopsis {
     background: #eeeeee;
@@ -67,7 +67,7 @@ VALIGN="middle"
 ><TD
 ><A
 ACCESSKEY="p"
-HREF="man.git.import.dsc.html"
+HREF="man.gbp.import.dsc.html"
 ><IMG
 SRC="left.png"
 WIDTH="24"
@@ -100,11 +100,11 @@ ALT="Home"></A
 ><TH
 WIDTH="100%"
 align="center"
->Building Debian Packages with git-buildpackage: Version: </TH
+>Building Debian Packages with git-buildpackage: Version: 0.6.10</TH
 ><TD
 ><A
 ACCESSKEY="n"
-HREF="man.git.import.orig.html"
+HREF="man.gbp.import.orig.html"
 ><IMG
 SRC="right.png"
 WIDTH="24"
@@ -116,31 +116,28 @@ ALT="Next"></A
 ></TABLE
 ><H1
 ><A
-NAME="MAN.GIT.IMPORT.DSCS"
+NAME="MAN.GBP.IMPORT.DSCS"
 ></A
->git-import-dscs</H1
+>gbp-import-dscs</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN1409"
+NAME="AEN1680"
 ></A
 ><H2
 >Name</H2
-><B
-CLASS="COMMAND"
->git-import-dscs</B
->&nbsp;--&nbsp;Import multiple versions of a Debian source packages into a Git repository</DIV
+>git-import-dscs, gbp-import-dscs&nbsp;--&nbsp;Import multiple versions of a Debian source packages into a Git repository</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN1413"
+NAME="AEN1684"
 ></A
 ><H2
 >Synopsis</H2
 ><P
 ><B
 CLASS="COMMAND"
->git-import-dscs</B
+>gbp import-dscs</B
 >  [<CODE
 CLASS="OPTION"
 >options</CODE
@@ -168,7 +165,7 @@ CLASS="REPLACEABLE"
 ><P
 ><B
 CLASS="COMMAND"
->git-import-dscs</B
+>gbp import-dscs</B
 >  {--debsnap} [<CODE
 CLASS="OPTION"
 >options</CODE
@@ -185,14 +182,14 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1436"
+NAME="AEN1707"
 ></A
 ><H2
 >DESCRIPTION</H2
 ><P
 >    <B
 CLASS="COMMAND"
->git-import-dscs</B
+>gbp import-dscs</B
 > imports several versions of a Debian source package into
     a <SPAN
 CLASS="PRODUCTNAME"
@@ -200,7 +197,7 @@ CLASS="PRODUCTNAME"
 > repository. To do so it sorts the packages by their versions first
     and then imports them via calling <B
 CLASS="COMMAND"
->git-import-dsc</B
+>gbp import-dsc</B
 > on each package. 
     </P
 ><P
@@ -219,7 +216,7 @@ CLASS="PRODUCTNAME"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1445"
+NAME="AEN1716"
 ></A
 ><H2
 >OPTIONS</H2
@@ -236,7 +233,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1448"><SPAN
+NAME="AEN1719"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -255,7 +252,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1453"><SPAN
+NAME="AEN1724"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -279,14 +276,14 @@ options shipped in the package source.</P
 ><P
 >    All other options are passed on verbatim to <B
 CLASS="COMMAND"
->git-import-dsc</B
+>gbp import-dsc</B
 >.
     </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1461"
+NAME="AEN1732"
 ></A
 ><H2
 >SEE ALSO</H2
@@ -295,28 +292,28 @@ NAME="AEN1461"
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-import-dsc</SPAN
+>gbp-import-dsc</SPAN
 >(1)</SPAN
 >,
       <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-buildpackage</SPAN
+>gbp-buildpackage</SPAN
 >(1)</SPAN
 >,
       <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-import-orig</SPAN
+>gbp-import-orig</SPAN
 >(1)</SPAN
 >,
       <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-dch</SPAN
+>gbp-dch</SPAN
 >(1)</SPAN
 >,
       <SPAN
@@ -361,7 +358,7 @@ CLASS="CITETITLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1490"
+NAME="AEN1761"
 ></A
 ><H2
 >AUTHOR</H2
@@ -386,18 +383,18 @@ VALIGN="middle"
 ALIGN="left"
 ><A
 ACCESSKEY="p"
-HREF="man.git.import.dsc.html"
+HREF="man.gbp.import.dsc.html"
 ><B
->&lt;&lt;&lt;&nbsp;git-import-dsc</B
+>&lt;&lt;&lt;&nbsp;gbp-import-dsc</B
 ></A
 ></TD
 ><TD
 ALIGN="right"
 ><A
 ACCESSKEY="n"
-HREF="man.git.import.orig.html"
+HREF="man.gbp.import.orig.html"
 ><B
->git-import-orig&nbsp;&gt;&gt;&gt;</B
+>gbp-import-orig&nbsp;&gt;&gt;&gt;</B
 ></A
 ></TD
 ></TR

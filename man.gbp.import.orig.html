@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->git-import-orig</TITLE
+>gbp-import-orig</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,11 +13,11 @@ REL="UP"
 TITLE="Command Reference"
 HREF="man.reference.html"><LINK
 REL="PREVIOUS"
-TITLE="git-import-dscs"
-HREF="man.git.import.dscs.html"><LINK
+TITLE="gbp-import-dscs"
+HREF="man.gbp.import.dscs.html"><LINK
 REL="NEXT"
-TITLE="git-dch"
-HREF="man.git.dch.html"><STYLE
+TITLE="gbp-dch"
+HREF="man.gbp.dch.html"><STYLE
 TYPE="text/css"
 >.synopsis, .classsynopsis {
     background: #eeeeee;
@@ -67,7 +67,7 @@ VALIGN="middle"
 ><TD
 ><A
 ACCESSKEY="p"
-HREF="man.git.import.dscs.html"
+HREF="man.gbp.import.dscs.html"
 ><IMG
 SRC="left.png"
 WIDTH="24"
@@ -100,11 +100,11 @@ ALT="Home"></A
 ><TH
 WIDTH="100%"
 align="center"
->Building Debian Packages with git-buildpackage: Version: </TH
+>Building Debian Packages with git-buildpackage: Version: 0.6.10</TH
 ><TD
 ><A
 ACCESSKEY="n"
-HREF="man.git.dch.html"
+HREF="man.gbp.dch.html"
 ><IMG
 SRC="right.png"
 WIDTH="24"
@@ -116,31 +116,28 @@ ALT="Next"></A
 ></TABLE
 ><H1
 ><A
-NAME="MAN.GIT.IMPORT.ORIG"
+NAME="MAN.GBP.IMPORT.ORIG"
 ></A
->git-import-orig</H1
+>gbp-import-orig</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN1504"
+NAME="AEN1775"
 ></A
 ><H2
 >Name</H2
-><B
-CLASS="COMMAND"
->git-import-orig</B
->&nbsp;--&nbsp;Import an upstream source into a git repository</DIV
+>git-import-orig, gbp-import-orig&nbsp;--&nbsp;Import an upstream source into a git repository</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN1508"
+NAME="AEN1779"
 ></A
 ><H2
 >Synopsis</H2
 ><P
 ><B
 CLASS="COMMAND"
->git-import-orig</B
+>gbp import-orig</B
 >  [<CODE
 CLASS="OPTION"
 >--verbose</CODE
@@ -171,6 +168,9 @@ CLASS="REPLACEABLE"
 ><I
 >branch_name</I
 ></TT
+>] [<CODE
+CLASS="OPTION"
+>--[no-]create-missing-branches</CODE
 >] [<CODE
 CLASS="OPTION"
 >--upstream-vcs-tag=</CODE
@@ -214,28 +214,34 @@ CLASS="OPTION"
 >--[no-]filter-pristine-tar</CODE
 >] [<CODE
 CLASS="OPTION"
+>--[no-]symlink-orig</CODE
+>] [<CODE
+CLASS="OPTION"
 >--postimport=cmd</CODE
 >] [<CODE
 CLASS="OPTION"
->--uscan</CODE
+>--[no-]interactive</CODE
 >]  <TT
 CLASS="REPLACEABLE"
 ><I
 >upstream-source</I
 ></TT
+> | <CODE
+CLASS="OPTION"
+>--uscan</CODE
 > </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1548"
+NAME="AEN1826"
 ></A
 ><H2
 >DESCRIPTION</H2
 ><P
 >    <B
 CLASS="COMMAND"
->git-import-orig</B
+>gbp import-orig</B
 > imports <TT
 CLASS="REPLACEABLE"
 ><I
@@ -251,8 +257,8 @@ CLASS="REPLACEABLE"
 >upstream-source</I
 ></TT
 > can either
-    be a gzip or bzip2 compressed tar archive or an already unpacked source
-    tree. If it is already of the form
+    be a gzip, bzip2, lzma or xz compressed tar archive, a zip archive or an
+    already unpacked source tree. If it is already of the form
     <TT
 CLASS="REPLACEABLE"
 ><I
@@ -264,7 +270,15 @@ CLASS="REPLACEABLE"
 CLASS="OPTION"
 >--upstream-version</CODE
 >.
-    </P
+    If the source package name or version can't be determined
+    <B
+CLASS="COMMAND"
+>gbp import-orig</B
+> will prompt for it unless <CODE
+CLASS="OPTION"
+>--no-interactive</CODE
+>
+    is given.</P
 ><P
 >The sources are placed on the upstream branch (default:
     <TT
@@ -284,7 +298,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1560"
+NAME="AEN1840"
 ></A
 ><H2
 >OPTIONS</H2
@@ -301,7 +315,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1563"><SPAN
+NAME="AEN1843"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -336,7 +350,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1572"><SPAN
+NAME="AEN1852"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -355,7 +369,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1577"><SPAN
+NAME="AEN1857"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -385,7 +399,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1584"><SPAN
+NAME="AEN1864"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -410,7 +424,7 @@ CLASS="REPLACEABLE"
 >. After
 	  importing the new sources on the upstream branch, <B
 CLASS="COMMAND"
->git-import-orig</B
+>gbp import-orig</B
 >
 	  will try to merge the new version onto this branch.</P
 ></TD
@@ -420,7 +434,26 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1592"><SPAN
+NAME="AEN1872"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--[no-]create-missing-branches</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Create missing upstream branch if it does not exist.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1877"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -441,7 +474,7 @@ CLASS="REPLACEABLE"
 ><I
 >tag_name</I
 ></TT
-> as additional parent to the commit 
+> as additional parent to the commit
 	    of the upstream tarball. Useful when upstream uses git and you want to
 	    link to it's revision history.
 	  </P
@@ -452,7 +485,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1599"><SPAN
+NAME="AEN1884"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -477,7 +510,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1606"><SPAN
+NAME="AEN1891"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -496,7 +529,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1611"><SPAN
+NAME="AEN1896"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -520,7 +553,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1617"><SPAN
+NAME="AEN1902"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -540,7 +573,7 @@ VALIGN="TOP"
 	  default is <TT
 CLASS="REPLACEABLE"
 ><I
->upstream/%(versions)s</I
+>upstream/%(version)s</I
 ></TT
 ></P
 ></TD
@@ -550,7 +583,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1624"><SPAN
+NAME="AEN1909"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -581,7 +614,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1631"><SPAN
+NAME="AEN1916"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -605,18 +638,21 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1637"><SPAN
+NAME="AEN1922"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--pristine-tar</CODE
+>--[no-]pristine-tar</CODE
 ></SPAN
 ></TD
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->generate pristine-tar delta file</P
+>generate <B
+CLASS="COMMAND"
+>pristine-tar</B
+> delta file</P
 ></TD
 ></TR
 ><TR
@@ -624,11 +660,11 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1642"><SPAN
+NAME="AEN1928"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--filter-pristine-tar</CODE
+>--[no-]filter-pristine-tar</CODE
 ></SPAN
 ></TD
 ><TD
@@ -636,7 +672,10 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >if using a filter also filter the files out of the tarball
-	  passed to pristine tar</P
+	  passed to <B
+CLASS="COMMAND"
+>pristine-tar</B
+></P
 ></TD
 ></TR
 ><TR
@@ -644,7 +683,39 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1647"><SPAN
+NAME="AEN1934"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--[no-]symlink-orig</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>	    Whether to create and keep a symlink from the upstream tarball
+            to a Debian policy conformant upstream tarball name located in
+	    <TT
+CLASS="FILENAME"
+>../</TT
+>.
+	  </P
+><P
+>	    This is a good idea if not using <B
+CLASS="COMMAND"
+>pristine-tar</B
+>
+	    since it avoids creating a new tarball with a different md5sum.
+	  </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1942"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -673,7 +744,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1654"><SPAN
+NAME="AEN1949"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -693,7 +764,36 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1659"
+NAME="AEN1954"
+></A
+><H2
+>EXAMPLES</H2
+><P
+>Download and import a new upstream version using the informantion from <TT
+CLASS="FILENAME"
+>debian/watch</TT
+></P
+><PRE
+CLASS="SCREEN"
+>      <B
+CLASS="COMMAND"
+>gbp import-orig</B
+> --uscan
+    </PRE
+><P
+>After downloading an upstream tarball by hand import it</P
+><PRE
+CLASS="SCREEN"
+>      <B
+CLASS="COMMAND"
+>gbp import-orig</B
+> ../upstream-tarball-0.1.tar.gz
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1963"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -711,7 +811,7 @@ HREF="man.gbp.conf.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1664"
+NAME="AEN1968"
 ></A
 ><H2
 >SEE ALSO</H2
@@ -720,28 +820,28 @@ NAME="AEN1664"
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-buildpackage</SPAN
+>gbp-buildpackage</SPAN
 >(1)</SPAN
 >,
       <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-import-dsc</SPAN
+>gbp-import-dsc</SPAN
 >(1)</SPAN
 >,
       <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-import-dscs</SPAN
+>gbp-import-dscs</SPAN
 >(1)</SPAN
 >,
       <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-dch</SPAN
+>gbp-dch</SPAN
 >(1)</SPAN
 >,
       <SPAN
@@ -786,7 +886,7 @@ CLASS="CITETITLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1693"
+NAME="AEN1997"
 ></A
 ><H2
 >AUTHOR</H2
@@ -811,18 +911,18 @@ VALIGN="middle"
 ALIGN="left"
 ><A
 ACCESSKEY="p"
-HREF="man.git.import.dscs.html"
+HREF="man.gbp.import.dscs.html"
 ><B
->&lt;&lt;&lt;&nbsp;git-import-dscs</B
+>&lt;&lt;&lt;&nbsp;gbp-import-dscs</B
 ></A
 ></TD
 ><TD
 ALIGN="right"
 ><A
 ACCESSKEY="n"
-HREF="man.git.dch.html"
+HREF="man.gbp.dch.html"
 ><B
->git-dch&nbsp;&gt;&gt;&gt;</B
+>gbp-dch&nbsp;&gt;&gt;&gt;</B
 ></A
 ></TD
 ></TR

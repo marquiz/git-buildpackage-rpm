@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->git-dch</TITLE
+>gbp-dch</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,8 +13,8 @@ REL="UP"
 TITLE="Command Reference"
 HREF="man.reference.html"><LINK
 REL="PREVIOUS"
-TITLE="git-import-orig"
-HREF="man.git.import.orig.html"><LINK
+TITLE="gbp-import-orig"
+HREF="man.gbp.import.orig.html"><LINK
 REL="NEXT"
 TITLE="gbp-clone"
 HREF="man.gbp.clone.html"><STYLE
@@ -67,7 +67,7 @@ VALIGN="middle"
 ><TD
 ><A
 ACCESSKEY="p"
-HREF="man.git.import.orig.html"
+HREF="man.gbp.import.orig.html"
 ><IMG
 SRC="left.png"
 WIDTH="24"
@@ -100,7 +100,7 @@ ALT="Home"></A
 ><TH
 WIDTH="100%"
 align="center"
->Building Debian Packages with git-buildpackage: Version: </TH
+>Building Debian Packages with git-buildpackage: Version: 0.6.10</TH
 ><TD
 ><A
 ACCESSKEY="n"
@@ -116,31 +116,28 @@ ALT="Next"></A
 ></TABLE
 ><H1
 ><A
-NAME="MAN.GIT.DCH"
+NAME="MAN.GBP.DCH"
 ></A
->git-dch</H1
+>gbp-dch</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN1707"
+NAME="AEN2011"
 ></A
 ><H2
 >Name</H2
-><B
-CLASS="COMMAND"
->git-dch</B
->&nbsp;--&nbsp;Generate the Debian changelog from git commit messages</DIV
+>git-dch;, gbp-dch;&nbsp;--&nbsp;Generate the Debian changelog from git commit messages</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN1711"
+NAME="AEN2015"
 ></A
 ><H2
 >Synopsis</H2
 ><P
 ><B
 CLASS="COMMAND"
->git-dch</B
+>gbp dch</B
 >  [<CODE
 CLASS="OPTION"
 >--verbose</CODE
@@ -208,6 +205,25 @@ CLASS="OPTION"
 > | <CODE
 CLASS="OPTION"
 >--team</CODE
+>] [<CODE
+CLASS="OPTION"
+>--distribution=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--force-distribution</CODE
+>] [<CODE
+CLASS="OPTION"
+>--urgency=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>level</I
+></TT
 >] [<CODE
 CLASS="OPTION"
 >--[no-]full</CODE
@@ -282,18 +298,18 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1783"
+NAME="AEN2095"
 ></A
 ><H2
 >DESCRIPTION</H2
 ><P
 >    <B
 CLASS="COMMAND"
->git-dch</B
+>gbp dch</B
 > reads git commit messages and generates the Debian changelog from
     it. If no arguments are given <B
 CLASS="COMMAND"
->git-dch</B
+>gbp dch</B
 > starts from the last tagged Debian
     package version up to the current tip of the current branch. If the
     distribution of the topmost section in
@@ -315,7 +331,7 @@ CLASS="OPTION"
 >--auto</CODE
 > is given <B
 CLASS="COMMAND"
->git-dch</B
+>gbp dch</B
 > tries to guess the
     last <SPAN
 CLASS="PRODUCTNAME"
@@ -326,7 +342,7 @@ CLASS="OPTION"
 >--since</CODE
 > can be used to tell <B
 CLASS="COMMAND"
->git-dch</B
+>gbp dch</B
 >
     at which point it should start in the <SPAN
 CLASS="PRODUCTNAME"
@@ -336,7 +352,7 @@ CLASS="PRODUCTNAME"
 >    The additional path arguments can be used to restrict the repository paths
     <B
 CLASS="COMMAND"
->git-dch</B
+>gbp dch</B
 > looks at. Setting <TT
 CLASS="REPLACEABLE"
 ><I
@@ -378,7 +394,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1806"
+NAME="AEN2118"
 ></A
 ><H2
 >OPTIONS</H2
@@ -395,7 +411,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1809"><SPAN
+NAME="AEN2121"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -425,7 +441,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1816"><SPAN
+NAME="AEN2128"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -450,7 +466,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1822"><SPAN
+NAME="AEN2134"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -475,7 +491,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1829"><SPAN
+NAME="AEN2141"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -505,7 +521,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1836"><SPAN
+NAME="AEN2148"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -534,7 +550,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1843"><SPAN
+NAME="AEN2155"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -559,7 +575,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1849"><SPAN
+NAME="AEN2161"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -588,7 +604,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1857"><SPAN
+NAME="AEN2169"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -614,7 +630,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1863"><SPAN
+NAME="AEN2175"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -633,7 +649,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1868"><SPAN
+NAME="AEN2180"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -650,7 +666,7 @@ VALIGN="TOP"
 ><P
 >Create a snapshot release entry. This adds a snapshot release
 	  number and a warning banner to the changelog entry. The release
-	  version number is being autoincremented with every new snapshot
+	  version number is being auto incremented with every new snapshot
 	  release to avoid packages downgrades during snapshot testing.</P
 ></TD
 ></TR
@@ -659,7 +675,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1874"><SPAN
+NAME="AEN2186"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -683,7 +699,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1880"><SPAN
+NAME="AEN2192"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -713,7 +729,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1887"><SPAN
+NAME="AEN2199"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -762,7 +778,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1898"><SPAN
+NAME="AEN2210"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -781,7 +797,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1903"><SPAN
+NAME="AEN2215"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -801,7 +817,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1908"><SPAN
+NAME="AEN2220"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -820,7 +836,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1913"><SPAN
+NAME="AEN2225"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -840,7 +856,91 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1918"><SPAN
+NAME="AEN2230"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--distribution=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Set the distribution field
+	  to <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2237"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--force-distribution</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Force the distribution specified
+	  with <CODE
+CLASS="OPTION"
+>--distribution</CODE
+> to be used, even if it
+	  doesn't match the list of known distributions.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2243"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--urgency=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>level</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Set the urgency field
+	  to <TT
+CLASS="REPLACEABLE"
+><I
+>level</I
+></TT
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2250"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -864,7 +964,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1924"><SPAN
+NAME="AEN2256"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -895,7 +995,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1931"><SPAN
+NAME="AEN2263"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -926,7 +1026,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1938"><SPAN
+NAME="AEN2270"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -948,7 +1048,7 @@ CLASS="APPLICATION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1944"><SPAN
+NAME="AEN2276"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -967,7 +1067,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1949"><SPAN
+NAME="AEN2281"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -992,7 +1092,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1955"><SPAN
+NAME="AEN2287"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1028,7 +1128,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1963"><SPAN
+NAME="AEN2295"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1048,7 +1148,7 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1968"
+NAME="AEN2300"
 ></A
 ><H2
 >Snapshot mode</H2
@@ -1065,7 +1165,7 @@ CLASS="OPTION"
 >-S</CODE
 > <B
 CLASS="COMMAND"
->git-dch</B
+>gbp dch</B
 >
       uses a pseudo header in the Debian changelog to remember the last git
       commit it added a changelog entry for. It also sets a version number
@@ -1079,27 +1179,27 @@ CLASS="REPLACEABLE"
       It automatically increments the snapshot number on subsequent invocations
       of <B
 CLASS="COMMAND"
->git-dch</B
+>gbp dch</B
 > <CODE
 CLASS="OPTION"
 >-S</CODE
 > so that later snapshots automatically
       have a higher version number. To leave snapshot mode invoke <B
 CLASS="COMMAND"
->git-dch</B
+>gbp dch</B
 >
       with the <CODE
 CLASS="OPTION"
 >--release</CODE
 > option. This removes the pseudo
-      heaader and unmangles the version number so the released version has a
+      header and unmangles the version number so the released version has a
       higher version number than the snapshots.
       </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1980"
+NAME="AEN2312"
 ></A
 ><H2
 >META TAGS</H2
@@ -1140,7 +1240,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1988"><SPAN
+NAME="AEN2320"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1197,7 +1297,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2000"><SPAN
+NAME="AEN2332"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1222,7 +1322,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2006"><SPAN
+NAME="AEN2338"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1246,7 +1346,7 @@ CLASS="FILENAME"
 CLASS="OPTION"
 >--meta-closes</CODE
 >
-	      on howto extend this for other bugtrackers.
+	      on how to extend this for other bugtrackers.
 	    </P
 ></TD
 ></TR
@@ -1279,7 +1379,7 @@ CLASS="SCREEN"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2019"
+NAME="AEN2351"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -1297,7 +1397,7 @@ HREF="man.gbp.conf.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2024"
+NAME="AEN2356"
 ></A
 ><H2
 >SEE ALSO</H2
@@ -1306,28 +1406,28 @@ NAME="AEN2024"
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-buildpackage</SPAN
+>gbp-buildpackage</SPAN
 >(1)</SPAN
 >,
       <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-import-dsc</SPAN
+>gbp-import-dsc</SPAN
 >(1)</SPAN
 >,
       <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-import-dscs</SPAN
+>gbp-import-dscs</SPAN
 >(1)</SPAN
 >,
       <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-import-orig</SPAN
+>gbp-import-orig</SPAN
 >(1)</SPAN
 >,
       <SPAN
@@ -1380,7 +1480,7 @@ CLASS="CITETITLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2055"
+NAME="AEN2387"
 ></A
 ><H2
 >AUTHOR</H2
@@ -1405,9 +1505,9 @@ VALIGN="middle"
 ALIGN="left"
 ><A
 ACCESSKEY="p"
-HREF="man.git.import.orig.html"
+HREF="man.gbp.import.orig.html"
 ><B
->&lt;&lt;&lt;&nbsp;git-import-orig</B
+>&lt;&lt;&lt;&nbsp;gbp-import-orig</B
 ></A
 ></TD
 ><TD

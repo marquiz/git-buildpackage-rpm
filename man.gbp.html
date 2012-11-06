@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->gbp-create-remote-repo</TITLE
+>gbp</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,11 +13,11 @@ REL="UP"
 TITLE="Command Reference"
 HREF="man.reference.html"><LINK
 REL="PREVIOUS"
-TITLE="gbp-pq"
-HREF="man.gbp.pq.html"><LINK
+TITLE="Command Reference"
+HREF="man.reference.html"><LINK
 REL="NEXT"
-TITLE="gbp.conf"
-HREF="man.gbp.conf.html"><STYLE
+TITLE="gbp-buildpackage"
+HREF="man.gbp.buildpackage.html"><STYLE
 TYPE="text/css"
 >.synopsis, .classsynopsis {
     background: #eeeeee;
@@ -67,7 +67,7 @@ VALIGN="middle"
 ><TD
 ><A
 ACCESSKEY="p"
-HREF="man.gbp.pq.html"
+HREF="man.reference.html"
 ><IMG
 SRC="left.png"
 WIDTH="24"
@@ -104,7 +104,7 @@ align="center"
 ><TD
 ><A
 ACCESSKEY="n"
-HREF="man.gbp.conf.html"
+HREF="man.gbp.buildpackage.html"
 ><IMG
 SRC="right.png"
 WIDTH="24"
@@ -116,131 +116,63 @@ ALT="Next"></A
 ></TABLE
 ><H1
 ><A
-NAME="MAN.GBP.CREATE.REMOTE.REPO"
+NAME="MAN.GBP"
 ></A
->gbp-create-remote-repo</H1
+>gbp</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN2852"
+NAME="AEN814"
 ></A
 ><H2
 >Name</H2
->gbp-create-remote-repo&nbsp;--&nbsp;Create remote repositories</DIV
+><B
+CLASS="COMMAND"
+>gbp</B
+>&nbsp;--&nbsp;Maintain Debian packages in Git</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN2855"
+NAME="AEN818"
 ></A
 ><H2
 >Synopsis</H2
 ><P
 ><B
 CLASS="COMMAND"
->gbp create-remote-repo</B
->  [<CODE
+>gbp</B
+>  {<CODE
 CLASS="OPTION"
->--verbose</CODE
->] [<CODE
+>--help</CODE
+> | <CODE
 CLASS="OPTION"
->--color=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->[auto|on|off]</I
-></TT
->] [<CODE
+>command</CODE
+> [<CODE
 CLASS="OPTION"
->--remote-url-pattern=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->url-pattern</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--remote-name=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->name</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--template-dir=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->directory</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--remote-config=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->config</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--[no-]pristine-tar</CODE
->] [<CODE
-CLASS="OPTION"
->--debian-branch=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->branch_name</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--upstream-branch=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->branch_name</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--[no-]track</CODE
->]</P
+>args</CODE
+>...]}</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2885"
+NAME="AEN828"
 ></A
 ><H2
 >DESCRIPTION</H2
 ><P
 >    <B
 CLASS="COMMAND"
->gbp create-remote-repo</B
-> creates a repository at a remote location via ssh
-    and pushes the local repository into it. It then sets up remote branch
-    tracking so you can use <B
-CLASS="COMMAND"
->gbp pull</B
-> to update your repository from there.
-    </P
-><P
->      Before performing any action on the remote location it will print the 
-      remote URL and ask for confirmation.
-    </P
-><P
->    Note: By default the remote repositories are created in the <SPAN
-CLASS="SYSTEMITEM"
->collab-maint</SPAN
-> repository on <SPAN
-CLASS="SYSTEMITEM"
->git.debian.org</SPAN
->.
+>gbp</B
+> is used to maintain Debian source packages in the <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> version control system.
     </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2894"
+NAME="AEN833"
 ></A
 ><H2
 >OPTIONS</H2
@@ -257,268 +189,18 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2897"><SPAN
+NAME="AEN836"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--remote-url-pattern</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->pattern</I
-></TT
+>--help</CODE
 ></SPAN
 ></TD
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Where to create the remote repository. The part
-	  <TT
-CLASS="REPLACEABLE"
-><I
->%(pkg)s</I
-></TT
-> will be replaced by the package name.
-	  </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2904"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--remote-name</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->name</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->What name git will use when refering to that repository, e.g.
-	  'origin'.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2910"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--template-dir</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->directory</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Template directory to pass to <B
-CLASS="COMMAND"
->git init</B
-> on the remote
-	  side. This can be used to customize the remote repository, e.g. to set up hooks.
-	  </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2917"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--remote-config</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->config</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Name of a config file section in <TT
-CLASS="FILENAME"
->gbp.conf</TT
->
-          that specifies the above paramters. See <A
-HREF="man.gbp.conf.html"
->gbp.conf(5)</A
->
-          manpage for details.
-	  </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2925"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--debian-branch</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->branch_name</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->The branch in the Git repository the Debian package is being
-	  developed on, default is <TT
-CLASS="REPLACEABLE"
-><I
->master</I
-></TT
->.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2932"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--upstream-branch</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->branch_name</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->The branch in the <SPAN
-CLASS="PRODUCTNAME"
->Git</SPAN
-> repository the upstream sources are put
-	  onto. Default is <TT
-CLASS="REPLACEABLE"
-><I
->upstream</I
-></TT
->.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2940"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--pristine-tar</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Whether to push the pristine tar branch.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2945"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--verbose</CODE
-></SPAN
->, <SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->-v</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->verbose execution</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2952"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--color=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->[auto|on|off]</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Whether to use colored output.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2958"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--[no-]track</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Whether to set up branch tracking for the debian, upstream and
-	  pristine-tar branches.</P
+>Print help</P
 ></TD
 ></TR
 ></TBODY
@@ -527,7 +209,290 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2963"
+NAME="AEN841"
+></A
+><H2
+>GBP COMMANDS</H2
+><P
+>      These are the possible commands. For possible arguments to these commands please
+      see the corresponding man pages.
+    </P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN845"><SPAN
+STYLE="white-space: nowrap"
+>buildpackage</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Build source and binary packages from a <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> repository</P
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN851"><SPAN
+STYLE="white-space: nowrap"
+>import-orig</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Import a new upstream version into a <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> repository</P
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN857"><SPAN
+STYLE="white-space: nowrap"
+>import-dsc</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Import a Debian source package into a <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> repository</P
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN863"><SPAN
+STYLE="white-space: nowrap"
+>import-dscs</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Import several Debian source packages into a <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> repository, sorted
+	  by version number</P
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN869"><SPAN
+STYLE="white-space: nowrap"
+>dch</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Generate the <TT
+CLASS="FILENAME"
+>debian/changelog</TT
+> from  <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> commit history</P
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN876"><SPAN
+STYLE="white-space: nowrap"
+>pq</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Manage <TT
+CLASS="FILENAME"
+>debian/patches</TT
+> using <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> <CODE
+CLASS="OPTION"
+>rebase</CODE
+></P
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN884"><SPAN
+STYLE="white-space: nowrap"
+>pull</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Update a <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> repository from a remote</P
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN890"><SPAN
+STYLE="white-space: nowrap"
+>clone</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Clone a <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> repository from a remote and set up the necessary branch tracking.</P
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN896"><SPAN
+STYLE="white-space: nowrap"
+>create-remote-repo</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Create a remote <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> repository</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN901"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -545,7 +510,7 @@ HREF="man.gbp.conf.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2968"
+NAME="AEN906"
 ></A
 ><H2
 >SEE ALSO</H2
@@ -554,7 +519,35 @@ NAME="AEN2968"
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->gbp-buildpackage</SPAN
+>gbp-import-dsc</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>gbp-import-dscs</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>gbp-import-orig</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>gbp-dch</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>gbp-create-remote-repo</SPAN
 >(1)</SPAN
 >,
       <SPAN
@@ -568,15 +561,59 @@ CLASS="REFENTRYTITLE"
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
+>gbp-clone</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>git-pbuilder</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
 >gbp.conf</SPAN
 >(5)</SPAN
 >
+            <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>debuild</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>git</SPAN
+>(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>pristine-tar</SPAN
+>(1)</SPAN
+>,
+      <A
+HREF="file:///usr/share/doc/git-buildpackage/manual-html/index.html"
+TARGET="_top"
+>      <I
+CLASS="CITETITLE"
+>The Git-Buildpackage Manual</I
+></A
+>
+
     </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2980"
+NAME="AEN947"
 ></A
 ><H2
 >AUTHOR</H2
@@ -601,18 +638,18 @@ VALIGN="middle"
 ALIGN="left"
 ><A
 ACCESSKEY="p"
-HREF="man.gbp.pq.html"
+HREF="man.reference.html"
 ><B
->&lt;&lt;&lt;&nbsp;gbp-pq</B
+>&lt;&lt;&lt;&nbsp;Command Reference</B
 ></A
 ></TD
 ><TD
 ALIGN="right"
 ><A
 ACCESSKEY="n"
-HREF="man.gbp.conf.html"
+HREF="man.gbp.buildpackage.html"
 ><B
->gbp.conf&nbsp;&gt;&gt;&gt;</B
+>gbp-buildpackage&nbsp;&gt;&gt;&gt;</B
 ></A
 ></TD
 ></TR

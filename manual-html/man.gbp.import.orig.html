@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->git-import-dsc</TITLE
+>gbp-import-orig</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,11 +13,11 @@ REL="UP"
 TITLE="Command Reference"
 HREF="man.reference.html"><LINK
 REL="PREVIOUS"
-TITLE="git-buildpackage"
-HREF="man.git.buildpackage.html"><LINK
+TITLE="gbp-import-dscs"
+HREF="man.gbp.import.dscs.html"><LINK
 REL="NEXT"
-TITLE="git-import-dscs"
-HREF="man.git.import.dscs.html"><STYLE
+TITLE="gbp-dch"
+HREF="man.gbp.dch.html"><STYLE
 TYPE="text/css"
 >.synopsis, .classsynopsis {
     background: #eeeeee;
@@ -67,7 +67,7 @@ VALIGN="middle"
 ><TD
 ><A
 ACCESSKEY="p"
-HREF="man.git.buildpackage.html"
+HREF="man.gbp.import.dscs.html"
 ><IMG
 SRC="left.png"
 WIDTH="24"
@@ -100,11 +100,11 @@ ALT="Home"></A
 ><TH
 WIDTH="100%"
 align="center"
->Building Debian Packages with git-buildpackage: Version: </TH
+>Building Debian Packages with git-buildpackage: Version: 0.6.10</TH
 ><TD
 ><A
 ACCESSKEY="n"
-HREF="man.git.import.dscs.html"
+HREF="man.gbp.dch.html"
 ><IMG
 SRC="right.png"
 WIDTH="24"
@@ -116,34 +116,42 @@ ALT="Next"></A
 ></TABLE
 ><H1
 ><A
-NAME="MAN.GIT.IMPORT.DSC"
+NAME="MAN.GBP.IMPORT.ORIG"
 ></A
->git-import-dsc</H1
+>gbp-import-orig</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN1203"
+NAME="AEN1775"
 ></A
 ><H2
 >Name</H2
-><B
-CLASS="COMMAND"
->git-import-dsc</B
->&nbsp;--&nbsp;Import Debian packages into a Git repository</DIV
+>git-import-orig, gbp-import-orig&nbsp;--&nbsp;Import an upstream source into a git repository</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN1207"
+NAME="AEN1779"
 ></A
 ><H2
 >Synopsis</H2
 ><P
 ><B
 CLASS="COMMAND"
->git-import-dsc</B
+>gbp import-orig</B
 >  [<CODE
 CLASS="OPTION"
 >--verbose</CODE
+>] [<CODE
+CLASS="OPTION"
+>--upstream-version=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>version</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--[no-]merge</CODE
 >] [<CODE
 CLASS="OPTION"
 >--upstream-branch=</CODE
@@ -162,6 +170,17 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
+>--[no-]create-missing-branches</CODE
+>] [<CODE
+CLASS="OPTION"
+>--upstream-vcs-tag=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>tag_name</I
+></TT
+>] [<CODE
+CLASS="OPTION"
 >--[no-]sign-tags</CODE
 >] [<CODE
 CLASS="OPTION"
@@ -170,14 +189,6 @@ CLASS="OPTION"
 CLASS="REPLACEABLE"
 ><I
 >gpg-keyid</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--debian-tag=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->tag-format</I
 ></TT
 >] [<CODE
 CLASS="OPTION"
@@ -200,71 +211,94 @@ CLASS="OPTION"
 >--[no-]pristine-tar</CODE
 >] [<CODE
 CLASS="OPTION"
->--download</CODE
+>--[no-]filter-pristine-tar</CODE
 >] [<CODE
 CLASS="OPTION"
->--allow-same-versions</CODE
+>--[no-]symlink-orig</CODE
 >] [<CODE
 CLASS="OPTION"
->--author-is-committer</CODE
+>--postimport=cmd</CODE
 >] [<CODE
 CLASS="OPTION"
->--author-date-is-committer-date</CODE
+>--[no-]interactive</CODE
 >]  <TT
 CLASS="REPLACEABLE"
 ><I
->debian-source.dsc</I
+>upstream-source</I
 ></TT
-> </P
-><P
-><B
-CLASS="COMMAND"
->git-import-dsc</B
->  [<CODE
+> | <CODE
 CLASS="OPTION"
->options</CODE
->] {<CODE
-CLASS="OPTION"
->--download</CODE
->} [<CODE
-CLASS="OPTION"
->--[no-]allow-unauthenticated</CODE
->]  <TT
-CLASS="REPLACEABLE"
-><I
->URL</I
-></TT
-> | <TT
-CLASS="REPLACEABLE"
-><I
->source-package</I
-></TT
+>--uscan</CODE
 > </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1257"
+NAME="AEN1826"
 ></A
 ><H2
 >DESCRIPTION</H2
 ><P
 >    <B
 CLASS="COMMAND"
->git-import-dsc</B
-> imports a Debian source package into a <SPAN
+>gbp import-orig</B
+> imports <TT
+CLASS="REPLACEABLE"
+><I
+>upstream-source</I
+></TT
+> into
+    the <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
-> repository,
-    notes the package version in the commit logs, and commits the change. All
-    information, including package name, version, Debian  diffs, and upstream
-    source is automatically detected from the source package.
+> repository. <TT
+CLASS="REPLACEABLE"
+><I
+>upstream-source</I
+></TT
+> can either
+    be a gzip, bzip2, lzma or xz compressed tar archive, a zip archive or an
+    already unpacked source tree. If it is already of the form
+    <TT
+CLASS="REPLACEABLE"
+><I
+>package-name_version.orig.tar.gz</I
+></TT
+>, the version
+    information is read from the tarball's filename otherwise it can be
+    given on the command line via <CODE
+CLASS="OPTION"
+>--upstream-version</CODE
+>.
+    If the source package name or version can't be determined
+    <B
+CLASS="COMMAND"
+>gbp import-orig</B
+> will prompt for it unless <CODE
+CLASS="OPTION"
+>--no-interactive</CODE
+>
+    is given.</P
+><P
+>The sources are placed on the upstream branch (default:
+    <TT
+CLASS="REPLACEABLE"
+><I
+>upstream</I
+></TT
+>), tagged and merged onto the debian
+    branch (default: <TT
+CLASS="REPLACEABLE"
+><I
+>master</I
+></TT
+>).
     </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1262"
+NAME="AEN1840"
 ></A
 ><H2
 >OPTIONS</H2
@@ -281,7 +315,61 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1265"><SPAN
+NAME="AEN1843"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--upstream-version</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>version</I
+></TT
+></SPAN
+>, <SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>-u</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>version</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>The upstream version number</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1852"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--merge</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Merge the upstream branch to the debian branch after import</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1857"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -297,10 +385,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->The branch in the <SPAN
-CLASS="PRODUCTNAME"
->Git</SPAN
-> repository the upstream sources are put
+>The branch in the Git repository the upstream sources are put
 	  onto. Default is <TT
 CLASS="REPLACEABLE"
 ><I
@@ -314,7 +399,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1273"><SPAN
+NAME="AEN1864"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -330,16 +415,18 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->The branch in the <SPAN
-CLASS="PRODUCTNAME"
->Git</SPAN
-> repository the debian sources are put
-	  onto. Default is <TT
+>The branch in the Git repository the Debian package is being
+	  developed on, default is <TT
 CLASS="REPLACEABLE"
 ><I
 >master</I
 ></TT
->.</P
+>. After
+	  importing the new sources on the upstream branch, <B
+CLASS="COMMAND"
+>gbp import-orig</B
+>
+	  will try to merge the new version onto this branch.</P
 ></TD
 ></TR
 ><TR
@@ -347,7 +434,58 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1281"><SPAN
+NAME="AEN1872"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--[no-]create-missing-branches</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Create missing upstream branch if it does not exist.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1877"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--upstream-vcs-tag</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>tag_name</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>	    Add <TT
+CLASS="REPLACEABLE"
+><I
+>tag_name</I
+></TT
+> as additional parent to the commit
+	    of the upstream tarball. Useful when upstream uses git and you want to
+	    link to it's revision history.
+	  </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1884"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -372,7 +510,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1288"><SPAN
+NAME="AEN1891"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -391,7 +529,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1293"><SPAN
+NAME="AEN1896"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -415,37 +553,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1299"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--debian-tag=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->tag-format</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->use this tag format when tagging Debian versions,
-	  default is <TT
-CLASS="REPLACEABLE"
-><I
->debian/%(version)s</I
-></TT
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1306"><SPAN
+NAME="AEN1902"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -461,7 +569,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->use this tag format when tagging upstream versions, 
+>use this tag format when tagging upstream versions,
 	  default is <TT
 CLASS="REPLACEABLE"
 ><I
@@ -475,7 +583,38 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1313"><SPAN
+NAME="AEN1909"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--import-msg=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>msg-format</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>use this format string for the commit message when
+	  importing upstream versions, default is <TT
+CLASS="REPLACEABLE"
+><I
+>Imported
+	  Upstream version %(version)s</I
+></TT
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1916"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -499,18 +638,21 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1319"><SPAN
+NAME="AEN1922"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--pristine-tar</CODE
+>--[no-]pristine-tar</CODE
 ></SPAN
 ></TD
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->generate pristine-tar delta file</P
+>generate <B
+CLASS="COMMAND"
+>pristine-tar</B
+> delta file</P
 ></TD
 ></TR
 ><TR
@@ -518,38 +660,53 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1324"><SPAN
+NAME="AEN1928"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--download</CODE
+>--[no-]filter-pristine-tar</CODE
 ></SPAN
 ></TD
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Download the source package instead of looking for it in the local
-	  file system. The argument can either be a
-	  <TT
-CLASS="REPLACEABLE"
-><I
->source-package</I
-></TT
-> name or an
-	  <TT
-CLASS="REPLACEABLE"
-><I
->URL</I
-></TT
->. The former uses <SPAN
-CLASS="PRODUCTNAME"
->apt-get</SPAN
-> to download
-	  the source while the later uses <SPAN
-CLASS="PRODUCTNAME"
->dget</SPAN
+>if using a filter also filter the files out of the tarball
+	  passed to <B
+CLASS="COMMAND"
+>pristine-tar</B
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1934"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--[no-]symlink-orig</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>	    Whether to create and keep a symlink from the upstream tarball
+            to a Debian policy conformant upstream tarball name located in
+	    <TT
+CLASS="FILENAME"
+>../</TT
 >.
+	  </P
+><P
+>	    This is a good idea if not using <B
+CLASS="COMMAND"
+>pristine-tar</B
+>
+	    since it avoids creating a new tarball with a different md5sum.
 	  </P
 ></TD
 ></TR
@@ -558,18 +715,28 @@ CLASS="PRODUCTNAME"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1333"><SPAN
+NAME="AEN1942"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--allow-unauthenticated</CODE
+>--postimport=<TT
+CLASS="REPLACEABLE"
+><I
+>cmd</I
+></TT
+></CODE
 ></SPAN
 ></TD
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Whether to skip signature verification on downloads.</P
+>run <TT
+CLASS="REPLACEABLE"
+><I
+>cmd</I
+></TT
+> after the import.</P
 ></TD
 ></TR
 ><TR
@@ -577,84 +744,18 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1338"><SPAN
+NAME="AEN1949"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--allow-same-version</CODE
+>--uscan</CODE
 ></SPAN
 ></TD
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Allow to import a package with the same debian version.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1343"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--author-is-committer</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->When importing the Debian patch, use the author identity as
-          comitter identity.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1348"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--author-date-is-committer-date</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->When importing the Debian patch, use the author date as
-          comitter date. <DIV
-CLASS="WARNING"
-><P
-></P
-><TABLE
-CLASS="WARNING"
-BORDER="1"
-WIDTH="90%"
-><TR
-><TD
-ALIGN="CENTER"
-><B
->Warning</B
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-><P
->Git will subtly misbehave if the
-          committer date of a commit is not later than or equal to all
-          its parents.</P
-></TD
-></TR
-></TABLE
-></DIV
-></P
+>Use uscan to fetch new upstream version.</P
 ></TD
 ></TR
 ></TBODY
@@ -663,7 +764,36 @@ ALIGN="LEFT"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1355"
+NAME="AEN1954"
+></A
+><H2
+>EXAMPLES</H2
+><P
+>Download and import a new upstream version using the informantion from <TT
+CLASS="FILENAME"
+>debian/watch</TT
+></P
+><PRE
+CLASS="SCREEN"
+>      <B
+CLASS="COMMAND"
+>gbp import-orig</B
+> --uscan
+    </PRE
+><P
+>After downloading an upstream tarball by hand import it</P
+><PRE
+CLASS="SCREEN"
+>      <B
+CLASS="COMMAND"
+>gbp import-orig</B
+> ../upstream-tarball-0.1.tar.gz
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1963"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -681,7 +811,7 @@ HREF="man.gbp.conf.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1360"
+NAME="AEN1968"
 ></A
 ><H2
 >SEE ALSO</H2
@@ -690,42 +820,28 @@ NAME="AEN1360"
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-import-dscs</SPAN
+>gbp-buildpackage</SPAN
 >(1)</SPAN
 >,
       <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-buildpackage</SPAN
+>gbp-import-dsc</SPAN
 >(1)</SPAN
 >,
       <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-import-orig</SPAN
+>gbp-import-dscs</SPAN
 >(1)</SPAN
 >,
       <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-dch</SPAN
->(1)</SPAN
->,
-      <SPAN
-CLASS="CITEREFENTRY"
-><SPAN
-CLASS="REFENTRYTITLE"
->apt-get</SPAN
->(1)</SPAN
->,
-      <SPAN
-CLASS="CITEREFENTRY"
-><SPAN
-CLASS="REFENTRYTITLE"
->dget</SPAN
+>gbp-dch</SPAN
 >(1)</SPAN
 >,
       <SPAN
@@ -770,7 +886,7 @@ CLASS="CITETITLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1395"
+NAME="AEN1997"
 ></A
 ><H2
 >AUTHOR</H2
@@ -795,18 +911,18 @@ VALIGN="middle"
 ALIGN="left"
 ><A
 ACCESSKEY="p"
-HREF="man.git.buildpackage.html"
+HREF="man.gbp.import.dscs.html"
 ><B
->&lt;&lt;&lt;&nbsp;git-buildpackage</B
+>&lt;&lt;&lt;&nbsp;gbp-import-dscs</B
 ></A
 ></TD
 ><TD
 ALIGN="right"
 ><A
 ACCESSKEY="n"
-HREF="man.git.import.dscs.html"
+HREF="man.gbp.dch.html"
 ><B
->git-import-dscs&nbsp;&gt;&gt;&gt;</B
+>gbp-dch&nbsp;&gt;&gt;&gt;</B
 ></A
 ></TD
 ></TR

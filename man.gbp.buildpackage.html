@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->git-buildpackage</TITLE
+>gbp-buildpackage</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,11 +13,11 @@ REL="UP"
 TITLE="Command Reference"
 HREF="man.reference.html"><LINK
 REL="PREVIOUS"
-TITLE="Command Reference"
-HREF="man.reference.html"><LINK
+TITLE="gbp"
+HREF="man.gbp.html"><LINK
 REL="NEXT"
-TITLE="git-import-dsc"
-HREF="man.git.import.dsc.html"><STYLE
+TITLE="gbp-import-dsc"
+HREF="man.gbp.import.dsc.html"><STYLE
 TYPE="text/css"
 >.synopsis, .classsynopsis {
     background: #eeeeee;
@@ -67,7 +67,7 @@ VALIGN="middle"
 ><TD
 ><A
 ACCESSKEY="p"
-HREF="man.reference.html"
+HREF="man.gbp.html"
 ><IMG
 SRC="left.png"
 WIDTH="24"
@@ -100,11 +100,11 @@ ALT="Home"></A
 ><TH
 WIDTH="100%"
 align="center"
->Building Debian Packages with git-buildpackage: Version: </TH
+>Building Debian Packages with git-buildpackage: Version: 0.6.10</TH
 ><TD
 ><A
 ACCESSKEY="n"
-HREF="man.git.import.dsc.html"
+HREF="man.gbp.import.dsc.html"
 ><IMG
 SRC="right.png"
 WIDTH="24"
@@ -116,31 +116,28 @@ ALT="Next"></A
 ></TABLE
 ><H1
 ><A
-NAME="MAN.GIT.BUILDPACKAGE"
+NAME="MAN.GBP.BUILDPACKAGE"
 ></A
->git-buildpackage</H1
+>gbp-buildpackage</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN753"
+NAME="AEN961"
 ></A
 ><H2
 >Name</H2
-><B
-CLASS="COMMAND"
->git-buildpackage</B
->&nbsp;--&nbsp;Build Debian packages from a Git repository</DIV
+>git-buildpackage, gbp-buildpackage&nbsp;--&nbsp;Build Debian packages from a Git repository</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN757"
+NAME="AEN965"
 ></A
 ><H2
 >Synopsis</H2
 ><P
 ><B
 CLASS="COMMAND"
->git-buildpackage</B
+>gbp buildpackage</B
 >  [<CODE
 CLASS="OPTION"
 >--git-[no-]ignore-new</CODE
@@ -152,7 +149,7 @@ CLASS="OPTION"
 >--git-verbose</CODE
 >] [<CODE
 CLASS="OPTION"
->--color=</CODE
+>--git-color=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
@@ -160,7 +157,7 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
->--notify=</CODE
+>--git-notify=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
@@ -274,6 +271,12 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
+>--git-[no-]build</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-[no-]hooks</CODE
+>] [<CODE
+CLASS="OPTION"
 >--git-debian-tag=</CODE
 ><TT
 CLASS="REPLACEABLE"
@@ -347,6 +350,12 @@ CLASS="OPTION"
 >--git-[no-]pristine-tar</CODE
 >] [<CODE
 CLASS="OPTION"
+>--git-[no-]pristine-tar-commit</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-[no-]-purge</CODE
+>] [<CODE
+CLASS="OPTION"
 >--git-dont-purge</CODE
 >] [<CODE
 CLASS="OPTION"
@@ -359,14 +368,14 @@ CLASS="OPTION"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN853"
+NAME="AEN1069"
 ></A
 ><H2
 >DESCRIPTION</H2
 ><P
 >    <B
 CLASS="COMMAND"
->git-buildpackage</B
+>gbp buildpackage</B
 > is used to build Debian source and .deb packages from a <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
@@ -375,7 +384,7 @@ CLASS="PRODUCTNAME"
 ><P
 >        <B
 CLASS="COMMAND"
->git-buildpackage</B
+>gbp buildpackage</B
 > will, in order:
    </P
 ><P
@@ -422,7 +431,7 @@ CLASS="PRODUCTNAME"
             the diff.gz, passing along all arguments given to
             <B
 CLASS="COMMAND"
->git-buildpackage</B
+>gbp buildpackage</B
 > that don't start with --git-.
           </P
 ></LI
@@ -450,7 +459,7 @@ CLASS="PRODUCTNAME"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN884"
+NAME="AEN1100"
 ></A
 ><H2
 >OPTIONS</H2
@@ -467,7 +476,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN887"><SPAN
+NAME="AEN1103"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -493,7 +502,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN893"><SPAN
+NAME="AEN1109"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -512,7 +521,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN898"><SPAN
+NAME="AEN1114"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -544,7 +553,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN906"><SPAN
+NAME="AEN1122"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -576,7 +585,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN914"><SPAN
+NAME="AEN1130"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -606,7 +615,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN922"><SPAN
+NAME="AEN1138"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -640,7 +649,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN931"><SPAN
+NAME="AEN1147"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -674,7 +683,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN939"><SPAN
+NAME="AEN1155"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -711,7 +720,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN948"><SPAN
+NAME="AEN1164"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -739,7 +748,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN955"><SPAN
+NAME="AEN1171"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -758,7 +767,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN960"><SPAN
+NAME="AEN1176"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -777,11 +786,11 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN965"><SPAN
+NAME="AEN1181"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--color=</CODE
+>--git-color=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
@@ -801,11 +810,11 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN971"><SPAN
+NAME="AEN1187"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--notify=</CODE
+>--git-notify=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
@@ -825,7 +834,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN977"><SPAN
+NAME="AEN1193"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -864,7 +873,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN986"><SPAN
+NAME="AEN1202"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -882,7 +891,7 @@ VALIGN="TOP"
 ><P
 >If you're not on this branch when invoking <B
 CLASS="COMMAND"
->git-buildpackage</B
+>gbp buildpackage</B
 >
 	  it will fail. Default is <TT
 CLASS="REPLACEABLE"
@@ -904,7 +913,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN995"><SPAN
+NAME="AEN1211"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -929,7 +938,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1001"><SPAN
+NAME="AEN1217"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -948,7 +957,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1006"><SPAN
+NAME="AEN1222"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -972,7 +981,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1012"><SPAN
+NAME="AEN1228"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1017,7 +1026,7 @@ CLASS="ENVAR"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1023"><SPAN
+NAME="AEN1239"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1057,7 +1066,7 @@ CLASS="ENVAR"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1033"><SPAN
+NAME="AEN1249"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1098,7 +1107,7 @@ CLASS="ENVAR"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1043"><SPAN
+NAME="AEN1259"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1145,7 +1154,54 @@ CLASS="ENVAR"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1055"><SPAN
+NAME="AEN1271"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-[no-]build</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Enable builder. Note: <CODE
+CLASS="OPTION"
+>--git-no-build</CODE
+> causes
+      the postbuild hook to be disabled, too.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1277"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-[no-]hooks</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Enable running all (cleaner, postexport, prebuild, postbuild,
+      and posttag) hooks. Note: the <CODE
+CLASS="OPTION"
+>--git-builder</CODE
+> command is
+      not affected by this option.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1283"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1175,7 +1231,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1062"><SPAN
+NAME="AEN1290"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1205,7 +1261,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1069"><SPAN
+NAME="AEN1297"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1224,7 +1280,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1074"><SPAN
+NAME="AEN1302"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1243,7 +1299,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1079"><SPAN
+NAME="AEN1307"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1262,7 +1318,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1084"><SPAN
+NAME="AEN1312"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1296,7 +1352,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1092"><SPAN
+NAME="AEN1320"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1339,7 +1395,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1101"><SPAN
+NAME="AEN1329"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1388,7 +1444,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1112"><SPAN
+NAME="AEN1340"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1417,7 +1473,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1119"><SPAN
+NAME="AEN1347"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1473,7 +1529,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1130"><SPAN
+NAME="AEN1358"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1497,7 +1553,26 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1136"><SPAN
+NAME="AEN1364"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git[-no]-purge</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Purge (remove) temporary build directory after build</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1369"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1508,7 +1583,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->retain exported build directory after build</P
+>Deprecated, use --git-no-purge instead.</P
 ></TD
 ></TR
 ><TR
@@ -1516,7 +1591,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1141"><SPAN
+NAME="AEN1374"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1535,7 +1610,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1146"><SPAN
+NAME="AEN1379"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1550,13 +1625,89 @@ VALIGN="TOP"
 	  already exists</P
 ></TD
 ></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1384"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-pristine-tar</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Use pristine-tar when generating the upstream tarball if it doesn't exist.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1389"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-pristine-tar-commit</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Commit the pristine-tar delta to the pristine-tar branch if a new tarball was
+          generated and the pristine-tar data isn't already there.</P
+></TD
+></TR
 ></TBODY
 ></TABLE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1151"
+NAME="AEN1394"
+></A
+><H2
+>EXAMPLES</H2
+><P
+>Build a Debian package using <B
+CLASS="COMMAND"
+>git pbuilder</B
+> which in turn invokes <B
+CLASS="COMMAND"
+>cowbuilder</B
+>.
+      Instruct cowbuilder to build within a Wheezy chroot for i386.</P
+><PRE
+CLASS="SCREEN"
+>      <B
+CLASS="COMMAND"
+>gbp buildpackage</B
+> --git-pbuilder --git-arch=i386 --git-dist=wheezy
+    </PRE
+><P
+>      Note that the above needs a <B
+CLASS="COMMAND"
+>cowbuilder</B
+> chroot already. This can be created using:
+    </P
+><PRE
+CLASS="SCREEN"
+>      DIST=wheezy ARCH=i386 <B
+CLASS="COMMAND"
+>git pbuilder</B
+> create
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1405"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -1576,7 +1727,7 @@ HREF="man.gbp.conf.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1157"
+NAME="AEN1411"
 ></A
 ><H2
 >SEE ALSO</H2
@@ -1585,28 +1736,28 @@ NAME="AEN1157"
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-import-dsc</SPAN
+>gbp-import-dsc</SPAN
 >(1)</SPAN
 >,
       <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-import-dscs</SPAN
+>gbp-import-dscs</SPAN
 >(1)</SPAN
 >,
       <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-import-orig</SPAN
+>gbp-import-orig</SPAN
 >(1)</SPAN
 >,
       <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-dch</SPAN
+>gbp-dch</SPAN
 >(1)</SPAN
 >,
       <SPAN
@@ -1615,6 +1766,13 @@ CLASS="CITEREFENTRY"
 CLASS="REFENTRYTITLE"
 >git-pbuilder</SPAN
 >(1)</SPAN
+>,
+      <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>cowbuilder</SPAN
+>(8)</SPAN
 >,
       <SPAN
 CLASS="CITEREFENTRY"
@@ -1658,7 +1816,7 @@ CLASS="CITETITLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1189"
+NAME="AEN1446"
 ></A
 ><H2
 >AUTHOR</H2
@@ -1683,18 +1841,18 @@ VALIGN="middle"
 ALIGN="left"
 ><A
 ACCESSKEY="p"
-HREF="man.reference.html"
+HREF="man.gbp.html"
 ><B
->&lt;&lt;&lt;&nbsp;Command Reference</B
+>&lt;&lt;&lt;&nbsp;gbp</B
 ></A
 ></TD
 ><TD
 ALIGN="right"
 ><A
 ACCESSKEY="n"
-HREF="man.git.import.dsc.html"
+HREF="man.gbp.import.dsc.html"
 ><B
->git-import-dsc&nbsp;&gt;&gt;&gt;</B
+>gbp-import-dsc&nbsp;&gt;&gt;&gt;</B
 ></A
 ></TD
 ></TR
