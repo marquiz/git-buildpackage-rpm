@@ -11,10 +11,10 @@ TITLE="Building Debian Packages with git-buildpackage"
 HREF="gbp.html"><LINK
 REL="UP"
 TITLE="Command Reference"
-HREF="gbp.man.reference.html"><LINK
+HREF="man.reference.html"><LINK
 REL="PREVIOUS"
 TITLE="gbp-create-remote-repo"
-HREF="gbp.man.gbp.create.remote.repo.html"><LINK
+HREF="man.gbp.create.remote.repo.html"><LINK
 REL="NEXT"
 TITLE="Copyright"
 HREF="gbp.copyleft.html"><STYLE
@@ -67,7 +67,7 @@ VALIGN="middle"
 ><TD
 ><A
 ACCESSKEY="p"
-HREF="gbp.man.gbp.create.remote.repo.html"
+HREF="man.gbp.create.remote.repo.html"
 ><IMG
 SRC="left.png"
 WIDTH="24"
@@ -78,7 +78,7 @@ ALT="Prev"></A
 ><TD
 ><A
 ACCESSKEY="u"
-HREF="gbp.man.reference.html"
+HREF="man.reference.html"
 ><IMG
 SRC="up.png"
 WIDTH="24"
@@ -100,7 +100,7 @@ ALT="Home"></A
 ><TH
 WIDTH="100%"
 align="center"
->Building Debian Packages with git-buildpackage: Version: 0.6.0~git20120324</TH
+>Building Debian Packages with git-buildpackage: Version: </TH
 ><TD
 ><A
 ACCESSKEY="n"
@@ -116,13 +116,13 @@ ALT="Next"></A
 ></TABLE
 ><H1
 ><A
-NAME="GBP.MAN.GBP.CONF"
+NAME="MAN.GBP.CONF"
 ></A
 >gbp.conf</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN2564"
+NAME="AEN2639"
 ></A
 ><H2
 >Name</H2
@@ -133,7 +133,7 @@ CLASS="FILENAME"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN2568"
+NAME="AEN2643"
 ></A
 ><H2
 >Synopsis</H2
@@ -150,7 +150,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2570"><SPAN
+NAME="AEN2645"><SPAN
 STYLE="white-space: nowrap"
 >/etc/git-buildpackage/gbp.conf</SPAN
 ></TD
@@ -166,7 +166,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2574"><SPAN
+NAME="AEN2649"><SPAN
 STYLE="white-space: nowrap"
 >~/.gbp.conf</SPAN
 ></TD
@@ -182,7 +182,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2578"><SPAN
+NAME="AEN2653"><SPAN
 STYLE="white-space: nowrap"
 >.gbp.conf</SPAN
 ></TD
@@ -199,7 +199,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2582"><SPAN
+NAME="AEN2657"><SPAN
 STYLE="white-space: nowrap"
 >debian/gbp.conf</SPAN
 ></TD
@@ -216,7 +216,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2586"><SPAN
+NAME="AEN2661"><SPAN
 STYLE="white-space: nowrap"
 >.git/gbp.conf</SPAN
 ></TD
@@ -233,7 +233,7 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2590"
+NAME="AEN2665"
 ></A
 ><H2
 >DESCRIPTION</H2
@@ -275,7 +275,7 @@ CLASS="OPTION"
 >key=value</CODE
 > pairs of the command sections reflect the command line
 options and their settings. For example <A
-HREF="gbp.man.git.buildpackage.html"
+HREF="man.git.buildpackage.html"
 >git-buildpackage(1)</A
 >
 manualpage contains the <CODE
@@ -297,7 +297,7 @@ CLASS="PROGRAMLISTING"
 ><P
 >Notice that some option are actually repeatable, or take Python lists.
 For example the <A
-HREF="gbp.man.git.import.orig.html"
+HREF="man.git.import.orig.html"
 >git-import-orig(1)</A
 > commmand has the
 <CODE
@@ -328,7 +328,7 @@ CLASS="OPTION"
 >False</CODE
 >. For example
 <A
-HREF="gbp.man.git.import.orig.html"
+HREF="man.git.import.orig.html"
 >git-import-orig(1)</A
 >; has the <CODE
 CLASS="OPTION"
@@ -384,7 +384,7 @@ can't be configured via gbp.conf.</P
 ></DIV
 ><P
 ><A
-HREF="gbp.man.gbp.create.remote.repo.html"
+HREF="man.gbp.create.remote.repo.html"
 >gbp-create-remote-repo(1)</A
 > can additionally parse remote site
 configurations from <TT
@@ -410,7 +410,7 @@ different projects.</P
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2636"
+NAME="AEN2711"
 ></A
 ><H2
 >EXAMPLES</H2
@@ -453,7 +453,7 @@ CLASS="PROGRAMLISTING"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2640"
+NAME="AEN2715"
 ></A
 ><H2
 >ENVIRONMENT</H2
@@ -470,7 +470,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2643"><SPAN
+NAME="AEN2718"><SPAN
 STYLE="white-space: nowrap"
 >GBP_CONF_FILES</SPAN
 ></TD
@@ -488,41 +488,21 @@ the above list of configuration files.</P
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2647"
+NAME="AEN2722"
 ></A
 ><H2
 >FILES</H2
 ><P
->  See See <TT
+>    See See <TT
 CLASS="FILENAME"
 >/etc/git-buildpackage/gbp.conf</TT
-> for an example.</P
+> for an example.
+  </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2651"
-></A
-><H2
->STANDARDS</H2
-><P
->  The at <A
-HREF="file:///usr/share/doc/git-buildpackage/manual-html/index.html"
-TARGET="_top"
->    <I
-CLASS="CITETITLE"
->The Git-Buildpackage Manual</I
-></A
-> at
-  <TT
-CLASS="FILENAME"
->/usr/share/doc/git-buildpackage/manual-html/index.html</TT
-></P
-></DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN2657"
+NAME="AEN2726"
 ></A
 ><H2
 >SEE ALSO</H2
@@ -582,13 +562,21 @@ CLASS="CITEREFENTRY"
 CLASS="REFENTRYTITLE"
 >git-buildpackage</SPAN
 >(1)</SPAN
+>,
+    <A
+HREF="file:///usr/share/doc/git-buildpackage/manual-html/index.html"
+TARGET="_top"
+>    <I
+CLASS="CITETITLE"
+>The Git-Buildpackage Manual</I
+></A
 >
   </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2684"
+NAME="AEN2755"
 ></A
 ><H2
 >AUTHORS</H2
@@ -624,7 +612,7 @@ VALIGN="middle"
 ALIGN="left"
 ><A
 ACCESSKEY="p"
-HREF="gbp.man.gbp.create.remote.repo.html"
+HREF="man.gbp.create.remote.repo.html"
 ><B
 >&lt;&lt;&lt;&nbsp;gbp-create-remote-repo</B
 ></A

@@ -86,7 +86,7 @@ ALT="Home"></A
 ><TH
 WIDTH="100%"
 align="center"
->Building Debian Packages with git-buildpackage: Version: 0.6.0~git20120324</TH
+>Building Debian Packages with git-buildpackage: Version: </TH
 ><TD
 ><A
 ACCESSKEY="n"
@@ -445,18 +445,26 @@ Git-Dch: Ignore</PRE
 >
 will not show up in the generated changelog in any way.</P
 ><P
->To only include the short description in the commit and skip the body use:
+>To include the full commit message in the changelog use:
+<PRE
+CLASS="SCREEN"
+>Git-Dch: Full</PRE
+></P
+><P
+>To only include the short description in the changelog and skip the body use:
 <PRE
 CLASS="SCREEN"
 >Git-Dch: Short</PRE
 >
-This only takes effect when running <B
+The latter only takes effect when running <B
 CLASS="COMMAND"
 >git-dch</B
-> with the <CODE
+> with the
+<CODE
 CLASS="OPTION"
 >--full</CODE
-> option.</P
+> option, since including only the short
+description is the default.</P
 ><P
 >Usually changelog entries should correspond to a single <SPAN
 CLASS="PRODUCTNAME"

@@ -11,13 +11,13 @@ TITLE="Building Debian Packages with git-buildpackage"
 HREF="gbp.html"><LINK
 REL="UP"
 TITLE="Command Reference"
-HREF="gbp.man.reference.html"><LINK
+HREF="man.reference.html"><LINK
 REL="PREVIOUS"
 TITLE="git-import-orig"
-HREF="gbp.man.git.import.orig.html"><LINK
+HREF="man.git.import.orig.html"><LINK
 REL="NEXT"
 TITLE="gbp-clone"
-HREF="gbp.man.gbp.clone.html"><STYLE
+HREF="man.gbp.clone.html"><STYLE
 TYPE="text/css"
 >.synopsis, .classsynopsis {
     background: #eeeeee;
@@ -67,7 +67,7 @@ VALIGN="middle"
 ><TD
 ><A
 ACCESSKEY="p"
-HREF="gbp.man.git.import.orig.html"
+HREF="man.git.import.orig.html"
 ><IMG
 SRC="left.png"
 WIDTH="24"
@@ -78,7 +78,7 @@ ALT="Prev"></A
 ><TD
 ><A
 ACCESSKEY="u"
-HREF="gbp.man.reference.html"
+HREF="man.reference.html"
 ><IMG
 SRC="up.png"
 WIDTH="24"
@@ -100,11 +100,11 @@ ALT="Home"></A
 ><TH
 WIDTH="100%"
 align="center"
->Building Debian Packages with git-buildpackage: Version: 0.6.0~git20120324</TH
+>Building Debian Packages with git-buildpackage: Version: </TH
 ><TD
 ><A
 ACCESSKEY="n"
-HREF="gbp.man.gbp.clone.html"
+HREF="man.gbp.clone.html"
 ><IMG
 SRC="right.png"
 WIDTH="24"
@@ -116,13 +116,13 @@ ALT="Next"></A
 ></TABLE
 ><H1
 ><A
-NAME="GBP.MAN.GIT.DCH"
+NAME="MAN.GIT.DCH"
 ></A
 >git-dch</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN1698"
+NAME="AEN1707"
 ></A
 ><H2
 >Name</H2
@@ -133,7 +133,7 @@ CLASS="COMMAND"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN1702"
+NAME="AEN1711"
 ></A
 ><H2
 >Synopsis</H2
@@ -162,8 +162,25 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
+>--upstream-tag=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>tag-format</I
+></TT
+>] [<CODE
+CLASS="OPTION"
 >--ignore-branch</CODE
 >] [<CODE
+CLASS="OPTION"
+>--snapshot</CODE
+> | <CODE
+CLASS="OPTION"
+>--release</CODE
+>] [<CODE
+CLASS="OPTION"
+>--auto</CODE
+> | <CODE
 CLASS="OPTION"
 >--since=</CODE
 ><TT
@@ -173,13 +190,24 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
->--snapshot</CODE
+>--new-version=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>version</I
+></TT
 >] [<CODE
 CLASS="OPTION"
->--release</CODE
->] [<CODE
+>--bpo</CODE
+> | <CODE
 CLASS="OPTION"
->--auto</CODE
+>--nmu</CODE
+> | <CODE
+CLASS="OPTION"
+>--qa</CODE
+> | <CODE
+CLASS="OPTION"
+>--team</CODE
 >] [<CODE
 CLASS="OPTION"
 >--[no-]full</CODE
@@ -199,6 +227,14 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
+>--id-length=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>number</I
+></TT
+>] [<CODE
+CLASS="OPTION"
 >--git-log=</CODE
 ><TT
 CLASS="REPLACEABLE"
@@ -210,10 +246,32 @@ CLASS="OPTION"
 >--[no-]git-author</CODE
 >] [<CODE
 CLASS="OPTION"
+>--[no-]multimaint</CODE
+>] [<CODE
+CLASS="OPTION"
 >--[no-]multimaint-merge</CODE
 >] [<CODE
 CLASS="OPTION"
 >--spawn-editor=[always|snapshot|release]</CODE
+>] [<CODE
+CLASS="OPTION"
+>--commit-msg=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>msg-format</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--commit</CODE
+>] [<CODE
+CLASS="OPTION"
+>--customization=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>customization-file</I
+></TT
 >]  <TT
 CLASS="REPLACEABLE"
 ><I
@@ -224,7 +282,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1744"
+NAME="AEN1783"
 ></A
 ><H2
 >DESCRIPTION</H2
@@ -320,7 +378,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1767"
+NAME="AEN1806"
 ></A
 ><H2
 >OPTIONS</H2
@@ -337,7 +395,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1770"><SPAN
+NAME="AEN1809"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -367,7 +425,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1777"><SPAN
+NAME="AEN1816"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -392,7 +450,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1783"><SPAN
+NAME="AEN1822"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -417,7 +475,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1790"><SPAN
+NAME="AEN1829"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -447,7 +505,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1797"><SPAN
+NAME="AEN1836"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -476,7 +534,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1804"><SPAN
+NAME="AEN1843"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -501,7 +559,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1810"><SPAN
+NAME="AEN1849"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -530,7 +588,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1818"><SPAN
+NAME="AEN1857"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -556,7 +614,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1824"><SPAN
+NAME="AEN1863"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -575,7 +633,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1829"><SPAN
+NAME="AEN1868"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -601,7 +659,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1835"><SPAN
+NAME="AEN1874"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -625,7 +683,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1841"><SPAN
+NAME="AEN1880"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -655,7 +713,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1848"><SPAN
+NAME="AEN1887"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -704,7 +762,85 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1859"><SPAN
+NAME="AEN1898"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--team</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Create a Team upload changelog entry.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1903"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--bpo</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Increment the Debian release number for an upload to
+          backports, and add a backport upload changelog comment.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1908"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--nmu</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Increment  the  Debian  release  number  for a non-maintainer upload.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1913"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--qa</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Increment the Debian release number for a Debian QA Team
+          upload, and add a QA upload changelog comment.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1918"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -728,7 +864,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1865"><SPAN
+NAME="AEN1924"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -759,7 +895,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1872"><SPAN
+NAME="AEN1931"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -790,7 +926,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1879"><SPAN
+NAME="AEN1938"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -812,11 +948,11 @@ CLASS="APPLICATION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1885"><SPAN
+NAME="AEN1944"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--[no]-multimaintmerge</CODE
+>--[no-]multimaint-merge</CODE
 ></SPAN
 ></TD
 ><TD
@@ -831,7 +967,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1890"><SPAN
+NAME="AEN1949"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -851,13 +987,68 @@ VALIGN="TOP"
 	  when doing a release.</P
 ></TD
 ></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1955"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--commit-msg=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>msg-format</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>use this format string for the commit message when
+	  committing the generated changelog file (when
+	  <CODE
+CLASS="OPTION"
+>--commit</CODE
+> is given). Default is
+	  <TT
+CLASS="REPLACEABLE"
+><I
+>Update changelog for %(version)s
+	  release</I
+></TT
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1963"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--commit</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Commit the generated changelog.</P
+></TD
+></TR
 ></TBODY
 ></TABLE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1896"
+NAME="AEN1968"
 ></A
 ><H2
 >Snapshot mode</H2
@@ -908,7 +1099,7 @@ CLASS="OPTION"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1908"
+NAME="AEN1980"
 ></A
 ><H2
 >META TAGS</H2
@@ -949,7 +1140,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1916"><SPAN
+NAME="AEN1988"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -974,14 +1165,30 @@ CLASS="REPLACEABLE"
 	this commit when generating <TT
 CLASS="FILENAME"
 >debian/changelog</TT
-> and
+>,
 	<TT
 CLASS="REPLACEABLE"
 ><I
 >Short</I
 ></TT
-> which will only use the description 
-	(the first line) of the commit message when generating the changelog entry.
+> which will only use the
+	description (the first line) of the commit message when
+	generating the changelog entry (useful when
+	<CODE
+CLASS="OPTION"
+>--full</CODE
+> is given) and
+	<TT
+CLASS="REPLACEABLE"
+><I
+>Full</I
+></TT
+> which will use the full commit
+	message when generating the changelog entry (useful when
+	<CODE
+CLASS="OPTION"
+>--full</CODE
+> is not given).
         </P
 ></TD
 ></TR
@@ -990,7 +1197,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1925"><SPAN
+NAME="AEN2000"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1015,7 +1222,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1931"><SPAN
+NAME="AEN2006"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1072,7 +1279,7 @@ CLASS="SCREEN"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1944"
+NAME="AEN2019"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -1083,14 +1290,14 @@ CLASS="FILENAME"
 > files are parsed 
     to set defaults for the above commandline arguments. See the
     <A
-HREF="gbp.man.gbp.conf.html"
+HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
 > manpage for details.</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1949"
+NAME="AEN2024"
 ></A
 ><H2
 >SEE ALSO</H2
@@ -1173,7 +1380,7 @@ CLASS="CITETITLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1980"
+NAME="AEN2055"
 ></A
 ><H2
 >AUTHOR</H2
@@ -1198,7 +1405,7 @@ VALIGN="middle"
 ALIGN="left"
 ><A
 ACCESSKEY="p"
-HREF="gbp.man.git.import.orig.html"
+HREF="man.git.import.orig.html"
 ><B
 >&lt;&lt;&lt;&nbsp;git-import-orig</B
 ></A
@@ -1207,7 +1414,7 @@ HREF="gbp.man.git.import.orig.html"
 ALIGN="right"
 ><A
 ACCESSKEY="n"
-HREF="gbp.man.gbp.clone.html"
+HREF="man.gbp.clone.html"
 ><B
 >gbp-clone&nbsp;&gt;&gt;&gt;</B
 ></A

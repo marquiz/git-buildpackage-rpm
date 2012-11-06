@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->gbp-pull</TITLE
+>gbp-clone</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -11,13 +11,13 @@ TITLE="Building Debian Packages with git-buildpackage"
 HREF="gbp.html"><LINK
 REL="UP"
 TITLE="Command Reference"
-HREF="gbp.man.reference.html"><LINK
+HREF="man.reference.html"><LINK
 REL="PREVIOUS"
-TITLE="gbp-clone"
-HREF="gbp.man.gbp.clone.html"><LINK
+TITLE="git-dch"
+HREF="man.git.dch.html"><LINK
 REL="NEXT"
-TITLE="gbp-pq"
-HREF="gbp.man.gbp.pq.html"><STYLE
+TITLE="gbp-pull"
+HREF="man.gbp.pull.html"><STYLE
 TYPE="text/css"
 >.synopsis, .classsynopsis {
     background: #eeeeee;
@@ -67,7 +67,7 @@ VALIGN="middle"
 ><TD
 ><A
 ACCESSKEY="p"
-HREF="gbp.man.gbp.clone.html"
+HREF="man.git.dch.html"
 ><IMG
 SRC="left.png"
 WIDTH="24"
@@ -78,7 +78,7 @@ ALT="Prev"></A
 ><TD
 ><A
 ACCESSKEY="u"
-HREF="gbp.man.reference.html"
+HREF="man.reference.html"
 ><IMG
 SRC="up.png"
 WIDTH="24"
@@ -100,11 +100,11 @@ ALT="Home"></A
 ><TH
 WIDTH="100%"
 align="center"
->Building Debian Packages with git-buildpackage: Version: 0.6.0~git20120324</TH
+>Building Debian Packages with git-buildpackage: Version: </TH
 ><TD
 ><A
 ACCESSKEY="n"
-HREF="gbp.man.gbp.pq.html"
+HREF="man.gbp.pull.html"
 ><IMG
 SRC="right.png"
 WIDTH="24"
@@ -116,45 +116,37 @@ ALT="Next"></A
 ></TABLE
 ><H1
 ><A
-NAME="GBP.MAN.GBP.PULL"
+NAME="MAN.GBP.CLONE"
 ></A
->gbp-pull</H1
+>gbp-clone</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN2111"
+NAME="AEN2069"
 ></A
 ><H2
 >Name</H2
 ><B
 CLASS="COMMAND"
->gbp-pull</B
->&nbsp;--&nbsp;Safely update a repository from remote</DIV
+>gbp-clone</B
+>&nbsp;--&nbsp;Clone a repository from remote</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN2115"
+NAME="AEN2073"
 ></A
 ><H2
 >Synopsis</H2
 ><P
 ><B
 CLASS="COMMAND"
->gbp-pull</B
+>gbp-clone</B
 >  [<CODE
 CLASS="OPTION"
 >--verbose</CODE
 >] [<CODE
 CLASS="OPTION"
->--force=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->[merge|clean]</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--redo-pq</CODE
+>--all</CODE
 >] [<CODE
 CLASS="OPTION"
 >--[no-]pristine-tar</CODE
@@ -190,53 +182,55 @@ CLASS="REPLACEABLE"
 ><I
 >depth</I
 ></TT
->]</P
+>]  <TT
+CLASS="REPLACEABLE"
+><I
+>remote_uri</I
+></TT
+> </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2140"
+NAME="AEN2097"
 ></A
 ><H2
 >DESCRIPTION</H2
 ><P
 >    <B
 CLASS="COMMAND"
->gbp-pull</B
-> updates the <SPAN
+>gbp-clone</B
+> clones a remote repository and sets up tracking branches for
+    the <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >debian</I
 ></SPAN
->,
-    <SPAN
+>, <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >upstream</I
 ></SPAN
-> and <SPAN
+> and
+    <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
 >pristine-tar</I
 ></SPAN
->
-    branches from a remote repository in one go. It checks if the update is safe (would
-    result in a <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->fast-forward</I
-></SPAN
-> merge) and aborts otherwise.
+> branches. This way you can easily update
+    later using <B
+CLASS="COMMAND"
+>gbp-pull</B
+>.
     </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2148"
+NAME="AEN2105"
 ></A
 ><H2
 >OPTIONS</H2
@@ -253,117 +247,29 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2151"><SPAN
+NAME="AEN2108"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--force=</CODE
-><TT
+>--all</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Track all branches, not only <TT
 CLASS="REPLACEABLE"
 ><I
->[merge|clean]</I
+>debian</I
 ></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Force a branch update even if this results in a non fast
-	      forward update.
-          <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->merge</I
-></SPAN
-> does a git-merge.
-          <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->clean</I
-></SPAN
-> checks out a clean copy from upstream.
-          <DIV
-CLASS="WARNING"
-><P
-></P
-><TABLE
-CLASS="WARNING"
-BORDER="1"
-WIDTH="90%"
-><TR
-><TD
-ALIGN="CENTER"
-><B
->Warning</B
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-><P
->using <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->clean</I
-></SPAN
 >
-          makes you lose your modifications.</P
-></TD
-></TR
-></TABLE
-></DIV
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2162"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--redo-pq</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->also rebuild the corresponding patch-queue using <B
-CLASS="COMMAND"
->gbp-pq</B
->.
-	  <DIV
-CLASS="WARNING"
-><P
-></P
-><TABLE
-CLASS="WARNING"
-BORDER="1"
-WIDTH="90%"
-><TR
-><TD
-ALIGN="CENTER"
-><B
->Warning</B
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-><P
->This drops the patch-queue branch if it exists.</P
-></TD
-></TR
-></TABLE
-></DIV
-></P
+	  and <TT
+CLASS="REPLACEABLE"
+><I
+>upstream</I
+></TT
+>.</P
 ></TD
 ></TR
 ><TR
@@ -371,7 +277,7 @@ ALIGN="LEFT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2170"><SPAN
+NAME="AEN2115"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -401,7 +307,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2177"><SPAN
+NAME="AEN2122"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -432,7 +338,7 @@ CLASS="EMPHASIS"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2184"><SPAN
+NAME="AEN2129"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -465,7 +371,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2192"><SPAN
+NAME="AEN2137"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -481,7 +387,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Git history depth, for deepening shallow git clones.</P
+>Git history depth, for creating shallow git clones.</P
 ></TD
 ></TR
 ><TR
@@ -489,7 +395,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2198"><SPAN
+NAME="AEN2143"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -514,7 +420,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2205"><SPAN
+NAME="AEN2150"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -525,7 +431,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Whether to update the pristine-tar branch too.</P
+>Track pristine tar branch.</P
 ></TD
 ></TR
 ></TBODY
@@ -534,88 +440,7 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2210"
-></A
-><H2
->EXIT CODES</H2
-><P
->    When <B
-CLASS="COMMAND"
->gbp-pull</B
-> finishes it indicates success or failure with it's exit code:
-    </P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2215"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->0</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Success.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2220"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->1</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->An error occured during the pull, see the printed error message for details.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2225"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->2</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->At least one branch couldn't be fast forwarded.</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN2230"
+NAME="AEN2155"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -626,14 +451,14 @@ CLASS="FILENAME"
 > files are parsed 
     to set defaults for the above commandline arguments. See the
     <A
-HREF="gbp.man.gbp.conf.html"
+HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
 > manpage for details.</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2235"
+NAME="AEN2160"
 ></A
 ><H2
 >SEE ALSO</H2
@@ -649,14 +474,7 @@ CLASS="REFENTRYTITLE"
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->gbp-clone</SPAN
->(1)</SPAN
->,
-      <SPAN
-CLASS="CITEREFENTRY"
-><SPAN
-CLASS="REFENTRYTITLE"
->gbp-pq</SPAN
+>gbp-pull</SPAN
 >(1)</SPAN
 >,
       <SPAN
@@ -671,7 +489,7 @@ CLASS="REFENTRYTITLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2250"
+NAME="AEN2172"
 ></A
 ><H2
 >AUTHOR</H2
@@ -696,18 +514,18 @@ VALIGN="middle"
 ALIGN="left"
 ><A
 ACCESSKEY="p"
-HREF="gbp.man.gbp.clone.html"
+HREF="man.git.dch.html"
 ><B
->&lt;&lt;&lt;&nbsp;gbp-clone</B
+>&lt;&lt;&lt;&nbsp;git-dch</B
 ></A
 ></TD
 ><TD
 ALIGN="right"
 ><A
 ACCESSKEY="n"
-HREF="gbp.man.gbp.pq.html"
+HREF="man.gbp.pull.html"
 ><B
->gbp-pq&nbsp;&gt;&gt;&gt;</B
+>gbp-pull&nbsp;&gt;&gt;&gt;</B
 ></A
 ></TD
 ></TR
