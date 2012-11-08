@@ -227,6 +227,15 @@ def export_patches(repo, spec, export_treeish, options):
     """
     Generate patches and update spec file
     """
+    # Fail if we have local patch files not marked for manual maintenance.
+    # Ignore patches listed in spec but not found in packaging dir
+    for patch in spec.patchseries():
+        if os.path.exists(patch.path):
+            raise GbpAutoGenerateError(
+                    'Patches not marked for manual maintenance found, '
+                    'refusing to overwrite! Fix by applying them to packaging '
+                    'branch and removing the files.')
+
     try:
         upstream_tree = get_upstream_tree(repo, spec, options)
         update_patch_series(repo, spec, upstream_tree, export_treeish, options)
