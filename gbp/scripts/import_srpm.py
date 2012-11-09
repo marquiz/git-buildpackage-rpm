@@ -58,6 +58,10 @@ class SkipImport(Exception):
     """Nothing imported"""
     pass
 
+class PatchImportError(Exception):
+    """Patch import failed"""
+    pass
+
 
 def download_file(target_dir, url):
     """Download a remote file"""
@@ -140,8 +144,8 @@ def import_spec_patches(repo, spec, dirs):
             apply_and_commit_patch(repo, patch, packager)
         except (GbpError, GitRepositoryError):
             repo.force_head(orig_head, hard=True)
-            raise GbpError, "Couldn't import patches, you need to apply and "\
-                            "commit manually"
+            raise PatchImportError("Patch(es) didn't apply, you need apply "
+                                   "and commit manually")
 
     # Remove patches from spec and packaging directory
     gbp.log.info("Removing imported patch files from spec and packaging dir")
@@ -151,8 +155,8 @@ def import_spec_patches(repo, spec, dirs):
         spec.write_spec_file()
     except GbpError:
         repo.force_head('HEAD', hard=True)
-        raise GbpError("Unable to update spec file, you need to edit and "
-                       "commit it  manually")
+        raise PatchImportError("Unable to update spec file, you need to edit"
+                               "and commit it  manually")
     repo.commit_all(msg=PATCH_AUTODELETE_COMMIT_MSG %
                         os.path.basename(spec.specfile))
 
@@ -486,6 +490,9 @@ def main(argv):
     except NoSpecError as err:
         gbp.log.err("Failed determine spec file: %s" % err)
         ret = 1
+    except PatchImportError as err:
+        gbp.log.err(err)
+        ret = 2
     except SkipImport:
         skipped = True
     finally:
