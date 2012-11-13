@@ -402,6 +402,8 @@ def main(argv):
                       help="In case of import even import if the branch already exists")
     parser.add_config_file_option(option_name="vendor", action="store", dest="vendor")
     parser.add_config_file_option(option_name="color", dest="color", type='tristate')
+    parser.add_config_file_option(option_name="color-scheme",
+                                  dest="color_scheme")
     parser.add_config_file_option(option_name="tmp-dir", dest="tmp_dir")
     parser.add_config_file_option(option_name="upstream-tag", dest="upstream_tag")
     parser.add_config_file_option(option_name="spec-file", dest="spec_file")
@@ -419,7 +421,7 @@ def main(argv):
     parser.add_config_file_option("patch-export-ignore-path", dest="patch_export_ignore_path")
 
     (options, args) = parser.parse_args(argv)
-    gbp.log.setup(options.color, options.verbose)
+    gbp.log.setup(options.color, options.verbose, options.color_scheme)
     options.patch_export_compress = string_to_int(options.patch_export_compress)
 
     if len(args) < 2:

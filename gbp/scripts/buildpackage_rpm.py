@@ -338,6 +338,8 @@ def parse_args(argv, prefix):
                       help="verbose command execution")
     parser.add_config_file_option(option_name="tmp-dir", dest="tmp_dir")
     parser.add_config_file_option(option_name="color", dest="color", type='tristate')
+    parser.add_config_file_option(option_name="color-scheme",
+                                  dest="color_scheme")
     parser.add_config_file_option(option_name="notify", dest="notify", type='tristate')
     parser.add_config_file_option(option_name="vendor", action="store", dest="vendor")
     tag_group.add_option("--git-tag", action="store_true", dest="tag", default=False,
@@ -412,7 +414,7 @@ def parse_args(argv, prefix):
 
     options.patch_export_compress = rpm.string_to_int(options.patch_export_compress)
 
-    gbp.log.setup(options.color, options.verbose)
+    gbp.log.setup(options.color, options.verbose, options.color_scheme)
     if options.retag:
         if not options.tag and not options.tag_only:
             gbp.log.err("'--%sretag' needs either '--%stag' or '--%stag-only'" % (prefix, prefix, prefix))

@@ -188,6 +188,8 @@ def parse_args(argv):
                       default=False, help="verbose command execution")
     parser.add_config_file_option(option_name="color", dest="color",
                       type='tristate')
+    parser.add_config_file_option(option_name="color-scheme",
+                                  dest="color_scheme")
     parser.add_config_file_option(option_name="tmp-dir", dest="tmp_dir")
     parser.add_option("--download", action="store_true", dest="download",
                       default=False, help="download source package")
@@ -232,7 +234,7 @@ def parse_args(argv):
     import_group.add_boolean_config_file_option(option_name="patch-import",
                                                 dest="patch_import")
     (options, args) = parser.parse_args(argv[1:])
-    gbp.log.setup(options.color, options.verbose)
+    gbp.log.setup(options.color, options.verbose, options.color_scheme)
     return options, args
 
 
