@@ -185,10 +185,12 @@ def parse_args(argv):
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False,
                       help="verbose command execution")
     parser.add_config_file_option(option_name="color", dest="color", type='tristate')
+    parser.add_config_file_option(option_name="color-scheme",
+                                  dest="color_scheme")
     parser.add_config_file_option(option_name="tmp-dir", dest="tmp_dir")
 
     (options, args) = parser.parse_args(argv[1:])
-    gbp.log.setup(options.color, options.verbose)
+    gbp.log.setup(options.color, options.verbose, options.color_scheme)
 
     return options, args
 
