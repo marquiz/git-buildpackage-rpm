@@ -74,7 +74,6 @@ def prepare_pristine_tar(archive, pkg, version):
         return (link, linked)
     else:
         return (archive, linked)
->>>>>>> dbfc6276c4aa50b79f1cf27cfc24badc0b18da8f
 
 
 def upstream_import_commit_msg(options, version):
