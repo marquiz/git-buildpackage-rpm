@@ -31,48 +31,10 @@ from gbp.config import GbpOptionParserDebian, GbpOptionGroup, no_upstream_branch
 from gbp.errors import GbpError
 from gbp.format import format_msg
 import gbp.log
-from gbp.scripts.common.import_orig import (orig_needs_repack, cleanup_tmp_tree,
-                                            ask_package_name, ask_package_version,
-                                            repack_source, is_link_target)
-
-
-def prepare_pristine_tar(archive, pkg, version):
-    """
-    Prepare the upstream source for pristine tar import.
-
-    This checks if the upstream source is actually a tarball
-    and creates a symlink from I{archive}
-    to I{<pkg>_<version>.orig.tar.<ext>} so pristine-tar will
-    see the correct basename.
-
-    @param archive: the upstream source's name
-    @type archive: C{str}
-    @param pkg: the source package's name
-    @type pkg: C{str}
-    @param version: the upstream version number
-    @type version: C{str}
-    @rtype: C{str}
-    """
-    linked = False
-    if os.path.isdir(archive):
-        return None
-
-    ext = os.path.splitext(archive)[1]
-    if ext in ['.tgz', '.tbz2', '.tlz', '.txz' ]:
-        ext = ".%s" % ext[2:]
-
-    link = "../%s_%s.orig.tar%s" % (pkg, version, ext)
-
-    if os.path.basename(archive) != os.path.basename(link):
-        try:
-            if not is_link_target(archive, link):
-                os.symlink(os.path.abspath(archive), link)
-                linked = True
-        except OSError as err:
-                raise GbpError("Cannot symlink '%s' to '%s': %s" % (archive, link, err[1]))
-        return (link, linked)
-    else:
-        return (archive, linked)
+from gbp.pkg import compressor_opts
+from gbp.scripts.common.import_orig import (cleanup_tmp_tree, ask_package_name,
+                                            ask_package_version,
+                                            prepare_sources)
 
 
 def upstream_import_commit_msg(options, version):
@@ -158,19 +120,17 @@ def find_source(use_uscan, args):
         return archive
 
 
-def repacked_tarball_name(source, name, version):
-    if source.is_orig():
-        # Repacked orig tarball needs a different name since there's already
-        # one with that name
-        name = os.path.join(
-                    os.path.dirname(source.path),
-                    os.path.basename(source.path).replace(".tar", ".gbp.tar"))
+def pristine_tarball_name(source, pkg_name, pkg_version):
+    if source.is_tarball():
+        if source.compression:
+            comp_ext = '.' + compressor_opts[source.compression][1]
+        else:
+            comp_ext = ''
     else:
-        # Repacked sources or other archives get canonical name
-        name = os.path.join(
-                    os.path.dirname(source.path),
-                    "%s_%s.orig.tar.bz2" % (name, version))
-    return name
+        # Need to repack and/or mangle filename if the archive is not
+        # pristine-tar-compatible -> we decide to create gz compressed tarball
+        comp_ext = '.gz'
+    return '%s_%s.orig.tar%s' % (pkg_name, pkg_version, comp_ext)
 
 
 def set_bare_repo_options(options):
@@ -266,8 +226,6 @@ def parse_args(argv):
 def main(argv):
     ret = 0
     tmpdir = tempfile.mkdtemp(dir='../')
-    pristine_orig = None
-    linked = False
 
     (options, args) = parse_args(argv)
     if not options:
@@ -294,7 +252,7 @@ def main(argv):
             else:
                 raise GbpError(no_upstream_branch_msg % options.upstream_branch)
 
-        (sourcepackage, version) = detect_name_and_version(repo, source, options)
+        (pkg_name, version) = detect_name_and_version(repo, source, options)
 
         (clean, out) = repo.is_clean()
         if not clean and not is_empty:
@@ -304,24 +262,16 @@ def main(argv):
         if repo.bare:
             set_bare_repo_options(options)
 
-        if not source.is_dir():
-            unpack_dir = tempfile.mkdtemp(prefix='unpack', dir=tmpdir)
-            source = source.unpack(unpack_dir, options.filters)
-            gbp.log.debug("Unpacked '%s' to '%s'" % (source.path, source.unpacked))
-
-        if orig_needs_repack(source, options):
-            gbp.log.debug("Filter pristine-tar: repacking '%s' from '%s'" % (source.path, source.unpacked))
-            repack_dir = tempfile.mkdtemp(prefix='repack', dir=tmpdir)
-            repack_name = repacked_tarball_name(source, sourcepackage, version)
-            source = repack_source(source, repack_name, repack_dir, options.filters)
-
-        (pristine_orig, linked) = prepare_pristine_tar(source.path,
-                                                       sourcepackage,
-                                                       version)
+        # Prepare sources for importing
+        pristine_name = pristine_tarball_name(source, pkg_name, version)
+        prepare_pristine = pristine_name if options.pristine_tar else None
+        unpacked_orig, pristine_orig = prepare_sources(
+                source, pkg_name, version, prepare_pristine, options.filters,
+                options.filter_pristine_tar, None, tmpdir)
 
         # Don't mess up our repo with git metadata from an upstream tarball
         try:
-            if os.path.isdir(os.path.join(source.unpacked, '.git/')):
+            if os.path.isdir(os.path.join(unpacked_orig, '.git/')):
                 raise GbpError("The orig tarball contains .git metadata - giving up.")
         except OSError:
             pass
@@ -333,7 +283,7 @@ def main(argv):
             gbp.log.info("Importing '%s' to branch '%s'%s..." % (source.path,
                                                                  upstream_branch,
                                                                  filter_msg))
-            gbp.log.info("Source package is %s" % sourcepackage)
+            gbp.log.info("Source package is %s" % pkg_name)
             gbp.log.info("Upstream version is %s" % version)
 
             import_branch = [ options.upstream_branch, None ][is_empty]
@@ -344,17 +294,14 @@ def main(argv):
             else:
                 parents = None
 
-            commit = repo.commit_dir(source.unpacked,
+            commit = repo.commit_dir(unpacked_orig,
                         msg=msg,
                         branch=import_branch,
                         other_parents=parents,
                         create_missing_branch=options.create_missing_branches)
 
-            if options.pristine_tar:
-                if pristine_orig:
-                    repo.pristine_tar.commit(pristine_orig, upstream_branch)
-                else:
-                    gbp.log.warn("'%s' not an archive, skipping pristine-tar" % source.path)
+            if options.pristine_tar and pristine_orig:
+                repo.pristine_tar.commit(pristine_orig, upstream_branch)
 
             tag = repo.version_to_tag(options.upstream_tag, version)
             repo.create_tag(name=tag,
@@ -390,6 +337,17 @@ def main(argv):
             if current_branch in [ options.upstream_branch,
                                    repo.pristine_tar_branch]:
                 repo.force_head(current_branch, hard=True)
+            # Create symlink, if requested
+            if options.symlink_orig:
+                if source.is_tarball():
+                    link = os.path.join('..', pristine_name)
+                    if not (os.path.exists(link) and
+                            os.path.samefile(link, source.path)):
+                        gbp.log.info('Creating symlink to %s' % source.path)
+                        os.symlink(source.path, link)
+                else:
+                    gbp.log.warn('Orig source not a tarball, not symlinked')
+
         except (gbpc.CommandExecFailed, GitRepositoryError) as err:
             msg = err.__str__() if len(err.__str__()) else ''
             raise GbpError("Import of %s failed: %s" % (source.path, msg))
@@ -397,9 +355,6 @@ def main(argv):
         if len(err.__str__()):
             gbp.log.err(err)
         ret = 1
-
-    if pristine_orig and linked and not options.symlink_orig:
-        os.unlink(pristine_orig)
 
     if tmpdir:
         cleanup_tmp_tree(tmpdir)
