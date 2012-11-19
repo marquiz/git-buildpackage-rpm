@@ -139,6 +139,10 @@ class SpecFile(object):
                             if line.split(":")[0].strip() not in skip_tags)
                         filtered.flush()
                         try:
+                            # Parse two times to circumvent a rpm-python
+                            # problem where macros are not expanded if used
+                            # before their definition
+                            rpm.spec(temp.name)
                             self.specinfo = rpm.spec(temp.name)
                         except ValueError as err:
                             raise GbpError("RPM error while parsing spec: %s" % err)
