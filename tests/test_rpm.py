@@ -151,7 +151,14 @@ class TestSpecFile(object):
         spec = SpecFile(tmp_spec)
         spec.update_patches(['new.patch'])
         spec.write_spec_file()
+        assert filecmp.cmp(tmp_spec, reference_spec) is True
 
+        # Test a second spec file
+        shutil.copy2(os.path.join(SPEC_DIR, 'gbp-test2.spec'), tmp_spec)
+        reference_spec = os.path.join(SPEC_DIR, 'gbp-test2-reference.spec')
+        spec = SpecFile(tmp_spec)
+        spec.update_patches(['new.patch'])
+        spec.write_spec_file()
         assert filecmp.cmp(tmp_spec, reference_spec) is True
 
     def test_quirks(self):

@@ -275,6 +275,8 @@ class SpecFile(object):
                 if m.group('name').lower() == 'ignore-patches':
                     dataitems = m.group('args').strip().split()
                     ignorepatch = sorted([int(num) for num in dataitems])
+                elif m.group('name').lower() == 'patch-macros':
+                    ret['patchmacrostart'] = lineobj
                 else:
                     gbp.log.info("Found unrecognized Gbp tag on line %s: "
                                  "'%s'" % (i, line))
@@ -463,7 +465,10 @@ class SpecFile(object):
                                         "git-buildpackage:\n")
 
         # Determine where to add %patch macro lines
-        if last_removed_macro_line:
+        if 'patchmacrostart' in loc:
+            gbp.log.info("Adding patch macros after the start marker")
+            line = loc['patchmacrostart']
+        elif last_removed_macro_line:
             gbp.log.info("Adding patch macros in place of the removed macros")
             line = last_removed_macro_line
         elif 'lastpatchmacro' in loc:
