@@ -77,37 +77,29 @@ class SrcRpmFile(object):
         srpmfp.close()
         self.srpmfile = os.path.abspath(srpmfile)
 
-    def _get_version(self):
-        """
-        Get the (downstream) version of the RPM
-        """
+    @property
+    def version(self):
+        """Get the (downstream) version of the RPM package"""
         version = dict(upstreamversion = self.rpmhdr[rpm.RPMTAG_VERSION],
                        release = self.rpmhdr[rpm.RPMTAG_RELEASE])
         if self.rpmhdr[rpm.RPMTAG_EPOCH] is not None:
             version['epoch'] = str(self.rpmhdr[rpm.RPMTAG_EPOCH])
         return version
-    version = property(_get_version)
 
-    def _get_name(self):
-        """
-        Get the name of the RPM package
-        """
+    @property
+    def name(self):
+        """Get the name of the RPM package"""
         return self.rpmhdr[rpm.RPMTAG_NAME]
-    name = property(_get_name)
 
-    def _get_upstream_version(self):
-        """
-        Get the upstream version of the package
-        """
+    @property
+    def upstreamversion(self):
+        """Get the upstream version of the RPM package"""
         return self.rpmhdr[rpm.RPMTAG_VERSION]
-    upstreamversion = property(_get_upstream_version)
 
-    def _get_packager(self):
-        """
-        Get the packager of the RPM package
-        """
+    @property
+    def packager(self):
+        """Get the packager of the RPM package"""
         return self.rpmhdr[rpm.RPMTAG_PACKAGER]
-    packager = property(_get_packager)
 
     def unpack(self, dest_dir):
         """
