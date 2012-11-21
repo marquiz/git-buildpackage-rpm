@@ -8,7 +8,7 @@ License:    GPLv2
 Source10:   ftp://ftp.host.com/%{name}-%{version}.tar.gz
 Source:     foo.txt
 Source20:   bar.tar.gz
-# GbpIgnorePatch: 0
+# Gbp-Ignore-Patches: 0
 Patch:      my.patch
 Patch10:    my2.patch
 Patch20:    my3.patch
