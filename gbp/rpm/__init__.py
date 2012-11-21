@@ -125,7 +125,7 @@ class SpecFile(object):
                          '(?P<value>\S(.*\S)?)\s*$', flags=re.I)
     macro_re = re.compile(r'^%(?P<name>[a-z]+)(?P<num>[0-9]+)?'
                            '(\s+(?P<args>.*))?$')
-    gbptag_re = re.compile(r'^\s*#\s*gbp(?P<name>[a-z-]+)'
+    gbptag_re = re.compile(r'^\s*#\s*gbp-(?P<name>[a-z-]+)'
                             '(\s*:\s*(?P<args>\S.*))?$', flags=re.I)
 
     def __init__(self, specfile, skip_tags=("ExcludeArch", "ExcludeOS",
@@ -272,7 +272,7 @@ class SpecFile(object):
             line = str(lineobj)
             m = self.gbptag_re.match(line)
             if m:
-                if m.group('name').lower() == 'ignorepatch':
+                if m.group('name').lower() == 'ignore-patches':
                     dataitems = m.group('args').strip().split()
                     ignorepatch = sorted([int(num) for num in dataitems])
                 else:
