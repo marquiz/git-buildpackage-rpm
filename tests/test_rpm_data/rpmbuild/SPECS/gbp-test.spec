@@ -7,7 +7,7 @@ License:    GPLv2
 Source:     %{name}-%{version}.tar.bz2
 Source1:    foo.txt
 Source20:   bar.tar.gz
-# GbpIgnorePatch: 0
+# Gbp-Ignore-Patches: 0
 Patch0:     my.patch
 Patch10:    my2.patch
 Patch20:    my3.patch
