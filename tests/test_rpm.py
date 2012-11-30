@@ -153,11 +153,27 @@ class TestSpecFile(object):
         spec.write_spec_file()
         assert filecmp.cmp(tmp_spec, reference_spec) is True
 
-        # Test a second spec file
+        # Test adding the VCS tag
+        reference_spec = os.path.join(SPEC_DIR, 'gbp-test-reference2.spec')
+        spec.set_tag('vcs', 'myvcstag')
+        spec.write_spec_file()
+        assert filecmp.cmp(tmp_spec, reference_spec) is True
+
+    def test_update_spec2(self):
+        """Another test for spec autoupdate functionality"""
+        tmp_spec = os.path.join(self.tmpdir, 'gbp-test.spec')
         shutil.copy2(os.path.join(SPEC_DIR, 'gbp-test2.spec'), tmp_spec)
-        reference_spec = os.path.join(SPEC_DIR, 'gbp-test2-reference.spec')
+
+        reference_spec = os.path.join(SPEC_DIR, 'gbp-test2-reference2.spec')
         spec = SpecFile(tmp_spec)
         spec.update_patches(['new.patch'])
+        spec.set_tag('vcs', 'myvcstag')
+        spec.write_spec_file()
+        assert filecmp.cmp(tmp_spec, reference_spec) is True
+
+        # Test removing the VCS tag
+        reference_spec = os.path.join(SPEC_DIR, 'gbp-test2-reference.spec')
+        spec.set_tag('vcs', '')
         spec.write_spec_file()
         assert filecmp.cmp(tmp_spec, reference_spec) is True
 

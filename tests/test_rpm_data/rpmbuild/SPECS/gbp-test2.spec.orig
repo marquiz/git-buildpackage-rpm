@@ -13,7 +13,6 @@ Patch:      my.patch
 Patch10:    my2.patch
 Patch20:    my3.patch
 Packager:   Markus Lehtonen <markus.lehtonen@linux.intel.com>
-VCS:        myoldvcstag
 
 %description
 Package for testing the RPM functionality of git-buildpackage.

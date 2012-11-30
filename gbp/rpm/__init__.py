@@ -341,11 +341,15 @@ class SpecFile(object):
                                      'tag_line': lineobj}
                         self.patches[tagnum] = new_patch
                     ret['lastpatchtag'] = lineobj
-                # 'Name:' and 'Packager:' tags
+                # Other tags
                 elif tagname == 'name':
                     ret['nametag'] = lineobj
                 elif tagname == 'packager':
                     ret['packagertag'] = lineobj
+                elif tagname == 'vcs':
+                    ret['vcstag'] = lineobj
+                elif tagname == 'release':
+                    ret['releasetag'] = lineobj
                 continue
 
             # Parse special macros
@@ -387,6 +391,26 @@ class SpecFile(object):
                 if m.group('name') == 'prep':
                     ret['prepmacro'] = lineobj
         return ret
+
+    def set_tag(self, tag, value):
+        """Update a tag in spec file content"""
+        loc = self.parse_content()
+
+        key = tag.lower() + "tag"
+        if tag.lower() == 'vcs':
+            if value:
+                text = '%-12s%s\n' % ('VCS:', value)
+                if key in loc:
+                    gbp.log.info("Updating '%s' tag in spec" % tag)
+                    loc[key].set_data(text)
+                else:
+                    gbp.log.info("Adding '%s' tag to spec" % tag)
+                    self.content.insert_after(loc['releasetag'], text)
+            elif key in loc:
+                gbp.log.info("Removing '%s' tag from spec" % tag)
+                self.content.delete(loc[key])
+        else:
+            raise GbpError("Setting '%s:' tag not supported")
 
     def update_patches(self, patchfilenames):
         """
