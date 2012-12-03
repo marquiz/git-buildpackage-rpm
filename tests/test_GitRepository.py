@@ -577,8 +577,9 @@ def test_clone():
     >>> clone.get_merge_branch('bar') # None if no merge branch exists
     >>> clone.get_local_branches()
     ['bar', 'foo', 'master']
-    >>> clone.get_remote_repos()
-    ['origin']
+    >>> remotes = clone.get_remote_repos()
+    >>> {'origin': [repo_dir, repo_dir]} == remotes
+    True
     >>> clone.has_remote_repo('origin')
     True
     >>> clone.has_branch('origin/master', remote=True)

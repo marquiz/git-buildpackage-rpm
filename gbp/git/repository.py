@@ -1177,10 +1177,25 @@ class GitRepository(object):
         @deprecated: Use get_remotes() instead
 
         @return: remote repositories
-        @rtype: C{list} of C{str}
+        @rtype: C{dict} of C{list} of C{str}
         """
-        out = self._git_getoutput('remote')[0]
-        return [ remote.strip() for remote in out ]
+        stdout, stderr, ret = self._git_inout('remote', ['-v'],
+                                              capture_stderr=True)
+        if ret:
+            raise GitRepositoryError('Failed to get remotes: %s' % stderr)
+
+        remotes = {}
+        for rem in stdout.splitlines():
+            name, url_urltype = rem.split('\t', 1)
+            url, urltype = url_urltype.rsplit(' ', 1)
+            urltype = urltype.strip('()')
+            if not name in remotes:
+                remotes[name] = ['']
+            if urltype == 'fetch':
+                remotes[name][0] = url
+            else:
+                remotes[name].append(url)
+        return remotes
 
     def has_remote_repo(self, name):
         """
