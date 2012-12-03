@@ -120,28 +120,25 @@ class SpecFile(object):
     gbptag_re = re.compile(r'^\s*#\s*gbp-(?P<name>[a-z-]+)'
                             '(\s*:\s*(?P<args>\S.*))?$', flags=re.I)
 
-    def __init__(self, specfile, skip_tags=("ExcludeArch", "ExcludeOS",
-                                            "ExclusiveArch", "ExclusiveOS",
-                                            "BuildArch")):
-        with tempfile.NamedTemporaryFile(prefix='gbp') as temp:
-            try:
-                with open(specfile) as specf:
-                    with open(temp.name, 'w') as filtered:
-                        filtered.writelines(line for line in specf \
-                            if line.split(":")[0].strip() not in skip_tags)
-                        filtered.flush()
-                        try:
-                            # Parse two times to circumvent a rpm-python
-                            # problem where macros are not expanded if used
-                            # before their definition
-                            rpm.spec(temp.name)
-                            self.specinfo = rpm.spec(temp.name)
-                        except ValueError as err:
-                            raise GbpError("RPM error while parsing spec: %s" % err)
-            except IOError as err:
-                raise NoSpecError("Unable to read spec file: %s" % err)
+    def __init__(self, specfile):
+        # Load spec file into our special data structure
+        self.specfile = os.path.abspath(specfile)
+        self.specdir = os.path.dirname(self.specfile)
+        self.content = LinkedList()
+        try:
+            with open(specfile) as spec_file:
+                for line in spec_file.readlines():
+                    self.content.append(line)
+        except IOError as err:
+            raise NoSpecError("Unable to read spec file: %s" % err)
 
-        source_header = self.specinfo.packages[0].header
+        # Use rpm-python to parse the spec file content
+        self._filtertags = ("excludearch", "excludeos", "exclusivearch",
+                            "exclusiveos","buildarch")
+        self._specinfo = self._parse_filtered_spec(self._filtertags)
+
+        # Other initializations
+        source_header = self._specinfo.packages[0].header
         self.name = source_header[rpm.RPMTAG_NAME]
         self.upstreamversion = source_header[rpm.RPMTAG_VERSION]
         self.release = source_header[rpm.RPMTAG_RELEASE]
@@ -149,18 +146,11 @@ class SpecFile(object):
         self.epoch = str(source_header[rpm.RPMTAG_EPOCH]) \
             if source_header[rpm.RPMTAG_EPOCH] != None else None
         self.packager = source_header[rpm.RPMTAG_PACKAGER]
-        self.specfile = os.path.abspath(specfile)
-        self.specdir = os.path.dirname(self.specfile)
         self.patches = {}
         self.sources = {}
 
-        # Load and parse extra info from spec file
-        self.content = LinkedList()
-        with open(self.specfile) as spec_file:
-            for line in spec_file.readlines():
-                self.content.append(line)
+        # Parse extra info from spec file
         loc = self.parse_content()
-
 
         # Find 'Packager' tag. Needed to circumvent a bug in python-rpm where
         # spec.sourceHeader[rpm.RPMTAG_PACKAGER] is not reset when a new spec
@@ -170,7 +160,7 @@ class SpecFile(object):
 
         # Update sources info (basically possible macros expanded by spec.__init__()
         # And, double-check that we parsed spec content correctly
-        for (name, num, typ) in self.specinfo.sources:
+        for (name, num, typ) in self._specinfo.sources:
             # workaround rpm parsing bug
             if num >= MAX_SOURCE_NUMBER:
                 num = 0
@@ -198,6 +188,21 @@ class SpecFile(object):
 
         self.orig_src_num = self.guess_orig_file()
 
+    def _parse_filtered_spec(self, skip_tags):
+        """Parse a filtered spec file in rpm-python"""
+        skip_tags = [tag.lower() for tag in skip_tags]
+        with tempfile.NamedTemporaryFile(prefix='gbp') as filtered:
+            filtered.writelines(str(line) for line in self._content
+                    if str(line).split(":")[0].strip().lower() not in skip_tags)
+            filtered.flush()
+            try:
+                # Parse two times to circumvent a rpm-python problem where
+                # macros are not expanded if used before their definition
+                rpm.spec(filtered.name)
+                return rpm.spec(filtered.name)
+            except ValueError as err:
+                raise GbpError("RPM error while parsing %s: %s" %
+                                (self.specfile, err))
 
     def _get_version(self):
         """
