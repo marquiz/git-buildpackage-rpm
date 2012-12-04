@@ -25,6 +25,7 @@ import tempfile
 import glob
 import shutil as shutil
 from optparse import OptionParser
+from collections import defaultdict
 
 import gbp.command_wrappers as gbpc
 from gbp.errors import GbpError
@@ -115,20 +116,21 @@ class SpecFile(object):
     """Class for parsing/modifying spec files"""
     tag_re = re.compile(r'^(?P<name>[a-z]+)(?P<num>[0-9]+)?\s*:\s*'
                          '(?P<value>\S(.*\S)?)\s*$', flags=re.I)
-    macro_re = re.compile(r'^%(?P<name>[a-z]+)(?P<num>[0-9]+)?'
-                           '(\s+(?P<args>.*))?$')
+    directive_re = re.compile(r'^%(?P<name>[a-z]+)(?P<num>[0-9]+)?'
+                               '(\s+(?P<args>.*))?$', flags=re.I)
     gbptag_re = re.compile(r'^\s*#\s*gbp-(?P<name>[a-z-]+)'
                             '(\s*:\s*(?P<args>\S.*))?$', flags=re.I)
 
     def __init__(self, specfile):
+
         # Load spec file into our special data structure
         self.specfile = os.path.abspath(specfile)
         self.specdir = os.path.dirname(self.specfile)
-        self.content = LinkedList()
+        self._content = LinkedList()
         try:
             with open(specfile) as spec_file:
                 for line in spec_file.readlines():
-                    self.content.append(line)
+                    self._content.append(line)
         except IOError as err:
             raise NoSpecError("Unable to read spec file: %s" % err)
 
@@ -148,43 +150,18 @@ class SpecFile(object):
         self.packager = source_header[rpm.RPMTAG_PACKAGER]
         self.patches = {}
         self.sources = {}
+        self._tags = {}
+        self._special_directives = defaultdict(list)
+        self._gbp_tags = defaultdict(list)
 
         # Parse extra info from spec file
-        loc = self.parse_content()
+        self._parse_content()
 
         # Find 'Packager' tag. Needed to circumvent a bug in python-rpm where
         # spec.sourceHeader[rpm.RPMTAG_PACKAGER] is not reset when a new spec
         # file is parsed
-        if 'packagertag' not in loc:
+        if 'packager' not in self._tags:
             self.packager = None
-
-        # Update sources info (basically possible macros expanded by spec.__init__()
-        # And, double-check that we parsed spec content correctly
-        for (name, num, typ) in self._specinfo.sources:
-            # workaround rpm parsing bug
-            if num >= MAX_SOURCE_NUMBER:
-                num = 0
-            if typ == 1:
-                if num in self.sources:
-                    self.sources[num]['full_path'] = name
-                    self.sources[num]['filename'] = os.path.basename(name)
-                    self.sources[num]['filename_base'],\
-                    self.sources[num]['archive_fmt'],\
-                    self.sources[num]['compression'] = parse_archive_filename(os.path.basename(name))
-                    # Make a guess about the prefix in the archive
-                    if self.sources[num]['archive_fmt']:
-                        _name, _version = RpmPkgPolicy.guess_upstream_src_version(name)
-                        if _name and _version:
-                            self.sources[num]['prefix'] = "%s-%s/" % (_name, _version)
-                        else:
-                            self.sources[num]['prefix'] = self.sources[num]['filename_base'] + "/"
-                else:
-                    gbp.log.err("BUG: we didn't correctly parse all 'Source' tags!")
-            if typ == 2:
-                if num in self.patches:
-                    self.patches[num]['filename'] = name
-                else:
-                    gbp.log.err("BUG: we didn't correctly parse all 'Patch' tags!")
 
         self.orig_src_num = self.guess_orig_file()
 
@@ -224,6 +201,14 @@ class SpecFile(object):
         return None
     orig_src = property(_get_orig_src)
 
+    @property
+    def ignorepatches(self):
+        """Get numbers of ignored patches as a sorted list"""
+        if 'ignore-patches' in self._gbp_tags:
+            data = self._gbp_tags['ignore-patches'][-1]['args'].split()
+            return sorted([int(num) for num in data])
+        return []
+
     def _macro_replace(self, matchobj):
         macro_dict = {'name': self.name,
                       'version': self.upstreamversion,
@@ -253,37 +238,72 @@ class SpecFile(object):
         Write, possibly updated, spec to disk
         """
         with open(self.specfile, 'w') as spec_file:
-            for line in self.content:
+            for line in self._content:
                 spec_file.write(str(line))
 
+    def _parse_tag(self, lineobj):
+        """Parse tag line"""
 
-    def parse_content(self):
-        """
-        Go through spec file content line-by-line and (re-)parse info from it
-        """
-        # Location of "interesting" tags and macros
-        ret = {}
-        # First, we parse the spec for special git-buildpackage tags, only
-        ignorepatch = []
-        for i, lineobj in enumerate(self.content):
-            line = str(lineobj)
-            m = self.gbptag_re.match(line)
-            if m:
-                if m.group('name').lower() == 'ignore-patches':
-                    dataitems = m.group('args').strip().split()
-                    ignorepatch = sorted([int(num) for num in dataitems])
-                elif m.group('name').lower() == 'patch-macros':
-                    ret['patchmacrostart'] = lineobj
-                else:
-                    gbp.log.info("Found unrecognized Gbp tag on line %s: "
-                                 "'%s'" % (i, line))
+        line = str(lineobj)
 
-        # Remove all autoupdate patches to be sure we're in sync
-        for patch in self.patches.keys():
-            if not patch in ignorepatch:
-                self.patches.pop(patch)
+        matchobj = self.tag_re.match(line)
+        if not matchobj:
+            return False
 
-        # Parser for patch macros
+        tagname = matchobj.group('name').lower()
+        tagnum = int(matchobj.group('num')) if matchobj.group('num') else None
+        # 'Source:' tags
+        if tagname == 'source':
+            tagnum = 0 if tagnum is None else tagnum
+            if tagnum in self.sources:
+                self.sources[tagnum]['tag_line'] = lineobj
+            else:
+                self.sources[tagnum] = {
+                        'filename': os.path.basename(matchobj.group('name')),
+                        'tag_line': line,
+                        'prefix': None,
+                        'setup_options': None, }
+        # 'Patch:' tags
+        elif tagname == 'patch':
+            tagnum = 0 if tagnum is None else tagnum
+            new_patch = {'name': matchobj.group('name').strip(),
+                         'filename': matchobj.group('name'),
+                         'apply': False,
+                         'strip': '0',
+                         'macro_line': None,
+                         'autoupdate': True,
+                         'tag_line': lineobj}
+            self.patches[tagnum] = new_patch
+
+        # Record all tag locations
+        try:
+            header = self._specinfo.packages[0].header
+            tagvalue = header[getattr(rpm, 'RPMTAG_%s' % tagname.upper())]
+        except AttributeError:
+            tagvalue = None
+        # We don't support "multivalue" tags like "Provides:" or "SourceX:"
+        if type(tagvalue) is list:
+            tagvalue = None
+        elif not tagvalue:
+            # Rpm python doesn't give BuildRequires, for some reason
+            if tagname not in ('buildrequires',) + self._filtertags:
+                gbp.log.warn("BUG: '%s:' tag not found by rpm" % tagname)
+            tagvalue = matchobj.group('value')
+        linerecord = {'line': lineobj,
+                      'num': tagnum,
+                      'linevalue': matchobj.group('value')}
+        if tagname in self._tags:
+            self._tags[tagname]['value'] = tagvalue
+            self._tags[tagname]['lines'].append(linerecord)
+        else:
+            self._tags[tagname] = {'value': tagvalue, 'lines': [linerecord]}
+
+        return tagname
+
+    def _parse_directive(self, lineobj):
+        """Parse special directive/scriptlet/macro lines"""
+
+        # Parser for '%patch' macros
         patchparser = OptionParser()
         patchparser.add_option("-p", dest="strip")
         patchparser.add_option("-s", dest="silence")
@@ -291,138 +311,157 @@ class SpecFile(object):
         patchparser.add_option("-b", dest="backup")
         patchparser.add_option("-E", dest="removeempty")
 
-        # Parser for patch macros
+        # Parser for '%setup' macros
         setupparser = OptionParser()
         setupparser.add_option("-n", dest="name")
         setupparser.add_option("-c", dest="create_dir", action="store_true")
         setupparser.add_option("-D", dest="no_delete_dir", action="store_true")
-        setupparser.add_option("-T", dest="no_unpack_default", action="store_true")
+        setupparser.add_option("-T", dest="no_unpack_default",
+                               action="store_true")
         setupparser.add_option("-b", dest="unpack_before")
         setupparser.add_option("-a", dest="unpack_after")
         setupparser.add_option("-q", dest="quiet", action="store_true")
 
-        for linenum, lineobj in enumerate(self.content):
-            line = str(lineobj)
+        line = str(lineobj)
+        matchobj = self.directive_re.match(line)
+        if not matchobj:
+            return None
 
-            # Parse tags
-            m = self.tag_re.match(line)
-            if m:
-                tagname = m.group('name').lower()
-                if m.group('num'):
-                    tagnum = int(m.group('num'))
-                else:
-                    tagnum = 0
-                # 'Source:' tags
-                if tagname == 'source':
-                    if tagnum in self.sources:
-                        self.sources[tagnum]['tag_line'] = lineobj
-                    else:
-                        self.sources[tagnum] = {
-                                'full_path': m.group('name'),
-                                'filename': os.path.basename(m.group('name')),
-                                'tag_line': line,
-                                'prefix': None,
-                                'setup_options': None, }
-                    ret['lastsourcetag'] = lineobj
-                # 'Patch:' tags
-                elif tagname == 'patch':
-                    if tagnum in self.patches:
-                        # For non-autoupdate patches we only update the lineobj
-                        if tagnum in ignorepatch:
-                            self.patches[tagnum]['tag_line'] = lineobj
-                        else:
-                            gbp.log.err("Patch%s found multiple times, "
-                                        "aborting as gbp spec/patch "
-                                        "autoupdate likely fails" % tagnum)
-                            raise GbpError("RPM error while parsing spec, "
-                                           "duplicate patches found")
-                    else:
-                        new_patch = {'name': m.group('name').strip(),
-                                     'filename': m.group('name'),
-                                     'apply': False,
-                                     'strip': '0',
-                                     'macro_line': None,
-                                     'autoupdate': not tagnum in ignorepatch,
-                                     'tag_line': lineobj}
-                        self.patches[tagnum] = new_patch
-                    ret['lastpatchtag'] = lineobj
-                # Other tags
-                elif tagname == 'name':
-                    ret['nametag'] = lineobj
-                elif tagname == 'packager':
-                    ret['packagertag'] = lineobj
-                elif tagname == 'vcs':
-                    ret['vcstag'] = lineobj
-                elif tagname == 'release':
-                    ret['releasetag'] = lineobj
+        directivename = matchobj.group('name')
+        # '%patch' macros
+        directiveid = None
+        if directivename == 'patch':
+            arglist = matchobj.group('args').split()
+            (opts, args) = patchparser.parse_args(arglist)
+            if matchobj.group('num'):
+                directiveid = int(matchobj.group('num'))
+            elif opts.patchnum:
+                directiveid = int(opts.patchnum)
+            else:
+                directiveid = 0
+
+            if opts.strip:
+                self.patches[directiveid]['strip'] = opts.strip
+            self.patches[directiveid]['macro_line'] = lineobj
+            self.patches[directiveid]['apply'] = True
+        # '%setup' macros
+        elif directivename == 'setup':
+            arglist = matchobj.group('args').split()
+            (opts, args) = setupparser.parse_args(arglist)
+            srcnum = None
+            if opts.no_unpack_default:
+                if opts.unpack_before:
+                    srcnum = int(opts.unpack_before)
+                elif opts.unpack_after:
+                    srcnum = int(opts.unpack_after)
+            else:
+                srcnum = 0
+            if srcnum != None and srcnum in self.sources:
+                self.sources[srcnum]['setup_options'] = opts
+
+        # Record special directive/scriptlet/macro locations
+        if directivename in ('prep', 'setup', 'patch'):
+            linerecord = {'line': lineobj,
+                          'id': directiveid,
+                          'args': matchobj.group('args')}
+            self._special_directives[directivename].append(linerecord)
+        return directivename
+
+    def _parse_gbp_tag(self, linenum, lineobj):
+        """Parse special git-buildpackage tags"""
+
+        line = str(lineobj)
+        matchobj = self.gbptag_re.match(line)
+        if matchobj:
+            gbptagname = matchobj.group('name').lower()
+            if gbptagname not in ('ignore-patches', 'patch-macros'):
+                gbp.log.info("Found unrecognized Gbp tag on line %s: '%s'" %
+                             (linenum, line))
+            if matchobj.group('args'):
+                args = matchobj.group('args').strip()
+            else:
+                args = None
+            record = {'line': lineobj, 'args': args}
+            self._gbp_tags[gbptagname].append(record)
+            return gbptagname
+
+        return None
+
+    def _parse_content(self):
+        """
+        Go through spec file content line-by-line and (re-)parse info from it
+        """
+        in_preamble = True
+        for linenum, lineobj in enumerate(self._content):
+            matched = False
+            if in_preamble:
+                if self._parse_tag(lineobj):
+                    continue
+            matched = self._parse_directive(lineobj)
+            if matched:
+                if matched in ('package', 'description', 'prep', 'build',
+                               'install', 'clean', 'check', 'pre', 'preun',
+                               'post', 'postun', 'verifyscript', 'files',
+                               'changelog', 'triggerin', 'triggerpostin',
+                               'triggerun', 'triggerpostun'):
+                    in_preamble = False
                 continue
+            self._parse_gbp_tag(linenum, lineobj)
 
-            # Parse special macros
-            m = self.macro_re.match(line)
-            if m:
-                # '%patch' macro
-                if m.group('name') == 'patch':
-                    (opts, args) = patchparser.parse_args(m.group('args').split())
-                    if m.group('num'):
-                        patchnum = int(m.group('num'))
-                    elif opts.patchnum:
-                        patchnum = int(opts.patchnum)
-                    else:
-                        patchnum = 0
+        # Update sources info (basically possible macros expanded by rpm)
+        # And, double-check that we parsed spec content correctly
+        for (name, num, typ) in self._specinfo.sources:
+            # workaround rpm parsing bug
+            if num >= MAX_SOURCE_NUMBER:
+                num = 0
+            if typ == 1:
+                if num in self.sources:
+                    self.sources[num]['filename'] = os.path.basename(name)
+                    self.sources[num]['filename_base'],\
+                    self.sources[num]['archive_fmt'],\
+                    self.sources[num]['compression'] =\
+                            parse_archive_filename(os.path.basename(name))
+                    # Make a guess about the prefix in the archive
+                    if self.sources[num]['archive_fmt']:
+                        _name, _version = RpmPkgPolicy.guess_upstream_src_version(name)
+                        if _name and _version:
+                            self.sources[num]['prefix'] = "%s-%s/" % (_name, _version)
+                        else:
+                            self.sources[num]['prefix'] = self.sources[num]['filename_base'] + "/"
+                else:
+                    gbp.log.err("BUG: we didn't correctly parse all 'Source' tags!")
+            if typ == 2:
+                if num in self.patches:
+                    self.patches[num]['filename'] = name
+                else:
+                    gbp.log.err("BUG: we didn't correctly parse all 'Patch' tags!")
 
-                    if opts.strip:
-                        self.patches[patchnum]['strip'] = opts.strip
-                    self.patches[patchnum]['macro_line'] = lineobj
-                    self.patches[patchnum]['apply'] = True
-                    ret['lastpatchmacro'] = lineobj
-
-                # '%setup' macros
-                if m.group('name') == 'setup':
-                    (opts, args) = setupparser.parse_args(m.group('args').split())
-                    srcnum = None
-                    if opts.no_unpack_default:
-                        if opts.unpack_before:
-                            srcnum = int(opts.unpack_before)
-                        elif opts.unpack_after:
-                            srcnum = int(opts.unpack_after)
-                    else:
-                        srcnum = 0
-                    if srcnum != None and srcnum in self.sources:
-                        self.sources[srcnum]['setup_options'] = opts
-                    # Save the occurrence of last setup macro
-                    ret['setupmacro'] = lineobj
-
-                # '%prep' macro
-                if m.group('name') == 'prep':
-                    ret['prepmacro'] = lineobj
-        return ret
+        # Mark ignored patches
+        for patchnum in self.patches:
+            if patchnum in self.ignorepatches:
+                self.patches[patchnum]['autoupdate'] = False
 
     def set_tag(self, tag, value):
         """Update a tag in spec file content"""
-        loc = self.parse_content()
-
-        key = tag.lower() + "tag"
-        if tag.lower() == 'vcs':
+        key = tag.lower()
+        if key == 'vcs':
             if value:
                 text = '%-12s%s\n' % ('VCS:', value)
-                if key in loc:
+                if key in self._tags:
                     gbp.log.info("Updating '%s' tag in spec" % tag)
-                    loc[key].set_data(text)
+                    self._tags[key]['lines'][-1]['line'].set_data(text)
                 else:
                     gbp.log.info("Adding '%s' tag to spec" % tag)
-                    self.content.insert_after(loc['releasetag'], text)
-            elif key in loc:
+                    self._content.insert_after(
+                        self._tags['release']['lines'][-1]['line'], text)
+            elif key in self._tags:
                 gbp.log.info("Removing '%s' tag from spec" % tag)
-                self.content.delete(loc[key])
+                self._content.delete(self._tags[key]['lines'][-1]['line'])
         else:
             raise GbpError("Setting '%s:' tag not supported")
 
     def update_patches(self, patchfilenames):
-        """
-        Update spec with new patch tags and patch macros.
-        """
-        loc = self.parse_content()
-
+        """Update spec with new patch tags and patch macros"""
         # Remove non-ignored patches
         last_removed_tag_line = None
         last_removed_macro_line = None
@@ -432,18 +471,18 @@ class SpecFile(object):
                 prev_line = patch['tag_line'].prev
                 if re.match("^\s*#.*patch.*auto-generated",
                             str(prev_line), flags=re.I):
-                    self.content.delete(prev_line)
+                    self._content.delete(prev_line)
                 last_removed_tag_line = patch['tag_line'].prev
-                self.content.delete(patch['tag_line'])
+                self._content.delete(patch['tag_line'])
                 if patch['macro_line']:
                     # Remove a preceding comment line if it ends with
                     # '.patch' or '.diff' plus an optional compression suffix
                     prev_line = patch['macro_line'].prev
                     if re.match("^\s*#.+(patch|diff)(\.(gz|bz2|xz|lzma))?\s*$",
                                 str(prev_line), flags=re.I):
-                        self.content.delete(prev_line)
+                        self._content.delete(prev_line)
                     last_removed_macro_line = patch['macro_line'].prev
-                    self.content.delete(patch['macro_line'])
+                    self._content.delete(patch['macro_line'])
                 # Remove from the patch list
                 self.patches.pop(num)
 
@@ -462,17 +501,17 @@ class SpecFile(object):
         if last_removed_tag_line:
             gbp.log.info("Adding 'Patch' tags in place of the removed tags")
             line = last_removed_tag_line
-        elif 'lastpatchtag' in loc:
+        elif 'patch' in self._tags:
             gbp.log.info("Adding new 'Patch' tags after the last 'Patch' tag")
-            line = loc['lastpatchtag']
-        elif 'lastsourcetag' in loc:
+            line = self._tags['patch']['lines'][-1]['line']
+        elif 'source' in self._tags:
             gbp.log.info("Didn't find any old 'Patch' tags, adding new "
                          "patches after the last 'Source' tag.")
-            line = loc['lastsourcetag']
+            line = self._tags['source']['lines'][-1]['line']
         else:
             gbp.log.info("Didn't find any old 'Patch' or 'Source' tags, "
                          "adding new patches after the last 'Name' tag.")
-            line = loc['nametag']
+            line = self._tags['name']['lines'][-1]['line']
 
         # Add all patch tag lines to content, in reversed order
         for n in reversed(sorted(self.patches.keys())):
@@ -480,31 +519,33 @@ class SpecFile(object):
             if patch['autoupdate']:
                 # "PatchXYZ:" text 12 chars wide, left aligned
                 text = "%-12s%s\n" % ("Patch%d:" % n, patch['name'])
-                patch['tag_line'] = self.content.insert_after(line, text)
+                patch['tag_line'] = self._content.insert_after(line, text)
         # Finally, add a comment indicating gbp generated patches
-        self.content.insert_after(line, "# Patches auto-generated by "
+        self._content.insert_after(line, "# Patches auto-generated by "
                                         "git-buildpackage:\n")
 
         # Determine where to add %patch macro lines
-        if 'patchmacrostart' in loc:
-            gbp.log.info("Adding patch macros after the start marker")
-            line = loc['patchmacrostart']
+        if 'patch-macros' in self._gbp_tags:
+            gbp.log.info("Adding '%patch' macros after the start marker")
+            line = self._gbp_tags['patch-macros'][-1]['line']
         elif last_removed_macro_line:
-            gbp.log.info("Adding patch macros in place of the removed macros")
+            gbp.log.info("Adding '%patch' macros in place of the removed "
+                         "macros")
             line = last_removed_macro_line
-        elif 'lastpatchmacro' in loc:
-            gbp.log.info("Adding new patch macros after the last %patch macro")
-            line = loc['lastpatchmacro']
-        elif 'setupmacro' in loc:
+        elif self._special_directives['patch']:
+            gbp.log.info("Adding new '%patch' macros after the last existing"
+                         "'%patch' macro")
+            line = self._special_directives['patch'][-1]['line']
+        elif self._special_directives['setup']:
             gbp.log.info("Didn't find any old '%patch' macros, adding new "
                          "patches after the last '%setup' macro")
-            line = loc['setupmacro']
-        elif 'prepmacro' in loc:
-            gbp.log.warn("Didn't find any old '%patch' macros or %setup macro,"
-                         " adding new patches directly after %prep macro")
-            line = loc['prepmacro']
+            line = self._special_directives['setup'][-1]['line']
+        elif self._special_directives['prep']:
+            gbp.log.warn("Didn't find any old '%patch' or '%setup' macros, "
+                         "adding new patches directly after '%prep' directive")
+            line = self._special_directives['prep'][-1]['line']
         else:
-            raise GbpError("Couldn't find location where to add patch macros")
+            raise GbpError("Couldn't determine where to add '%patch' macros")
 
         # Add all patch macro lines to content, in reversed order
         for n in reversed(sorted(self.patches.keys())):
@@ -512,10 +553,9 @@ class SpecFile(object):
             if patch['autoupdate'] and patch['apply']:
                 # We're adding from bottom to top...
                 text = "%%patch%d -p%s\n" % (n, patch['strip'])
-                patch['macro_line'] = self.content.insert_after(line, text)
+                patch['macro_line'] = self._content.insert_after(line, text)
                 # Use 'name', that is filename with macros not expanded
-                self.content.insert_after(line, "# %s\n" % patch['name'])
-
+                self._content.insert_after(line, "# %s\n" % patch['name'])
 
     def patchseries(self):
         """

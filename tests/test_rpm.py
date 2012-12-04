@@ -114,7 +114,6 @@ class TestSpecFile(object):
 
         orig = spec.orig_src
         assert orig['filename'] == 'gbp-test2-3.0.tar.gz'
-        assert orig['full_path'] == 'ftp://ftp.host.com/gbp-test2-3.0.tar.gz'
         assert orig['archive_fmt'] == 'tar'
         assert orig['compression'] == 'gzip'
         assert orig['prefix'] == ''
@@ -166,8 +165,9 @@ class TestSpecFile(object):
 
         reference_spec = os.path.join(SPEC_DIR, 'gbp-test2-reference2.spec')
         spec = SpecFile(tmp_spec)
-        spec.update_patches(['new.patch'])
+        spec.update_patches(['1.patch', '2.patch'])
         spec.set_tag('vcs', 'myvcstag')
+        spec.update_patches(['new.patch'])
         spec.write_spec_file()
         assert filecmp.cmp(tmp_spec, reference_spec) is True
 
