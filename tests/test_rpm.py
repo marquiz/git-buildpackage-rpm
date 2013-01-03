@@ -230,6 +230,25 @@ class TestSpecFile(object):
         # Check that we quess orig source and prefix correctly
         assert spec.orig_src['prefix'] == 'foobar/'
 
+    def test_tags(self):
+        """Test parsing of all the different tags of spec file"""
+        spec_filepath = os.path.join(SPEC_DIR, 'gbp-test-tags.spec')
+        spec = SpecFileTester(spec_filepath)
+
+        # Check all the tags
+        for name, val in spec.protected('_tags').iteritems():
+            rval = None
+            if name in ('version', 'release', 'epoch', 'nosource', 'nopatch'):
+                rval = '0'
+            elif name in ('autoreq', 'autoprov', 'autoreqprov'):
+                rval = 'No'
+            elif name not in spec.protected('_listtags'):
+                rval = 'my_%s' % name
+            if rval:
+                assert val['value'] == rval, ("'%s:' is '%s', expecting '%s'" %
+                                              (name, val['value'], rval))
+            assert spec.ignorepatches == []
+
 
 class TestUtilityFunctions(object):
     """Test utility functions of L{gbp.rpm}"""

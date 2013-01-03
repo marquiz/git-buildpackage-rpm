@@ -137,6 +137,13 @@ class SpecFile(object):
         # Use rpm-python to parse the spec file content
         self._filtertags = ("excludearch", "excludeos", "exclusivearch",
                             "exclusiveos","buildarch")
+        self._listtags = self._filtertags + ('source', 'patch',
+                                  'requires', 'conflicts', 'recommends',
+                                  'suggests', 'supplements', 'enhances',
+                                  'provides', 'obsoletes', 'buildrequires',
+                                  'buildconflicts', 'buildrecommends',
+                                  'buildsuggests', 'buildsupplements',
+                                  'buildenhances', 'collections')
         self._specinfo = self._parse_filtered_spec(self._filtertags)
 
         # Other initializations
@@ -282,11 +289,15 @@ class SpecFile(object):
         except AttributeError:
             tagvalue = None
         # We don't support "multivalue" tags like "Provides:" or "SourceX:"
-        if type(tagvalue) is list:
+        # Rpm python doesn't support many of these, thus the explicit list
+        if type(tagvalue) is int or type(tagvalue) is long:
+            tagvalue = str(tagvalue)
+        elif type(tagvalue) is list or tagname in self._listtags:
             tagvalue = None
         elif not tagvalue:
-            # Rpm python doesn't give BuildRequires, for some reason
-            if tagname not in ('buildrequires',) + self._filtertags:
+            # Rpm python doesn't give the following, for reason or another
+            if tagname not in ('buildroot', 'nopatch', 'nosource', 'autoprov',
+                               'autoreq', 'autoreqprov') + self._filtertags:
                 gbp.log.warn("BUG: '%s:' tag not found by rpm" % tagname)
             tagvalue = matchobj.group('value')
         linerecord = {'line': lineobj,
