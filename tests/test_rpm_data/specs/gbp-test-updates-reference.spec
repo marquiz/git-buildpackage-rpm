@@ -15,6 +15,8 @@ Group:          my_group
 Packager:       my_packager
 Url:            my_url
 Vcs:            my_vcs
+Nosource:       0
+Nopatch:        1
 BuildRoot:      my_buildroot
 Provides:       my_provides
 Requires:       my_requires

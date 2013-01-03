@@ -414,7 +414,7 @@ class SpecFile(object):
             # workaround rpm parsing bug
             if num >= MAX_SOURCE_NUMBER:
                 num = 0
-            if typ == 1:
+            if typ == 1 or typ == 9:
                 if num in self.sources:
                     self.sources[num]['filename'] = os.path.basename(name)
                     self.sources[num]['filename_base'],\
@@ -430,7 +430,7 @@ class SpecFile(object):
                             self.sources[num]['prefix'] = self.sources[num]['filename_base'] + "/"
                 else:
                     gbp.log.err("BUG: we didn't correctly parse all 'Source' tags!")
-            if typ == 2:
+            if typ == 2 or typ == 10:
                 if num in self.patches:
                     self.patches[num]['filename'] = name
                 else:
