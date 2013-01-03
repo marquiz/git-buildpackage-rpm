@@ -30,6 +30,14 @@ DATA_DIR = os.path.abspath(os.path.splitext(__file__)[0] + '_data')
 SRPM_DIR = os.path.join(DATA_DIR, 'srpms')
 SPEC_DIR = os.path.join(DATA_DIR, 'specs')
 
+class SpecFileTester(SpecFile):
+    """Helper class for testing"""
+
+    def protected(self, name):
+        """Get a protected member"""
+        return super(SpecFileTester, self).__getattribute__(name)
+
+
 class TestSrcRpmFile(object):
     """Test L{gbp.rpm.SrcRpmFile}"""
 
@@ -77,7 +85,7 @@ class TestSpecFile(object):
     def test_spec(self):
         """Test parsing of a valid spec file"""
         spec_filepath = os.path.join(SPEC_DIR, 'gbp-test.spec')
-        spec = SpecFile(spec_filepath)
+        spec = SpecFileTester(spec_filepath)
 
         # Test basic properties
         assert spec.specfile == spec_filepath
@@ -154,7 +162,7 @@ class TestSpecFile(object):
 
         # Test adding the VCS tag
         reference_spec = os.path.join(SPEC_DIR, 'gbp-test-reference2.spec')
-        spec.set_tag('vcs', 'myvcstag')
+        spec.set_tag('VCS', None, 'myvcstag')
         spec.write_spec_file()
         assert filecmp.cmp(tmp_spec, reference_spec) is True
 
@@ -166,14 +174,41 @@ class TestSpecFile(object):
         reference_spec = os.path.join(SPEC_DIR, 'gbp-test2-reference2.spec')
         spec = SpecFile(tmp_spec)
         spec.update_patches(['1.patch', '2.patch'])
-        spec.set_tag('vcs', 'myvcstag')
+        spec.set_tag('VCS', None, 'myvcstag')
         spec.update_patches(['new.patch'])
         spec.write_spec_file()
         assert filecmp.cmp(tmp_spec, reference_spec) is True
 
         # Test removing the VCS tag
         reference_spec = os.path.join(SPEC_DIR, 'gbp-test2-reference.spec')
-        spec.set_tag('vcs', '')
+        spec.set_tag('VCS', None, '')
+        spec.write_spec_file()
+        assert filecmp.cmp(tmp_spec, reference_spec) is True
+
+    def test_modifying(self):
+        """Test updating/deleting of tags and macros"""
+        tmp_spec = os.path.join(self.tmpdir, 'gbp-test.spec')
+        shutil.copy2(os.path.join(SPEC_DIR, 'gbp-test-updates.spec'), tmp_spec)
+        reference_spec = os.path.join(SPEC_DIR,
+                                      'gbp-test-updates-reference.spec')
+        spec = SpecFileTester(tmp_spec)
+
+        # Mangle tags
+        prev = spec.protected('_delete_tag')('Vendor', None)
+        spec.protected('_set_tag')('License', None, 'new license', prev)
+        spec.protected('_delete_tag')('source', 0)
+        spec.protected('_delete_tag')('patch', 0)
+        spec.protected('_delete_tag')('patch', -1)
+        prev = spec.protected('_delete_tag')('invalidtag', None)
+
+        with assert_raises(GbpError):
+            # Check that setting empty value fails
+            spec.protected('_set_tag')('Version', None, '', prev)
+        with assert_raises(GbpError):
+            # Check that setting invalid tag with public method fails
+            spec.set_tag('invalidtag', None, 'value')
+
+        # Check resulting spec file
         spec.write_spec_file()
         assert filecmp.cmp(tmp_spec, reference_spec) is True
 

@@ -1,8 +1,8 @@
 Name:       gbp-test
+VCS:        myvcstag
 Summary:    Test package for git-buildpackage
 Version:    1.0
 Release:    1
-VCS:        myvcstag
 Group:      Development/Libraries
 License:    GPLv2
 Source:     %{name}-%{version}.tar.bz2

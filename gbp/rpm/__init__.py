@@ -441,24 +441,85 @@ class SpecFile(object):
             if patchnum in self.ignorepatches:
                 self.patches[patchnum]['autoupdate'] = False
 
-    def set_tag(self, tag, value):
+    def _delete_tag(self, tag, num):
+        """Delete a tag"""
+        key = tag.lower()
+        tagname = '%s%s' % (tag, num) if num is not None else tag
+        if key not in self._tags:
+            gbp.log.warn("Trying to delete non-existent tag '%s:'" % tag)
+            return None
+
+        sparedlines = []
+        prev = None
+        for line in self._tags[key]['lines']:
+            if line['num'] == num:
+                gbp.log.debug("Removing '%s:' tag from spec" % tagname)
+                prev = self._content.delete(line['line'])
+            else:
+                sparedlines.append(line)
+        self._tags[key]['lines'] = sparedlines
+        if not self._tags[key]['lines']:
+            self._tags.pop(key)
+        return prev
+
+    def _set_tag(self, tag, num, value, insertafter):
+        """Set a tag value"""
+        key = tag.lower()
+        tagname = '%s%s' % (tag, num) if num is not None else tag
+        value = value.strip()
+        if not value:
+            raise GbpError("Cannot set empty value to '%s:' tag" % tag)
+
+        # Check type of tag, we don't support values for 'multivalue' tags
+        try:
+            header = self._specinfo.packages[0].header
+            tagvalue = header[getattr(rpm, 'RPMTAG_%s' % tagname.upper())]
+        except AttributeError:
+            tagvalue = None
+        tagvalue = None if type(tagvalue) is list else value
+
+        # Try to guess the correct indentation from the previous or next tag
+        indent_re = re.compile(r'^([a-z]+([0-9]+)?\s*:\s*)', flags=re.I)
+        match = indent_re.match(str(insertafter))
+        if not match:
+            match = indent_re.match(str(insertafter.next))
+        indent = 12 if not match else len(match.group(1))
+        text = '%-*s%s\n' % (indent, '%s:' % tagname, value)
+        if key in self._tags:
+            self._tags[key]['value'] = tagvalue
+            for line in reversed(self._tags[key]['lines']):
+                if line['num'] == num:
+                    gbp.log.debug("Updating '%s:' tag in spec" % tagname)
+                    line['line'].set_data(text)
+                    line['linevalue'] = value
+                    return line['line']
+
+        gbp.log.debug("Adding '%s:' tag after '%s...' line in spec" %
+                      (tagname, str(insertafter)[0:20]))
+        line = self._content.insert_after(insertafter, text)
+        linerec = {'line': line, 'num': num, 'linevalue': value}
+        if key in self._tags:
+            self._tags[key]['lines'].append(linerec)
+        else:
+            self._tags[key] = {'value': tagvalue, 'lines': [linerec]}
+        return line
+
+    def set_tag(self, tag, num, value, insertafter=None):
         """Update a tag in spec file content"""
         key = tag.lower()
-        if key == 'vcs':
+        tagname = '%s%s' % (tag, num) if num is not None else tag
+        if key in ('patch', 'vcs'):
+            if key in self._tags:
+                insertafter = key
+            elif not insertafter in self._tags:
+                insertafter = 'name'
+            after_line = self._tags[insertafter]['lines'][-1]['line']
             if value:
-                text = '%-12s%s\n' % ('VCS:', value)
-                if key in self._tags:
-                    gbp.log.info("Updating '%s' tag in spec" % tag)
-                    self._tags[key]['lines'][-1]['line'].set_data(text)
-                else:
-                    gbp.log.info("Adding '%s' tag to spec" % tag)
-                    self._content.insert_after(
-                        self._tags['release']['lines'][-1]['line'], text)
+                self._set_tag(tag, num, value, after_line)
             elif key in self._tags:
-                gbp.log.info("Removing '%s' tag from spec" % tag)
-                self._content.delete(self._tags[key]['lines'][-1]['line'])
+                self._delete_tag(tag, num)
         else:
-            raise GbpError("Setting '%s:' tag not supported")
+            raise GbpError("Setting '%s:' tag not supported" % tagname)
 
     def update_patches(self, patchfilenames):
         """Update spec with new patch tags and patch macros"""
