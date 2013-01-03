@@ -19,6 +19,8 @@ Vcs:            my_vcs
 Source:         my_source
 Patch:          my_%patch_fn_base
 Patch1:         my_%{patch_fn_base}1
+Nosource:       0
+Nopatch:        1
 BuildRoot:      my_buildroot
 Provides:       my_provides
 Requires:       my_requires
