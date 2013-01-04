@@ -88,7 +88,7 @@ class TestSpecFile(object):
         spec = SpecFileTester(spec_filepath)
 
         # Test basic properties
-        assert spec.specfile == spec_filepath
+        assert spec.specfile == os.path.basename(spec_filepath)
         assert spec.specdir == os.path.dirname(spec_filepath)
 
         assert spec.name == 'gbp-test'

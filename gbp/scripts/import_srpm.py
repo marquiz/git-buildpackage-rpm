@@ -151,8 +151,7 @@ def import_spec_patches(repo, spec, dirs):
         repo.force_head('HEAD', hard=True)
         raise PatchImportError("Unable to update spec file, you need to edit"
                                "and commit it  manually")
-    repo.commit_all(msg=PATCH_AUTODELETE_COMMIT_MSG %
-                        os.path.basename(spec.specfile))
+    repo.commit_all(msg=PATCH_AUTODELETE_COMMIT_MSG % spec.specfile)
 
 
 def force_to_branch_head(repo, branch):
@@ -325,7 +324,7 @@ def main(argv):
         for num, src in spec.sources.iteritems():
             if num != spec.orig_src_num:
                 files.append(src['filename'])
-        files.append(spec.specfile)
+        files.append(os.path.join(spec.specdir, spec.specfile))
         for fname in files:
             fpath = os.path.join(dirs['src'], fname)
             if os.path.exists(fpath):
@@ -463,7 +462,7 @@ def main(argv):
                 if options.patch_import:
                     spec = parse_spec(os.path.join(repo.path,
                                             options.packaging_dir,
-                                            os.path.basename(spec.specfile)))
+                                            spec.specfile))
                     import_spec_patches(repo, spec, dirs)
                     commit = options.packaging_branch
 

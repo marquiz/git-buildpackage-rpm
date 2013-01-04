@@ -121,8 +121,8 @@ class SpecFile(object):
     def __init__(self, specfile):
 
         # Load spec file into our special data structure
-        self.specfile = os.path.abspath(specfile)
-        self.specdir = os.path.dirname(self.specfile)
+        self.specfile = os.path.basename(specfile)
+        self.specdir = os.path.dirname(os.path.abspath(specfile))
         self._content = LinkedList()
         try:
             with open(specfile) as spec_file:
@@ -241,7 +241,7 @@ class SpecFile(object):
         """
         Write, possibly updated, spec to disk
         """
-        with open(self.specfile, 'w') as spec_file:
+        with open(os.path.join(self.specdir, self.specfile), 'w') as spec_file:
             for line in self._content:
                 spec_file.write(str(line))
 
@@ -661,7 +661,7 @@ class SpecFile(object):
         Return patches of the RPM as a gbp patchseries
         """
         series = PatchSeries()
-        patchdir = os.path.dirname(self.specfile)
+        patchdir = self.specdir
         for n, p in sorted(self.patches.iteritems()):
             if p['autoupdate'] and p['apply']:
                 fname = os.path.basename(p['filename'])

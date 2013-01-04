@@ -509,9 +509,8 @@ def main(argv):
             pkgfiles = os.listdir(spec.specdir)
             for f in pkgfiles:
                 src = os.path.join(spec.specdir, f)
-                if f == os.path.basename(spec.specfile):
+                if f == spec.specfile:
                     dst = os.path.join(spec_dir, f)
-                    spec.specfile = os.path.abspath(dst)
                 else:
                     dst = os.path.join(source_dir, f)
                 try:
@@ -522,7 +521,7 @@ def main(argv):
                         shutil.copy2(src, dst)
                 except IOError, err:
                     raise GbpError, "Error exporting files: %s" % err
-            spec.specdir = spec_dir
+            spec.specdir = os.path.abspath(spec_dir)
 
             if options.orig_prefix != 'auto':
                 options.orig_prefix = options.orig_prefix % dict(spec.version,
@@ -562,9 +561,10 @@ def main(argv):
 
                 # Finally build the package:
                 if options.builder.startswith("rpmbuild"):
-                    builder_args.extend([spec.specfile])
+                    builder_args.append(os.path.join(spec.specdir,
+                                        spec.specfile))
                 else:
-                    builder_args.extend([os.path.basename(spec.specfile)])
+                    builder_args.append(spec.specfile)
                 RunAtCommand(options.builder, builder_args, shell=True,
                              extra_env={'GBP_BUILD_DIR': export_dir})(dir=export_dir)
                 if options.postbuild:
