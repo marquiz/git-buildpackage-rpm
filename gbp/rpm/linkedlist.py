@@ -189,23 +189,26 @@ class LinkedList(collections.Iterable):
         >>> node3 = list.insert_before(node2, 'baz')
         >>> [str(data) for data in list]
         ['foo', 'baz', 'bar']
-        >>> list.delete(node3)
+        >>> str(list.delete(node3))
+        'foo'
         >>> [str(data) for data in list]
         ['foo', 'bar']
         >>> print "%s" % node3
         <BLANKLINE>
-        >>> list.delete(node1)
+        >>> str(list.delete(node1))
+        'bar'
         >>> [str(data) for data in list]
         ['bar']
         >>> list.delete(node2)
         >>> [str(data) for data in list]
         []
         """
+        ret = node.prev
         if node is self._first:
-            self._first = self._first.next
+            ret = self._first = self._first.next
         if node is self._last:
             self._last = self._last.prev
         node.delete()
-
+        return ret
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
