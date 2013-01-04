@@ -48,7 +48,9 @@ class TestImportPacked(ComponentTestBase):
         assert import_srpm(['arg0', srpm]) == 0
         # Check repository state
         repo = GitRepository('gbp-test')
-        self._check_repo_state(repo, 'master', ['master', 'upstream'])
+        files =  {'Makefile', 'README', 'bar.tar.gz', 'dummy.sh', 'foo.txt',
+                  'gbp-test.spec', 'my.patch', 'mydir/', 'mydir/myfile.txt'}
+        self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
         # Four commits: upstream, packaging files, one patch and the removal
         # of imported patches
         assert len(repo.get_commits()) == 4
@@ -59,7 +61,11 @@ class TestImportPacked(ComponentTestBase):
         assert import_srpm(['arg0', srpm]) == 0
         # Check repository state
         repo = GitRepository('gbp-test2')
-        self._check_repo_state(repo, 'master', ['master', 'upstream'])
+        files = {'Makefile', 'README', 'bar.tar.gz', 'dummy.sh', 'foo.txt',
+                 'gbp-test2.spec', 'gbp-test2-alt.spec', 'my.patch', 'mydir/',
+                 'mydir/myfile.txt'}
+        self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
+
         # Four commits: upstream, packaging files, one patch and the removal
         # of imported patches
         assert len(repo.get_commits()) == 4
@@ -73,17 +79,21 @@ class TestImportPacked(ComponentTestBase):
         assert import_srpm(['arg0', '--orphan-packaging', srpm]) == 0
         # Check repository state
         repo = GitRepository('gbp-test2')
-        self._check_repo_state(repo, 'master', ['master', 'upstream'])
+        files = {'bar.tar.gz', 'foo.txt', 'gbp-test2.spec',
+                 'gbp-test2-alt.spec', 'my.patch', 'my2.patch', 'my3.patch'}
+        self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
         # Only one commit: the packaging files
         assert len(repo.get_commits()) == 1
 
     def test_basic_native_import(self):
         """Test importing of native src.rpm"""
-        srpm = os.path.join(DATA_DIR, 'gbp-test2-2.0-0.src.rpm')
+        srpm = os.path.join(DATA_DIR, 'gbp-test-native-1.0-1.src.rpm')
         assert import_srpm(['arg0', '--native', srpm]) == 0
         # Check repository state
-        repo = GitRepository('gbp-test2')
-        self._check_repo_state(repo, 'master', ['master'])
+        files = {'.gbp.conf', 'Makefile', 'README', 'dummy.sh', 'packaging/',
+                 'packaging/gbp-test-native.spec'}
+        repo = GitRepository('gbp-test-native')
+        self._check_repo_state(repo, 'master', ['master'], files)
         # Only one commit: the imported source tarball
         assert len(repo.get_commits()) == 1
 
@@ -116,6 +126,9 @@ class TestImportPacked(ComponentTestBase):
         assert len(repo.get_commits(until='upstream')) == 1
         # Import new version
         assert import_srpm(['arg0', srpms[2]]) == 0
+        files = {'Makefile', 'README', 'bar.tar.gz', 'dummy.sh', 'foo.txt',
+                 'gbp-test.spec', 'my.patch', 'mydir/', 'mydir/myfile.txt'}
+        self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
         assert len(repo.get_commits()) == 11
         assert len(repo.get_commits(until='upstream')) == 2
         # Check number of tags
@@ -182,7 +195,12 @@ class TestImportPacked(ComponentTestBase):
                     srpm]) == 0
         # Check repository state
         repo = GitRepository('gbp-test2')
-        self._check_repo_state(repo, 'pack', ['pack', 'orig'])
+        files = {'Makefile', 'README', 'dummy.sh', 'packaging/',
+                 'packaging/bar.tar.gz', 'packaging/foo.txt',
+                 'packaging/gbp-test2.spec', 'packaging/gbp-test2-alt.spec',
+                 'packaging/my.patch', 'packaging/my2.patch',
+                 'packaging/my3.patch'}
+        self._check_repo_state(repo, 'pack', ['pack', 'orig'], files)
         assert len(repo.get_commits()) == 2
         # Check packaging dir
         assert len(repo.get_commits(paths='packaging')) == 1
