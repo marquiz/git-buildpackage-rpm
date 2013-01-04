@@ -337,7 +337,7 @@ def import_spec_patches(repo, branch, options):
 
     repo.set_branch(branch)
 
-    return os.path.basename(spec.specfile)
+    return spec.specfile
 
 
 def rebase_pq(repo, branch, options):
