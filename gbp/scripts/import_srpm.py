@@ -268,13 +268,18 @@ def main(argv):
                                                   prefix='pkgextract_')
             gbp.log.info("Extracting src rpm to '%s'" % dirs['pkgextract'])
             src.unpack(dirs['pkgextract'])
+            preferred_spec = src.name + '.spec'
             srpm = dirs['pkgextract']
+        elif os.path.isdir(srpm):
+            preferred_spec = os.path.basename(srpm.rstrip('/')) + '.spec'
+        else:
+            preferred_spec = None
 
         # Find and parse spec file
         if os.path.isdir(srpm):
             gbp.log.debug("Trying to import an unpacked srpm from '%s'" % srpm)
             dirs['src'] = os.path.abspath(srpm)
-            spec = parse_spec(guess_spec(srpm, True))
+            spec = parse_spec(guess_spec(srpm, True, preferred_spec))
         else:
             gbp.log.debug("Trying to import an srpm from '%s' with spec "\
                           "file '%s'" % (os.path.dirname(srpm), srpm))
