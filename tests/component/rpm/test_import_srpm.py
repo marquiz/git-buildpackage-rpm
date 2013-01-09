@@ -53,6 +53,17 @@ class TestImportPacked(ComponentTestBase):
         # of imported patches
         assert len(repo.get_commits()) == 4
 
+    def test_basic_import2(self):
+        """Import package with multiple spec files and full url patch"""
+        srpm = os.path.join(DATA_DIR, 'gbp-test2-2.0-0.src.rpm')
+        assert import_srpm(['arg0', srpm]) == 0
+        # Check repository state
+        repo = GitRepository('gbp-test2')
+        self._check_repo_state(repo, 'master', ['master', 'upstream'])
+        # Four commits: upstream, packaging files, one patch and the removal
+        # of imported patches
+        assert len(repo.get_commits()) == 4
+
     def test_basic_import_orphan(self):
         """
         Test importing of non-native src.rpm to separate packaging and
@@ -221,9 +232,9 @@ class TestImportUnPacked(ComponentTestBase):
 
     def test_missing_files(self):
         """Test importing of directory with missing packaging files"""
-
+        specfile = 'gbp-test2-2.0-0-unpack/gbp-test2.spec'
         os.unlink('gbp-test2-2.0-0-unpack/my.patch')
-        assert import_srpm(['arg0', 'gbp-test2-2.0-0-unpack']) == 1
+        assert import_srpm(['arg0', specfile]) == 1
         self._check_log(-1, "gbp:error: File 'my.patch' listed in spec "
                             "not found")
 
