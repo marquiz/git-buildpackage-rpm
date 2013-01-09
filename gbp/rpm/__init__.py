@@ -520,7 +520,9 @@ class SpecFile(object):
         patchdir = os.path.dirname(self.specfile)
         for n, p in sorted(self.patches.iteritems()):
             if p['autoupdate'] and p['apply']:
-                series.append(Patch(os.path.join(patchdir, p['filename']), strip = int(p['strip'])))
+                fname = os.path.basename(p['filename'])
+                series.append(Patch(os.path.join(patchdir, fname),
+                                    strip = int(p['strip'])))
         return series
 
 
