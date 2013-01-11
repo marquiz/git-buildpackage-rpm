@@ -152,7 +152,6 @@ class SpecFile(object):
         self.epoch = str(source_header[rpm.RPMTAG_EPOCH]) \
             if source_header[rpm.RPMTAG_EPOCH] != None else None
         self.packager = source_header[rpm.RPMTAG_PACKAGER]
-        self.patches = {}
         self.sources = {}
         self._tags = {}
         self._special_directives = defaultdict(list)
@@ -213,6 +212,12 @@ class SpecFile(object):
             return sorted([int(num) for num in data])
         return []
 
+    def _patches(self):
+        """Get all patch tags as a dict"""
+        if 'patch' not in self._tags:
+            return {}
+        return {patch['num']: patch for patch in self._tags['patch']['lines']}
+
     def _macro_replace(self, matchobj):
         macro_dict = {'name': self.name,
                       'version': self.upstreamversion,
@@ -270,14 +275,6 @@ class SpecFile(object):
         # 'Patch:' tags
         elif tagname == 'patch':
             tagnum = -1 if tagnum is None else tagnum
-            new_patch = {'name': matchobj.group('name').strip(),
-                         'filename': matchobj.group('name'),
-                         'apply': False,
-                         'strip': '0',
-                         'macro_line': None,
-                         'autoupdate': True,
-                         'tag_line': lineobj}
-            self.patches[tagnum] = new_patch
 
         # Record all tag locations
         try:
@@ -308,16 +305,21 @@ class SpecFile(object):
 
         return tagname
 
-    def _parse_directive(self, lineobj):
-        """Parse special directive/scriptlet/macro lines"""
+    @staticmethod
+    def _patch_macro_opts(args):
+        """Parse arguments of the '%patch' macro"""
 
-        # Parser for '%patch' macros
         patchparser = OptionParser()
         patchparser.add_option("-p", dest="strip")
         patchparser.add_option("-s", dest="silence")
         patchparser.add_option("-P", dest="patchnum")
         patchparser.add_option("-b", dest="backup")
         patchparser.add_option("-E", dest="removeempty")
+        arglist = args.split()
+        return patchparser.parse_args(arglist)[0]
+
+    def _parse_directive(self, lineobj):
+        """Parse special directive/scriptlet/macro lines"""
 
         # Parser for '%setup' macros
         setupparser = OptionParser()
@@ -339,19 +341,13 @@ class SpecFile(object):
         # '%patch' macros
         directiveid = None
         if directivename == 'patch':
-            arglist = matchobj.group('args').split()
-            (opts, args) = patchparser.parse_args(arglist)
+            opts = self._patch_macro_opts(matchobj.group('args'))
             if matchobj.group('num'):
                 directiveid = int(matchobj.group('num'))
             elif opts.patchnum:
                 directiveid = int(opts.patchnum)
             else:
                 directiveid = -1
-
-            if opts.strip:
-                self.patches[directiveid]['strip'] = opts.strip
-            self.patches[directiveid]['macro_line'] = lineobj
-            self.patches[directiveid]['apply'] = True
         # '%setup' macros
         elif directivename == 'setup':
             arglist = matchobj.group('args').split()
@@ -418,6 +414,7 @@ class SpecFile(object):
 
         # Update sources info (basically possible macros expanded by rpm)
         # And, double-check that we parsed spec content correctly
+        patches = self._patches()
         for (name, num, typ) in self._specinfo.sources:
             # workaround rpm parsing bug
             if typ == 1 or typ == 9:
@@ -441,15 +438,10 @@ class SpecFile(object):
                 # having number (2^31-1), we use number -1
                 if num >= pow(2,30):
                     num = -1
-                if num in self.patches:
-                    self.patches[num]['filename'] = name
+                if num in patches:
+                    patches[num]['linevalue'] = name
                 else:
                     gbp.log.err("BUG: we didn't correctly parse all 'Patch' tags!")
-
-        # Mark ignored patches
-        for patchnum in self.patches:
-            if patchnum in self.ignorepatches:
-                self.patches[patchnum]['autoupdate'] = False
 
     def _delete_tag(self, tag, num):
         """Delete a tag"""
@@ -582,7 +574,7 @@ class SpecFile(object):
         macro_prev = None
         ignored = self.ignorepatches
         # Remove 'Patch:̈́' tags
-        for tag in self._tags['patch']['lines']:
+        for tag in self._patches().values():
             if not tag['num'] in ignored:
                 tag_prev = self._delete_tag('patch', tag['num'])
                 # Remove a preceding comment if it seems to originate from GBP
@@ -656,19 +648,25 @@ class SpecFile(object):
             macro_line = self._set_special_macro('patch', patchnum, '-p1',
                                                  macro_line)
 
-    def patchseries(self):
-        """
-        Return patches of the RPM as a gbp patchseries
-        """
+    def patchseries(self, unapplied=False, ignored=False):
+        """Return non-ignored patches of the RPM as a gbp patchseries"""
         series = PatchSeries()
-        patchdir = self.specdir
-        for n, p in sorted(self.patches.iteritems()):
-            if p['autoupdate'] and p['apply']:
-                fname = os.path.basename(p['filename'])
-                series.append(Patch(os.path.join(patchdir, fname),
-                                    strip = int(p['strip'])))
-        return series
+        if 'patch' in self._tags:
+            tags = self._patches()
+            macros = {macro['id']: macro['args']
+                      for macro in self._special_directives['patch']}
+            ignored = [] if ignored else self.ignorepatches
 
+            for num, tag in sorted(tags.iteritems()):
+                strip = 0
+                if num in macros:
+                    opts = self._patch_macro_opts(macros[num])
+                    strip = int(opts.strip) if opts.strip else 0
+                if (unapplied or (num in macros)) and num not in ignored:
+                    filename = os.path.basename(tag['linevalue'])
+                    series.append(Patch(os.path.join(self.specdir, filename),
+                                        strip=strip))
+        return series
 
     def guess_orig_file(self):
         """

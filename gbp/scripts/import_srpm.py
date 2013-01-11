@@ -319,8 +319,8 @@ def main(argv):
                 raise
 
         # Need to copy files to the packaging directory given by caller
-        files = [os.path.basename(patch['filename']) \
-                for patch in spec.patches.itervalues()]
+        files = [os.path.basename(patch.path) \
+                for patch in spec.patchseries(unapplied=True, ignored=True)]
         for num, src in spec.sources.iteritems():
             if num != spec.orig_src_num:
                 files.append(src['filename'])

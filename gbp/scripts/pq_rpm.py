@@ -139,17 +139,15 @@ def rm_patch_files(spec):
     marked as not maintained by gbp.
     """
     # Remove all old patches from the spec dir
-    for n, p in spec.patches.iteritems():
-        if p['autoupdate']:
-            f = os.path.join(spec.specdir, p['filename'])
-            gbp.log.debug("Removing '%s'" % f)
-            try:
-                os.unlink(f)
-            except OSError, (e, msg):
-                if e != errno.ENOENT:
-                    raise GbpError, "Failed to remove patch: %s" % msg
-                else:
-                    gbp.log.debug("%s does not exist." % f)
+    for patch in spec.patchseries(unapplied=True):
+        gbp.log.debug("Removing '%s'" % patch.path)
+        try:
+            os.unlink(patch.path)
+        except OSError as err:
+            if err.errno != errno.ENOENT:
+                raise GbpError("Failed to remove patch: %s" % err)
+            else:
+                gbp.log.debug("Patch %s does not exist." % patch.path)
 
 
 def update_patch_series(repo, spec, start, end, options):

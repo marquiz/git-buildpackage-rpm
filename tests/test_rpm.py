@@ -199,6 +199,7 @@ class TestSpecFile(object):
         spec.protected('_delete_tag')('source', 0)
         spec.protected('_delete_tag')('patch', 0)
         spec.protected('_delete_tag')('patch', -1)
+        assert spec.protected('_patches')() == {}
         prev = spec.protected('_delete_tag')('invalidtag', None)
 
         with assert_raises(GbpError):
@@ -248,8 +249,28 @@ class TestSpecFile(object):
                 assert val['value'] == rval, ("'%s:' is '%s', expecting '%s'" %
                                               (name, val['value'], rval))
             assert spec.ignorepatches == []
+            # Check patch numbers and patch filenames
+            patches = {patch['num']: patch['linevalue'] for patch in
+                       spec.protected('_tags')['patch']['lines']}
+            assert patches == {0: 'my_patch0', -1: 'my_patch'}
 
-            assert spec.patches.keys() == [0, -1]
+    def test_patch_series(self):
+        """Test the getting the patches as a patchseries"""
+        spec_filepath = os.path.join(SPEC_DIR, 'gbp-test-native.spec')
+        spec = SpecFileTester(spec_filepath)
+
+        assert len(spec.patchseries()) == 0
+        spec.update_patches(['1.patch', '2.patch', '3.patch'])
+        assert len(spec.patchseries()) == 3
+        spec.protected('_gbp_tags')['ignore-patches'].append({'args': "0"})
+        spec.update_patches(['4.patch'])
+        assert len(spec.patchseries()) == 1
+        assert len(spec.patchseries(ignored=True)) == 2
+        spec.protected('_delete_special_macro')('patch', 0)
+        assert len(spec.patchseries(ignored=True)) == 1
+        series = spec.patchseries(unapplied=True, ignored=True)
+        assert len(series) == 2
+        assert os.path.basename(series[-1].path) == '4.patch'
 
 
 class TestUtilityFunctions(object):
