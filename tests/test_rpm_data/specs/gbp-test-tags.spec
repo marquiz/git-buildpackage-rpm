@@ -27,7 +27,8 @@ Packager:       my_packager
 Url:            my_url
 Vcs:            my_vcs
 Source:         my_source
-Patch0:         my_patch
+Patch:          my_patch
+Patch0:         my_patch0
 Nosource:       0
 Nopatch:        0
 #Icon:           my_icon
