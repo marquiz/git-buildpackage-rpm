@@ -16,7 +16,7 @@ Packager:       my_packager
 Url:            my_url
 Vcs:            my_vcs
 Nosource:       0
-Nopatch:        1
+Nopatch:        0
 BuildRoot:      my_buildroot
 Provides:       my_provides
 Requires:       my_requires
@@ -37,7 +37,7 @@ Package for testing GBP.
 %prep
 %setup -n my_prefix
 
-%patch1 my new args
+%patch0 my new args
 
 %build
 

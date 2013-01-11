@@ -197,8 +197,8 @@ class TestSpecFile(object):
         prev = spec.protected('_delete_tag')('Vendor', None)
         spec.protected('_set_tag')('License', None, 'new license', prev)
         spec.protected('_delete_tag')('source', 0)
-        spec.protected('_delete_tag')('patch', 1)
         spec.protected('_delete_tag')('patch', 0)
+        spec.protected('_delete_tag')('patch', -1)
         prev = spec.protected('_delete_tag')('invalidtag', None)
 
         with assert_raises(GbpError):
@@ -209,9 +209,9 @@ class TestSpecFile(object):
             spec.set_tag('invalidtag', None, 'value')
 
         # Mangle macros
-        prev = spec.protected('_delete_special_macro')('patch', 0)
+        prev = spec.protected('_delete_special_macro')('patch', -1)
         spec.protected('_delete_special_macro')('patch', 123)
-        spec.protected('_set_special_macro')('patch', 1, 'my new args', prev)
+        spec.protected('_set_special_macro')('patch', 0, 'my new args', prev)
         with assert_raises(GbpError):
             spec.protected('_delete_special_macro')('invalidmacro', 0)
         with assert_raises(GbpError):
@@ -248,6 +248,8 @@ class TestSpecFile(object):
                 assert val['value'] == rval, ("'%s:' is '%s', expecting '%s'" %
                                               (name, val['value'], rval))
             assert spec.ignorepatches == []
+
+            assert spec.patches.keys() == [0, -1]
 
 
 class TestUtilityFunctions(object):
