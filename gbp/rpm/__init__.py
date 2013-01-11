@@ -521,6 +521,50 @@ class SpecFile(object):
         else:
             raise GbpError("Setting '%s:' tag not supported" % tagname)
 
+    def _delete_special_macro(self, name, identifier):
+        """Delete a special macro line in spec file content"""
+        if name != 'patch':
+            raise GbpError("Deleting '%s:' macro not supported" % name)
+
+        key = name.lower()
+        fullname = '%%%s%s' % (name, identifier)
+        sparedlines = []
+        prev = None
+        for line in self._special_directives[key]:
+            if line['id'] == identifier:
+                gbp.log.debug("Removing '%s' macro from spec" % fullname)
+                prev = self._content.delete(line['line'])
+            else:
+                sparedlines.append(line)
+        self._special_directives[key] = sparedlines
+        if not prev:
+            gbp.log.warn("Tried to delete non-existent macro '%s'" % fullname)
+        return prev
+
+    def _set_special_macro(self, name, identifier, args, insertafter):
+        """Update a special macro line in spec file content"""
+        key = name.lower()
+        fullname = '%%%s%s' % (name, identifier)
+        if key != 'patch':
+            raise GbpError("Setting '%s' macro not supported" % name)
+
+        updated = 0
+        text = "%%%s%d %s\n" % (name, identifier, args)
+        for line in self._special_directives[key]:
+            if line['id'] == identifier:
+                gbp.log.debug("Updating '%s' macro in spec" % fullname)
+                line['args'] = args
+                line['line'].set_data(text)
+                ret = line['line']
+                updated += 1
+        if not updated:
+            gbp.log.debug("Adding '%s' macro after '%s...' line in spec" %
+                          (fullname, str(insertafter)[0:20]))
+            ret = self._content.insert_after(insertafter, text)
+            linerec = {'line': ret, 'id': identifier, 'args': args}
+            self._special_directives[key].append(linerec)
+        return ret
+
     def update_patches(self, patchfilenames):
         """Update spec with new patch tags and patch macros"""
         # Remove non-ignored patches

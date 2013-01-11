@@ -33,6 +33,9 @@ Collections:    my_collections
 Package for testing GBP.
 
 %prep
+%setup -n my_prefix
+
+%patch1 my new args
 
 %build
 
