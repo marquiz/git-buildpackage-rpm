@@ -321,9 +321,9 @@ def main(argv):
         # Need to copy files to the packaging directory given by caller
         files = [os.path.basename(patch.path) \
                 for patch in spec.patchseries(unapplied=True, ignored=True)]
-        for num, src in spec.sources.iteritems():
-            if num != spec.orig_src_num:
-                files.append(src['filename'])
+        for num, filename in spec.sources().iteritems():
+            if not spec.orig_src or num != spec.orig_src['num']:
+                files.append(filename)
         files.append(os.path.join(spec.specdir, spec.specfile))
         for fname in files:
             fpath = os.path.join(dirs['src'], fname)

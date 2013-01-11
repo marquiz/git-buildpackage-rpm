@@ -197,6 +197,7 @@ class TestSpecFile(object):
         prev = spec.protected('_delete_tag')('Vendor', None)
         spec.protected('_set_tag')('License', None, 'new license', prev)
         spec.protected('_delete_tag')('source', 0)
+        assert spec.sources() == {}
         spec.protected('_delete_tag')('patch', 0)
         spec.protected('_delete_tag')('patch', -1)
         assert spec.protected('_patches')() == {}

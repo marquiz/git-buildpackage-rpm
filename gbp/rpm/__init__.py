@@ -152,7 +152,6 @@ class SpecFile(object):
         self.epoch = str(source_header[rpm.RPMTAG_EPOCH]) \
             if source_header[rpm.RPMTAG_EPOCH] != None else None
         self.packager = source_header[rpm.RPMTAG_PACKAGER]
-        self.sources = {}
         self._tags = {}
         self._special_directives = defaultdict(list)
         self._gbp_tags = defaultdict(list)
@@ -166,7 +165,7 @@ class SpecFile(object):
         if 'packager' not in self._tags:
             self.packager = None
 
-        self.orig_src_num = self.guess_orig_file()
+        self.orig_src = self._guess_orig_file()
 
     def _parse_filtered_spec(self, skip_tags):
         """Parse a filtered spec file in rpm-python"""
@@ -195,15 +194,6 @@ class SpecFile(object):
         return version
     version = property(_get_version)
 
-    def _get_orig_src(self):
-        """
-        Get the orig src
-        """
-        if self.orig_src_num != None:
-            return self.sources[self.orig_src_num]
-        return None
-    orig_src = property(_get_orig_src)
-
     @property
     def ignorepatches(self):
         """Get numbers of ignored patches as a sorted list"""
@@ -217,6 +207,17 @@ class SpecFile(object):
         if 'patch' not in self._tags:
             return {}
         return {patch['num']: patch for patch in self._tags['patch']['lines']}
+
+    def _sources(self):
+        """Get all source tags as a dict"""
+        if 'source' not in self._tags:
+            return {}
+        return {src['num']: src for src in self._tags['source']['lines']}
+
+    def sources(self):
+        """Get all source tags as a dict"""
+        return {src['num']: os.path.basename(src['linevalue'])
+                for src in self._sources().values()}
 
     def _macro_replace(self, matchobj):
         macro_dict = {'name': self.name,
@@ -264,14 +265,6 @@ class SpecFile(object):
         # 'Source:' tags
         if tagname == 'source':
             tagnum = 0 if tagnum is None else tagnum
-            if tagnum in self.sources:
-                self.sources[tagnum]['tag_line'] = lineobj
-            else:
-                self.sources[tagnum] = {
-                        'filename': os.path.basename(matchobj.group('name')),
-                        'tag_line': line,
-                        'prefix': None,
-                        'setup_options': None, }
         # 'Patch:' tags
         elif tagname == 'patch':
             tagnum = -1 if tagnum is None else tagnum
@@ -318,10 +311,10 @@ class SpecFile(object):
         arglist = args.split()
         return patchparser.parse_args(arglist)[0]
 
-    def _parse_directive(self, lineobj):
-        """Parse special directive/scriptlet/macro lines"""
+    @staticmethod
+    def _setup_macro_opts(args):
+        """Parse arguments of the '%setup' macro"""
 
-        # Parser for '%setup' macros
         setupparser = OptionParser()
         setupparser.add_option("-n", dest="name")
         setupparser.add_option("-c", dest="create_dir", action="store_true")
@@ -331,6 +324,11 @@ class SpecFile(object):
         setupparser.add_option("-b", dest="unpack_before")
         setupparser.add_option("-a", dest="unpack_after")
         setupparser.add_option("-q", dest="quiet", action="store_true")
+        arglist = args.split()
+        return setupparser.parse_args(arglist)[0]
+
+    def _parse_directive(self, lineobj):
+        """Parse special directive/scriptlet/macro lines"""
 
         line = str(lineobj)
         matchobj = self.directive_re.match(line)
@@ -348,20 +346,6 @@ class SpecFile(object):
                 directiveid = int(opts.patchnum)
             else:
                 directiveid = -1
-        # '%setup' macros
-        elif directivename == 'setup':
-            arglist = matchobj.group('args').split()
-            (opts, args) = setupparser.parse_args(arglist)
-            srcnum = None
-            if opts.no_unpack_default:
-                if opts.unpack_before:
-                    srcnum = int(opts.unpack_before)
-                elif opts.unpack_after:
-                    srcnum = int(opts.unpack_after)
-            else:
-                srcnum = 0
-            if srcnum != None and srcnum in self.sources:
-                self.sources[srcnum]['setup_options'] = opts
 
         # Record special directive/scriptlet/macro locations
         if directivename in ('prep', 'setup', 'patch'):
@@ -415,25 +399,15 @@ class SpecFile(object):
         # Update sources info (basically possible macros expanded by rpm)
         # And, double-check that we parsed spec content correctly
         patches = self._patches()
-        for (name, num, typ) in self._specinfo.sources:
+        sources = self._sources()
+        for name, num, typ in self._specinfo.sources:
             # workaround rpm parsing bug
             if typ == 1 or typ == 9:
-                if num in self.sources:
-                    self.sources[num]['filename'] = os.path.basename(name)
-                    self.sources[num]['filename_base'],\
-                    self.sources[num]['archive_fmt'],\
-                    self.sources[num]['compression'] =\
-                            parse_archive_filename(os.path.basename(name))
-                    # Make a guess about the prefix in the archive
-                    if self.sources[num]['archive_fmt']:
-                        _name, _version = RpmPkgPolicy.guess_upstream_src_version(name)
-                        if _name and _version:
-                            self.sources[num]['prefix'] = "%s-%s/" % (_name, _version)
-                        else:
-                            self.sources[num]['prefix'] = self.sources[num]['filename_base'] + "/"
+                if num in sources:
+                    sources[num]['linevalue'] = os.path.basename(name)
                 else:
-                    gbp.log.err("BUG: we didn't correctly parse all 'Source' tags!")
-            if typ == 2 or typ == 10:
+                    gbp.log.err("BUG: failed to parse all 'Source' tags!")
+            elif typ == 2 or typ == 10:
                 # Patch tag without any number defined is treated by RPM as
                 # having number (2^31-1), we use number -1
                 if num >= pow(2,30):
@@ -441,7 +415,7 @@ class SpecFile(object):
                 if num in patches:
                     patches[num]['linevalue'] = name
                 else:
-                    gbp.log.err("BUG: we didn't correctly parse all 'Patch' tags!")
+                    gbp.log.err("BUG: failed to parse all 'Patch' tags!")
 
     def _delete_tag(self, tag, num):
         """Delete a tag"""
@@ -668,46 +642,69 @@ class SpecFile(object):
                                         strip=strip))
         return series
 
-    def guess_orig_file(self):
-        """
-        Try to guess the name of the primary upstream/source archive
-        returns a tuple with full file path, filename base, archive format and
-        compression method.
-        """
-        orig_num = None
-        for (num, src) in sorted(self.sources.iteritems()):
-            filename = os.path.basename(src['filename'])
-            if filename.startswith(self.name):
-                # Take the first archive that starts with pkg name
-                if src['archive_fmt']:
-                    orig_num = num
-                    break
-            # otherwise we take the first archive
-            elif orig_num == None and src['archive_fmt']:
-                orig_num = num
-            # else don't accept
+    def _guess_orig_prefix(self, orig):
+        """Guess prefix for the orig file"""
+        # Make initial guess about the prefix in the archive
+        filename = orig['filename']
+        name, version = RpmPkgPolicy.guess_upstream_src_version(filename)
+        if name and version:
+            prefix = "%s-%s/" % (name, version)
+        else:
+            prefix = orig['filename_base'] + "/"
 
         # Refine our guess about the prefix
-        if orig_num != None:
-            orig = self.sources[orig_num]
-            setup_opts = orig['setup_options']
-            if setup_opts:
-                if setup_opts.create_dir:
-                    orig['prefix'] = ''
-                elif setup_opts.name:
+        for macro in self._special_directives['setup']:
+            args = macro['args']
+            opts = self._setup_macro_opts(args)
+            srcnum = None
+            if opts.no_unpack_default:
+                if opts.unpack_before:
+                    srcnum = int(opts.unpack_before)
+                elif opts.unpack_after:
+                    srcnum = int(opts.unpack_after)
+            else:
+                srcnum = 0
+            if srcnum == orig['num']:
+                if opts.create_dir:
+                    prefix = ''
+                elif opts.name:
                     try:
-                        orig['prefix'] = self.macro_expand(setup_opts.name) + \
-                                         '/'
+                        prefix = self.macro_expand(opts.name) + '/'
                     except MacroExpandError as err:
                         gbp.log.warn("Couldn't determine prefix from %%setup "\
                                      "macro (%s). Using filename base as a "  \
                                      "fallback" % err)
-                        orig['prefix'] = orig['filename_base'] + '/'
+                        prefix = orig['filename_base'] + '/'
                 else:
                     # RPM default
-                    orig['prefix'] = "%s-%s/" % (self.name,
-                                                 self.upstreamversion)
-        return orig_num
+                    prefix = "%s-%s/" % (self.name, self.upstreamversion)
+                break
+        return prefix
+
+    def _guess_orig_file(self):
+        """
+        Try to guess the name of the primary upstream/source archive.
+        Returns a dict with all the relevant information.
+        """
+        orig = None
+        sources = self.sources()
+        for num, filename in sorted(sources.iteritems()):
+            src = {'num': num, 'filename': os.path.basename(filename)}
+            src['filename_base'], src['archive_fmt'], src['compression'] = \
+                parse_archive_filename(os.path.basename(filename))
+            if (src['filename_base'].startswith(self.name) and
+                src['archive_fmt']):
+                # Take the first archive that starts with pkg name
+                orig = src
+                break
+            # otherwise we take the first archive
+            elif not orig and src['archive_fmt']:
+                orig = src
+            # else don't accept
+        if orig:
+            orig['prefix'] = self._guess_orig_prefix(orig)
+
+        return orig
 
 
 def parse_srpm(srpmfile):
