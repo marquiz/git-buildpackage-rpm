@@ -9,6 +9,9 @@
 
 %define test_arch_os_tags %(test -n "$GBP_SKIP_ARCH_OS_TAGS" && echo 0 || echo 1)
 
+%define source_fn_base source
+%define patch_fn_base patch
+
 # Gbp-Undefined-Tag: foobar
 
 # Test that we accept different cases
@@ -27,8 +30,8 @@ Packager:       my_packager
 Url:            my_url
 Vcs:            my_vcs
 Source:         my_source
-Patch:          my_patch
-Patch0:         my_patch0
+Patch:          my_%patch_fn_base
+Patch0:         my_%{patch_fn_base}0
 Nosource:       0
 Nopatch:        0
 #Icon:           my_icon
