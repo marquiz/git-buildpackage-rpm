@@ -102,6 +102,7 @@ class TestSpecFile(object):
 
         orig = spec.orig_src
         assert orig['filename'] == 'gbp-test-1.0.tar.bz2'
+        assert orig['uri'] == 'gbp-test-1.0.tar.bz2'
         assert orig['filename_base'] == 'gbp-test-1.0'
         assert orig['archive_fmt'] == 'tar'
         assert orig['compression'] == 'bzip2'
@@ -123,6 +124,7 @@ class TestSpecFile(object):
 
         orig = spec.orig_src
         assert orig['filename'] == 'gbp-test2-3.0.tar.gz'
+        assert orig['uri'] == 'ftp://ftp.host.com/gbp-test2-3.0.tar.gz'
         assert orig['archive_fmt'] == 'tar'
         assert orig['compression'] == 'gzip'
         assert orig['prefix'] == ''
@@ -198,6 +200,7 @@ class TestSpecFile(object):
         prev = spec.protected('_delete_tag')('Vendor', None)
         spec.protected('_set_tag')('License', None, 'new license', prev)
         spec.protected('_delete_tag')('source', 0)
+        assert spec.sources() == {}
         spec.protected('_delete_tag')('patch', 0)
         spec.protected('_delete_tag')('patch', -1)
         assert spec.protected('_patches')() == {}
