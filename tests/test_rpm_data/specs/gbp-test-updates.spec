@@ -18,7 +18,7 @@ Url:            my_url
 Vcs:            my_vcs
 Source:         my_source
 Patch:          my_%patch_fn_base
-Patch0:         my_%{patch_fn_base}0
+Patch1:         my_%{patch_fn_base}1
 BuildRoot:      my_buildroot
 Provides:       my_provides
 Requires:       my_requires
@@ -37,6 +37,10 @@ Collections:    my_collections
 Package for testing GBP.
 
 %prep
+%setup -n my_prefix
+
+%patch -b my_patch
+%patch -P1 -b my_patch0
 
 %build
 
