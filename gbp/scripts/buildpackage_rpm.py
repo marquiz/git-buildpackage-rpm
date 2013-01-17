@@ -410,6 +410,7 @@ def parse_args(argv, prefix):
     export_group.add_config_file_option("patch-export-compress", dest="patch_export_compress")
     export_group.add_config_file_option("patch-export-squash-until", dest="patch_export_squash_until")
     export_group.add_boolean_config_file_option(option_name="patch-numbers", dest="patch_numbers")
+    export_group.add_config_file_option("spec-vcs-tag", dest="spec_vcs_tag")
     options, args = parser.parse_args(args)
 
     options.patch_export_compress = rpm.string_to_int(options.patch_export_compress)
@@ -584,12 +585,29 @@ def main(argv):
             repo.create_tag(name=tag, msg="%s release %s" % (options.vendor,
                             RpmPkgPolicy.compose_full_version(spec.version)),
                             sign=options.sign_tags, keyid=options.keyid, commit=tree)
+            tree_name = tag
             if options.posttag:
                 sha = repo.rev_parse("%s^{}" % tag)
                 Command(options.posttag, shell=True,
                         extra_env={'GBP_TAG': tag,
                                    'GBP_BRANCH': branch,
                                    'GBP_SHA1': sha})()
+        else:
+            try:
+                tree_name = repo.describe(tree, longfmt=True, always=True,
+                                          abbrev=40)
+                commit_sha1 = repo.rev_parse('%s^0' % tree)
+            except GitRepositoryError:
+                # If tree is not commit-ish, expect it to be from current HEAD
+                tree_name = repo.describe('HEAD', longfmt=True, always=True,
+                                          abbrev=40) + '-dirty'
+                commit_sha1 = repo.rev_parse('HEAD') + '-dirty'
+        # Put 'VCS:' tag to .spec
+        spec.set_tag('vcs',
+                     options.spec_vcs_tag % {'tagname': tree_name,
+                                             'commit': commit_sha1})
+        spec.write_spec_file()
+
     except CommandExecFailed:
         retval = 1
     except GitRepositoryError as err:

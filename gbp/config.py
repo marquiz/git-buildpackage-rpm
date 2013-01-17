@@ -556,6 +556,7 @@ class GbpOptionParserRpm(GbpOptionParser):
                        'pristine-tarball-name'  : 'auto',
                        'orig-prefix'            : 'auto',
                        'patch-import'           : 'True',
+                       'spec-vcs-tag'           : '',
                      } )
 
     help = dict(GbpOptionParser.help)
@@ -590,6 +591,10 @@ class GbpOptionParserRpm(GbpOptionParser):
                         "Prefix (dir) to be used when generating/importing tarballs, default is '%(orig-prefix)s'",
                    'patch-import':
                         "Import patches to the packaging branch, default is '%(patch-import)s'",
+                   'spec-vcs-tag':
+                        ("Set/update the 'VCS:' tag in the spec file, empty "
+                         "value removes the tag entirely, default is "
+                         "'%(spec-vcs-tag)s'"),
                  } )
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
