@@ -613,6 +613,7 @@ class GbpOptionParserRpm(GbpOptionParser):
             'patch-export-compress'     : '0',
             'patch-export-ignore-path'  : '',
             'patch-export-squash-until' : '',
+            'spec-vcs-tag'              : '',
             'merge'                     : 'False',
             'pristine-tarball-name'     : 'auto',
             'orig-prefix'               : 'auto',
@@ -659,6 +660,9 @@ class GbpOptionParserRpm(GbpOptionParser):
                 "Squash commits (from upstream) until given tree-ish into one "
                 "big diff, format is '<commit_ish>[:<filename_base>]'. "
                 "Default is '%(patch-export-squash-until)s'",
+            'spec-vcs-tag':
+                "Set/update the 'VCS:' tag in the spec file, empty value "
+                "removes the tag entirely, default is '%(spec-vcs-tag)s'",
             'pristine-tarball-name':
                 "Filename to record to pristine-tar, set to 'auto' to not "
                 "mangle the file name, default is '%(pristine-tarball-name)s'",
