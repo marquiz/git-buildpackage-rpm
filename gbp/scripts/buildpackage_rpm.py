@@ -440,6 +440,7 @@ def build_parser(name, prefix=None, git_treeish=None):
                     dest="packaging_dir")
     export_group.add_config_file_option(option_name="spec-file",
                     dest="spec_file")
+    export_group.add_config_file_option("spec-vcs-tag", dest="spec_vcs_tag")
     return parser
 
 
@@ -622,6 +623,10 @@ def main(argv):
                                    'GBP_SHA1': sha})()
         else:
             vcs_info = get_vcs_info(repo, tree)
+
+        # Put 'VCS:' tag to .spec
+        spec.set_tag('VCS', None, format_str(options.spec_vcs_tag, vcs_info))
+        spec.write_spec_file()
 
     except CommandExecFailed:
         retval = 1

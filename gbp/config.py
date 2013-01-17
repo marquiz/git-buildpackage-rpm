@@ -665,6 +665,7 @@ class GbpOptionParserRpm(GbpOptionParser):
             'mock-root'                 : '',
             'mock-options'              : '',
             'native'                    : 'auto',
+            'spec-vcs-tag'              : '',
                     })
 
     help = dict(GbpOptionParser.help)
@@ -714,6 +715,9 @@ class GbpOptionParserRpm(GbpOptionParser):
                    "default is '%(mock-options)s'"),
             'native':
                 "Treat this package as native, default is '%(native)s'",
+            'spec-vcs-tag':
+                "Set/update the 'VCS:' tag in the spec file, empty value "
+                "removes the tag entirely, default is '%(spec-vcs-tag)s'",
                  })
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
