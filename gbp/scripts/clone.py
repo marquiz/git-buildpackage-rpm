@@ -23,10 +23,13 @@ from six.moves import configparser
 import sys
 import os, os.path
 from gbp.config import (GbpOptionParser, GbpOptionGroup)
-from gbp.deb.git import DebianGitRepository
-from gbp.git import (GitRepository, GitRepositoryError)
+from gbp.git import GitRepositoryError
 from gbp.errors import GbpError
 import gbp.log
+try:
+    from gbp.deb.git import DebianGitRepository as GitRepository
+except ImportError:
+    from gbp.rpm.git import RpmGitRepository as GitRepository
 
 
 def build_parser(name):
@@ -93,8 +96,8 @@ def main(argv):
         pass
 
     try:
-        repo = DebianGitRepository.clone(clone_to, source, options.depth,
-                                         auto_name=auto_name,reference=options.reference)
+        repo = GitRepository.clone(clone_to, source, options.depth,
+                                   auto_name=auto_name,reference=options.reference)
         os.chdir(repo.path)
 
         # Reparse the config files of the cloned repository so we pick up the
