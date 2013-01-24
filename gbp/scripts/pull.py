@@ -26,8 +26,11 @@ from gbp.command_wrappers import (Command, CommandExecFailed)
 from gbp.config import (GbpOptionParser, GbpOptionGroup)
 from gbp.errors import GbpError
 from gbp.git import GitRepositoryError
-from gbp.deb.git import DebianGitRepository
 import gbp.log
+try:
+    from gbp.deb.git import DebianGitRepository as GitRepository
+except ImportError:
+    from gbp.rpm.git import RpmGitRepository as GitRepository
 
 def update_branch(branch, repo, options):
     """
@@ -138,7 +141,7 @@ def main(argv):
     gbp.log.setup(options.color, options.verbose, options.color_scheme)
 
     try:
-        repo = DebianGitRepository(os.path.curdir)
+        repo = GitRepository(os.path.curdir)
     except GitRepositoryError:
         gbp.log.err("%s is not a git repository" % (os.path.abspath('.')))
         return 1
