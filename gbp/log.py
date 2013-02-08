@@ -54,7 +54,7 @@ class GbpStreamHandler(logging.StreamHandler):
     OFF_SEQ = "\033[0m"
 
     def __init__(self, stream=None, color='auto'):
-        super(GbpStreamHandler, self).__init__(stream)
+        logging.StreamHandler.__init__(self, stream)
         self._color = gbp.tristate.Tristate(color)
         self._color_scheme = DEFAULT_COLOR_SCHEME.copy()
         msg_fmt = "%(color)s%(name)s:%(levelname)s: %(message)s%(coloroff)s"
@@ -90,14 +90,14 @@ class GbpStreamHandler(logging.StreamHandler):
             record.color = self.COLOR_SEQ % self._color_scheme[record.levelno]
             record.coloroff = self.OFF_SEQ
         record.levelname = record.levelname.lower()
-        return super(GbpStreamHandler, self).format(record)
+        return logging.StreamHandler.format(self, record)
 
 
 class GbpLogger(logging.Logger):
     """Logger class for git-buildpackage"""
 
     def __init__(self, name, color='auto', *args, **kwargs):
-        super(GbpLogger, self).__init__(name, *args, **kwargs)
+        logging.Logger.__init__(self, name, *args, **kwargs)
         self._default_handlers = [GbpStreamHandler(sys.stdout, color),
                                   GbpStreamHandler(sys.stderr, color)]
         self._default_handlers[0].addFilter(GbpFilter([DEBUG, INFO]))
