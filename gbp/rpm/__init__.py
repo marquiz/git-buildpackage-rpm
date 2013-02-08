@@ -224,20 +224,28 @@ class SpecFile(object):
 
     def _patches(self):
         """Get all patch tags as a dict"""
+        patches = {}
         if 'patch' not in self._tags:
             return {}
-        return {patch['num']: patch for patch in self._tags['patch']['lines']}
+        for patch in self._tags['patch']['lines']:
+            patches[patch['num']] = patch
+        return patches
 
     def _sources(self):
         """Get all source tags as a dict"""
+        sources = {}
         if 'source' not in self._tags:
             return {}
-        return {src['num']: src for src in self._tags['source']['lines']}
+        for src in self._tags['source']['lines']:
+            sources[src['num']] = src
+        return sources
 
     def sources(self):
         """Get all source tags as a dict"""
-        return {src['num']: src['linevalue']
-                for src in self._sources().values()}
+        sources = {}
+        for src in self._sources().values():
+            sources[src['num']] = src['linevalue']
+        return sources
 
     def _macro_replace(self, matchobj):
         macro_dict = {'name': self.name,
