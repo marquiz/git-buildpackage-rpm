@@ -27,7 +27,9 @@ echo "Do things"
 
 # Gbp-Patch-Macros
 # new.patch
+%if 1
 %patch0 -p1
+%endif
 
 %build
 make
