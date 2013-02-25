@@ -146,7 +146,7 @@ def import_spec_patches(repo, spec, dirs):
     gbp.log.info("Removing imported patch files from spec and packaging dir")
     rm_patch_files(spec)
     try:
-        spec.update_patches([])
+        spec.update_patches([], {})
         spec.write_spec_file()
     except GbpError:
         repo.force_head('HEAD', hard=True)

@@ -109,7 +109,7 @@ def generate_patches(repo, start, squash, end, outdir, options):
     # Generate patches
     for commit in reversed(repo.get_commits(start, end_commit)):
         info = repo.get_commit_info(commit)
-        cmds = parse_gbp_commands(info, 'gbp-rpm', ('ignore'), None)
+        cmds = parse_gbp_commands(info, 'gbp-rpm', ('ignore'), ('if', 'ifarch'))
         if not 'ignore' in cmds:
             patch_fn = format_patch(outdir, repo, info, patches,
                                     options.patch_numbers,
@@ -163,9 +163,9 @@ def update_patch_series(repo, spec, start, end, options):
     # Unlink old patch files and generate new patches
     rm_patch_files(spec)
 
-    patches, _commands = generate_patches(repo, start, squash, end,
-                                          spec.specdir, options)
-    spec.update_patches(patches)
+    patches, commands = generate_patches(repo, start, squash, end,
+                                         spec.specdir, options)
+    spec.update_patches(patches, commands)
     spec.write_spec_file()
 
 
