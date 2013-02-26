@@ -40,6 +40,7 @@ from gbp.errors import GbpError
 import gbp.log
 from gbp.scripts.pq_rpm import safe_patches, rm_patch_files, get_packager
 from gbp.scripts.common.pq import apply_and_commit_patch
+from gbp.pkg import parse_archive_filename
 
 no_packaging_branch_msg = """
 Repository does not have branch '%s' for packaging/distribution sources. If there is none see
@@ -405,9 +406,14 @@ def main(argv):
 
                 if not options.native:
                     if options.pristine_tar:
-                        repo.pristine_tar.commit(orig_tarball,
-                                                'refs/heads/%s' %
-                                                 options.upstream_branch)
+                        archive_fmt = parse_archive_filename(orig_tarball)[1]
+                        if archive_fmt == 'tar':
+                            repo.pristine_tar.commit(orig_tarball,
+                                                    'refs/heads/%s' %
+                                                     options.upstream_branch)
+                        else:
+                            gbp.log.warn('Ignoring pristine-tar, %s archives '
+                                         'not supported' % archive_fmt)
         else:
             gbp.log.info("No orig source archive imported")
 
