@@ -316,6 +316,16 @@ class TestPristineTar(ComponentTestBase):
         # of imported patches
         assert len(repo.get_commits()) == 4
 
+    def test_unsupported_archive(self):
+        """Test importing of src.rpm with a zip source archive"""
+        srpm = os.path.join(DATA_DIR, 'gbp-test-native-1.0-1.src.rpm')
+        assert import_srpm(['arg0', '--pristine-tar', srpm]) == 0
+        # Check repository state
+        repo = GitRepository('gbp-test-native')
+        self._check_repo_state(repo, 'master', ['master', 'upstream'])
+        # Check that a warning is printed
+        self._check_log(-1, "gbp:warning: Ignoring pristine-tar")
+
 
 class TestBareRepo(ComponentTestBase):
     """Test importing to a bare repository"""
