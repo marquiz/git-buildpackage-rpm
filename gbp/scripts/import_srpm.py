@@ -262,8 +262,10 @@ def main(argv):
             srpm = download_source(srpm, dirs)
 
         # Real srpm, we need to unpack, first
+        true_srcrpm = False
         if not os.path.isdir(srpm) and not srpm.endswith(".spec"):
             src = parse_srpm(srpm)
+            true_srcrpm = True
             dirs['pkgextract'] = tempfile.mkdtemp(dir=dirs['tmp_base'],
                                                   prefix='pkgextract_')
             gbp.log.info("Extracting src rpm to '%s'" % dirs['pkgextract'])
@@ -319,13 +321,20 @@ def main(argv):
             if err.errno != errno.EEXIST:
                 raise
 
-        # Need to copy files to the packaging directory given by caller
-        files = [os.path.basename(patch.path) \
-                for patch in spec.patchseries(unapplied=True, ignored=True)]
-        for num, filename in spec.sources().iteritems():
-            if not spec.orig_src or num != spec.orig_src['num']:
+        if true_srcrpm:
+            # For true src.rpm we just take everything
+            files = os.listdir(dirs['src'])
+        else:
+            # Need to copy files to the packaging directory given by caller
+            files = [os.path.basename(patch.path) \
+                    for patch in spec.patchseries(unapplied=True, ignored=True)]
+            for filename in spec.sources().values():
                 files.append(filename)
-        files.append(os.path.join(spec.specdir, spec.specfile))
+            files.append(os.path.join(spec.specdir, spec.specfile))
+        # Don't copy orig source archive, though
+        if spec.orig_src and spec.orig_src['filename'] in files:
+            files.remove(spec.orig_src['filename'])
+
         for fname in files:
             fpath = os.path.join(dirs['src'], fname)
             if os.path.exists(fpath):
