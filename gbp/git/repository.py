@@ -322,6 +322,7 @@ class GitRepository(object):
         section_re = re.compile(r'^(?P<section>[A-Z].*)')
         option_re = re.compile(r'--?(?P<name>[a-zA-Z\-]+).*')
         optopt_re = re.compile(r'--\[(?P<prefix>[a-zA-Z\-]+)\]-?')
+        backspace_re = re.compile(".\b")
         man_section = None
         for line in help.splitlines():
             if man_section == "OPTIONS" and line.startswith('       -'):
@@ -339,7 +340,7 @@ class GitRepository(object):
             # Check man section
             match = section_re.match(line)
             if match:
-                man_section = match.group('section')
+                man_section = backspace_re.sub('', match.group('section'))
         return False
 
     @property
