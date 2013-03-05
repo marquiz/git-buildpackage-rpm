@@ -253,8 +253,10 @@ class TestSpecFile(object):
                                               (name, val['value'], rval))
             assert spec.ignorepatches == []
             # Check patch numbers and patch filenames
-            patches = {patch['num']: patch['linevalue'] for patch in
-                       spec.protected('_tags')['patch']['lines']}
+            patches = {}
+            for patch in spec.protected('_tags')['patch']['lines']:
+                patches[patch['num']] = patch['linevalue']
+
             assert patches == {0: 'my_patch0', -1: 'my_patch'}
 
     def test_patch_series(self):

@@ -19,7 +19,11 @@ from . import context
 
 import os
 import logging
-import unittest
+# Try unittest2 for CentOS
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 
 from gbp.scripts.pq import generate_patches
 import gbp.scripts.common.pq as pq
