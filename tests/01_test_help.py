@@ -4,7 +4,11 @@
 
 from . import context
 
-import unittest
+# Try unittest2 for CentOS
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 
 class TestHelp(unittest.TestCase):
     """Test help output of gbp commands"""

@@ -4,7 +4,12 @@
 
 from . import context
 
-import os, tempfile, unittest
+import os, tempfile
+# Try unittest2 for CentOS
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 
 import gbp.deb
 

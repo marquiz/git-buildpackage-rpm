@@ -8,7 +8,11 @@ from .testutils import (DebianGitTestRepo, OsReleaseFile,
 
 from gbp.scripts import dch
 
-import unittest
+# Try unittest2 for CentOS
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 import os
 import re
 

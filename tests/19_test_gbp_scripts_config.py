@@ -16,7 +16,12 @@
 """Test the L{gbp} config command"""
 
 import os
-import unittest
+# Try unittest2 for CentOS
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
+import sys
 import gbp.scripts.config
 
 

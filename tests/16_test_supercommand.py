@@ -16,7 +16,11 @@
 """Test L{gbp} command wrapper"""
 
 import sys
-import unittest
+# Try unittest2 for CentOS
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 import gbp.scripts.supercommand
 
 class TestSuperCommand(unittest.TestCase):
