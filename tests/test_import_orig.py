@@ -21,7 +21,11 @@ import glob
 import os
 import tarfile
 import tempfile
-import unittest
+# Try unittest2 for CentOS
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 
 from gbp.errors import GbpError
 from gbp.pkg import UpstreamSource

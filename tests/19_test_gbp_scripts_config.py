@@ -17,7 +17,11 @@
 
 import os
 import sys
-import unittest
+# Try unittest2 for CentOS
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 import gbp.scripts.config
 
 class TestGbpConfigCommand(unittest.TestCase):

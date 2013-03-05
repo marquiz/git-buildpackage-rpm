@@ -1,7 +1,11 @@
 # vim: set fileencoding=utf-8 :
 
 import os
-import unittest
+# Try unittest2 for CentOS
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 from gbp.config import GbpOptionParser
 from . import context
 
