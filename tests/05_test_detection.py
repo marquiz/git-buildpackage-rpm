@@ -4,7 +4,11 @@
 
 from . import context
 
-import unittest
+# Try unittest2 for CentOS
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 
 from gbp.scripts import buildpackage
 from gbp.deb import (DebianPkgPolicy, orig_file)

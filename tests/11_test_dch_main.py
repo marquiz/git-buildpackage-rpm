@@ -4,7 +4,11 @@
 
 from . import context
 
-import unittest
+# Try unittest2 for CentOS
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 
 from tests.testutils import (DebianGitTestRepo, OsReleaseFile,
                              get_dch_default_urgency)

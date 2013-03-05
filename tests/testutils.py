@@ -7,7 +7,11 @@ import shutil
 import subprocess
 import tarfile
 import tempfile
-import unittest
+# Try unittest2 for CentOS
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 import zipfile
 
 import gbp.log
