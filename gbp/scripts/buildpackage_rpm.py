@@ -174,16 +174,19 @@ def get_tree(repo, tree_name):
     Get/create a tree-ish to be used for exporting and diffing. Accepts
     special keywords for git index and working copies.
     """
-    if tree_name == index_name:
-        # Write a tree of the index
-        tree = repo.write_tree()
-    elif tree_name in wc_names:
-        # Write a tree of the working copy
-        tree = write_wc(repo,
-                        force=wc_names[tree_name]['force'],
-                        untracked=wc_names[tree_name]['untracked'])
-    else:
-        tree = tree_name
+    try:
+        if tree_name == index_name:
+            # Write a tree of the index
+            tree = repo.write_tree()
+        elif tree_name in wc_names:
+            # Write a tree of the working copy
+            tree = write_wc(repo,
+                            force=wc_names[tree_name]['force'],
+                            untracked=wc_names[tree_name]['untracked'])
+        else:
+            tree = tree_name
+    except GitRepositoryError as err:
+        raise GbpError(err)
     if not repo.has_treeish(tree):
         raise GbpError('Invalid treeish object %s' % tree)
 
@@ -306,7 +309,7 @@ def update_tag_str_fields(tag_format_str, fields, repo, commit):
     return extra
 
 
-def parse_args(argv, prefix):
+def parse_args(argv, prefix, git_treeish=None):
     args = [ arg for arg in argv[1:] if arg.find('--%s' % prefix) == 0 ]
     builder_args = [ arg for arg in argv[1:] if arg.find('--%s' % prefix) == -1 ]
 
@@ -316,7 +319,8 @@ def parse_args(argv, prefix):
             args.append(arg)
 
     try:
-        parser = GbpOptionParserRpm(command=os.path.basename(argv[0]), prefix=prefix)
+        parser = GbpOptionParserRpm(command=os.path.basename(argv[0]),
+                                    prefix=prefix, git_treeish=git_treeish)
     except ConfigParser.ParsingError, err:
         gbp.log.err(err)
         return None, None, None
@@ -441,6 +445,16 @@ def main(argv):
     else:
         repo_dir = os.path.abspath(os.path.curdir)
 
+    # Determine tree-ish to be exported
+    try:
+        tree = get_tree(repo, options.export)
+    except GbpError as err:
+        gbp.log.err('Failed to determine export treeish: %s' % err)
+        return 1
+    # Re-parse config options with using the per-tree config file(s) from the
+    # exported tree-ish
+    options, gbp_args, builder_args = parse_args(argv, prefix, tree)
+
     try:
         # Create base temporary directory for this run
         options.tmp_dir = tempfile.mkdtemp(dir=options.tmp_dir,
@@ -468,9 +482,6 @@ def main(argv):
             if branch != options.packaging_branch:
                 gbp.log.err("You are not on branch '%s' but on '%s'" % (options.packaging_branch, branch))
                 raise GbpError, "Use --git-ignore-branch to ignore or --git-packaging-branch to set the branch name."
-
-        # Determine tree-ish to be exported
-        tree = get_tree(repo, options.export)
 
         # Dump from git to a temporary directory:
         dump_dir = tempfile.mkdtemp(dir=options.tmp_dir,
