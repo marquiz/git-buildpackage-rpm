@@ -20,6 +20,8 @@ from optparse import OptionParser, OptionGroup, Option, OptionValueError
 from ConfigParser import SafeConfigParser, NoSectionError
 from copy import copy
 import os.path
+import tempfile
+
 try:
     from gbp.version import gbp_version
 except ImportError:
@@ -313,13 +315,26 @@ class GbpOptionParser(OptionParser):
             files = [fname for fname in files if fname.startswith('/')]
         return files
 
-    def _read_config_file(self, parser, repo, filename):
+    def _read_config_file(self, parser, repo, filename, git_treeish):
         """Read config file"""
         str_fields = {}
         if repo:
             str_fields['git_dir'] = repo.git_dir
             if not repo.bare:
                 str_fields['top_dir'] = repo.path
+
+        # Read per-tree config file
+        if repo and git_treeish and filename.startswith('%(top_dir)s/'):
+            with tempfile.TemporaryFile() as tmp:
+                relpath = filename.replace('%(top_dir)s/', '')
+                try:
+                    config = repo.show('%s:%s' % (git_treeish, relpath))
+                    tmp.writelines(config)
+                except GitRepositoryError:
+                    pass
+                tmp.seek(0)
+                parser.readfp(tmp)
+                return
         try:
             filename = filename % str_fields
         except KeyError:
@@ -327,7 +342,7 @@ class GbpOptionParser(OptionParser):
             return
         parser.read(filename)
 
-    def _parse_config_files(self):
+    def _parse_config_files(self, git_treeish=None):
         """
         Parse the possible config files and set appropriate values
         default values
@@ -344,7 +359,7 @@ class GbpOptionParser(OptionParser):
             repo = None
         # Read all config files
         for filename in config_files:
-            self._read_config_file(parser, repo, filename)
+            self._read_config_file(parser, repo, filename, git_treeish)
         self.config.update(dict(parser.defaults()))
 
         # Make sure we read any legacy sections prior to the real subcommands
@@ -382,7 +397,8 @@ class GbpOptionParser(OptionParser):
         else:
             self.config['filter'] = []
 
-    def __init__(self, command, prefix='', usage=None, sections=[]):
+    def __init__(self, command, prefix='', usage=None, sections=[],
+                 git_treeish=None):
         """
         @param command: the command to build the config parser for
         @type command: C{str}
@@ -398,7 +414,7 @@ class GbpOptionParser(OptionParser):
         self.sections = sections
         self.prefix = prefix
         self.config = {}
-        self._parse_config_files()
+        self._parse_config_files(git_treeish)
         OptionParser.__init__(self, option_class=GbpOption,
                               usage=usage, version='%s %s' % (self.command,
                                                               gbp_version))
