@@ -63,7 +63,7 @@ class TestWriteTree(testutils.DebianGitTestRepo):
         # commit the same tree again using the previous commit as parent
         self.repo.commit_tree(sha1, "second commit", parents=[commit])
         # commit the same tree again using a non existant parent
-        self.assertRaises(gbp.errors.GbpError,
+        self.assertRaises(gbp.git.GitRepositoryError,
                           self.repo.commit_tree,
                           sha1,
                           "failed commit",
