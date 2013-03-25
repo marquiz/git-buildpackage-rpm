@@ -375,7 +375,7 @@ def main(argv):
         except (gbpc.CommandExecFailed, GitRepositoryError) as err:
             msg = err.__str__() if len(err.__str__()) else ''
             raise GbpError("Import of %s failed: %s" % (source.path, msg))
-    except GbpError as err:
+    except (GbpError, GitRepositoryError) as err:
         if len(err.__str__()):
             gbp.log.err(err)
         ret = 1
