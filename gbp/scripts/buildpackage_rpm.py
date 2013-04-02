@@ -544,7 +544,7 @@ def main(argv):
 
             # Get/build the orig tarball
             if is_native(repo, options):
-                if spec.orig_src:
+                if spec.orig_src and not options.no_create_orig:
                     # Just build source archive from the exported tree
                     gbp.log.info("Creating (native) source archive %s from '%s'" % (spec.orig_src['filename'], tree))
                     if spec.orig_src['compression']:
