@@ -13,7 +13,6 @@ Build-Depends:
  python (>> 2.6.6-3~),
  python-epydoc,
  python-nose,
- python-nosexcover,
  python-pkg-resources,
  python-setuptools,
  sgml2x,
