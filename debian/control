@@ -15,7 +15,6 @@ Build-Depends:
  python-epydoc,
  python-mock,
  python-nose,
- python-nosexcover,
  python-pkg-resources,
  python-rpm,
  python-six,
