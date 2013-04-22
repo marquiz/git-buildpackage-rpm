@@ -62,7 +62,7 @@ setup(name = "gbp",
                   'bin/git-import-orig-rpm'],
       packages = find_packages(exclude=['tests', 'tests.*']),
       data_files = [("/etc/git-buildpackage/", ["gbp.conf"]),],
-      setup_requires=['nose>=0.11.1', 'coverage>=2.85', 'nosexcover>=1.0.7'] if \
+      setup_requires=['nose>=0.11.1', 'coverage>=2.85'] if \
                         os.getenv('WITHOUT_NOSETESTS') is None else [],
       entry_points = {
           'console_scripts': [ 'gbp = gbp.scripts.supercommand:supercommand' ],
