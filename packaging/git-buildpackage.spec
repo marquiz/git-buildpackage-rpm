@@ -18,6 +18,12 @@ Source0:    %{name}_%{version}.tar.gz
 %define dpkg_pkg_name dpkg
 %endif
 
+%if 0%{?suse_version} && 0%{?suse_version} < 1230
+%define devscripts_pkg_name devscripts-fixes
+%else
+%define devscripts_pkg_name devscripts
+%endif
+
 %if 0%{?fedora}
 %define man_pkg_name man-db
 %else
@@ -38,6 +44,7 @@ Source0:    %{name}_%{version}.tar.gz
 
 Requires:   %{name}-common = %{version}-%{release}
 Requires:   %{dpkg_pkg_name}
+Requires:   %{devscripts_pkg_name}
 BuildRequires:  python
 BuildRequires:  python-setuptools
 
