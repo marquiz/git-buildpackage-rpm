@@ -308,6 +308,13 @@ def update_tag_str_fields(tag_format_str, fields, repo, commit):
 
     return extra
 
+def disable_hooks(options):
+    """Disable all hooks (except for builder)"""
+    for hook in ['cleaner', 'postexport', 'prebuild', 'postbuild', 'posttag']:
+        if getattr(options, hook):
+            gbp.log.info("Disabling '%s' hook" % hook)
+            setattr(options, hook, '')
+
 
 def parse_args(argv, prefix, git_treeish=None):
     args = [ arg for arg in argv[1:] if arg.find('--%s' % prefix) == 0 ]
@@ -385,6 +392,7 @@ def parse_args(argv, prefix, git_treeish=None):
                       help="hook run after a successful build, default is '%(postbuild)s'")
     cmd_group.add_config_file_option(option_name="posttag", dest="posttag",
                       help="hook run after a successful tag operation, default is '%(posttag)s'")
+    cmd_group.add_boolean_config_file_option(option_name="hooks", dest="hooks")
     export_group.add_config_file_option(option_name="export-dir", dest="export_dir", type="path",
                       help="Build topdir, also export the sources under EXPORT_DIR, default is '%(export-dir)s'")
     export_group.add_config_file_option(option_name="rpmbuild-builddir", dest="build_dir", type="path",
@@ -420,6 +428,8 @@ def parse_args(argv, prefix, git_treeish=None):
     options.patch_export_compress = rpm.string_to_int(options.patch_export_compress)
 
     gbp.log.setup(options.color, options.verbose, options.color_scheme)
+    if not options.hooks:
+        disable_hooks(options)
     if options.retag:
         if not options.tag and not options.tag_only:
             gbp.log.err("'--%sretag' needs either '--%stag' or '--%stag-only'" % (prefix, prefix, prefix))
