@@ -124,9 +124,7 @@ rm -rf %{buildroot}
 WITHOUT_NOSETESTS=1 python ./setup.py install --root=%{buildroot} --prefix=/usr
 rm -rf %{buildroot}%{python_sitelib}/*info
 
-
-%files
-%defattr(-,root,root,-)
+cat > files.list << EOF
 %{_bindir}/gbp-pq
 %{_bindir}/git-buildpackage
 %{_bindir}/git-dch
@@ -143,6 +141,19 @@ rm -rf %{buildroot}%{python_sitelib}/*info
 %{python_sitelib}/gbp/scripts/import_dscs.py*
 %{python_sitelib}/gbp/scripts/import_orig.py*
 %{python_sitelib}/gbp/scripts/create_remote_repo.py*
+EOF
+
+# Disable the debian tools for CentOS
+%if 0%{?centos_version}
+for f in `cat files.list`; do
+    rm -rfv %{buildroot}/$f
+done
+
+%else
+
+%files -f files.list
+%defattr(-,root,root,-)
+%endif
 
 %files common
 %defattr(-,root,root,-)
