@@ -343,6 +343,15 @@ def setup_pbuilder(options):
             os.environ['GIT_PBUILDER_OPTIONS'] = options.pbuilder_options
 
 
+def disable_builder(options):
+    """Disable builder (and postbuild hook)"""
+    gbp.log.info("Disabling builder and postbuild hook")
+    options.builder = ''
+    options.postbuild = ''
+    options.pbuilder = None
+    options.qemubuilder = None
+
+
 def disable_hooks(options):
     """Disable all hooks (except for builder)"""
     for hook in ['cleaner', 'postexport', 'prebuild', 'postbuild', 'posttag']:
@@ -447,6 +456,7 @@ def parse_args(argv, prefix):
     cmd_group.add_config_file_option(option_name="arch", dest="pbuilder_arch")
     cmd_group.add_boolean_config_file_option(option_name = "pbuilder-autoconf", dest="pbuilder_autoconf")
     cmd_group.add_config_file_option(option_name="pbuilder-options", dest="pbuilder_options")
+    cmd_group.add_boolean_config_file_option(option_name="build", dest="build")
     cmd_group.add_boolean_config_file_option(option_name="hooks", dest="hooks")
     export_group.add_config_file_option(option_name="export-dir", dest="export_dir", type="path",
                       help="before building the package export the source into EXPORT_DIR, default is '%(export-dir)s'")
@@ -459,6 +469,9 @@ def parse_args(argv, prefix):
     options, args = parser.parse_args(args)
 
     gbp.log.setup(options.color, options.verbose, options.color_scheme)
+    if not options.build:
+        disable_builder(options)
+        dpkg_args = []
     if not options.hooks:
         disable_hooks(options)
     if options.retag:
