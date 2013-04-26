@@ -108,6 +108,7 @@ class GbpOptionParser(OptionParser):
                  'prebuild'        : '',
                  'postexport'      : '',
                  'postimport'      : '',
+                 'build'           : 'True',
                  'hooks'           : 'True',
                  'debian-tag'      : 'debian/%(version)s',
                  'debian-tag-msg'  : '%(pkg)s Debian release %(version)s',
@@ -275,6 +276,8 @@ class GbpOptionParser(OptionParser):
              'postimport':
                   ("hook run after a successful import, "
                    "default is '%(postimport)s'"),
+             'build':
+                  ("Enable running builder, default is %(build)s"),
              'hooks':
                   ("Enable running all hooks, default is %(hooks)s"),
              'time-machine':
