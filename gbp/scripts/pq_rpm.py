@@ -149,6 +149,19 @@ def generate_patches(repo, start, squash, end, outdir, options):
             start = merge_sha1
             print start
 
+    try:
+        end_commit = end
+        end_commit_sha1 = repo.rev_parse("%s^0" % end_commit)
+    except GitRepositoryError:
+        # In case of plain tree-ish objects, assume current branch head is the
+        # last commit
+        end_commit = "HEAD"
+        end_commit_sha1 = repo.rev_parse("%s^0" % end_commit)
+
+    start_sha1 = repo.rev_parse("%s^0" % start)
+    if repo.get_merge_base(start_sha1, end_commit_sha1) != start_sha1:
+        raise GbpError("Start commit '%s' not an ancestor of end commit "
+                       "'%s'" % (start, end_commit))
     # Generate patches
     for commit in reversed(repo.get_commits(start, end_commit)):
         info = repo.get_commit_info(commit)
