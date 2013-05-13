@@ -81,6 +81,11 @@ Group:      Development/Tools/Building
 Requires:   git-core
 Requires:   %{man_pkg_name}
 Requires:   %{python_pkg_name}
+%if 0%{?suse_version} || 0%{?tizen_version:1}
+Recommends:     pristine-tar
+%else
+Requires:       pristine-tar
+%endif
 
 %description common
 Common files and documentation, used by both git-buildpackage debian and rpm tools
