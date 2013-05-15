@@ -275,7 +275,29 @@ class TestSpecFile(object):
         assert len(spec.patchseries(ignored=True)) == 1
         series = spec.patchseries(unapplied=True, ignored=True)
         assert len(series) == 2
-        assert os.path.basename(series[-1].path) == '4.patch'
+        assert os.path.basename(series[-1].path) == '1.patch'
+
+    def test_patch_series_quirks(self):
+        """Patches are applied in order different from the patch numbering"""
+        spec_filepath = os.path.join(SPEC_DIR, 'gbp-test-quirks.spec')
+        spec = SpecFileTester(spec_filepath)
+
+        # Check series is returned in the order the patches are applied
+        files = [os.path.basename(patch.path) for patch in spec.patchseries()]
+        assert files == ['05.patch', '01.patch']
+        # Also ignored patches are returned in the correct order
+        files = [os.path.basename(patch.path) for patch in
+                    spec.patchseries(ignored=True)]
+        assert files == ['05.patch', '02.patch', '01.patch']
+        # Unapplied patches are added to the end of the series
+        files = [os.path.basename(patch.path) for patch in
+                    spec.patchseries(unapplied=True)]
+        assert files == ['05.patch', '01.patch', '03.patch']
+        # Return all patches (for which tag is found)
+        files = [os.path.basename(patch.path) for patch in
+                    spec.patchseries(unapplied=True, ignored=True)]
+        assert files == ['05.patch', '02.patch', '01.patch', '03.patch',
+                         '04.patch']
 
 
 class TestUtilityFunctions(object):

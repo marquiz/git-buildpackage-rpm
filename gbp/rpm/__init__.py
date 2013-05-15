@@ -651,20 +651,29 @@ class SpecFile(object):
         series = PatchSeries()
         if 'patch' in self._tags:
             tags = self._patches()
-            macros = {}
+            applied = []
             for macro in self._special_directives['patch']:
-                macros[macro['id']] = macro['args']
-            ignored = [] if ignored else self.ignorepatches
+                if macro['id'] in tags:
+                    applied.append((macro['id'], macro['args']))
+            ignored = set() if ignored else set(self.ignorepatches)
 
-            for num, tag in sorted(tags.iteritems()):
-                strip = 0
-                if num in macros:
-                    opts = self._patch_macro_opts(macros[num])
+            # Put all patches that are applied first in the series
+            for num, args in applied:
+                if num not in ignored:
+                    opts = self._patch_macro_opts(args)
                     strip = int(opts.strip) if opts.strip else 0
-                if (unapplied or (num in macros)) and num not in ignored:
-                    filename = os.path.basename(tag['linevalue'])
+                    filename = os.path.basename(tags[num]['linevalue'])
                     series.append(Patch(os.path.join(self.specdir, filename),
                                         strip=strip))
+            # Finally, append all unapplied patches to the series, if requested
+            if unapplied:
+                applied_nums = set([num for num, _args in applied])
+                unapplied = set(tags.keys()).difference(applied_nums)
+                for num in sorted(unapplied):
+                    if num not in ignored:
+                        filename = os.path.basename(tags[num]['linevalue'])
+                        series.append(Patch(os.path.join(self.specdir,
+                                                         filename), strip=0))
         return series
 
     def _guess_orig_prefix(self, orig):
