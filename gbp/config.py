@@ -418,23 +418,21 @@ class GbpOptionParser(OptionParser):
             default = self.config[option_name]
         return default
 
-    def add_config_file_option(self, option_name, dest, help=None, **kwargs):
+    def add_config_file_option(self, option_name, help=None, **kwargs):
         """
         set a option for the command line parser, the default is read from the config file
         @param option_name: name of the option
         @type option_name: string
-        @param dest: where to store this option
-        @type dest: string
         @param help: help text
         @type help: string
         """
         if not help:
             help = self.help[option_name]
-        OptionParser.add_option(self, "--%s%s" % (self.prefix, option_name), dest=dest,
+        OptionParser.add_option(self, "--%s%s" % (self.prefix, option_name),
                                 default=self.get_default(option_name, **kwargs),
                                 help=help % self.config, **kwargs)
 
-    def add_boolean_config_file_option(self, option_name, dest):
+    def add_boolean_config_file_option(self, option_name, dest=None):
         self.add_config_file_option(option_name=option_name, dest=dest, action="store_true")
         neg_help = "negates '--%s%s'" % (self.prefix, option_name)
         self.add_config_file_option(option_name="no-%s" % option_name, dest=dest, help=neg_help, action="store_false")
