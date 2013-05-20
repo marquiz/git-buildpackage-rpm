@@ -107,6 +107,20 @@ class TestImportPacked(ComponentTestBase):
         # Only one commit: packaging files
         assert len(repo.get_commits()) == 1
 
+    def test_import_compressed_patches(self):
+        """Test importing of non-native src.rpm with compressed patches"""
+        srpm = os.path.join(DATA_DIR, 'gbp-test-1.1-2.src.rpm')
+        assert import_srpm(['arg0', srpm]) == 0
+        # Check repository state
+        repo = GitRepository('gbp-test')
+        files =  set(['Makefile', 'README', 'AUTHORS', 'NEWS', 'bar.tar.gz',
+                    'dummy.sh', 'foo.txt', 'gbp-test.spec', 'my.patch',
+                    'mydir/', 'mydir/myfile.txt'])
+        self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
+        # Four commits: upstream, packaging files, three patches and the removal
+        # of imported patches
+        assert len(repo.get_commits()) == 6
+
     def test_multiple_versions(self):
         """Test importing of multiple versions"""
         srpms = [ os.path.join(DATA_DIR, 'gbp-test-1.0-1.src.rpm'),

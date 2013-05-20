@@ -24,6 +24,7 @@ import shutil
 import sys
 import re
 import gzip
+import bz2
 import subprocess
 import gbp.tmpfile as tempfile
 from gbp.config import (GbpOptionParserRpm, GbpOptionGroup)
@@ -225,12 +226,14 @@ def safe_patches(queue, tmpdir_base):
         gbp.log.debug("Safeing patches '%s' in '%s'" % (os.path.dirname(queue[0].path), tmpdir))
         for p in queue:
             (base, archive_fmt, comp) = parse_archive_filename(p.path)
-            if comp == 'gzip':
+            uncompressors = {'gzip': gzip.open, 'bzip2': bz2.BZ2File}
+            if comp in uncompressors:
                 gbp.log.debug("Uncompressing '%s'" % os.path.basename(p.path))
-                src = gzip.open(p.path, 'r')
+                src = uncompressors[comp](p.path, 'r')
                 dst_name = os.path.join(tmpdir, os.path.basename(base))
             elif comp:
-                raise GbpError, ("Unsupported compression of a patch, giving up")
+                raise GbpError("Unsupported patch compression '%s', giving up"
+                               % comp)
             else:
                 src = open(p.path, 'r')
                 dst_name = os.path.join(tmpdir, os.path.basename(p.path))
