@@ -30,19 +30,14 @@ import urllib2
 import gbp.tmpfile as tempfile
 import gbp.command_wrappers as gbpc
 from gbp.rpm import (parse_srpm, guess_spec, SpecFile, NoSpecError,
-<<<<<<< HEAD
                     RpmUpstreamSource)
 from gbp.rpm.policy import RpmPkgPolicy
-=======
-                     RpmUpstreamSource, compose_version_str)
->>>>>>> 736b9d8... Introduce git-import-srpm tool
 from gbp.rpm.git import (RpmGitRepository, GitRepositoryError)
 from gbp.git.modifier import GitModifier
 from gbp.config import (GbpOptionParserRpm, GbpOptionGroup,
                        no_upstream_branch_msg)
 from gbp.errors import GbpError
 import gbp.log
-<<<<<<< HEAD
 from gbp.scripts.pq_rpm import safe_patches, rm_patch_files, get_packager
 from gbp.scripts.common.pq import apply_and_commit_patch
 from gbp.pkg import parse_archive_filename
@@ -58,26 +53,16 @@ Autoremove imported patches from packaging
 
 Removed all imported patches from %s
 and patch files from the packaging dir.
-=======
-from gbp.pkg import parse_archive_filename
-
-no_packaging_branch_msg = """
-Repository does not have branch '%s' for packaging/distribution sources.
-You need to reate it or use --packaging-branch to specify it.
->>>>>>> 736b9d8... Introduce git-import-srpm tool
 """
 
 class SkipImport(Exception):
     """Nothing imported"""
     pass
 
-<<<<<<< HEAD
 class PatchImportError(Exception):
     """Patch import failed"""
     pass
 
-=======
->>>>>>> 736b9d8... Introduce git-import-srpm tool
 
 def download_file(target_dir, url):
     """Download a remote file"""
@@ -134,7 +119,6 @@ def set_bare_repo_options(options):
     if options.pristine_tar:
         gbp.log.info("Bare repository: setting %s option '--no-pristine-tar'")
         options.pristine_tar = False
-<<<<<<< HEAD
     if options.patch_import:
         gbp.log.info("Bare repository: setting %s option '--no-patch-import')")
         options.patch_import = False
@@ -178,12 +162,6 @@ def import_spec_patches(repo, spec, dirs):
 
 
 def force_to_branch_head(repo, branch):
-=======
-
-
-def force_to_branch_head(repo, branch):
-    """Checkout branch and reset --hard"""
->>>>>>> 736b9d8... Introduce git-import-srpm tool
     if repo.get_branch() == branch:
         # Update HEAD if we modified the checked out branch
         repo.force_head(branch, hard=True)
@@ -223,21 +201,15 @@ def parse_args(argv):
                     dest="vendor")
     parser.add_option("--download", action="store_true", dest="download",
                       default=False, help="download source package")
-<<<<<<< HEAD
     parser.add_config_file_option(option_name="vendor", action="store",
                       dest="vendor")
-=======
->>>>>>> 736b9d8... Introduce git-import-srpm tool
     branch_group.add_config_file_option(option_name="packaging-branch",
                       dest="packaging_branch")
     branch_group.add_config_file_option(option_name="upstream-branch",
                       dest="upstream_branch")
-<<<<<<< HEAD
     branch_group.add_option("--upstream-vcs-tag", dest="vcs_tag",
                             help="Upstream VCS tag on top of which to import "
                                  "the orig sources")
-=======
->>>>>>> 736b9d8... Introduce git-import-srpm tool
     branch_group.add_boolean_config_file_option(
                       option_name="create-missing-branches",
                       dest="create_missing_branches")
@@ -270,11 +242,8 @@ def parse_args(argv):
                       dest="author_is_committer")
     import_group.add_config_file_option(option_name="packaging-dir",
                       dest="packaging_dir")
-<<<<<<< HEAD
     import_group.add_boolean_config_file_option(option_name="patch-import",
                                                 dest="patch_import")
-=======
->>>>>>> 736b9d8... Introduce git-import-srpm tool
     (options, args) = parser.parse_args(argv[1:])
     gbp.log.setup(options.color, options.verbose, options.color_scheme)
     return options, args
@@ -388,7 +357,6 @@ def main(argv):
         # Unpack orig source archive
         if spec.orig_src:
             orig_tarball = os.path.join(dirs['src'], spec.orig_src['filename'])
-<<<<<<< HEAD
             upstream = RpmUpstreamSource(orig_tarball)
             upstream = upstream.unpack(dirs['origsrc'], options.filters)
         else:
@@ -405,24 +373,6 @@ def main(argv):
             if options.allow_same_version:
                 gbp.log.info("Moving tag of version '%s' since import forced" %
                         RpmPkgPolicy.compose_full_version(spec.version))
-=======
-            sources = RpmUpstreamSource(orig_tarball)
-            sources.unpack(dirs['origsrc'], options.filters)
-        else:
-            sources = None
-
-        src_tag_format = options.packaging_tag if options.native \
-                                               else options.upstream_tag
-        tag_str_fields = dict(spec.version, vendor=options.vendor.lower())
-        src_tag = repo.version_to_tag(src_tag_format, tag_str_fields)
-        ver_str = compose_version_str(spec.version)
-
-        if repo.find_version(options.packaging_tag, tag_str_fields):
-            gbp.log.warn("Version %s already imported." % ver_str)
-            if options.allow_same_version:
-                gbp.log.info("Moving tag of version '%s' since import forced" %
-                             ver_str)
->>>>>>> 736b9d8... Introduce git-import-srpm tool
                 move_tag_stamp(repo, options.packaging_tag, tag_str_fields)
             else:
                 raise SkipImport
@@ -431,17 +381,10 @@ def main(argv):
             options.create_missing_branches = True
 
         # Determine author and committer info, currently same info is used
-<<<<<<< HEAD
         # for both upstream sources and packaging files
         author = None
         if spec.packager:
             match = re.match('(?P<name>.*[^ ])\s*<(?P<email>\S*)>',
-=======
-        # for both sources and packaging files
-        author = None
-        if spec.packager:
-            match = re.match(r'(?P<name>.*[^ ])\s*<(?P<email>\S*)>',
->>>>>>> 736b9d8... Introduce git-import-srpm tool
                              spec.packager.strip())
             if match:
                 author = GitModifier(match.group('name'), match.group('email'))
@@ -450,20 +393,12 @@ def main(argv):
             gbp.log.debug("Couldn't determine packager info")
         committer = committer_from_author(author, options)
 
-<<<<<<< HEAD
         # Import upstream sources
         if upstream:
             upstream_commit = repo.find_version(tag_format[0], tag_str_fields)
             if not upstream_commit:
                 gbp.log.info("Tag %s not found, importing %s upstream sources"
                              % (tag, tag_format[1]))
-=======
-        # Import sources
-        if sources:
-            src_commit = repo.find_version(src_tag_format, tag_str_fields)
-            if not src_commit:
-                gbp.log.info("Tag %s not found, importing sources" % src_tag)
->>>>>>> 736b9d8... Introduce git-import-srpm tool
 
                 branch = [options.upstream_branch,
                           options.packaging_branch][options.native]
@@ -475,7 +410,6 @@ def main(argv):
                         gbp.log.err(no_upstream_branch_msg % branch + "\n"
                             "Also check the --create-missing-branches option.")
                         raise GbpError
-<<<<<<< HEAD
 
                 msg = "%s version %s" % (tag_format[1], spec.upstreamversion)
                 if options.vcs_tag:
@@ -492,19 +426,6 @@ def main(argv):
                 repo.create_tag(name=tag,
                                 msg=msg,
                                 commit=upstream_commit,
-=======
-                src_vendor = "Native" if options.native else "Upstream"
-                msg = "%s version %s" % (src_vendor, spec.upstreamversion)
-                src_commit = repo.commit_dir(sources.unpacked,
-                        "Imported %s" % msg,
-                        branch,
-                        author=author,
-                        committer=committer,
-                        create_missing_branch=options.create_missing_branches)
-                repo.create_tag(name=src_tag,
-                                msg=msg,
-                                commit=src_commit,
->>>>>>> 736b9d8... Introduce git-import-srpm tool
                                 sign=options.sign_tags,
                                 keyid=options.keyid)
 
@@ -523,11 +444,7 @@ def main(argv):
 
         # Import packaging files. For native packages we assume that also
         # packaging files are found in the source tarball
-<<<<<<< HEAD
         if not options.native or not upstream:
-=======
-        if not options.native or not sources:
->>>>>>> 736b9d8... Introduce git-import-srpm tool
             gbp.log.info("Importing packaging files")
             branch = options.packaging_branch
             if not repo.has_branch(branch):
@@ -539,7 +456,6 @@ def main(argv):
                                 "option.")
                     raise GbpError
 
-<<<<<<< HEAD
             tag_str_fields = dict(spec.version, vendor=options.vendor)
             tag = repo.version_to_tag(options.packaging_tag, tag_str_fields)
             msg = "%s release %s" % (options.vendor,
@@ -556,28 +472,11 @@ def main(argv):
                 # Copy packaging files to the unpacked sources dir
                 try:
                     pkgsubdir = os.path.join(upstream.unpacked,
-=======
-            tag = repo.version_to_tag(options.packaging_tag, tag_str_fields)
-            msg = "%s release %s" % (options.vendor, ver_str)
-
-            if options.orphan_packaging or not sources:
-                commit = repo.commit_dir(dirs['packaging_base'],
-                        "Imported %s" % msg,
-                        branch,
-                        author=author,
-                        committer=committer,
-                        create_missing_branch=options.create_missing_branches)
-            else:
-                # Copy packaging files to the unpacked sources dir
-                try:
-                    pkgsubdir = os.path.join(sources.unpacked,
->>>>>>> 736b9d8... Introduce git-import-srpm tool
                                              options.packaging_dir)
                     os.mkdir(pkgsubdir)
                 except OSError as err:
                     if err.errno != errno.EEXIST:
                         raise
-<<<<<<< HEAD
                 for fn in os.listdir(dirs['packaging']):
                     shutil.copy2(os.path.join(dirs['packaging'], fn),
                                  pkgsubdir)
@@ -596,21 +495,6 @@ def main(argv):
                                         options.packaging_dir, spec.specfile))
                     import_spec_patches(repo, spec, dirs)
                     commit = options.packaging_branch
-=======
-                for fname in os.listdir(dirs['packaging']):
-                    shutil.copy2(os.path.join(dirs['packaging'], fname),
-                                 pkgsubdir)
-                commit = repo.commit_dir(sources.unpacked,
-                        "Imported %s" % msg,
-                        branch,
-                        other_parents=[src_commit],
-                        author=author,
-                        committer=committer,
-                        create_missing_branch=options.create_missing_branches)
-                # Import patches on top of the source tree
-                # (only for non-native packages with non-orphan packaging)
-                force_to_branch_head(repo, options.packaging_branch)
->>>>>>> 736b9d8... Introduce git-import-srpm tool
 
             # Create packaging tag
             repo.create_tag(name=tag,
@@ -636,12 +520,9 @@ def main(argv):
     except NoSpecError as err:
         gbp.log.err("Failed determine spec file: %s" % err)
         ret = 1
-<<<<<<< HEAD
     except PatchImportError as err:
         gbp.log.err(err)
         ret = 2
-=======
->>>>>>> 736b9d8... Introduce git-import-srpm tool
     except SkipImport:
         skipped = True
     finally:
@@ -649,13 +530,9 @@ def main(argv):
         gbpc.RemoveTree(dirs['tmp_base'])()
 
     if not ret and not skipped:
-<<<<<<< HEAD
         gbp.log.info("Version '%s' imported under '%s'" %
                      (RpmPkgPolicy.compose_full_version(spec.version),
                       spec.name))
-=======
-        gbp.log.info("Version '%s' imported under '%s'" % (ver_str, spec.name))
->>>>>>> 736b9d8... Introduce git-import-srpm tool
     return ret
 
 if __name__ == '__main__':
