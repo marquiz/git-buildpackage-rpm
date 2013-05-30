@@ -152,6 +152,9 @@ def build_parser(name):
                       dest="packaging_branch")
     branch_group.add_config_file_option(option_name="upstream-branch",
                       dest="upstream_branch")
+    branch_group.add_option("--upstream-vcs-tag", dest="vcs_tag",
+                            help="Upstream VCS tag on top of which to import "
+                                 "the orig sources")
     branch_group.add_boolean_config_file_option(
                       option_name="create-missing-branches",
                       dest="create_missing_branches")
@@ -367,9 +370,14 @@ def main(argv):
                         raise GbpError
                 src_vendor = "Native" if options.native else "Upstream"
                 msg = "%s version %s" % (src_vendor, spec.upstreamversion)
+                if options.vcs_tag:
+                    parents = [repo.rev_parse("%s^{}" % options.vcs_tag)]
+                else:
+                    parents = None
                 src_commit = repo.commit_dir(sources.unpacked,
                         "Imported %s" % msg,
                         branch,
+                        other_parents=parents,
                         author=author,
                         committer=committer,
                         create_missing_branch=options.create_missing_branches)
