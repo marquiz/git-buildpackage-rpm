@@ -312,7 +312,7 @@ def main(argv):
                 options.filter_pristine_tar, None, tmpdir)
         if not source.is_dir():
             unpack_dir = tempfile.mkdtemp(prefix='unpack', dir=tmpdir)
-            source.unpack(unpack_dir, options.filters)
+            source = source.unpack(unpack_dir, options.filters)
             gbp.log.debug("Unpacked '%s' to '%s'" % (source.path, source.unpacked))
 
         if orig_needs_repack(source, options):
