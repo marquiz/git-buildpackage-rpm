@@ -381,6 +381,7 @@ class UpstreamSource(object):
         >>> UpstreamSource('foo-bar_0.2.orig.tar.gz').guess_version()
         ('foo-bar', '0.2')
         >>> UpstreamSource('foo-Bar_0.2.orig.tar.gz').guess_version()
+        ('foo-Bar', '0.2.orig')
         >>> UpstreamSource('git-bar-0.2.tar.gz').guess_version()
         ('git-bar', '0.2')
         >>> UpstreamSource('git-bar-0.2-rc1.tar.gz').guess_version()
@@ -393,9 +394,10 @@ class UpstreamSource(object):
         ('git', '1')
         >>> UpstreamSource('kvm_87+dfsg.orig.tar.gz').guess_version()
         ('kvm', '87+dfsg')
-        >>> UpstreamSource('foo-Bar_0.2.orig.tar.gz').guess_version()
         >>> UpstreamSource('foo-Bar-a.b.tar.gz').guess_version()
         >>> UpstreamSource('foo-bar_0.2.orig.tar.xz').guess_version()
+        ('foo-bar', '0.2')
+        >>> UpstreamSource('foo-bar_0.2.tar.gz').guess_version()
         ('foo-bar', '0.2')
         >>> UpstreamSource('foo-bar_0.2.orig.tar.lzma').guess_version()
         ('foo-bar', '0.2')
@@ -419,8 +421,9 @@ class UpstreamSource(object):
                            ( # Debian upstream tarball: package_'<version>.orig.tar.gz'
                              r'^(?P<package>[a-z\d\.\+\-]+)_(?P<version>%s+)\.orig',
                              # Upstream 'package-<version>.tar.gz'
+                             # or Debian native 'package_<version>.tar.gz'
                              # or directory 'package-<version>':
-                             r'^(?P<package>[a-zA-Z\d\.\+\-]+)-(?P<version>[0-9]%s*)'))
+                             r'^(?P<package>[a-zA-Z\d\.\+\-]+)(-|_)(?P<version>[0-9]%s*)'))
         if extra_regex:
             version_filters = extra_regex + version_filters
 
