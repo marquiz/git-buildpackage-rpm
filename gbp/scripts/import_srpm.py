@@ -310,7 +310,7 @@ def main(argv):
         if spec.orig_src:
             orig_tarball = os.path.join(dirs['src'], spec.orig_src['filename'])
             sources = RpmUpstreamSource(orig_tarball)
-            sources.unpack(dirs['origsrc'], options.filters)
+            sources = sources.unpack(dirs['origsrc'], options.filters)
         else:
             sources = None
 

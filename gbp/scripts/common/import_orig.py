@@ -117,7 +117,7 @@ def repack_source(source, new_name, unpack_dir, filters, new_prefix=None):
     if source.is_tarball(): # the tarball was filtered on unpack
         repacked.unpacked = source.unpacked
     else: # otherwise unpack the generated tarball get a filtered tree
-        repacked.unpack(unpack_dir, filters)
+        repacked.unpack(unpack_dir)
     return repacked
 
 
