@@ -474,7 +474,11 @@ class UpstreamSource(object):
         except gbpc.CommandExecFailed:
             # repackArchive already printed an error
             raise GbpError
-        return type(self)(newarchive)
+        new = type(self)(newarchive)
+        # Reuse the same unpacked dir if the content matches
+        if not filters:
+            new.unpacked = self.unpacked
+        return new
 
     @staticmethod
     def known_compressions():
