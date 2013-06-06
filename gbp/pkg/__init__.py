@@ -401,19 +401,27 @@ class UpstreamSource(object):
         if type(filters) != type([]):
             raise GbpError("Filters must be a list")
 
-        self._unpack_archive(dir, filters)
+        if self._unpack_archive(dir, filters):
+            ret = type(self)(dir, prefix=self._prefix)
+        else:
+            ret = self
         src_dir = os.path.join(dir, self._prefix)
-        self.unpacked = src_dir if os.path.isdir(src_dir) else dir
+        ret.unpacked = src_dir if os.path.isdir(src_dir) else dir
+        return ret
 
     def _unpack_archive(self, dir, filters):
         """
-        Unpack packed upstream sources into a given directory.
+        Unpack packed upstream sources into a given directory. Return True if
+        the output was filtered, otherwise False.
         """
         ext = os.path.splitext(self.path)[1]
         if ext in [ ".zip", ".xpi" ]:
             self._unpack_zip(dir)
         else:
             self._unpack_tar(dir, filters)
+            if filters:
+                return True
+        return False
 
     def _unpack_zip(self, dir):
         try:
