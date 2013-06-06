@@ -324,7 +324,7 @@ def main(argv):
 
             dirs['tmp'] = os.path.abspath(tempfile.mkdtemp(dir='..'))
             upstream = DebianUpstreamSource(src.tgz)
-            upstream.unpack(dirs['tmp'], options.filters)
+            upstream = upstream.unpack(dirs['tmp'], options.filters)
 
             format = [(options.upstream_tag, "Upstream"), (options.debian_tag, "Debian")][src.native]
             tag = repo.version_to_tag(format[0], src.upstream_version)
