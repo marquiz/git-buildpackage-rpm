@@ -35,13 +35,7 @@ import gbp.log
 from gbp.pkg import (UpstreamSource, compressor_opts, parse_archive_filename)
 from gbp.rpm.policy import RpmPkgPolicy
 from gbp.rpm.linkedlist import LinkedList
-
-try:
-    # Try to load special RPM lib to be used for GBP (only)
-    rpm = __import__(RpmPkgPolicy.python_rpmlib_module_name)
-except ImportError:
-    gbp.log.debug("Failed to import '%s' as rpm python module, using host's default rpm library instead" % RpmPkgPolicy.python_rpmlib_module_name)
-    import rpm
+from gbp.rpm.lib_rpm import librpm
 
 
 class NoSpecError(Exception):
@@ -66,38 +60,38 @@ class SrcRpmFile(object):
     """Keeps all needed data read from a source rpm"""
     def __init__(self, srpmfile):
         # Do not required signed packages to be able to import
-        ts_vsflags = (rpm.RPMVSF_NOMD5HEADER | rpm.RPMVSF_NORSAHEADER |
-                      rpm.RPMVSF_NOSHA1HEADER | rpm.RPMVSF_NODSAHEADER |
-                      rpm.RPMVSF_NOMD5 | rpm.RPMVSF_NORSA | rpm.RPMVSF_NOSHA1 |
-                      rpm.RPMVSF_NODSA)
+        ts_vsflags = (librpm.RPMVSF_NOMD5HEADER | librpm.RPMVSF_NORSAHEADER |
+                      librpm.RPMVSF_NOSHA1HEADER | librpm.RPMVSF_NODSAHEADER |
+                      librpm.RPMVSF_NOMD5 | librpm.RPMVSF_NORSA |
+                      librpm.RPMVSF_NOSHA1 | librpm.RPMVSF_NODSA)
         srpmfp = open(srpmfile)
-        self.rpmhdr = rpm.ts(vsflags=ts_vsflags).hdrFromFdno(srpmfp.fileno())
+        self.rpmhdr = librpm.ts(vsflags=ts_vsflags).hdrFromFdno(srpmfp.fileno())
         srpmfp.close()
         self.srpmfile = os.path.abspath(srpmfile)
 
     @property
     def version(self):
         """Get the (downstream) version of the RPM package"""
-        version = dict(upstreamversion = self.rpmhdr[rpm.RPMTAG_VERSION],
-                       release = self.rpmhdr[rpm.RPMTAG_RELEASE])
-        if self.rpmhdr[rpm.RPMTAG_EPOCH] is not None:
-            version['epoch'] = str(self.rpmhdr[rpm.RPMTAG_EPOCH])
+        version = dict(upstreamversion = self.rpmhdr[librpm.RPMTAG_VERSION],
+                       release = self.rpmhdr[librpm.RPMTAG_RELEASE])
+        if self.rpmhdr[librpm.RPMTAG_EPOCH] is not None:
+            version['epoch'] = str(self.rpmhdr[librpm.RPMTAG_EPOCH])
         return version
 
     @property
     def name(self):
         """Get the name of the RPM package"""
-        return self.rpmhdr[rpm.RPMTAG_NAME]
+        return self.rpmhdr[librpm.RPMTAG_NAME]
 
     @property
     def upstreamversion(self):
         """Get the upstream version of the RPM package"""
-        return self.rpmhdr[rpm.RPMTAG_VERSION]
+        return self.rpmhdr[librpm.RPMTAG_VERSION]
 
     @property
     def packager(self):
         """Get the packager of the RPM package"""
-        return self.rpmhdr[rpm.RPMTAG_PACKAGER]
+        return self.rpmhdr[librpm.RPMTAG_PACKAGER]
 
     def unpack(self, dest_dir):
         """
@@ -145,13 +139,13 @@ class SpecFile(object):
 
         # Other initializations
         source_header = self._specinfo.packages[0].header
-        self.name = source_header[rpm.RPMTAG_NAME]
-        self.upstreamversion = source_header[rpm.RPMTAG_VERSION]
-        self.release = source_header[rpm.RPMTAG_RELEASE]
+        self.name = source_header[librpm.RPMTAG_NAME]
+        self.upstreamversion = source_header[librpm.RPMTAG_VERSION]
+        self.release = source_header[librpm.RPMTAG_RELEASE]
         # rpm-python returns epoch as 'long', convert that to string
-        self.epoch = str(source_header[rpm.RPMTAG_EPOCH]) \
-            if source_header[rpm.RPMTAG_EPOCH] != None else None
-        self.packager = source_header[rpm.RPMTAG_PACKAGER]
+        self.epoch = str(source_header[librpm.RPMTAG_EPOCH]) \
+            if source_header[librpm.RPMTAG_EPOCH] != None else None
+        self.packager = source_header[librpm.RPMTAG_PACKAGER]
         self._tags = {}
         self._special_directives = defaultdict(list)
         self._gbp_tags = defaultdict(list)
@@ -160,7 +154,7 @@ class SpecFile(object):
         self._parse_content()
 
         # Find 'Packager' tag. Needed to circumvent a bug in python-rpm where
-        # spec.sourceHeader[rpm.RPMTAG_PACKAGER] is not reset when a new spec
+        # spec.sourceHeader[librpm.RPMTAG_PACKAGER] is not reset when a new spec
         # file is parsed
         if 'packager' not in self._tags:
             self.packager = None
@@ -177,8 +171,8 @@ class SpecFile(object):
             try:
                 # Parse two times to circumvent a rpm-python problem where
                 # macros are not expanded if used before their definition
-                rpm.spec(filtered.name)
-                return rpm.spec(filtered.name)
+                librpm.spec(filtered.name)
+                return librpm.spec(filtered.name)
             except ValueError as err:
                 raise GbpError("RPM error while parsing %s: %s" %
                                 (self.specfile, err))
@@ -280,7 +274,7 @@ class SpecFile(object):
         # Record all tag locations
         try:
             header = self._specinfo.packages[0].header
-            tagvalue = header[getattr(rpm, 'RPMTAG_%s' % tagname.upper())]
+            tagvalue = header[getattr(librpm, 'RPMTAG_%s' % tagname.upper())]
         except AttributeError:
             tagvalue = None
         # We don't support "multivalue" tags like "Provides:" or "SourceX:"
@@ -457,7 +451,7 @@ class SpecFile(object):
         # Check type of tag, we don't support values for 'multivalue' tags
         try:
             header = self._specinfo.packages[0].header
-            tagvalue = header[getattr(rpm, 'RPMTAG_%s' % tagname.upper())]
+            tagvalue = header[getattr(librpm, 'RPMTAG_%s' % tagname.upper())]
         except AttributeError:
             tagvalue = None
         tagvalue = None if type(tagvalue) is list else value
@@ -747,7 +741,7 @@ def parse_srpm(srpmfile):
         srcrpm = SrcRpmFile(srpmfile)
     except IOError, err:
         raise GbpError, "Error reading src.rpm file: %s" % err
-    except rpm.error, err:
+    except librpm.error, err:
         raise GbpError, "RPM error while reading src.rpm: %s" % err
 
     return srcrpm
