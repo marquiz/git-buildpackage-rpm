@@ -35,7 +35,7 @@ import gbp.log
 from gbp.pkg import (UpstreamSource, compressor_opts, parse_archive_filename)
 from gbp.rpm.policy import RpmPkgPolicy
 from gbp.rpm.linkedlist import LinkedList
-from gbp.rpm.lib_rpm import librpm
+from gbp.rpm.lib_rpm import librpm, get_librpm_log
 
 
 class NoSpecError(Exception):
@@ -174,8 +174,11 @@ class SpecFile(object):
                 librpm.spec(filtered.name)
                 return librpm.spec(filtered.name)
             except ValueError as err:
-                raise GbpError("RPM error while parsing %s: %s" %
-                                (self.specfile, err))
+                rpmlog = get_librpm_log()
+                gbp.log.debug("librpm log:\n        %s" %
+                                "\n        ".join(rpmlog))
+                raise GbpError("RPM error while parsing %s: %s (%s)" %
+                                (self.specfile, err, rpmlog[-1]))
 
     def _get_version(self):
         """
