@@ -37,7 +37,7 @@ librpm.setVerbosity(librpm.RPMLOG_INFO)
 librpm.setLogFile(_rpmlogfd)
 
 
-def get_log(truncate=True):
+def get_librpm_log(truncate=True):
     """Get rpmlib log output"""
     _rpmlogfd.seek(0)
     log = [line.strip() for line in _rpmlogfd.readlines()]
