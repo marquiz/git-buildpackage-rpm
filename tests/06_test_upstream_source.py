@@ -28,6 +28,7 @@ class TestDir(unittest.TestCase):
         self.assertEqual(source.path, self.upstream_dir)
         self.assertEqual(source.unpacked, self.upstream_dir)
         self.assertEqual(source.guess_version(), ('test', '1.0'))
+        self.assertEqual(source.prefix, 'test-1.0')
 
     def tearDown(self):
         context.teardown()
@@ -65,6 +66,7 @@ class TestTar(unittest.TestCase):
         self.assertEqual(repacked.guess_version(), ('gbp', '0.1'))
         self.assertEqual(repacked.archive_fmt, 'tar')
         self.assertEqual(repacked.compression, 'bzip2')
+        self.assertEqual(repacked.prefix, 'gbp')
         self._check_tar(repacked, ["gbp/errors.py", "gbp/__init__.py"])
 
     def test_pack_filtered(self):
@@ -94,7 +96,8 @@ class TestZip(unittest.TestCase):
         self.zipfile = self.tmpdir.join("gbp-0.1.zip")
         z = zipfile.ZipFile(self.zipfile, "w")
         for f in glob.glob(os.path.join(context.projectdir, "gbp/*.py")):
-            z.write(f, f, zipfile.ZIP_DEFLATED)
+            arcname = os.path.relpath(f, context.projectdir)
+            z.write(f, arcname, zipfile.ZIP_DEFLATED)
         z.close()
 
     def tearDown(self):
@@ -109,6 +112,7 @@ class TestZip(unittest.TestCase):
         self.assertEqual(source.guess_version(), ('gbp', '0.1'))
         self.assertEqual(source.archive_fmt, 'zip')
         self.assertEqual(source.compression, None)
+        self.assertEqual(source.prefix, 'gbp')
         source.unpack(str(self.tmpdir))
         self.assertNotEqual(source.unpacked, None)
 

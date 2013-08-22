@@ -20,6 +20,9 @@
 import os
 import re
 import glob
+import stat
+import subprocess
+import zipfile
 
 import gbp.command_wrappers as gbpc
 from gbp.errors import GbpError
@@ -248,7 +251,7 @@ class UpstreamSource(object):
     @cvar _unpacked: path to the unpacked source tree
     @type _unpacked: string
     """
-    def __init__(self, name, unpacked=None, pkg_policy=PkgPolicy):
+    def __init__(self, name, unpacked=None, pkg_policy=PkgPolicy, prefix=None):
         self._orig = False
         self._tarball = False
         self._pkg_policy = pkg_policy
@@ -259,6 +262,9 @@ class UpstreamSource(object):
         self._filename_base, \
         self._archive_fmt, \
         self._compression = parse_archive_filename(os.path.basename(self.path))
+        self._prefix = prefix
+        if self._prefix is None:
+            self._determine_prefix()
 
         self._check_orig()
         if self.is_dir():
@@ -308,6 +314,64 @@ class UpstreamSource(object):
     def path(self):
         return self._path.rstrip('/')
 
+
+    @staticmethod
+    def _get_topdir_files(file_list):
+        """Parse content of the top directory from a file list
+
+        >>> UpstreamSource._get_topdir_files([])
+        set([])
+        >>> UpstreamSource._get_topdir_files([('-', 'foo/bar')])
+        set([('d', 'foo')])
+        >>> UpstreamSource._get_topdir_files([('d', 'foo/'), ('-', 'foo/bar')])
+        set([('d', 'foo')])
+        >>> UpstreamSource._get_topdir_files([('d', 'foo'), ('-', 'foo/bar')])
+        set([('d', 'foo')])
+        >>> UpstreamSource._get_topdir_files([('-', 'fob'), ('d', 'foo'), ('d', 'foo/bar'), ('-', 'foo/bar/baz')])
+        set([('-', 'fob'), ('d', 'foo')])
+        """
+        topdir_files = set()
+        for typ, path in file_list:
+            split = path.lstrip('/').split('/')
+            if len(split) == 1:
+                topdir_files.add((typ, path))
+            else:
+                topdir_files.add(('d', split[0]))
+        return topdir_files
+
+    def _determine_prefix(self):
+        """Determine the prefix, i.e. the "leading directory name"""
+        self._prefix = ''
+        if self.is_dir():
+            # For directories we presume that the prefix is just the dirname
+            self._prefix = os.path.basename(self.path.rstrip('/'))
+        else:
+            files = []
+            if self._archive_fmt == 'zip':
+                archive = zipfile.ZipFile(self.path)
+                for info in archive.infolist():
+                    typ = 'd' if stat.S_ISDIR(info.external_attr >> 16) else '?'
+                    files.append((typ, info.filename))
+            elif self._archive_fmt == 'tar':
+                popen = subprocess.Popen(['tar', '-t', '-v', '-f', self.path],
+                                         stdout=subprocess.PIPE)
+                out, _err = popen.communicate()
+                if popen.returncode:
+                    raise GbpError("Listing tar archive content failed")
+                for line in out.splitlines():
+                    fields = line.split(None, 5)
+                    files.append((fields[0][0], fields[-1]))
+            else:
+                raise GbpError("Unsupported archive format %s, unable to "
+                               "determine prefix for '%s'" %
+                               (self._archive_fmt, self.path))
+            # Determine prefix from the archive content
+            topdir_files = self._get_topdir_files(files)
+            if len(topdir_files) == 1:
+                typ, name = topdir_files.pop()
+                if typ == 'd':
+                    self._prefix = name
+
     @property
     def archive_fmt(self):
         """Archive format of the sources, e.g. 'tar'"""
@@ -317,6 +381,11 @@ class UpstreamSource(object):
     def compression(self):
         """Compression format of the sources, e.g. 'gzip'"""
         return self._compression
+
+    @property
+    def prefix(self):
+        """Prefix, i.e. the 'leading directory name' of the sources"""
+        return self._prefix
 
     def unpack(self, dir, filters=[]):
         """
@@ -333,7 +402,8 @@ class UpstreamSource(object):
             raise GbpError("Filters must be a list")
 
         self._unpack_archive(dir, filters)
-        self.unpacked = self._unpacked_toplevel(dir)
+        src_dir = os.path.join(dir, self._prefix)
+        self.unpacked = src_dir if os.path.isdir(src_dir) else dir
 
     def _unpack_archive(self, dir, filters):
         """
@@ -350,17 +420,6 @@ class UpstreamSource(object):
             gbpc.UnpackZipArchive(self.path, dir)()
         except gbpc.CommandExecFailed:
             raise GbpError("Unpacking of %s failed" % self.path)
-
-    def _unpacked_toplevel(self, dir):
-        """unpacked archives can contain a leading directory or not"""
-        unpacked = glob.glob('%s/*' % dir)
-        unpacked.extend(glob.glob("%s/.*" % dir)) # include hidden files and folders
-        # Check that dir contains nothing but a single folder:
-        if len(unpacked) == 1 and os.path.isdir(unpacked[0]):
-            return unpacked[0]
-        else:
-            # We can determine "no prefix" from this
-            return os.path.join(dir, ".")
 
     def _unpack_tar(self, dir, filters):
         """
