@@ -22,7 +22,8 @@ from gbp.deb.policy import DebianPkgPolicy
 
 class DebianUpstreamSource(UpstreamSource):
     """Upstream source class for Debian"""
-    def __init__(self, name, unpacked=None):
+    def __init__(self, name, unpacked=None, **kwargs):
         super(DebianUpstreamSource, self).__init__(name,
                                                    unpacked,
-                                                   DebianPkgPolicy)
+                                                   DebianPkgPolicy,
+                                                   **kwargs)
