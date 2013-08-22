@@ -509,17 +509,6 @@ class UpstreamSource(object):
         except gbpc.CommandExecFailed:
             raise GbpError("Unpacking of %s failed" % self.path)
 
-    def _unpacked_toplevel(self, dir):
-        """unpacked archives can contain a leading directory or not"""
-        unpacked = glob.glob('%s/*' % dir)
-        unpacked.extend(glob.glob("%s/.*" % dir)) # include hidden files and folders
-        # Check that dir contains nothing but a single folder:
-        if len(unpacked) == 1 and os.path.isdir(unpacked[0]):
-            return unpacked[0]
-        else:
-            # We can determine "no prefix" from this
-            return os.path.join(dir, ".")
-
     def _unpack_tar(self, dir, filters):
         """
         Unpack a tarball to I{dir} applying a list of I{filters}. Leave the
