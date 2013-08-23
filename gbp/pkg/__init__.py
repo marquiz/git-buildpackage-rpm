@@ -316,7 +316,7 @@ class UpstreamSource(object):
         self._orig = False
         self._tarball = False
         self._pkg_policy = pkg_policy
-        self._path = name
+        self._path = os.path.abspath(name)
         self.unpacked = unpacked
         self._filename_base, \
         self._archive_fmt, \
