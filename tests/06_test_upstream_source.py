@@ -62,6 +62,9 @@ class TestTar(unittest.TestCase):
         self.assertEqual(repacked.is_orig(), True)
         self.assertEqual(repacked.is_tarball(), True)
         self.assertEqual(repacked.is_dir(), False)
+        self.assertEqual(repacked.guess_version(), ('gbp', '0.1'))
+        self.assertEqual(repacked.archive_fmt, 'tar')
+        self.assertEqual(repacked.compression, 'bzip2')
         self._check_tar(repacked, ["gbp/errors.py", "gbp/__init__.py"])
 
     def test_pack_filtered(self):
@@ -103,6 +106,9 @@ class TestZip(unittest.TestCase):
         self.assertEqual(source.is_tarball(), False)
         self.assertEqual(source.is_dir(), False)
         self.assertEqual(source.unpacked, None)
+        self.assertEqual(source.guess_version(), ('gbp', '0.1'))
+        self.assertEqual(source.archive_fmt, 'zip')
+        self.assertEqual(source.compression, None)
         source.unpack(str(self.tmpdir))
         self.assertNotEqual(source.unpacked, None)
 
