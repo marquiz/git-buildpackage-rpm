@@ -317,6 +317,8 @@ class UpstreamSource(object):
         self._tarball = False
         self._pkg_policy = pkg_policy
         self._path = os.path.abspath(name)
+        if not os.path.exists(self._path):
+            raise GbpError('UpstreamSource: unable to find %s' % self._path)
         self.unpacked = unpacked
         self._filename_base, \
         self._archive_fmt, \
