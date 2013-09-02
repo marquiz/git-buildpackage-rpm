@@ -1,3 +1,34 @@
+* Tue Sep 03 2013 Markus Lehtonen <markus.lehtonen@linux.intel.com> 0.6.3
+- Version bump, rebase on top of 0.6.3
+  * Disable cover-min-percentage setting of nose
+  * docs: minor sgml syntax fix
+- rpm tests: slight modificatin of import-srpm tests
+- ComponentTestBase: use eq_() ok_() from nose.tools
+- tests: add tests for git-import-orig-rpm
+- ComponentTestBase: keep tmpdir if GBP_TESTS_NOCLEAN is in env
+- ComponentTestBase: fix env restore in teardown
+- config: restore mangled env in doctests
+- import-orig-rpm: remove unneeded try-except
+- import-orig-rpm: don't crash on invalid gbp.conf
+- ComponentTestBase: more verbose output in case of branch mismatch
+- rpm tests: test --filter option of git-import-srpm
+- tests.testutils: add ls_zip() helper
+- import-orig: rework sourcecode preparation and filtering
+- import-orig: new function for filtering/re-packing sources
+- buildpackage: fix handling of empty tarball prefix
+- rpm: import orig: import readline in the common module
+- import orig: import readline in the common module
+- UpstreamSource.unpack: return UpstreamSource instance
+- UpstreamSource.pack: reuse unpacked dir if no filter is used
+- rpm: UpstreamSource: implement prefix guessing
+- UpstreamSource: implement prefix guessing
+- UpstreamSource: check that the sources exist
+- UpstreamSource: store the absolute path
+- rpm: UpstreamSource: move version guessing logic to PkgPolicy
+- UpstreamSource: move version guessing logic to PkgPolicy
+- UpstreamSource.guess_version: don't check for directories
+- Fix `fatal: fetch --all does not take a repository argument`
+
 * Thu Aug 22 2013 Markus Lehtonen <markus.lehtonen@linux.intel.com> 0.6.0git20130530
 - rpm: Improve logging in case of rpmlib error
 - Add clean method to GitRepository class

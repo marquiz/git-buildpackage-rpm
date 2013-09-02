@@ -160,6 +160,43 @@ git-buildpackage (0.6.4) unstable; urgency=low
 
  -- Guido Günther <agx@sigxcpu.org>  Sun, 06 Oct 2013 17:35:14 +0200
 
+git-buildpackage (0.6.3-tizen20130902) UNRELEASED; urgency=low
+
+  [ Lingchaox Xin ]
+  * Fix `fatal: fetch --all does not take a repository argument`
+
+  [ Markus Lehtonen ]
+  * UpstreamSource.guess_version: don't check for directories
+  * UpstreamSource: move version guessing logic to PkgPolicy
+  * rpm: UpstreamSource: move version guessing logic to PkgPolicy
+  * UpstreamSource: store the absolute path
+  * UpstreamSource: check that the sources exist
+  * UpstreamSource: implement prefix guessing
+  * rpm: UpstreamSource: implement prefix guessing
+  * UpstreamSource.pack: reuse unpacked dir if no filter is used
+  * UpstreamSource.unpack: return UpstreamSource instance
+  * import orig: import readline in the common module
+  * rpm: import orig: import readline in the common module
+  * buildpackage: fix handling of empty tarball prefix
+  * import-orig: new function for filtering/re-packing sources
+  * import-orig: rework sourcecode preparation and filtering
+  * tests.testutils: add ls_zip() helper
+  * rpm tests: test --filter option of git-import-srpm
+  * ComponentTestBase: more verbose output in case of branch mismatch
+  * import-orig-rpm: don't crash on invalid gbp.conf
+  * import-orig-rpm: remove unneeded try-except
+  * config: restore mangled env in doctests
+  * ComponentTestBase: fix env restore in teardown
+  * ComponentTestBase: keep tmpdir if GBP_TESTS_NOCLEAN is in env
+  * tests: add tests for git-import-orig-rpm
+  * ComponentTestBase: use eq_() ok_() from nose.tools
+  * rpm tests: slight modificatin of import-srpm tests
+  * Version bump, rebase on top of 0.6.3
+      * docs: minor sgml syntax fix
+      * Disable cover-min-percentage setting of nose
+
+ -- Markus Lehtonen <markus.lehtonen@linux.intel.com>  Mon, 02 Sep 2013 14:44:00 +0300
+
 git-buildpackage (0.6.3) unstable; urgency=low
 
   * [60ffe95] --git-hooks doesn't take an argument

@@ -97,7 +97,7 @@ Group:      Development/Tools/Building
 Requires:   %{name}-common = %{version}-%{release}
 Requires:   rpm
 Requires:   %{rpm_python_pkg_name}
-Provides:   tizen-gbp-rpm = 20130822
+Provides:   tizen-gbp-rpm = 20130902
 
 %description rpm
 Set of tools from Debian that integrate the package build system with Git.
