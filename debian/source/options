@@ -1,0 +1,2 @@
+extend-diff-ignore = "^(tests/data/rpm/.*|tests/component/rpm/data/.*|tests/component/deb/data/.*)"
+diff-ignore
