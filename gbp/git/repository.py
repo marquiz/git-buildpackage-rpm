@@ -1271,6 +1271,7 @@ class GitRepository(object):
 
         args = GitArgs()
         args.add_true(force, '-f')
+        args.add('-A')
         args.add(paths)
 
         if index_file:
