@@ -18,8 +18,10 @@
 #
 """Build an RPM package out of a Git repository"""
 
+from datetime import datetime
 from six.moves import configparser
 import os
+import re
 import shutil
 import sys
 
@@ -265,12 +267,60 @@ def setup_builder(options, builder_args):
             '--define "_sourcedir %%_topdir/%s"' % options.export_sourcedir])
 
 
+def packaging_tag_time_fields(repo, commit, tag_format_str, other_fields):
+    """Update string format fields for packaging tag"""
+    commit_info = repo.get_commit_info(commit)
+    fields = {}
+    fields['nowtime'] = datetime.now().\
+                            strftime(RpmPkgPolicy.tag_timestamp_format)
+
+    time = datetime.fromtimestamp(int(commit_info['author'].date.split()[0]))
+    fields['authortime'] = time.strftime(RpmPkgPolicy.tag_timestamp_format)
+    time = datetime.fromtimestamp(int(commit_info['committer'].date.split()[0]))
+    fields['committime'] = time.strftime(RpmPkgPolicy.tag_timestamp_format)
+
+    # Create re for finding  tags with incremental numbering
+    re_fields = dict(fields)
+    re_fields.update(other_fields)
+    re_fields['nowtimenum'] = fields['nowtime'] + "\.(?P<nownum>[0-9]+)"
+    re_fields['authortimenum'] = fields['authortime'] + "\.(?P<authornum>[0-9]+)"
+    re_fields['committimenum'] = fields['committime'] + "\.(?P<commitnum>[0-9]+)"
+
+    tag_re = re.compile("^%s$" % (format_str(tag_format_str, re_fields)))
+
+    # Defaults for numbered tags
+    fields['nowtimenum'] = fields['nowtime'] + ".1"
+    fields['authortimenum'] = fields['authortime'] + ".1"
+    fields['committimenum'] = fields['committime'] + ".1"
+
+    # Search for existing numbered tags
+    for tag in reversed(repo.get_tags()):
+        match = tag_re.match(tag)
+        if match:
+            match = match.groupdict()
+            # Increase numbering if a tag with the same "base" is found
+            if 'nownum' in match:
+                fields['nowtimenum'] = "%s.%s" % (fields['nowtime'],
+                                                  int(match['nownum'])+1)
+            if 'authornum' in match:
+                fields['authortimenum'] = "%s.%s" % (fields['authortime'],
+                                                     int(match['authornum'])+1)
+            if 'commitnum' in match:
+                fields['committimenum'] = "%s.%s" % (fields['committime'],
+                                                     int(match['commitnum'])+1)
+            break
+    return fields
+
+
 def packaging_tag_data(repo, commit, name, version, options):
     """Compose packaging tag name and msg"""
     version_dict = dict(version, version=rpm.compose_version_str(version))
 
     # Compose tag name and message
     tag_name_fields = dict(version_dict, vendor=options.vendor.lower())
+    tag_name_fields.update(packaging_tag_time_fields(repo, commit,
+                                                     options.packaging_tag,
+                                                     tag_name_fields))
     tag_name = repo.version_to_tag(options.packaging_tag, tag_name_fields)
 
     tag_msg = format_str(options.packaging_tag_msg,

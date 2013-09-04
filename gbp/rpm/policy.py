@@ -46,6 +46,9 @@ class RpmPkgPolicy(PkgPolicy):
                            "and can only containg alphanumerics or characters "
                            "in %s" % list(version_whitelist_chars))
 
+    # Time stamp format to be used in tag names
+    tag_timestamp_format = "%Y%m%d"
+
     @classmethod
     def is_valid_orig_archive(cls, filename):
         """

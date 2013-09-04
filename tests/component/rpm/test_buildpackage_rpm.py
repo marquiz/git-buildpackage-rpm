@@ -245,12 +245,16 @@ class TestGbpRpm(RpmRepoTestBase):
         ok_(repo.has_tag('rel-tag2'))
 
         # Valid tag format string keys
-        tag_keys = ['upstreamversion', 'release', 'version', 'vendor']
+        tag_keys = ['upstreamversion', 'release', 'version', 'vendor',
+                    'nowtime', 'authortime', 'committime',
+                    'nowtimenum', 'authortimenum', 'committimenum']
         # Should fail if the fag format has invalid keys (foo here)
         tag_fmt = '_'.join(['%(' + key + ')s' for key in tag_keys + ['foo']])
         eq_(mock_gbp(['--git-tag', '--git-packaging-tag=%(foo)s']), 1)
         # Remove 'foo' and should succeed
         tag_fmt = '_'.join(['%(' + key + ')s' for key in tag_keys])
+        eq_(mock_gbp(['--git-tag-only', '--git-packaging-tag=%s' % tag_fmt]), 0)
+        # New tag with same format should succeed when '*num' keys are present
         eq_(mock_gbp(['--git-tag-only', '--git-packaging-tag=%s' % tag_fmt]), 0)
 
     def test_option_upstream_tree(self):
