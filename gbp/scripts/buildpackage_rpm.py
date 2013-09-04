@@ -359,6 +359,7 @@ def create_packaging_tag(repo, tag, commit, version, options):
                     keyid=options.keyid, commit=commit)
 
 
+<<<<<<< HEAD
 def disable_hooks(options):
     """Disable all hooks (except for builder)"""
     for hook in ['cleaner', 'postexport', 'prebuild', 'postbuild', 'posttag']:
@@ -369,6 +370,9 @@ def disable_hooks(options):
 
 def parse_args(argv, prefix, git_treeish=None):
     """Parse config and command line arguments"""
+=======
+def parse_args(argv, prefix):
+>>>>>>> 57b7a4e... buildpackage-rpm: add more tagging options
     args = [ arg for arg in argv[1:] if arg.find('--%s' % prefix) == 0 ]
     builder_args = [ arg for arg in argv[1:] if arg.find('--%s' % prefix) == -1 ]
 
@@ -656,6 +660,7 @@ def main(argv):
         # Tag (note: tags the exported version)
         if options.tag or options.tag_only:
 <<<<<<< HEAD
+<<<<<<< HEAD
             gbp.log.info("Tagging %s" % RpmPkgPolicy.compose_full_version(spec.version))
             commit_info = repo.get_commit_info(tree)
             tag = packaging_tag_name(repo, spec, commit_info, options)
@@ -663,11 +668,19 @@ def main(argv):
             gbp.log.info("Tagging %s" % spec.version)
             tag = repo.version_to_tag(options.packaging_tag, dict(upstreamversion=spec.version), options.vendor)
 >>>>>>> 96a8aae... rpm: add version parsing functions to pkg policy
+=======
+            gbp.log.info("Tagging %s" % RpmPkgPolicy.compose_full_version(spec.version))
+            commit_info = repo.get_commit_info(tree)
+            tag = packaging_tag_name(repo, spec, commit_info, options)
+>>>>>>> 57b7a4e... buildpackage-rpm: add more tagging options
             if options.retag and repo.has_tag(tag):
                 repo.delete_tag(tag)
             create_packaging_tag(repo, tag, commit=tree, version=spec.version,
                                  options=options)
+<<<<<<< HEAD
             vcs_info = get_vcs_info(repo, tag)
+=======
+>>>>>>> 57b7a4e... buildpackage-rpm: add more tagging options
             if options.posttag:
                 sha = repo.rev_parse("%s^{}" % tag)
                 Command(options.posttag, shell=True,
