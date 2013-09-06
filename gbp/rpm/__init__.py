@@ -118,18 +118,31 @@ class SpecFile(object):
             'files', 'changelog', 'triggerin', 'triggerpostin', 'triggerun',
             'triggerpostun')
 
-    def __init__(self, specfile):
+    def __init__(self, filename=None, filedata=None):
 
-        # Load spec file into our special data structure
-        self.specfile = os.path.basename(specfile)
-        self.specdir = os.path.dirname(os.path.abspath(specfile))
         self._content = LinkedList()
-        try:
-            with open(specfile) as spec_file:
-                for line in spec_file.readlines():
-                    self._content.append(line)
-        except IOError as err:
-            raise NoSpecError("Unable to read spec file: %s" % err)
+
+        # Check args: only filename or filedata can be given, not both
+        if filename is None and filedata is None:
+            raise NoSpecError("No filename or raw data given for parsing!")
+        elif filename and filedata:
+            raise NoSpecError("Both filename and raw data given, don't know "
+                              "which one to parse!")
+        elif filename:
+            # Load spec file into our special data structure
+            self.specfile = os.path.basename(filename)
+            self.specdir = os.path.dirname(os.path.abspath(filename))
+            try:
+                with open(filename) as spec_file:
+                    for line in spec_file.readlines():
+                        self._content.append(line)
+            except IOError as err:
+                raise NoSpecError("Unable to read spec file: %s" % err)
+        else:
+            self.specfile = None
+            self.specdir = None
+            for line in filedata.splitlines():
+                self._content.append(line + '\n')
 
         # Use rpm-python to parse the spec file content
         self._filtertags = ("excludearch", "excludeos", "exclusivearch",
