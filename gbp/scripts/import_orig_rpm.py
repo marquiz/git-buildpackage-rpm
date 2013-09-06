@@ -58,7 +58,7 @@ def detect_name_and_version(repo, source, options):
             # we're not on the packaging-branch (but upstream, for
             # example).
             spec = guess_spec_repo(repo, options.packaging_branch,
-                                   options.packaging_dir)
+                                   options.packaging_dir, True, preferred_fn)
             sourcepackage = spec.name
         except NoSpecError:
             if options.interactive:
