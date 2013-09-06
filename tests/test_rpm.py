@@ -147,6 +147,23 @@ class TestSpecFile(object):
         assert spec.name == 'gbp-test-native2'
         assert spec.orig_src is None
 
+    def test_parse_raw(self):
+        """Test parsing of a valid spec file"""
+        with assert_raises(NoSpecError):
+            SpecFile(None, None)
+        with assert_raises(NoSpecError):
+            SpecFile('filename', 'filedata')
+
+        spec_filepath = os.path.join(SPEC_DIR, 'gbp-test.spec')
+        with open(spec_filepath, 'r') as spec_fd:
+            spec_data = spec_fd.read()
+        spec = SpecFile(filedata=spec_data)
+
+        # Test basic properties
+        assert spec.specfile == None
+        assert spec.specdir == None
+        assert spec.name == 'gbp-test'
+
     def test_update_spec(self):
         """Test spec autoupdate functionality"""
         # Create temporary spec file
