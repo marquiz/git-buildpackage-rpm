@@ -221,7 +221,7 @@ class TestExport(testutils.DebianGitTestRepo):
         repo = self.repo
         start = repo.get_branch()
         pq_branch = os.path.join('patch-queue', start)
-        switch_pq(repo, start, TestExport.Options)
+        pq.switch_pq(repo, start, TestExport.Options)
         self.assertEqual(repo.get_branch(), pq_branch)
         export_patches(repo, pq_branch, TestExport.Options)
         self.assertEqual(repo.get_branch(), start)
