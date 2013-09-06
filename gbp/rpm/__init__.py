@@ -763,44 +763,58 @@ def parse_srpm(srpmfile):
     return srcrpm
 
 
+def guess_spec_fn(file_list, preferred_name=None):
+    """Guess spec file from a list of filenames"""
+    specs = []
+    for filepath in file_list:
+        filename = os.path.basename(filepath)
+        # Stop at the first file matching the preferred name
+        if filename == preferred_name:
+            gbp.log.debug("Found a preferred spec file %s" % filepath)
+            specs = [filepath]
+            break
+        if filename.endswith(".spec"):
+            gbp.log.debug("Found spec file %s" % filepath)
+            specs.append(filepath)
+    if len(specs) == 0:
+        raise NoSpecError("No spec file found.")
+    elif len(specs) > 1:
+        raise NoSpecError("Multiple spec files found (%s), don't know which "
+                          "to use." % ', '.join(specs))
+    return specs[0]
+
+
 def guess_spec(topdir, recursive=True, preferred_name=None):
     """Guess a spec file"""
-    specs = []
-    abstop = os.path.abspath(topdir)
-    for (root, dirs, files) in os.walk(abstop):
-        for f in files:
-            # Stop at the first file matching the preferred name
-            if f == preferred_name:
-                gbp.log.debug("Found a preferred spec file: %s in %s" % (f, root))
-                specs = [os.path.join(root,f)]
-                recursive = False
-                break
-            if f.endswith(".spec"):
-                gbp.log.debug("Found spec file: %s in %s" % (f, root))
-                specs.append(os.path.join(root,f))
-
+    file_list = []
+    if not topdir:
+        topdir = '.'
+    for root, dirs, files in os.walk(topdir):
+        file_list.extend([os.path.join(root, fname) for fname in files])
         if not recursive:
             del dirs[:]
         # Skip .git dir in any case
         if '.git' in dirs:
             dirs.remove('.git')
-
-    if len(specs) == 0:
-        raise NoSpecError("No spec file found.")
-    elif len(specs) > 1:
-        filenames = [os.path.relpath(spec, abstop) for spec in specs]
-        raise NoSpecError("Multiple spec files found (%s), don't know which "
-                          "to use." % ', '.join(filenames))
-    return SpecFile(specs[0])
+    return SpecFile(os.path.abspath(guess_spec_fn(file_list, preferred_name)))
 
 
-def guess_spec_repo(repo, branch, packaging_dir):
+def guess_spec_repo(repo, treeish, topdir='', recursive=True, preferred_name=None):
     """
-    @todo: implement this
-    Try to find/parse the spec file from given branch in the git
-    repository.
+    Try to find/parse the spec file from a given git treeish.
     """
-    raise NoSpecError, "Searching spec from other branch not implemented yet"
+    topdir = topdir.rstrip('/') + ('/') if topdir else ''
+    try:
+        file_list = [nam for (mod, typ, sha, nam) in
+                    repo.list_tree(treeish, recursive, topdir) if typ == 'blob']
+    except GitRepositoryError as err:
+        raise NoSpecError("Cannot find spec file from treeish %s, Git error: %s"
+                            % (treeish, err))
+    spec_path = guess_spec_fn(file_list, preferred_name)
+    spec = SpecFile(filedata=repo.show('%s:%s' % (treeish, spec_path)))
+    spec.specdir = os.path.dirname(spec_path)
+    spec.specfile = os.path.basename(spec_path)
+    return spec
 
 
 def string_to_int(val_str):

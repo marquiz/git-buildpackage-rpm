@@ -23,7 +23,9 @@ import tempfile
 from nose.tools import assert_raises
 
 from gbp.errors import GbpError
-from gbp.rpm import SrcRpmFile, SpecFile, parse_srpm, guess_spec, NoSpecError
+from gbp.rpm import (SrcRpmFile, SpecFile, parse_srpm, NoSpecError, guess_spec,
+                     guess_spec_repo)
+from gbp.git.repository import GitRepository
 
 DATA_DIR = os.path.abspath(os.path.splitext(__file__)[0] + '_data')
 SRPM_DIR = os.path.join(DATA_DIR, 'srpms')
@@ -318,6 +320,11 @@ class TestSpecFile(object):
 
 class TestUtilityFunctions(object):
     """Test utility functions of L{gbp.rpm}"""
+    def setup(self):
+        self.tmpdir = tempfile.mkdtemp(prefix='gbp_%s_' % __name__, dir='.')
+
+    def teardown(self):
+        shutil.rmtree(self.tmpdir)
 
     def test_parse_srpm(self):
         """Test parse_srpm() function"""
@@ -342,5 +349,30 @@ class TestUtilityFunctions(object):
                              preferred_name = 'gbp-test2.spec')
         assert spec.specfile == 'gbp-test2.spec'
         assert spec.specdir == SPEC_DIR
+
+    def test_guess_spec_repo(self):
+        """Test guess_spec_repo() function"""
+        # Create dummy repository with some commits
+        repo = GitRepository.create(self.tmpdir)
+        with open(os.path.join(repo.path, 'foo.txt'), 'w') as fobj:
+            fobj.write('bar\n')
+        repo.add_files('foo.txt')
+        repo.commit_all('Add dummy file')
+        os.mkdir(os.path.join(repo.path, 'packaging'))
+        shutil.copy(os.path.join(SPEC_DIR, 'gbp-test.spec'),
+                    os.path.join(repo.path, 'packaging'))
+        repo.add_files('packaging/gbp-test.spec')
+        repo.commit_all('Add spec file')
+
+        # Spec not found
+        with assert_raises(NoSpecError):
+            guess_spec_repo(repo, 'HEAD~1', recursive=True)
+        with assert_raises(NoSpecError):
+            guess_spec_repo(repo, 'HEAD', recursive=False)
+        # Spec found
+        spec = guess_spec_repo(repo, 'HEAD', 'packaging', recursive=False)
+        spec = guess_spec_repo(repo, 'HEAD', recursive=True)
+        assert spec.specfile == 'gbp-test.spec'
+        assert spec.specdir == 'packaging'
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
