@@ -23,8 +23,7 @@ import tempfile
 from nose.tools import assert_raises
 
 from gbp.errors import GbpError
-from gbp.rpm import (SrcRpmFile, SpecFile, parse_srpm, parse_spec, guess_spec,
-                    NoSpecError)
+from gbp.rpm import SrcRpmFile, SpecFile, parse_srpm, guess_spec, NoSpecError
 
 DATA_DIR = os.path.abspath(os.path.splitext(__file__)[0] + '_data')
 SRPM_DIR = os.path.join(DATA_DIR, 'srpms')
@@ -303,14 +302,6 @@ class TestSpecFile(object):
 class TestUtilityFunctions(object):
     """Test utility functions of L{gbp.rpm}"""
 
-    def test_parse_spec(self):
-        """Test parse_spec() function"""
-        parse_spec(os.path.join(SPEC_DIR, 'gbp-test.spec'))
-        with assert_raises(NoSpecError):
-            parse_spec(os.path.join(DATA_DIR, 'notexists.spec'))
-        with assert_raises(GbpError):
-            parse_spec(os.path.join(SRPM_DIR, 'gbp-test-1.0-1.src.rpm'))
-
     def test_parse_srpm(self):
         """Test parse_srpm() function"""
         parse_srpm(os.path.join(SRPM_DIR, 'gbp-test-1.0-1.src.rpm'))
@@ -330,8 +321,9 @@ class TestUtilityFunctions(object):
         with assert_raises(NoSpecError):
             guess_spec(SPEC_DIR, recursive=False)
         # Spec found
-        spec_fn = guess_spec(SPEC_DIR, recursive=False,
+        spec = guess_spec(SPEC_DIR, recursive=False,
                              preferred_name = 'gbp-test2.spec')
-        assert spec_fn == os.path.join(SPEC_DIR, 'gbp-test2.spec')
+        assert spec.specfile == 'gbp-test2.spec'
+        assert spec.specdir == SPEC_DIR
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:

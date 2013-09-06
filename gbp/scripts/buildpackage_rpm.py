@@ -505,12 +505,12 @@ def main(argv):
             options.packaging_dir = os.path.dirname(specfile)
             if not os.path.exists(specfile):
                 raise rpm.NoSpecError("Failed to export specfile: %s" % options.spec_file)
+            spec = rpm.SpecFile(specfile)
         else:
-            specfile = rpm.guess_spec(os.path.join(dump_dir, options.packaging_dir),
-                                      True,
-                                      os.path.basename(repo.path) + '.spec')
-        spec = rpm.SpecFile(specfile)
-        gbp.log.debug("Using spec file '%s'" % specfile)
+            spec = rpm.guess_spec(os.path.join(dump_dir, options.packaging_dir),
+                                  True,
+                                  os.path.basename(repo.path) + '.spec')
+        gbp.log.debug("Using spec file '%s'" % spec.specfile)
 
         if not options.tag_only:
             # Setup builder opts

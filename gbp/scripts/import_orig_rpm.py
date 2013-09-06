@@ -25,8 +25,8 @@ import gbp.tmpfile as tempfile
 import gbp.command_wrappers as gbpc
 import string
 from gbp.pkg import parse_archive_filename
-from gbp.rpm import (RpmUpstreamSource, SpecFile, NoSpecError, parse_spec,
-                     guess_spec, guess_spec_repo)
+from gbp.rpm import (RpmUpstreamSource, SpecFile, NoSpecError, guess_spec,
+                     guess_spec_repo)
 from gbp.rpm.policy import RpmPkgPolicy
 from gbp.rpm.git import (GitRepositoryError, RpmGitRepository)
 from gbp.config import GbpOptionParserRpm, GbpOptionGroup, no_upstream_branch_msg
@@ -48,17 +48,17 @@ def detect_name_and_version(repo, source, options):
 
     # Try to find the source package name
     try:
-        spec = parse_spec(guess_spec(os.path.join(repo.path, options.packaging_dir),
-                                     True,
-                                     os.path.basename(repo.path) + '.spec'))
+        preferred_fn = os.path.basename(repo.path) + '.spec'
+        spec = guess_spec(os.path.join(repo.path, options.packaging_dir), True,
+                          preferred_fn)
         sourcepackage = spec.name
     except NoSpecError:
         try:
             # Check the spec file from the repository, in case
             # we're not on the packaging-branch (but upstream, for
             # example).
-            specfile = guess_spec_repo(repo, options.packaging_branch, options.packaging_dir)
-            spec = SpecFile(specfile)
+            spec = guess_spec_repo(repo, options.packaging_branch,
+                                   options.packaging_dir)
             sourcepackage = spec.name
         except NoSpecError:
             if options.interactive:

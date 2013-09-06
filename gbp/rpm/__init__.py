@@ -750,13 +750,6 @@ def parse_srpm(srpmfile):
     return srcrpm
 
 
-def parse_spec(specfile):
-    try:
-        return SpecFile(specfile)
-    except IOError, err:
-        raise GbpError, "Error reading spec file: %s" % err
-
-
 def guess_spec(topdir, recursive=True, preferred_name=None):
     """Guess a spec file"""
     specs = []
@@ -785,7 +778,8 @@ def guess_spec(topdir, recursive=True, preferred_name=None):
         filenames = [os.path.relpath(spec, abstop) for spec in specs]
         raise NoSpecError("Multiple spec files found (%s), don't know which "
                           "to use." % ', '.join(filenames))
-    return specs[0]
+    return SpecFile(specs[0])
+
 
 def guess_spec_repo(repo, branch, packaging_dir):
     """

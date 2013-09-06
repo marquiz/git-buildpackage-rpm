@@ -29,8 +29,8 @@ import urllib2
 
 import gbp.tmpfile as tempfile
 import gbp.command_wrappers as gbpc
-from gbp.rpm import (parse_srpm, guess_spec, NoSpecError, parse_spec,
-                     RpmUpstreamSource)
+from gbp.rpm import (parse_srpm, guess_spec, SpecFile, NoSpecError,
+                    RpmUpstreamSource)
 from gbp.rpm.policy import RpmPkgPolicy
 from gbp.rpm.git import (RpmGitRepository, GitRepositoryError)
 from gbp.git.modifier import GitModifier
@@ -284,12 +284,12 @@ def main(argv):
         if os.path.isdir(srpm):
             gbp.log.debug("Trying to import an unpacked srpm from '%s'" % srpm)
             dirs['src'] = os.path.abspath(srpm)
-            spec = parse_spec(guess_spec(srpm, True, preferred_spec))
+            spec = guess_spec(srpm, True, preferred_spec)
         else:
             gbp.log.debug("Trying to import an srpm from '%s' with spec "\
                           "file '%s'" % (os.path.dirname(srpm), srpm))
             dirs['src'] = os.path.abspath(os.path.dirname(srpm))
-            spec = parse_spec(srpm)
+            spec = SpecFile(srpm)
 
         # Check the repository state
         try:
@@ -483,9 +483,8 @@ def main(argv):
                 # (only for non-native packages with non-orphan packaging)
                 force_to_branch_head(repo, options.packaging_branch)
                 if options.patch_import:
-                    spec = parse_spec(os.path.join(repo.path,
-                                            options.packaging_dir,
-                                            spec.specfile))
+                    spec = SpecFile(os.path.join(repo.path,
+                                        options.packaging_dir, spec.specfile))
                     import_spec_patches(repo, spec, dirs)
                     commit = options.packaging_branch
 
