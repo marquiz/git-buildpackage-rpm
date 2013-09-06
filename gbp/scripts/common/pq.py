@@ -121,7 +121,7 @@ def pq_branch_name(branch, options, extra_keys=None):
         return pq_format_str % format_fields
 
     if not is_pq_branch(branch, options):
-        return pq_format_str % dict(branch=branch)
+        return pq_format_str % format_fields
 
 def pq_branch_base(pq_branch, options):
     """
@@ -337,11 +337,7 @@ def get_maintainer_from_control(repo):
     return GitModifier()
 
 
-<<<<<<< HEAD
 def switch_to_pq_branch(repo, branch, options, name_keys=None):
-=======
-def switch_to_pq_branch(repo, branch, options):
->>>>>>> 3ba82da... gbp-pq: readiness to configure the pq branch name
     """
     Switch to patch-queue branch if not already there, create it if it
     doesn't exist yet
@@ -349,11 +345,7 @@ def switch_to_pq_branch(repo, branch, options):
     if is_pq_branch(branch, options):
         return
 
-<<<<<<< HEAD
     pq_branch = pq_branch_name(branch, options, name_keys)
-=======
-    pq_branch = pq_branch_name(branch, options)
->>>>>>> 3ba82da... gbp-pq: readiness to configure the pq branch name
     if not repo.has_branch(pq_branch):
         try:
             repo.create_branch(pq_branch)
@@ -396,20 +388,12 @@ def apply_and_commit_patch(repo, patch, fallback_author, topic=None):
     repo.update_ref('HEAD', commit, msg="gbp-pq import %s" % patch.path)
 
 
-<<<<<<< HEAD
 def drop_pq(repo, branch, options, name_keys=None):
-=======
-def drop_pq(repo, branch, options):
->>>>>>> 3ba82da... gbp-pq: readiness to configure the pq branch name
     if is_pq_branch(branch, options):
         gbp.log.err("On a patch-queue branch, can't drop it.")
         raise GbpError
     else:
-<<<<<<< HEAD
         pq_branch = pq_branch_name(branch, options, name_keys)
-=======
-        pq_branch = pq_branch_name(branch, options)
->>>>>>> 3ba82da... gbp-pq: readiness to configure the pq branch name
 
     if repo.has_branch(pq_branch):
         repo.delete_branch(pq_branch)
