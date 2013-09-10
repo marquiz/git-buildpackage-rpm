@@ -20,6 +20,7 @@ import subprocess
 import os.path
 import re
 from collections import defaultdict
+import select
 
 import gbp.log as log
 from gbp.errors import GbpError
@@ -160,28 +161,86 @@ class GitRepository(object):
         """
         if not cwd:
             cwd = self.path
-        return self.__git_inout(command, args, input, extra_env, cwd, capture_stderr)
+        ret = 0
+        stdout = ''
+        stderr = ''
+        try:
+            for outdata in self.__git_inout(command, args, input, extra_env,
+                                            cwd, capture_stderr):
+                stdout += outdata[0]
+                stderr += outdata[1]
+        except GitRepositoryError as err:
+            ret = err.returncode
+        return stdout, stderr, ret
+
+    def _git_inout2(self, command, args, stdin=None, extra_env=None, cwd=None,
+                    capture_stderr=False):
+        """
+        Quite similar to C{_git_inout()} but returns stdout output of the git
+        command as a Python generator object, instead. Also, stderr is not
+        returned.
+
+        @note: The caller must consume the iterator that is returned, in order
+        to make sure that the git command runs and terminates.
+        """
+        if not cwd:
+            cwd = self.path
+        stderr = ''
+        try:
+            for outdata in self.__git_inout(command, args, stdin, extra_env,
+                                            cwd, capture_stderr):
+                stderr += outdata[1]
+                yield outdata[0]
+        except GitRepositoryError as err:
+            err.stderr = stderr
+            raise err
 
     @classmethod
-    def __git_inout(cls, command, args, input, extra_env, cwd, capture_stderr):
+    def __git_inout(cls, command, args, stdin, extra_env, cwd, capture_stderr):
         """
-        As _git_inout but can be used without an instance
+        Run a git command without a a GitRepostitory instance.
+
+        Returns the git command output (stdout, stderr) as a Python generator
+        object.
+
+        @note: The caller must consume the iterator that is returned, in order
+        to make sure that the git command runs and terminates.
         """
+        def rm_polled_fd(file_obj, select_list):
+            file_obj.close()
+            select_list.remove(file_obj)
+
         cmd = ['git', command] + args
         env = cls.__build_env(extra_env)
         stderr_arg = subprocess.PIPE if capture_stderr else None
-        stdin_arg = subprocess.PIPE if input else None
 
         log.debug(cmd)
         popen = subprocess.Popen(cmd,
-                                 stdin=stdin_arg,
+                                 stdin=subprocess.PIPE,
                                  stdout=subprocess.PIPE,
                                  stderr=stderr_arg,
                                  env=env,
                                  close_fds=True,
                                  cwd=cwd)
-        (stdout, stderr) = popen.communicate(input)
-        return stdout, stderr, popen.returncode
+        if stdin:
+            popen.stdin.write(stdin)
+        popen.stdin.close()
+        out_fds = [popen.stdout] + ([popen.stderr] if capture_stderr else [])
+        while out_fds:
+            ready = select.select(out_fds, [], [])
+            # Read in chunks of 4k
+            stdout = popen.stdout.read(4096) if popen.stdout in ready[0] else ''
+            stderr = popen.stderr.read(4096) if popen.stderr in ready[0] else ''
+            if popen.stdout in ready[0] and not stdout:
+                rm_polled_fd(popen.stdout, out_fds)
+            if popen.stderr in ready[0] and not stderr:
+                rm_polled_fd(popen.stderr, out_fds)
+            yield stdout, stderr
+
+        if popen.wait():
+            err = GitRepositoryError('git-%s failed' % command)
+            err.returncode = popen.returncode
+            raise err
 
     def _git_command(self, command, args=[], extra_env=None):
         """
@@ -1775,18 +1834,19 @@ class GitRepository(object):
         try:
             if not os.path.exists(abspath):
                 os.makedirs(abspath)
+            stderr = ''
             try:
-                stdout, stderr, ret = klass.__git_inout(command='init',
-                                                        args=args.args,
-                                                        input=None,
-                                                        extra_env=None,
-                                                        cwd=abspath,
-                                                        capture_stderr=True)
+                for out in klass.__git_inout(command='init',
+                                             args=args.args,
+                                             stdin=None,
+                                             extra_env=None,
+                                             cwd=abspath,
+                                             capture_stderr=True):
+                    stderr += out[1]
+            except GitRepositoryError:
+                raise GitRepositoryError("Error running git init: %s" % stderr)
             except Exception as excobj:
                 raise GitRepositoryError("Error running git init: %s" % excobj)
-            if ret:
-                raise GitRepositoryError("Error running git init: %s" % stderr)
-
             if description:
                 with open(os.path.join(abspath, git_dir, "description"), 'w') as f:
                     description += '\n' if description[-1] != '\n' else ''
@@ -1837,18 +1897,19 @@ class GitRepository(object):
         try:
             if not os.path.exists(abspath):
                 os.makedirs(abspath)
-
+            stderr = ''
             try:
-                stdout, stderr, ret = klass.__git_inout(command='clone',
-                                                        args=args.args,
-                                                        input=None,
-                                                        extra_env=None,
-                                                        cwd=abspath,
-                                                        capture_stderr=True)
+                for out in klass.__git_inout(command='clone',
+                                             args=args.args,
+                                             stdin=None,
+                                             extra_env=None,
+                                             cwd=abspath,
+                                             capture_stderr=True):
+                    stderr += out[1]
+            except GitRepositoryError:
+                raise GitRepositoryError("Error running git clone: %s" % stderr)
             except Exception as excobj:
                 raise GitRepositoryError("Error running git clone: %s" % excobj)
-            if ret:
-                raise GitRepositoryError("Error running git clone: %s" % stderr)
 
             if not name:
                 try:
