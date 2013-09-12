@@ -74,10 +74,11 @@ def git_archive_submodules(repo, treeish, output, prefix, comp_type, comp_level,
         # generate each submodule's arhive and append it to the main archive
         for (subdir, commit) in repo.get_submodules(treeish):
             tarpath = [subdir, subdir[2:]][subdir.startswith("./")]
+            subrepo = GitRepository(os.path.join(repo.path, subdir))
 
             gbp.log.debug("Processing submodule %s (%s)" % (subdir, commit[0:8]))
-            repo.archive(format=format, prefix='%s%s/' % (prefix, tarpath),
-                         output=submodule_archive, treeish=commit, cwd=subdir)
+            subrepo.archive(format=format, prefix='%s%s/' % (prefix, tarpath),
+                            output=submodule_archive, treeish=commit)
             if format == 'tar':
                 CatenateTarArchive(main_archive)(submodule_archive)
             elif format == 'zip':
