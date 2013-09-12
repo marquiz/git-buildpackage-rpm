@@ -1705,7 +1705,7 @@ class GitRepository(object):
         return output
 #}
 
-    def archive(self, format, prefix, output, treeish, **kwargs):
+    def archive(self, format, prefix, output, treeish):
         """
         Create an archive from a treeish
 
@@ -1718,7 +1718,6 @@ class GitRepository(object):
         @type output: C{str} or C{None}
         @param treeish: the treeish to create the archive from
         @type treeish: C{str}
-        @param kwargs: additional commandline options passed to git-archive
 
         @return: archive data as a generator object
         @rtype: C{None} or C{generator} of C{str}
@@ -1728,12 +1727,12 @@ class GitRepository(object):
         args.add(treeish)
 
         if output:
-            out, err, ret = self._git_inout('archive', args.args, **kwargs)
+            out, err, ret = self._git_inout('archive', args.args)
             if ret:
                 raise GitRepositoryError("Unable to archive %s: %s" % (treeish,
                                                                        err))
         else:
-            return self._git_inout2('archive', args.args, **kwargs)
+            return self._git_inout2('archive', args.args)
 
     def collect_garbage(self, auto=False):
         """
