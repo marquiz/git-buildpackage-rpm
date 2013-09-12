@@ -1713,17 +1713,27 @@ class GitRepository(object):
         @type format: C{str}
         @param prefix: prefix to prepend to each filename in the archive
         @type prefix: C{str}
-        @param output: the name of the archive to create
-        @type output: C{str}
+        @param output: the name of the archive to create, empty string or
+            C{None} gives data as return value
+        @type output: C{str} or C{None}
         @param treeish: the treeish to create the archive from
         @type treeish: C{str}
         @param kwargs: additional commandline options passed to git-archive
+
+        @return: archive data as a generator object
+        @rtype: C{None} or C{generator} of C{str}
         """
-        args = [ '--format=%s' % format, '--prefix=%s' % prefix,
-                 '--output=%s' % output, treeish ]
-        out, ret = self._git_getoutput('archive', args, **kwargs)
-        if ret:
-            raise GitRepositoryError("Unable to archive %s" % treeish)
+        args = GitArgs('--format=%s' % format, '--prefix=%s' % prefix)
+        args.add_true(output, '--output=%s' % output)
+        args.add(treeish)
+
+        if output:
+            out, err, ret = self._git_inout('archive', args.args, **kwargs)
+            if ret:
+                raise GitRepositoryError("Unable to archive %s: %s" % (treeish,
+                                                                       err))
+        else:
+            return self._git_inout2('archive', args.args, **kwargs)
 
     def collect_garbage(self, auto=False):
         """
