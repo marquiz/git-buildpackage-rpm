@@ -205,6 +205,11 @@ class SpecFile(object):
     version = property(_get_version)
 
     @property
+    def specpath(self):
+        """Get the dir/filename"""
+        return os.path.join(self.specdir, self.specfile)
+
+    @property
     def ignorepatches(self):
         """Get numbers of ignored patches as a sorted list"""
         if 'ignore-patches' in self._gbp_tags:

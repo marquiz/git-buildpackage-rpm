@@ -91,6 +91,7 @@ class TestSpecFile(object):
         # Test basic properties
         assert spec.specfile == os.path.basename(spec_filepath)
         assert spec.specdir == os.path.dirname(spec_filepath)
+        assert spec.specpath == spec_filepath
 
         assert spec.name == 'gbp-test'
         assert spec.packager is None
@@ -374,5 +375,6 @@ class TestUtilityFunctions(object):
         spec = guess_spec_repo(repo, 'HEAD', recursive=True)
         assert spec.specfile == 'gbp-test.spec'
         assert spec.specdir == 'packaging'
+        assert spec.specpath == 'packaging/gbp-test.spec'
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
