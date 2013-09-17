@@ -24,7 +24,7 @@ from nose.tools import assert_raises
 
 from gbp.errors import GbpError
 from gbp.rpm import (SrcRpmFile, SpecFile, parse_srpm, NoSpecError, guess_spec,
-                     guess_spec_repo)
+                     guess_spec_repo, spec_from_repo)
 from gbp.git.repository import GitRepository
 
 DATA_DIR = os.path.abspath(os.path.splitext(__file__)[0] + '_data')
@@ -352,7 +352,7 @@ class TestUtilityFunctions(object):
         assert spec.specdir == SPEC_DIR
 
     def test_guess_spec_repo(self):
-        """Test guess_spec_repo() function"""
+        """Test guess_spec_repo() and spec_from_repo() functions"""
         # Create dummy repository with some commits
         repo = GitRepository.create(self.tmpdir)
         with open(os.path.join(repo.path, 'foo.txt'), 'w') as fobj:
@@ -376,5 +376,11 @@ class TestUtilityFunctions(object):
         assert spec.specfile == 'gbp-test.spec'
         assert spec.specdir == 'packaging'
         assert spec.specpath == 'packaging/gbp-test.spec'
+
+        # Test spec_from_repo()
+        with assert_raises(NoSpecError):
+            spec_from_repo(repo, 'HEAD~1', 'packaging/gbp-test.spec')
+        spec = spec_from_repo(repo, 'HEAD', 'packaging/gbp-test.spec')
+        assert spec.specfile == 'gbp-test.spec'
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:

@@ -816,10 +816,18 @@ def guess_spec_repo(repo, treeish, topdir='', recursive=True, preferred_name=Non
         raise NoSpecError("Cannot find spec file from treeish %s, Git error: %s"
                             % (treeish, err))
     spec_path = guess_spec_fn(file_list, preferred_name)
-    spec = SpecFile(filedata=repo.show('%s:%s' % (treeish, spec_path)))
-    spec.specdir = os.path.dirname(spec_path)
-    spec.specfile = os.path.basename(spec_path)
-    return spec
+    return spec_from_repo(repo, treeish, spec_path)
+
+
+def spec_from_repo(repo, treeish, spec_path):
+    """Get and parse a spec file from a give Git treeish"""
+    try:
+        spec = SpecFile(filedata=repo.show('%s:%s' % (treeish, spec_path)))
+        spec.specdir = os.path.dirname(spec_path)
+        spec.specfile = os.path.basename(spec_path)
+        return spec
+    except GitRepositoryError as err:
+        raise NoSpecError("Git error: %s" % err)
 
 
 def string_to_int(val_str):
