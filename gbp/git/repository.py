@@ -1823,7 +1823,7 @@ class GitRepository(object):
         return result
 #}
 
-    def archive(self, format, prefix, output, treeish, **kwargs):
+    def archive(self, format, prefix, output, treeish, paths=None, **kwargs):
         """
         Create an archive from a treeish
 
@@ -1836,6 +1836,8 @@ class GitRepository(object):
         @type output: C{str} or C{None}
         @param treeish: the treeish to create the archive from
         @type treeish: C{str}
+        @param paths: List of paths to include in the archive
+        @type paths: C{list} of C{str}
         @param kwargs: additional commandline options passed to git-archive
 
         @return: archive data as a generator object
@@ -1844,6 +1846,8 @@ class GitRepository(object):
         args = GitArgs('--format=%s' % format, '--prefix=%s' % prefix)
         args.add_true(output, '--output=%s' % output)
         args.add(treeish)
+        args.add("--")
+        args.add_cond(paths, paths)
 
         if output:
             out, err, ret = self._git_inout('archive', args.args, **kwargs)
