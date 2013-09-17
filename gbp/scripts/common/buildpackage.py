@@ -131,14 +131,19 @@ def untar_data(outdir, data):
 
 
 #{ Functions to handle export-dir
-def dump_tree(repo, export_dir, treeish, with_submodules):
+def dump_tree(repo, export_dir, treeish, with_submodules, recursive=True):
     """Dump a git tree-ish to output_dir"""
     if not os.path.exists(export_dir):
         os.makedirs(export_dir)
+    if recursive:
+        paths = ''
+    else:
+        paths = [nam for _mod, typ, _sha, nam in repo.list_tree(treeish) if
+                    typ == 'blob']
     try:
-        data = repo.archive('tar', '', None, treeish)
+        data = repo.archive('tar', '', None, treeish, paths)
         untar_data(export_dir, data)
-        if with_submodules and repo.has_submodules():
+        if recursive and with_submodules and repo.has_submodules():
             repo.update_submodules()
             for (subdir, commit) in repo.get_submodules(treeish):
                 gbp.log.info("Processing submodule %s (%s)" % (subdir,
