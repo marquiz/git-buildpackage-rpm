@@ -212,22 +212,28 @@ class GitRepository(object):
 
         cmd = ['git', command] + args
         env = cls.__build_env(extra_env)
+        stdin_arg = subprocess.PIPE if stdin else None
         stderr_arg = subprocess.PIPE if capture_stderr else None
 
         log.debug(cmd)
         popen = subprocess.Popen(cmd,
-                                 stdin=subprocess.PIPE,
+                                 stdin=stdin_arg,
                                  stdout=subprocess.PIPE,
                                  stderr=stderr_arg,
                                  env=env,
                                  close_fds=True,
                                  cwd=cwd)
-        if stdin:
-            popen.stdin.write(stdin)
-        popen.stdin.close()
         out_fds = [popen.stdout] + ([popen.stderr] if capture_stderr else [])
-        while out_fds:
-            ready = select.select(out_fds, [], [])
+        in_fds = [popen.stdin] if stdin else []
+        w_ind = 0
+        while out_fds or in_fds:
+            ready = select.select(out_fds, in_fds, [])
+            # Write in chunks of 512 bytes
+            if ready[1]:
+                popen.stdin.write(stdin[w_ind:w_ind+512])
+                w_ind += 512
+                if w_ind > len(stdin):
+                    rm_polled_fd(popen.stdin, in_fds)
             # Read in chunks of 4k
             stdout = popen.stdout.read(4096) if popen.stdout in ready[0] else ''
             stderr = popen.stderr.read(4096) if popen.stderr in ready[0] else ''
