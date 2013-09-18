@@ -304,7 +304,7 @@ def get_maintainer_from_control(repo):
     return GitModifier()
 
 
-def switch_to_pq_branch(repo, branch, options):
+def switch_to_pq_branch(repo, branch, options, name_keys=None):
     """
     Switch to patch-queue branch if not already there, create it if it
     doesn't exist yet
@@ -312,7 +312,7 @@ def switch_to_pq_branch(repo, branch, options):
     if is_pq_branch(branch, options):
         return
 
-    pq_branch = pq_branch_name(branch, options)
+    pq_branch = pq_branch_name(branch, options, name_keys)
     if not repo.has_branch(pq_branch):
         try:
             repo.create_branch(pq_branch)
@@ -355,12 +355,12 @@ def apply_and_commit_patch(repo, patch, fallback_author, topic=None):
     repo.update_ref('HEAD', commit, msg="gbp-pq import %s" % patch.path)
 
 
-def drop_pq(repo, branch, options):
+def drop_pq(repo, branch, options, name_keys=None):
     if is_pq_branch(branch, options):
         gbp.log.err("On a patch-queue branch, can't drop it.")
         raise GbpError
     else:
-        pq_branch = pq_branch_name(branch, options)
+        pq_branch = pq_branch_name(branch, options, name_keys)
 
     if repo.has_branch(pq_branch):
         repo.delete_branch(pq_branch)
