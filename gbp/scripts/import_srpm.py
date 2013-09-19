@@ -132,7 +132,7 @@ def import_spec_patches(repo, spec, dirs):
     packager = get_packager(spec)
 
     # Put patches in a safe place
-    queue = safe_patches(queue, tmpdir)[1]
+    queue = safe_patches(queue, tmpdir)
     for patch in queue:
         gbp.log.debug("Applying %s" % patch.path)
         try:
