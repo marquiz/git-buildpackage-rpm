@@ -27,23 +27,36 @@ import re
 import gzip
 import bz2
 import subprocess
+
 import gbp.tmpfile as tempfile
-from gbp.config import (GbpOptionParserRpm, GbpOptionGroup)
-from gbp.rpm.git import (GitRepositoryError, RpmGitRepository)
-from gbp.git.modifier import GitModifier, GitTz
-from gbp.command_wrappers import (Command, GitCommand, RunAtCommand,
-                                  CommandExecFailed)
+from gbp.config import GbpOptionParserRpm
+from gbp.rpm.git import GitRepositoryError, RpmGitRepository
+from gbp.git.modifier import GitModifier
+from gbp.command_wrappers import GitCommand, CommandExecFailed
 from gbp.errors import GbpError
 import gbp.log
-from gbp.patch_series import (PatchSeries, Patch)
+from gbp.patch_series import PatchSeries, Patch
 from gbp.pkg import parse_archive_filename
-from gbp.rpm import (SpecFile, guess_spec, string_to_int)
+from gbp.rpm import (SpecFile, NoSpecError, guess_spec, guess_spec_repo,
+                     spec_from_repo, string_to_int)
 from gbp.scripts.common.pq import (is_pq_branch, pq_branch_name, pq_branch_base,
                                    parse_gbp_commands, format_patch,
-                                   format_diff,
-                                   switch_to_pq_branch, apply_single_patch,
-                                   apply_and_commit_patch, drop_pq)
+                                   format_diff, apply_and_commit_patch, drop_pq)
+from gbp.scripts.common.buildpackage import dump_tree
 
+USAGE_STRING = \
+"""%prog [options] action - maintain patches on a patch queue branch
+tions:
+export         Export the patch queue / devel branch associated to the
+               current branch into a patch series in and update the spec file
+import         Create a patch queue / devel branch from spec file
+               and patches in current dir.
+rebase         Switch to patch queue / devel branch associated to the current
+               branch and rebase against upstream.
+drop           Drop (delete) the patch queue /devel branch associated to
+               the current branch.
+apply          Apply a patch
+switch         Switch to patch-queue branch and vice versa."""
 
 def compress_patches(patches, compress_size=0):
     """
@@ -71,7 +84,7 @@ def generate_patches(repo, start, squash, end, outdir, options):
     commands = {}
     for treeish in [start, end]:
         if not repo.has_treeish(treeish):
-            raise GbpError('%s not a valid tree-ish' % treeish)
+            raise GbpError('Invalid treeish object %s' % treeish)
 
     start_sha1 = repo.rev_parse("%s^0" % start)
     try:
@@ -84,7 +97,11 @@ def generate_patches(repo, start, squash, end, outdir, options):
         end_commit_sha1 = repo.rev_parse("%s^0" % end_commit)
 
     start_sha1 = repo.rev_parse("%s^0" % start)
-    if repo.get_merge_base(start_sha1, end_commit_sha1) != start_sha1:
+    try:
+        merge_base = repo.get_merge_base(start_sha1, end_commit_sha1)
+    except GitRepositoryError:
+        merge_base = None
+    if merge_base != start_sha1:
         raise GbpError("Start commit '%s' not an ancestor of end commit "
                        "'%s'" % (start, end_commit))
     # Squash commits, if requested
@@ -186,36 +203,61 @@ def update_patch_series(repo, spec, start, end, options):
     spec.write_spec_file()
 
 
-def export_patches(repo, branch, options):
-    """Export patches from the pq branch into a packaging branch"""
-    if is_pq_branch(branch, options):
-        base = pq_branch_base(branch, options)
-        gbp.log.info("On '%s', switching to '%s'" % (branch, base))
-        branch = base
-        repo.set_branch(branch)
+def parse_spec(options, repo, treeish=None):
+    """
+    Find and parse spec file.
 
-    pq_branch = pq_branch_name(branch, options)
-
-    # Find and parse .spec file
+    If treeish is given, try to find the spec file from that. Otherwise, search
+    for the spec file in the working copy.
+    """
     try:
         if options.spec_file != 'auto':
-            options.packaging_dir = os.path.dirname(specfilename)
-            spec = SpecFile(options.packaging_dir)
+            options.packaging_dir = os.path.dirname(options.spec_file)
+            if not treeish:
+                spec = SpecFile(options.spec_file)
+            else:
+                spec = spec_from_repo(repo, treeish, options.spec_file)
         else:
-            spec = guess_spec(options.packaging_dir, True,
-                              os.path.basename(repo.path) + '.spec')
-    except KeyError:
-        raise GbpError, "Can't parse spec"
+            preferred_name = os.path.basename(repo.path) + '.spec'
+            if not treeish:
+                spec = guess_spec(options.packaging_dir, True, preferred_name)
+            else:
+                spec = guess_spec_repo(repo, treeish, options.packaging_dir,
+                                       True, preferred_name)
+    except NoSpecError as err:
+        raise GbpError("Can't parse spec: %s" % err)
+    relpath = spec.specpath if treeish else os.path.relpath(spec.specpath,
+                                                            repo.path)
+    gbp.log.debug("Using '%s' from '%s'" % (relpath, treeish or 'working copy'))
+    return spec
 
-    # Find upstream version
-    tag_str_fields = dict(upstreamversion=spec.upstreamversion, vendor="Upstream")
-    upstream_commit = repo.find_version(options.upstream_tag, tag_str_fields)
+
+def find_upstream_commit(repo, spec, upstream_tag):
+    """Find commit corresponding upstream version"""
+    tag_str_fields = {'upstreamversion': spec.upstreamversion,
+                      'vendor': 'Upstream'}
+    upstream_commit = repo.find_version(upstream_tag, tag_str_fields)
     if not upstream_commit:
-        raise GbpError, ("Couldn't find upstream version %s. Don't know on what base to import." % spec.upstreamversion)
+        raise GbpError("Couldn't find upstream version %s" %
+                       spec.upstreamversion)
+    return upstream_commit
+
+
+def export_patches(repo, options):
+    """Export patches from the pq branch into a packaging branch"""
+    current = repo.get_branch()
+    if is_pq_branch(current, options):
+        base = pq_branch_base(current, options)
+        gbp.log.info("On branch '%s', switching to '%s'" % (current, base))
+        repo.set_branch(base)
+        spec = parse_spec(options, repo)
+        pq_branch = current
+    else:
+        spec = parse_spec(options, repo)
+        pq_branch = pq_branch_name(current, options, spec.version)
+    upstream_commit = find_upstream_commit(repo, spec, options.upstream_tag)
 
     export_treeish = options.export_rev if options.export_rev else pq_branch
-    if not repo.has_treeish(export_treeish):
-        raise GbpError('Invalid treeish object %s' % export_treeish)
 
     update_patch_series(repo, spec, upstream_commit, export_treeish, options)
 
@@ -234,33 +276,34 @@ def safe_patches(queue, tmpdir_base):
     """
 
     tmpdir = tempfile.mkdtemp(dir=tmpdir_base, prefix='patchimport_')
-    safequeue=PatchSeries()
+    safequeue = PatchSeries()
 
     if len(queue) > 0:
-        gbp.log.debug("Safeing patches '%s' in '%s'" % (os.path.dirname(queue[0].path), tmpdir))
-        for p in queue:
-            (base, archive_fmt, comp) = parse_archive_filename(p.path)
-            uncompressors = {'gzip': gzip.open, 'bzip2': bz2.BZ2File}
-            if comp in uncompressors:
-                gbp.log.debug("Uncompressing '%s'" % os.path.basename(p.path))
-                src = uncompressors[comp](p.path, 'r')
-                dst_name = os.path.join(tmpdir, os.path.basename(base))
-            elif comp:
-                raise GbpError("Unsupported patch compression '%s', giving up"
-                               % comp)
-            else:
-                src = open(p.path, 'r')
-                dst_name = os.path.join(tmpdir, os.path.basename(p.path))
+        gbp.log.debug("Safeing patches '%s' in '%s'" %
+                        (os.path.dirname(queue[0].path), tmpdir))
+    for patch in queue:
+        base, _archive_fmt, comp = parse_archive_filename(patch.path)
+        uncompressors = {'gzip': gzip.open, 'bzip2': bz2.BZ2File}
+        if comp in uncompressors:
+            gbp.log.debug("Uncompressing '%s'" % os.path.basename(patch.path))
+            src = uncompressors[comp](patch.path, 'r')
+            dst_name = os.path.join(tmpdir, os.path.basename(base))
+        elif comp:
+            raise GbpError("Unsupported patch compression '%s', giving up"
+                           % comp)
+        else:
+            src = open(patch.path, 'r')
+            dst_name = os.path.join(tmpdir, os.path.basename(patch.path))
 
-            dst = open(dst_name, 'w')
-            dst.writelines(src)
-            src.close()
-            dst.close()
+        dst = open(dst_name, 'w')
+        dst.writelines(src)
+        src.close()
+        dst.close()
 
-            safequeue.append(p)
-            safequeue[-1].path = dst_name;
+        safequeue.append(patch)
+        safequeue[-1].path = dst_name
 
-    return (tmpdir, safequeue)
+    return safequeue
 
 
 def get_packager(spec):
@@ -273,115 +316,93 @@ def get_packager(spec):
     return GitModifier()
 
 
-def import_spec_patches(repo, branch, options):
+def import_spec_patches(repo, options):
     """
     apply a series of patches in a spec/packaging dir to branch
     the patch-queue branch for 'branch'
 
     @param repo: git repository to work on
-    @param branch: branch to base pqtch queue on
     @param options: command options
     """
-    tmpdir = None
-
-    if is_pq_branch(branch, options):
+    current = repo.get_branch()
+    # Get spec and related information
+    if is_pq_branch(current, options):
+        base = pq_branch_base(current, options)
         if options.force:
-            branch = pq_branch_base(branch, options)
-            pq_branch = pq_branch_name(branch, options)
-            repo.checkout(branch)
+            spec = parse_spec(options, repo, base)
+            spec_treeish = base
         else:
-            gbp.log.err("Already on a patch-queue branch '%s' - doing nothing." % branch)
-            raise GbpError
+            raise GbpError("Already on a patch-queue branch '%s' - doing "
+                           "nothing." % current)
     else:
-        pq_branch = pq_branch_name(branch, options)
-
-    if repo.has_branch(pq_branch):
-        if options.force:
-            drop_pq(repo, branch, options)
-        else:
-            raise GbpError, ("Patch queue branch '%s'. already exists. Try 'rebase' instead."
-                             % pq_branch)
-
-    # Find and parse .spec file
-    try:
-        if options.spec_file != 'auto':
-            options.packaging_dir = os.path.dirname(options.spec_file)
-            spec = SpecFile(options.spec_file)
-        else:
-            spec = guess_spec(options.packaging_dir, True,
-                              os.path.basename(repo.path) + '.spec')
-    except KeyError:
-        raise GbpError, "Can't parse spec"
-
-    # Find upstream version
-    tag_str_fields = dict(upstreamversion=spec.upstreamversion, vendor="Upstream")
-    commit = repo.find_version(options.upstream_tag, tag_str_fields)
-    if commit:
-        commits=[commit]
-    else:
-        raise GbpError, ("Couldn't find upstream version %s. Don't know on what base to import." % spec.upstreamversion)
-
-    queue = spec.patchseries()
+        spec = parse_spec(options, repo)
+        spec_treeish = None
+        base = current
+    upstream_commit = find_upstream_commit(repo, spec, options.upstream_tag)
     packager = get_packager(spec)
-    # Put patches in a safe place
-    tmpdir, queue = safe_patches(queue, options.tmp_dir)
-    for commit in commits:
-        try:
-            gbp.log.info("Trying to apply patches at '%s'" % commit)
-            repo.create_branch(pq_branch, commit)
-        except GitRepositoryError:
-            raise GbpError, ("Cannot create patch-queue branch '%s'." % pq_branch)
+    pq_branch = pq_branch_name(base, options, spec.version)
 
+    # Create pq-branch
+    if repo.has_branch(pq_branch) and not options.force:
+        raise GbpError("Patch-queue branch '%s' already exists. "
+                       "Try 'rebase' instead." % pq_branch)
+    try:
+        if repo.get_branch() == pq_branch:
+            repo.force_head(upstream_commit, hard=True)
+        else:
+            repo.create_branch(pq_branch, upstream_commit, force=True)
+    except GitRepositoryError as err:
+        raise GbpError("Cannot create patch-queue branch '%s': %s" %
+                        (pq_branch, err))
+
+    # Put patches in a safe place
+    if spec_treeish:
+        packaging_tmp = tempfile.mkdtemp(prefix='dump_', dir=options.tmp_dir)
+        packaging_tree = '%s:%s' % (spec_treeish, options.packaging_dir)
+        dump_tree(repo, packaging_tmp, packaging_tree, with_submodules=False,
+                  recursive=False)
+        spec.specdir = packaging_tmp
+    in_queue = spec.patchseries()
+    queue = safe_patches(in_queue, options.tmp_dir)
+    # Do import
+    try:
+        gbp.log.info("Switching to branch '%s'" % pq_branch)
         repo.set_branch(pq_branch)
+
+        if not queue:
+            return
+        gbp.log.info("Trying to apply patches from branch '%s' onto '%s'" %
+                        (base, upstream_commit))
         for patch in queue:
             gbp.log.debug("Applying %s" % patch.path)
-            try:
-                apply_and_commit_patch(repo, patch, packager)
-            except (GbpError, GitRepositoryError):
-                repo.set_branch(branch)
-                repo.delete_branch(pq_branch)
-                break
-        else:
-            # All patches applied successfully
-            break
+            apply_and_commit_patch(repo, patch, packager)
+    except (GbpError, GitRepositoryError) as err:
+        repo.set_branch(base)
+        repo.delete_branch(pq_branch)
+        raise GbpError('Import failed: %s' % err)
+
+    gbp.log.info("Patches listed in '%s' imported on '%s'" % (spec.specfile,
+                                                              pq_branch))
+
+
+def rebase_pq(repo, options):
+    """Rebase pq branch on the correct upstream version (from spec file)."""
+    current = repo.get_branch()
+    if is_pq_branch(current, options):
+        base = pq_branch_base(current, options)
+        spec = parse_spec(options, repo, base)
     else:
-        raise GbpError, "Couldn't apply patches"
+        base = current
+        spec = parse_spec(options, repo)
+    upstream_commit = find_upstream_commit(repo, spec, options.upstream_tag)
 
-    repo.set_branch(branch)
-
-    return spec.specfile
-
-
-def rebase_pq(repo, branch, options):
-    if is_pq_branch(branch, options):
-        base = pq_branch_base(branch, options)
-        gbp.log.info("On '%s', switching to '%s'" % (branch, base))
-        branch = base
-        repo.set_branch(branch)
-
-    # Find and parse .spec file
-    try:
-        if options.spec_file != 'auto':
-            options.packaging_dir = os.path.dirname(options.spec_file)
-            spec = SpecFile(options.spec_file)
-        else:
-            spec = guess_spec(options.packaging_dir, True,
-                              os.path.basename(repo.path) + '.spec')
-    except KeyError:
-        raise GbpError, "Can't parse spec"
-
-    # Find upstream version
-    tag_str_fields = dict(upstreamversion=spec.upstreamversion, vendor="Upstream")
-    upstream_commit = repo.find_version(options.upstream_tag, tag_str_fields)
-    if not upstream_commit:
-        raise GbpError, ("Couldn't find upstream version %s. Don't know on what base to import." % spec.upstreamversion)
-
-    switch_to_pq_branch(repo, branch, options)
+    switch_to_pq_branch(repo, base, options)
     GitCommand("rebase")([upstream_commit])
 
 
-def switch_pq(repo, current, options):
+def switch_pq(repo, options):
     """Switch to patch-queue branch if on base branch and vice versa"""
+    current = repo.get_branch()
     if is_pq_branch(current, options):
         base = pq_branch_base(current, options)
         gbp.log.info("Switching to branch '%s'" % base)
@@ -390,51 +411,93 @@ def switch_pq(repo, current, options):
         switch_to_pq_branch(repo, current, options)
 
 
+def drop_pq_rpm(repo, options):
+    """Remove pq branch"""
+    current = repo.get_branch()
+    if is_pq_branch(current, options):
+        base = pq_branch_base(current, options)
+        spec = parse_spec(options, repo, base)
+    else:
+        spec = parse_spec(options, repo)
+    drop_pq(repo, current, options, spec.version)
+
+
+def switch_to_pq_branch(repo, branch, options):
+    """
+    Switch to patch-queue branch if not already there, create it if it
+    doesn't exist yet
+    """
+    if is_pq_branch(branch, options):
+        return
+
+    spec = parse_spec(options, repo, branch)
+    pq_branch = pq_branch_name(branch, options, spec.version)
+    if not repo.has_branch(pq_branch):
+        upstream_commit = find_upstream_commit(repo, spec, options.upstream_tag)
+        try:
+            repo.create_branch(pq_branch, rev=upstream_commit)
+        except GitRepositoryError as err:
+            raise GbpError("Cannot create patch-queue branch: %s" % err)
+
+    gbp.log.info("Switching to branch '%s'" % pq_branch)
+    repo.set_branch(pq_branch)
+
+def apply_single_patch(repo, patchfile, options):
+    """Apply a single patch onto the pq branch"""
+    current = repo.get_branch()
+    if not is_pq_branch(current, options):
+        switch_to_pq_branch(repo, current, options)
+    patch = Patch(patchfile)
+    apply_and_commit_patch(repo, patch, fallback_author=None)
+
+
 def main(argv):
+    """Main function for the gbp pq-rpm command"""
     retval = 0
 
     try:
-        parser = GbpOptionParserRpm(command=os.path.basename(argv[0]), prefix='',
-                                    usage="%prog [options] action - maintain patches on a patch queue branch\n"
-            "Actions:\n"
-            "  export         Export the patch queue / devel branch associated to the\n"
-            "                 current branch into a patch series in and update the spec file\n"
-            "  import         Create a patch queue / devel branch from spec file\n"
-            "                 and patches in current dir.\n"
-            "  rebase         Switch to patch queue / devel branch associated to the current\n"
-            "                 branch and rebase against upstream.\n"
-            "  drop           Drop (delete) the patch queue /devel branch associated to\n"
-            "                 the current branch.\n"
-            "  apply          Apply a patch\n"
-            "  switch         Switch to patch-queue branch and vice versa")
+        parser = GbpOptionParserRpm(command=os.path.basename(argv[0]),
+                                    prefix='', usage=USAGE_STRING)
     except ConfigParser.ParsingError as err:
         gbp.log.err('Invalid config file: %s' % err)
         return 1
 
-    parser.add_boolean_config_file_option(option_name="patch-numbers", dest="patch_numbers")
-    parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False,
-                      help="Verbose command execution")
-    parser.add_option("--force", dest="force", action="store_true", default=False,
-                      help="In case of import even import if the branch already exists")
-    parser.add_config_file_option(option_name="vendor", action="store", dest="vendor")
-    parser.add_config_file_option(option_name="color", dest="color", type='tristate')
+    parser.add_boolean_config_file_option(option_name="patch-numbers",
+            dest="patch_numbers")
+    parser.add_option("-v", "--verbose", action="store_true", dest="verbose",
+            default=False, help="Verbose command execution")
+    parser.add_option("--force", dest="force", action="store_true",
+            default=False,
+            help="In case of import even import if the branch already exists")
+    parser.add_config_file_option(option_name="vendor", action="store",
+            dest="vendor")
+    parser.add_config_file_option(option_name="color", dest="color",
+            type='tristate')
     parser.add_config_file_option(option_name="color-scheme",
-                                  dest="color_scheme")
+            dest="color_scheme")
     parser.add_config_file_option(option_name="tmp-dir", dest="tmp_dir")
-    parser.add_config_file_option(option_name="upstream-tag", dest="upstream_tag")
+    parser.add_config_file_option(option_name="upstream-tag",
+            dest="upstream_tag")
     parser.add_config_file_option(option_name="spec-file", dest="spec_file")
-    parser.add_config_file_option(option_name="packaging-dir", dest="packaging_dir")
+    parser.add_config_file_option(option_name="packaging-dir",
+            dest="packaging_dir")
     parser.add_config_file_option(option_name="packaging-branch",
-                                  dest="packaging_branch",
-                                  help="Branch the packaging is being maintained on. Only relevant if a invariable/single pq-branch is defined, in which case this is used as the 'base' branch. Default is '%(packaging-branch)s'")
+            dest="packaging_branch",
+            help="Branch the packaging is being maintained on. Only relevant "
+                 "if a invariable/single pq-branch is defined, in which case "
+                 "this is used as the 'base' branch. Default is "
+                 "'%(packaging-branch)s'")
     parser.add_config_file_option(option_name="pq-branch", dest="pq_branch")
-    parser.add_option("--export-rev", action="store", dest="export_rev", default="",
-                      help="Export patches from treeish object TREEISH instead "
-                           "of head of patch-queue branch", metavar="TREEISH")
+    parser.add_option("--export-rev", action="store", dest="export_rev",
+            default="",
+            help="Export patches from treeish object TREEISH instead of head "
+                 "of patch-queue branch", metavar="TREEISH")
     parser.add_config_file_option("patch-export-compress",
-                                  dest="patch_export_compress")
-    parser.add_config_file_option("patch-export-squash-until", dest="patch_export_squash_until")
-    parser.add_config_file_option("patch-export-ignore-path", dest="patch_export_ignore_path")
+            dest="patch_export_compress")
+    parser.add_config_file_option("patch-export-squash-until",
+            dest="patch_export_squash_until")
+    parser.add_config_file_option("patch-export-ignore-path",
+            dest="patch_export_ignore_path")
 
     (options, args) = parser.parse_args(argv)
     gbp.log.setup(options.color, options.verbose, options.color_scheme)
@@ -472,23 +535,18 @@ def main(argv):
         # Create base temporary directory for this run
         options.tmp_dir = tempfile.mkdtemp(dir=options.tmp_dir,
                                            prefix='gbp-pq-rpm_')
-        current = repo.get_branch()
         if action == "export":
-            export_patches(repo, current, options)
+            export_patches(repo, options)
         elif action == "import":
-            specfile=import_spec_patches(repo, current, options)
-            current = repo.get_branch()
-            gbp.log.info("Patches listed in '%s' imported on '%s'" %
-                          (specfile, current))
+            import_spec_patches(repo, options)
         elif action == "drop":
-            drop_pq(repo, current, options)
+            drop_pq_rpm(repo, options)
         elif action == "rebase":
-            rebase_pq(repo, current, options)
+            rebase_pq(repo, options)
         elif action == "apply":
-            patch = Patch(patchfile)
-            apply_single_patch(repo, current, patch, None, options)
+            apply_single_patch(repo, patchfile, options)
         elif action == "switch":
-            switch_pq(repo, current, options)
+            switch_pq(repo, options)
     except CommandExecFailed:
         retval = 1
     except GitRepositoryError as err:
