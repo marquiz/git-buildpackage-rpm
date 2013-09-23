@@ -18,6 +18,7 @@
 #
 """manage patches in a patch queue"""
 
+import ConfigParser
 import errno
 import os
 import shutil
@@ -391,19 +392,24 @@ def switch_pq(repo, current, options):
 def main(argv):
     retval = 0
 
-    parser = GbpOptionParserRpm(command=os.path.basename(argv[0]), prefix='',
-                                usage="%prog [options] action - maintain patches on a patch queue branch\n"
-        "Actions:\n"
-        "  export         Export the patch queue / devel branch associated to the\n"
-        "                 current branch into a patch series in and update the spec file\n"
-        "  import         Create a patch queue / devel branch from spec file\n"
-        "                 and patches in current dir.\n"
-        "  rebase         Switch to patch queue / devel branch associated to the current\n"
-        "                 branch and rebase against upstream.\n"
-        "  drop           Drop (delete) the patch queue /devel branch associated to\n"
-        "                 the current branch.\n"
-        "  apply          Apply a patch\n"
-        "  switch         Switch to patch-queue branch and vice versa")
+    try:
+        parser = GbpOptionParserRpm(command=os.path.basename(argv[0]), prefix='',
+                                    usage="%prog [options] action - maintain patches on a patch queue branch\n"
+            "Actions:\n"
+            "  export         Export the patch queue / devel branch associated to the\n"
+            "                 current branch into a patch series in and update the spec file\n"
+            "  import         Create a patch queue / devel branch from spec file\n"
+            "                 and patches in current dir.\n"
+            "  rebase         Switch to patch queue / devel branch associated to the current\n"
+            "                 branch and rebase against upstream.\n"
+            "  drop           Drop (delete) the patch queue /devel branch associated to\n"
+            "                 the current branch.\n"
+            "  apply          Apply a patch\n"
+            "  switch         Switch to patch-queue branch and vice versa")
+    except ConfigParser.ParsingError as err:
+        gbp.log.err('invalid config file: %s' % err)
+        return 1
+
     parser.add_boolean_config_file_option(option_name="patch-numbers", dest="patch_numbers")
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False,
                       help="Verbose command execution")
