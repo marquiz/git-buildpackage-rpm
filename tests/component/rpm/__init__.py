@@ -17,11 +17,49 @@
 """Test module for RPM command line tools of the git-buildpackage suite"""
 
 import os
+from xml.dom import minidom
 
 from tests.component import ComponentTestGitRepository
 
 RPM_TEST_DATA_SUBMODULE = os.path.join('tests', 'component', 'rpm', 'data')
 RPM_TEST_DATA_DIR = os.path.abspath(RPM_TEST_DATA_SUBMODULE)
+
+class RepoManifest(object):
+    """Class representing a test repo manifest file"""
+    def __init__(self, filename=None):
+        self._doc = minidom.Document()
+        if filename:
+            self._doc = minidom.parse(filename)
+            if self._doc.firstChild.nodeName != 'gbp-test-manifest':
+                raise Exception('%s is not a test repo manifest' % filename)
+        else:
+            self._doc.appendChild(self._doc.createElement("gbp-test-manifest"))
+
+    def add_project(self, name, branches):
+        """Add new project to the manifest"""
+        prj_e = self._doc.createElement('project')
+        prj_e.setAttribute('name', name)
+        for branch, revision in branches.iteritems():
+            br_e = self._doc.createElement('branch')
+            br_e.setAttribute('name', branch)
+            br_e.setAttribute('revision', revision)
+            prj_e.appendChild(br_e)
+        self._doc.firstChild.appendChild(prj_e)
+
+    def projects_iter(self):
+        """Return an iterator over projects"""
+        for prj_e in self._doc.getElementsByTagName('project'):
+            branches = {}
+            for br_e in prj_e.getElementsByTagName('branch'):
+                rev = br_e.getAttribute('revision')
+                branches[br_e.getAttribute('name')] = rev
+            yield prj_e.getAttribute('name'), branches
+
+
+    def write(self, filename):
+        """Write to file"""
+        with open(filename, 'w') as fileobj:
+            fileobj.write(self._doc.toprettyxml())
 
 def setup():
     """Test Module setup"""
