@@ -85,6 +85,9 @@ class ComponentTestBase(object):
         # Don't let git see that we're (possibly) under a git directory
         cls.orig_env = os.environ.copy()
         os.environ['GIT_CEILING_DIRECTORIES'] = os.getcwd()
+        # Create a top-level tmpdir for the test
+        cls._tmproot = tempfile.mkdtemp(prefix='gbp_%s_' % cls.__name__,
+                                        dir='.')
         # Prevent local config files from messing up the tests
         os.environ['GBP_CONF_FILES'] = '%(top_dir)s/.gbp.conf:' \
                             '%(top_dir)s/debian/gbp.conf:%(git_dir)s/gbp.conf'
@@ -95,6 +98,9 @@ class ComponentTestBase(object):
         # Return original environment
         os.environ.clear()
         os.environ.update(cls.orig_env)
+        # Remove top-level tmpdir
+        if not os.getenv("GBP_TESTS_NOCLEAN"):
+            shutil.rmtree(cls._tmproot)
 
     def __init__(self):
         """Object initialization"""
@@ -107,7 +113,8 @@ class ComponentTestBase(object):
         """Test case setup"""
         # Change to a temporary directory
         self._orig_dir = os.getcwd()
-        self._tmpdir = tempfile.mkdtemp(prefix='gbp_%s_' % __name__, dir='.')
+        self._tmpdir = tempfile.mkdtemp(prefix='gbp_%s_' % __name__,
+                                        dir=self._tmproot)
         os.chdir(self._tmpdir)
 
         self._capture_log(True)
