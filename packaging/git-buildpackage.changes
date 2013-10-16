@@ -1,4 +1,33 @@
-* Tue Sep 03 2013 Markus Lehtonen <markus.lehtonen@linux.intel.com> 0.6.3
+* Thu Oct 17 2013 Markus Lehtonen <markus.lehtonen@linux.intel.com> 0.6.3
+- buildpackage: support 'commit' variable for VCS tags
+- Clone a repository to a specific directory
+- Fix gbs clone failure if repo url is like host:repo.git
+- SpecFile.set_tag: change the default place for new tags
+- remove 'repo' param to adapt to changes of write_patch_file
+- pq: pass commit_info to format_patch()
+- pq: pass commit_info to format_patch()
+- pq.write_patch_file: drop unused argument
+- pq: fix generation of series file
+- common/pq: fix length of patch filenames
+- buildpackage: refactor prefix handling
+- tests: remove unused import in submodule tests
+- tests: upper case global variables in submodule tests
+- tests: add some docstrings to git submodule tests
+- tests: use eq_ and ok_ from nose tools in submodule tests
+- tests: use sanitize some submodule tests
+- pq-rpm: don't overwrite patches in the same series
+- pq: don't overwrite patches in the same series
+- rpm: support guessing spec file from git treeish
+- rpm.SpecFile: support parsing spec as raw text data
+- rpm: minor docstring fixes
+- rpm: change guess_spec() to return SpecFile object
+- GitRepository.list_tree: add 'paths' option
+- common/pq: support more flexible pq-branch naming
+- pq-rpm: drop unused 'tries' option
+- GitRepository: deprecate the get_remote_repos method
+- GitRepository.has_remote_repo: use get_remotes method
+- git: new class and method for remote repositories
+- debian packaging: change to 1.0 source package format
 - Version bump, rebase on top of 0.6.3
   * Disable cover-min-percentage setting of nose
   * docs: minor sgml syntax fix
