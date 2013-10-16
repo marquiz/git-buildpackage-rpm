@@ -160,7 +160,7 @@ git-buildpackage (0.6.4) unstable; urgency=low
 
  -- Guido Günther <agx@sigxcpu.org>  Sun, 06 Oct 2013 17:35:14 +0200
 
-git-buildpackage (0.6.3-tizen20130902) UNRELEASED; urgency=low
+git-buildpackage (0.6.3-tizen20131017) unstable; urgency=low
 
   [ Lingchaox Xin ]
   * Fix `fatal: fetch --all does not take a repository argument`
@@ -194,8 +194,40 @@ git-buildpackage (0.6.3-tizen20130902) UNRELEASED; urgency=low
   * Version bump, rebase on top of 0.6.3
       * docs: minor sgml syntax fix
       * Disable cover-min-percentage setting of nose
+  * debian packaging: change to 1.0 source package format
+  * git: new class and method for remote repositories
+  * GitRepository.has_remote_repo: use get_remotes method
+  * GitRepository: deprecate the get_remote_repos method
+  * pq-rpm: drop unused 'tries' option
+  * common/pq: support more flexible pq-branch naming
+  * GitRepository.list_tree: add 'paths' option
+  * rpm: change guess_spec() to return SpecFile object
+  * rpm: minor docstring fixes
+  * rpm.SpecFile: support parsing spec as raw text data
+  * rpm: support guessing spec file from git treeish
+  * pq: don't overwrite patches in the same series
+  * pq-rpm: don't overwrite patches in the same series
+  * tests: use sanitize some submodule tests
+  * tests: use eq_ and ok_ from nose tools in submodule tests
+  * tests: add some docstrings to git submodule tests
+  * tests: upper case global variables in submodule tests
+  * tests: remove unused import in submodule tests
+  * buildpackage: refactor prefix handling
+  * common/pq: fix length of patch filenames
+  * pq: fix generation of series file
+  * pq.write_patch_file: drop unused argument
+  * pq: pass commit_info to format_patch()
+  * SpecFile.set_tag: change the default place for new tags
+  * buildpackage: support 'commit' variable for VCS tags
 
- -- Markus Lehtonen <markus.lehtonen@linux.intel.com>  Mon, 02 Sep 2013 14:44:00 +0300
+  [ Zhang Qiang ]
+  * remove 'repo' param to adapt to changes of write_patch_file
+
+  [ Guan Junchun ]
+  * Fix gbs clone failure if repo url is like host:repo.git
+  * Clone a repository to a specific directory
+
+ -- Markus Lehtonen <markus.lehtonen@linux.intel.com>  Thu, 17 Oct 2013 13:45:10 +0300
 
 git-buildpackage (0.6.3) unstable; urgency=low
 
