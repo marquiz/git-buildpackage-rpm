@@ -1,3 +1,6 @@
+* Tue Jan 07 2014 Markus Lehtonen <markus.lehtonen@linux.intel.com> 0.6.8
+- Rebase on top of upstream version 0.6.8
+
 * Mon Dec 02 2013 Markus Lehtonen <markus.lehtonen@linux.intel.com> 0.6.6
 - Rebase on top of upstream version 0.6.6
 - UpstreamSource: fix archive prefix guessing

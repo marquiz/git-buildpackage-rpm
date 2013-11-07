@@ -1,3 +1,9 @@
+git-buildpackage (0.6.8-tizen20140107) UNRELEASED; urgency=low
+
+  * Rebase on top of upstream version 0.6.8
+
+ -- Markus Lehtonen <markus.lehtonen@linux.intel.com>  Tue, 07 Jan 2014 15:10:00 +0200
+
 git-buildpackage (0.6.8) unstable; urgency=medium
 
   * [f5718b8] No need to document --verbose.  Properly document --help
