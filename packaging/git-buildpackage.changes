@@ -1,3 +1,101 @@
+* Thu Mar 06 2014 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.8-20140306
+- Rebase on top of upstream version 0.6.8
+- Introduce git-rpm-ch tool.
+  Initial version of the git-rpm-ch tool which is intended for maintaining
+  RPM changelogs. Supports both spec files and separate "OBS style"
+  changelog files.
+  Implement '--tag' command line option (and other related options for
+  signing) for creating and tagging a release. These correspond the
+  tagging options in git-buildpackage-rpm.
+  The git-buildpackage-rpm tool does not commit anything to git. However,
+  in rpm-ch the '--tag' option causes the changelog modifications (and,
+  all other staged changes) to be committed to git before creating the
+  tag. This makes it possible to create a release and document the
+  packaging/release tag name in the rpm changelog.
+- Changes to gbp-pq-rpm:
+  * implement 'convert' subcommand.
+    The new subcommand is intended to be a one-time-callable command for
+    converting a package to use the "orphan-packaging" development model and
+    git layout (where packaging files are maintained in a separate branch
+    and code development in another branch).
+  * implement '--import-files' command line option.
+    For defining the packaging file(s) that will be imported into the
+    development/patch-queue branch.
+    By default, the local gbp conf files are imported (so that gbp sees the
+    same settings on the development/pq branc as on the packaging branch).
+    Files defined with this option will appear as one monolithic commit in
+    the development/patch-queue branch.
+  * implement --new-packaging-dir cmdline option.
+    Used for setting the packaging directory to be used in the new orphan
+    packaging branch. Defaults to --packaging-dir so that the gbp.conf files
+    are more likely to work without modification.
+  * fail gracefully on invalid config files
+  * support '%(upstreamversion)s' as a replacable string in the pq branch
+    name.
+- Changes to git-buildpackage-rpm
+  * patch-export from development branch.
+    Adds git-buildpackage-rpm --patch-export support for the 'orphan
+    packaging' development model (where packaging files and development sources are kept in separate
+    branches).
+    New functionality:
+    1. If patch-export is enabled and gbp detects that the current branch
+       has a development/patch-queue branch it exports the patches from there,
+       instead of the tip of the packaging branch.
+    2. If gbp detects that the current (or exported) branch is a
+       development/patch-queue branch it automatically enables patch-export
+       and exports packaging files from the base branch (instead of the
+       development/patch-queue branch.
+    Also, add a new '--git-patch-export-rev' command line option with which
+    the user can explicitly set the treeish from which patches are generated
+    (i.e. HEAD..<patch-export-rev>)
+  * fix spec file vcs update when doing git-tag-only
+  * change default export directory.
+    So that the git working directory is not dirtied, by default.
+- Changes ti git-import-orig-rpm:
+  * disable --merge by default.
+    Merging upstream to packaging does not usually make sense with rpm
+    packages. Merely, it can create confusion cause unapplicable patches to
+    be generated.
+  * implement --create-missing-branches option.
+  * implement automatic downloading.
+    Automatically try to download the archive if the archive filename points
+    to a remote location.
+  * get archive from spec file.
+    Try to get archive path/filename from spec file if no file name is given
+    on the command line.  This should make version bumps more
+    straightforward: just update version number in the spec file and run
+    'git-import-orig-rpm'.
+- git-import-orig: implement --create-missing-branches option.
+- Fixes and new features in GitRepository class
+  * GitRepository/get_commit_info: correctly handle file renames/copies.
+  * GitRepository.create_branch: add 'force' option
+  * GitRepository.archive: add 'paths' option
+  * GitRepository/git_command: strip stderr output in case of error.
+  * GitRepository/add_remote_repo: fix the 'tags' argument.
+  * GitRepository: allow interactive commands.
+  * GitRepository: fix the 'edit' mode in commit methods.
+  * GitRepository.commit_files: add committer_info and edit arguments.
+  * GitRepository.commit_all: add committer_info argument.
+- Fixes and new features in internal rpm/spec support
+  * rpm.SpecFile: add 'specpath' attribute
+  * rpm: correctly handle 'NoSource' and 'NoPatch' tags in spec.
+  * rpm: Implement spec_from_repo() helper function
+  * rpm: track all "section" directives in spec file.
+  * rpm: add gbp.rpm.changelog module.
+    This new module contains basic containers and functionality for parsing
+    and updating rpm changelogs. It is coupled with the rpm packaging policy
+    class which now has definitions for rpm changelog formatting.
+  * rpm: support for getting/setting changelog in spec.
+    SpecFile objects now support reading and writing of the %changelog
+    section.
+  * rpm: store full path of spec file sources
+- Fix detection of prefix directory in tarballs
+  gbs import failed to import tarball properly if paths in the archive
+  were prefixed with "./".
+
+* Tue Jan 07 2014 Markus Lehtonen <markus.lehtonen@linux.intel.com> 0.6.8
+- Rebase on top of upstream version 0.6.8
+
 * Mon Dec 02 2013 Markus Lehtonen <markus.lehtonen@linux.intel.com> 0.6.6
 - Rebase on top of upstream version 0.6.6
 - UpstreamSource: fix archive prefix guessing
