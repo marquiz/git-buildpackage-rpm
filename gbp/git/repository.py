@@ -1749,7 +1749,7 @@ class GitRepository(object):
             options.add('--stat=%s' % stat)
         options.add_true(summary, '--summary')
         options.add_true(text, '--text')
-        options.add_true(ignore_submodules, '--ignore-submodules=all')
+        options.add_true(ignore_submodules, '--ignore-submodules')
         options.add(obj1)
         options.add_true(obj2, obj2)
         if paths:
