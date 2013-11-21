@@ -106,6 +106,20 @@ def generate_patches(repo, start, squash, end, outdir, options):
             if patch_fn:
                 patches.append(patch_fn)
                 start = squash_sha1
+    # Check for merge commits, yet another squash if merges found
+    merges = repo.get_commits(start, end_commit, options=['--merges'])
+    if merges:
+        # Shorten SHA1s
+        start_sha1 = repo.rev_parse(start, short=7)
+        merge_sha1 = repo.rev_parse(merges[0], short=7)
+        patch_fn = format_diff(outdir, None, repo, start_sha1, merge_sha1,
+                               options.patch_export_ignore_path)
+        if patch_fn:
+            gbp.log.info("Merge commits found! Diff between %s..%s written "
+                         "into one monolithic diff" % (start_sha1, merge_sha1))
+            patches.append(patch_fn)
+            start = merge_sha1
+            print start
 
     # Generate patches
     for commit in reversed(repo.get_commits(start, end_commit)):
