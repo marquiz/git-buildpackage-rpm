@@ -24,6 +24,25 @@ git-buildpackage (0.6.7) unstable; urgency=low
 
  -- Guido Günther <agx@sigxcpu.org>  Fri, 29 Nov 2013 20:52:03 +0100
 
+git-buildpackage (0.6.6-tizen20131202) unstable; urgency=low
+
+  * Rebase on top of upstream version 0.6.6
+  * UpstreamSource: fix archive prefix guessing
+  * pq-rpm: create diff up to the last merge commit
+    Before, merge commits broke patch generation, or, (most probably) caused
+    the generated patches to be unapplicable (similar to how
+    git-format-patch behaves).
+    Now, changes up to the last merge commit are squashed into one diff if
+    merge commits are found in the revision list from which patches are to
+    be generated. Individual patches (one per commit) are generated from the
+    last merge commit up to the exported revision.
+  * pq-rpm: magic word HEAD for patch-squashing
+    When given as the squash-point, 'HEAD' translates to the end-commit.
+    This allows one to configure gbp to always squash all commits into one
+    monolithic diff.
+
+ -- Markus Lehtonen <markus.lehtonen@linux.intel.com>  Mon, 02 Dec 2013 12:55:14 +0200
+
 git-buildpackage (0.6.6) unstable; urgency=low
 
   [ Guan Junchun ]
