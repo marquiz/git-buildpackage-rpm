@@ -25,6 +25,7 @@
       <arg><option>--upstream-tag=</option><replaceable>TAG-FORMAT</replaceable></arg>
       <arg><option>--force</option></arg>
       <arg><option>--[no-]patch-numbers</option></arg>
+      <arg><option>--import-files=</option><replaceable>FILES</replaceable></arg>
       <group choice="plain">
         <arg><option>drop</option></arg>
         <arg><option>export</option></arg>
@@ -163,6 +164,19 @@
           <para>
           Import even if the development (patch-queue) branch already exists.
           Only valid for the import action.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--import-files=</option><replaceable>FILES</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Comma-separated list of additional file(s) to import from packaging
+          branch. These will appear as one monolithic patch in the development
+          (patch-queue) branch. By default, the local gbp conf files are
+          imported in order to try to ensure that gbp sees the same settings on
+          the development (pq) branch as on the packaging branch.
           </para>
         </listitem>
       </varlistentry>
