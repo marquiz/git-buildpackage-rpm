@@ -314,6 +314,31 @@ def get_packager(spec):
             return GitModifier(match.group('name'), match.group('email'))
     return GitModifier()
 
+def import_gbp_conf(repo, commitish):
+    """Import branch-specific gbp.conf files to current branch"""
+    files = ['.gbp.conf', 'debian/gbp.conf']
+    found = {}
+    for fname in files:
+        try:
+            found[fname] = repo.show('%s:%s' % (commitish, fname))
+        except GitRepositoryError:
+            pass
+    if found:
+        gbp.log.info('Importing gbp.conf file(s) from %s into %s' %
+                     (commitish, repo.get_branch()))
+        for fname, content in found.iteritems():
+            dirname = os.path.dirname(fname)
+            if dirname and not os.path.exists(dirname):
+                os.makedirs(dirname)
+            with open(fname, 'w') as fobj:
+                fobj.write(content)
+
+        files = found.keys()
+        gbp.log.debug('Adding/commiting %s' % files)
+        repo.add_files(files, force=True)
+        commit_msg = 'Auto-import gbp.conf file(s) from %s\n\n' \
+                     'Gbp: Ignore\nGbp-Rpm: Ignore' % commitish
+        repo.commit_files(files, msg=commit_msg)
 
 def import_spec_patches(repo, options):
     """
@@ -368,6 +393,7 @@ def import_spec_patches(repo, options):
     try:
         gbp.log.info("Switching to %s" % pq_branch)
         repo.set_branch(pq_branch)
+        import_gbp_conf(repo, base)
         gbp.log.info("Trying to apply patches from '%s' onto '%s'" %
                         (base, upstream_commit))
         for patch in queue:
