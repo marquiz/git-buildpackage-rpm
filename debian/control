@@ -58,7 +58,7 @@ Architecture: all
 Depends: ${python:Depends},
  ${shlibs:Depends},
  ${misc:Depends},
- devscripts (>= 2.13.5~),
+ devscripts,
  git-buildpackage-common (= ${binary:Version})
 Recommends: cowbuilder | pbuilder | sbuild,
 Suggests: sudo
