@@ -329,10 +329,14 @@ class UpstreamSource(object):
         set([('d', 'foo')])
         >>> UpstreamSource._get_topdir_files([('-', 'fob'), ('d', 'foo'), ('d', 'foo/bar'), ('-', 'foo/bar/baz')])
         set([('-', 'fob'), ('d', 'foo')])
+        >>> UpstreamSource._get_topdir_files([('-', './foo/bar')])
+        set([('d', 'foo')])
+        >>> UpstreamSource._get_topdir_files([('-', 'foo/bar'), ('-', '.foo/bar')])
+        set([('d', '.foo'), ('d', 'foo')])
         """
         topdir_files = set()
         for typ, path in file_list:
-            split = path.lstrip('/').split('/')
+            split = re.sub('^(?:./|../)*', '', path).split('/')
             if len(split) == 1:
                 topdir_files.add((typ, path))
             else:
