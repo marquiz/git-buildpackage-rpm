@@ -163,10 +163,9 @@ class TestImportOrig(ComponentTestBase):
         self._check_log(1, 'Repository does not have branch')
 
         # Create orphan, empty, 'usptream' branch
-        os.mkdir('empty-dir')
-        repo.commit_dir('empty-dir', 'Initial upstream', 'upstream',
-                        create_missing_branch=True)
-        os.rmdir('empty-dir')
+        tree = repo.write_tree('.git/_empty_index')
+        commit = repo.commit_tree(tree=tree, msg='Initial upstream', parents=[])
+        repo.update_ref("refs/heads/upstream", commit)
 
         # Test importing to non-clean repo
         files = ['foobar']
