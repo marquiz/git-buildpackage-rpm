@@ -81,7 +81,7 @@ def test_add_files():
     False
     >>> repo.is_clean(ignore_untracked=True)[0]
     True
-    >>> repo.add_files(repo.path, force=True, untracked=False)
+    >>> repo.add_files('testfile', force=True, untracked=False)
     >>> repo.status().items()
     [('??', ['testfile'])]
     >>> repo.add_files(repo.path, force=True)
