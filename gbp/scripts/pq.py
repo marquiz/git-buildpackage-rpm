@@ -77,8 +77,9 @@ def generate_patches(repo, start, end, outdir, options):
     for commit in rev_list:
         info = repo.get_commit_info(commit)
         topic = parse_old_style_topic(info)
-        cmds = parse_gbp_commands(info, 'gbp', ('ignore'), ('topic'))
-        cmds.update(parse_gbp_commands(info, 'gbp-pq', ('ignore'), ('topic')))
+        cmds = parse_gbp_commands(info, 'gbp', ('ignore'), ('topic'))[0]
+        cmds.update(parse_gbp_commands(info, 'gbp-pq', ('ignore'),
+                                       ('topic'))[0])
         if not 'ignore' in cmds:
             if 'topic' in cmds:
                 topic = cmds['topic']

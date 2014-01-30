@@ -78,6 +78,7 @@ def parse_gbp_commands(info, cmd_tag, noarg_cmds, arg_cmds):
     cmd_re = re.compile(r'^%s:\s*(?P<cmd>[a-z-]+)(\s+(?P<args>\S.*))?' %
                             cmd_tag, flags=re.I)
     commands = {}
+    other_lines = []
     for line in info['body'].splitlines():
         match = re.match(cmd_re, line)
         if match:
@@ -93,7 +94,9 @@ def parse_gbp_commands(info, cmd_tag, noarg_cmds, arg_cmds):
             else:
                 gbp.log.warn("Ignoring unknown gbp-command '%s' in commit %s"
                                 % (line, info['id']))
-    return commands
+        else:
+            other_lines.append(line)
+    return commands, other_lines
 
 
 def patch_path_filter(file_status, exclude_regex=None):
