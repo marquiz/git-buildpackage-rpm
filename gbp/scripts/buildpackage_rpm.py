@@ -607,6 +607,7 @@ def main(argv):
                             RpmPkgPolicy.compose_full_version(spec.version)),
                             sign=options.sign_tags, keyid=options.keyid, commit=tree)
             tree_name = tag
+            commit_sha1 = repo.rev_parse('%s^0' % tag)
             if options.posttag:
                 sha = repo.rev_parse("%s^{}" % tag)
                 Command(options.posttag, shell=True,
