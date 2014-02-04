@@ -620,6 +620,10 @@ class GbpOptionParserRpm(GbpOptionParser):
             'merge'                     : 'False',
             'pristine-tarball-name'     : 'auto',
             'orig-prefix'               : 'auto',
+            'changelog-file'            : 'auto',
+            'changelog-revision'        : '',
+            'spawn-editor'              : 'always',
+            'editor-cmd'                : 'vim',
                     })
 
     help = dict(GbpOptionParser.help)
@@ -679,6 +683,17 @@ class GbpOptionParserRpm(GbpOptionParser):
             'orig-prefix':
                 "Prefix (dir) to be used when generating/importing tarballs, "
                 "default is '%(orig-prefix)s'",
+            'changelog-file':
+                "Changelog file to be used, default is '%(changelog-file)s'",
+            'changelog-revision':
+                "Format string for the revision field in the changelog header. "
+                "If empty or not defined the default from packaging policy is "
+                "used.",
+            'editor-cmd':
+                "Editor command to use",
+            'git-author':
+                "Use name and email from git-config for the changelog header, "
+                "default is '%(git-author)s'",
                  })
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
