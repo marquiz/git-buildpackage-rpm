@@ -557,6 +557,9 @@ class GbpOptionParserRpm(GbpOptionParser):
                        'orig-prefix'            : 'auto',
                        'patch-import'           : 'True',
                        'spec-vcs-tag'           : '',
+                       'changelog-file'         : 'auto',
+                       'changelog-revision'     : '',
+                       'editor-cmd'             : 'vim',
                      } )
 
     help = dict(GbpOptionParser.help)
@@ -595,6 +598,15 @@ class GbpOptionParserRpm(GbpOptionParser):
                         ("Set/update the 'VCS:' tag in the spec file, empty "
                          "value removes the tag entirely, default is "
                          "'%(spec-vcs-tag)s'"),
+                   'changelog-file':
+                        ("Changelog file to be used, default is "
+                         "'%(changelog-file)s'"),
+                   'changelog-revision':
+                        ("Format string for the revision field in the "
+                         "changelog header. If empty or not defined the "
+                         "default from packaging policy is used."),
+                   'editor-cmd':
+                        "Editor command to use",
                  } )
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
