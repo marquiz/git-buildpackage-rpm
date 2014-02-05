@@ -17,6 +17,12 @@ Packager:   Markus Lehtonen <markus.lehtonen@linux.intel.com>
 %description
 Package for testing the RPM functionality of git-buildpackage.
 
+%package empty
+Summary:    Empty subpackage
+
+%description empty
+Empty subpackage for the %{name} test package.
+
 
 %prep
 %setup -T -n %{name}-%{version} -c -a 10
@@ -42,8 +48,14 @@ cp -R * %{buildroot}/%{_datadir}/%{name}
 install %{SOURCE0} %{buildroot}/%{_datadir}/%{name}
 
 
+%changelog
+* Wed Feb 05 2014 Name <email> 2
+- New entry
 
 %files
 %defattr(-,root,root,-)
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}
+
+%files empty
+%defattr(-,root,root,-)
