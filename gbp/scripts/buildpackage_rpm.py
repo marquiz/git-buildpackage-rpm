@@ -309,6 +309,13 @@ def packaging_tag_name(repo, spec, commit_info, options):
                           commit_info)
     return repo.version_to_tag(options.packaging_tag, tag_str_fields)
 
+def create_packaging_tag(repo, tag, commit, version, options):
+    """Create a packaging/release Git tag"""
+    msg = "%s release %s" % (options.vendor,
+                             RpmPkgPolicy.compose_full_version(version))
+    repo.create_tag(name=tag, msg=msg, sign=options.sign_tags,
+                    keyid=options.keyid, commit=commit)
+
 def disable_hooks(options):
     """Disable all hooks (except for builder)"""
     for hook in ['cleaner', 'postexport', 'prebuild', 'postbuild', 'posttag']:
@@ -603,9 +610,8 @@ def main(argv):
             tag = packaging_tag_name(repo, spec, commit_info, options)
             if options.retag and repo.has_tag(tag):
                 repo.delete_tag(tag)
-            repo.create_tag(name=tag, msg="%s release %s" % (options.vendor,
-                            RpmPkgPolicy.compose_full_version(spec.version)),
-                            sign=options.sign_tags, keyid=options.keyid, commit=tree)
+            create_packaging_tag(repo, tag, commit=tree, version=spec.version,
+                                 options=options)
             tree_name = tag
             commit_sha1 = repo.rev_parse('%s^0' % tag)
             if options.posttag:
