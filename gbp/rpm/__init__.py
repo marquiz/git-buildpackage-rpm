@@ -111,6 +111,12 @@ class SpecFile(object):
                                '(\s+(?P<args>.*))?$', flags=re.I)
     gbptag_re = re.compile(r'^\s*#\s*gbp-(?P<name>[a-z-]+)'
                             '(\s*:\s*(?P<args>\S.*))?$', flags=re.I)
+    # Here "sections" stand for all scripts, scriptlets and other directives,
+    # but not macros
+    section_identifiers = ('package', 'description', 'prep', 'build', 'install',
+            'clean', 'check', 'pre', 'preun', 'post', 'postun', 'verifyscript',
+            'files', 'changelog', 'triggerin', 'triggerpostin', 'triggerun',
+            'triggerpostun')
 
     def __init__(self, filename=None, filedata=None):
 
@@ -371,7 +377,7 @@ class SpecFile(object):
                 directiveid = -1
 
         # Record special directive/scriptlet/macro locations
-        if directivename in ('prep', 'setup', 'patch'):
+        if directivename in self.section_identifiers + ('setup', 'patch'):
             linerecord = {'line': lineobj,
                           'id': directiveid,
                           'args': matchobj.group('args')}
@@ -410,11 +416,7 @@ class SpecFile(object):
                     continue
             matched = self._parse_directive(lineobj)
             if matched:
-                if matched in ('package', 'description', 'prep', 'build',
-                               'install', 'clean', 'check', 'pre', 'preun',
-                               'post', 'postun', 'verifyscript', 'files',
-                               'changelog', 'triggerin', 'triggerpostin',
-                               'triggerun', 'triggerpostun'):
+                if matched in self.section_identifiers:
                     in_preamble = False
                 continue
             self._parse_gbp_tag(linenum, lineobj)
