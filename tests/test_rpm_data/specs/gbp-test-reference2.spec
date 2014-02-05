@@ -42,3 +42,6 @@ install %{SOURCE0} %{buildroot}/%{_datadir}/%{name}
 %defattr(-,root,root,-)
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}
+%changelog
+* Wed Feb 05 2014 Name <email> 1
+- New entry

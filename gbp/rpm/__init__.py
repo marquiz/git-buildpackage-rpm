@@ -566,6 +566,49 @@ class SpecFile(object):
             self._special_directives[key].append(linerec)
         return ret
 
+    def _set_section(self, name, text):
+        """Update/create a complete section in spec file."""
+        if name not in self.section_identifiers:
+            raise GbpError("Not a valid section directive: '%s'" % name)
+        # Delete section, if it exists
+        if name in self._special_directives:
+            if len(self._special_directives[name]) > 1:
+                raise GbpError("Multiple %%%s sections found, don't know "
+                               "which to update" % name)
+            line = self._special_directives[name][0]['line']
+            gbp.log.debug("Removing content of %s section" % name)
+            while line.next:
+                match = self.directive_re.match(str(line.next))
+                if match and match.group('name') in self.section_identifiers:
+                    break
+                self._content.delete(line.next)
+        else:
+            gbp.log.debug("Adding %s section to the end of spec file" % name)
+            line = self._content.append('%%%s\n' % name)
+            linerec = {'line': line, 'id': None, 'args': None}
+            self._special_directives[name] = [linerec]
+        # Add new lines
+        gbp.log.debug("Updating content of %s section" % name)
+        for linetext in text.splitlines():
+            line = self._content.insert_after(line, linetext + '\n')
+
+    def set_changelog(self, text):
+        """Update or create the %changelog section"""
+        self._set_section('changelog', text)
+
+    def get_changelog(self):
+        """Get the %changelog section"""
+        text = ''
+        if 'changelog' in self._special_directives:
+            line = self._special_directives['changelog'][0]['line']
+            while line.next:
+                line = line.next
+                match = self.directive_re.match(str(line))
+                if match and match.group('name') in self.section_identifiers:
+                    break
+                text += str(line)
+        return text
+
     def update_patches(self, patches, commands):
         """Update spec with new patch tags and patch macros"""
         # Remove non-ignored patches
