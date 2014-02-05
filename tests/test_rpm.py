@@ -20,7 +20,7 @@ import filecmp
 import os
 import shutil
 import tempfile
-from nose.tools import assert_raises
+from nose.tools import assert_raises, eq_
 
 from gbp.errors import GbpError
 from gbp.rpm import (SrcRpmFile, SpecFile, parse_srpm, NoSpecError, guess_spec,
@@ -181,15 +181,16 @@ class TestSpecFile(object):
         spec.write_spec_file()
         assert filecmp.cmp(tmp_spec, reference_spec) is True
 
-        # Test adding the VCS tag
+        # Test adding the VCS tag and adding changelog
         reference_spec = os.path.join(SPEC_DIR, 'gbp-test-reference2.spec')
         spec.set_tag('VCS', None, 'myvcstag')
+        spec.set_changelog("* Wed Feb 05 2014 Name <email> 1\n- New entry\n")
         spec.write_spec_file()
         assert filecmp.cmp(tmp_spec, reference_spec) is True
 
     def test_update_spec2(self):
         """Another test for spec autoupdate functionality"""
-        tmp_spec = os.path.join(self.tmpdir, 'gbp-test.spec')
+        tmp_spec = os.path.join(self.tmpdir, 'gbp-test2.spec')
         shutil.copy2(os.path.join(SPEC_DIR, 'gbp-test2.spec'), tmp_spec)
 
         reference_spec = os.path.join(SPEC_DIR, 'gbp-test2-reference2.spec')
@@ -201,10 +202,12 @@ class TestSpecFile(object):
         spec.write_spec_file()
         assert filecmp.cmp(tmp_spec, reference_spec) is True
 
-        # Test updating patches again and removing the VCS tag
+        # Test updating patches again, removing the VCS tag and re-writing
+        # changelog
         reference_spec = os.path.join(SPEC_DIR, 'gbp-test2-reference.spec')
         spec.update_patches(['new.patch'], {'new.patch': {'if': '1'}})
         spec.set_tag('VCS', None, '')
+        spec.set_changelog("* Wed Feb 05 2014 Name <email> 2\n- New entry\n\n")
         spec.write_spec_file()
         assert filecmp.cmp(tmp_spec, reference_spec) is True
 
@@ -246,6 +249,33 @@ class TestSpecFile(object):
         # Check resulting spec file
         spec.write_spec_file()
         assert filecmp.cmp(tmp_spec, reference_spec) is True
+
+    def test_modifying_err(self):
+        """Test error conditions of modification methods"""
+        spec_filepath = os.path.join(SPEC_DIR, 'gbp-test2.spec')
+        spec = SpecFileTester(spec_filepath)
+
+        # Unknown/invalid section name
+        with assert_raises(GbpError):
+            spec.protected('_set_section')('patch', 'new content\n')
+
+        # Multiple sections with the same name
+        with assert_raises(GbpError):
+            spec.protected('_set_section')('files', '%{_sysconfdir}/foo\n')
+
+    def test_changelog(self):
+        """Test changelog methods"""
+        spec_filepath = os.path.join(SPEC_DIR, 'gbp-test2.spec')
+        spec = SpecFile(spec_filepath)
+
+        # Read changelog
+        eq_(spec.get_changelog(),
+            "* Tue Feb 04 2014 Name <email> 1\n- My change\n\n\n")
+
+        # Set changelog and check again
+        new_text = "* Wed Feb 05 2014 Name <email> 2\n- New entry\n\n\n"
+        spec.set_changelog(new_text)
+        eq_(spec.get_changelog(), new_text)
 
     def test_quirks(self):
         """Test spec that is broken/has anomalities"""
