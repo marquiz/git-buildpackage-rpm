@@ -1468,7 +1468,8 @@ class GitRepository(object):
         """
         self._commit(msg=msg, args=['-a'], author_info=author_info, edit=edit)
 
-    def commit_files(self, files, msg, author_info=None, committer_info=None):
+    def commit_files(self, files, msg, author_info=None, committer_info=None,
+                     edit=False):
         """
         Commit the given files to the repository
 
@@ -1480,11 +1481,13 @@ class GitRepository(object):
         @type author_info: L{GitModifier}
         @param committer_info: committer information
         @type committer_info: L{GitModifier}
+        @param edit: whether to spawn an editor to edit the commit info
+        @type edit: C{bool}
         """
-        if isinstance(files, basestring):
-            files = [ files ]
-        self._commit(msg=msg, args=files, author_info=author_info,
-                     committer_info=committer_info)
+        args = GitArgs('--')
+        args.add(files)
+        self._commit(msg=msg, args=args.args, author_info=author_info,
+                     committer_info=committer_info, edit=edit)
 
     def commit_dir(self, unpack_dir, msg, branch, other_parents=None,
                    author={}, committer={}, create_missing_branch=False):
