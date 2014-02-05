@@ -24,7 +24,7 @@ import os, os.path
 import sys
 import shutil
 import re
-import datetime
+from datetime import datetime
 import gzip
 
 import gbp.tmpfile as tempfile
@@ -270,43 +270,44 @@ def setup_builder(options, builder_args):
         options.spec_dir = ''
 
 
-def update_tag_str_fields(tag_format_str, fields, repo, commit):
-    extra = fields
+def update_tag_str_fields(fields, tag_format_str, repo, commit_info):
+    """Update string format fields for packaging tag"""
+    fields['nowtime'] = datetime.now().strftime(RpmPkgPolicy.tag_timestamp_format)
 
-    extra['nowtime'] = datetime.datetime.now().strftime(RpmPkgPolicy.tag_timestamp_format)
-
-    commit_info = repo.get_commit_info(commit)
-    extra['authortime'] = datetime.datetime.fromtimestamp(int(commit_info['author'].date.split()[0])).strftime(RpmPkgPolicy.tag_timestamp_format)
-    extra['committime'] = datetime.datetime.fromtimestamp(int(commit_info['committer'].date.split()[0])).strftime(RpmPkgPolicy.tag_timestamp_format)
-    extra['version'] = version=RpmPkgPolicy.compose_full_version(fields)
+    fields['authortime'] = datetime.fromtimestamp(int(commit_info['author'].date.split()[0])).strftime(RpmPkgPolicy.tag_timestamp_format)
+    fields['committime'] = datetime.fromtimestamp(int(commit_info['committer'].date.split()[0])).strftime(RpmPkgPolicy.tag_timestamp_format)
+    fields['version'] = version=RpmPkgPolicy.compose_full_version(fields)
 
     # Parse tags with incremental numbering
-    re_fields = dict(extra,
-                     nowtimenum=extra['nowtime'] + ".(?P<nownum>[0-9]+)",
-                     authortimenum=extra['authortime'] + ".(?P<authornum>[0-9]+)",
-                     committimenum=extra['committime'] + ".(?P<commitnum>[0-9]+)")
-    re_fields.update(fields)
-
+    re_fields = dict(fields,
+                     nowtimenum=fields['nowtime'] + ".(?P<nownum>[0-9]+)",
+                     authortimenum=fields['authortime'] + ".(?P<authornum>[0-9]+)",
+                     committimenum=fields['committime'] + ".(?P<commitnum>[0-9]+)")
     try:
         tag_re = re.compile("^%s$" % (tag_format_str % re_fields))
     except KeyError, err:
         raise GbpError, "Unknown field '%s' in packaging-tag format string" % err
 
-    extra['nowtimenum'] = extra['nowtime'] + ".1"
-    extra['authortimenum'] = extra['authortime'] + ".1"
-    extra['committimenum'] = extra['committime'] + ".1"
+    fields['nowtimenum'] = fields['nowtime'] + ".1"
+    fields['authortimenum'] = fields['authortime'] + ".1"
+    fields['committimenum'] = fields['committime'] + ".1"
     for t in reversed(repo.get_tags()):
         m = tag_re.match(t)
         if m:
             if 'nownum' in m.groupdict():
-                extra['nowtimenum'] = "%s.%s" % (extra['nowtime'], int(m.group('nownum'))+1)
+                fields['nowtimenum'] = "%s.%s" % (fields['nowtime'], int(m.group('nownum'))+1)
             if 'authornum' in m.groupdict():
-                extra['authortimenum'] = "%s.%s" % (extra['authortime'], int(m.group('authornum'))+1)
+                fields['authortimenum'] = "%s.%s" % (fields['authortime'], int(m.group('authornum'))+1)
             if 'commitnum' in m.groupdict():
-                extra['committimenum'] = "%s.%s" % (extra['committime'], int(m.group('commitnum'))+1)
+                fields['committimenum'] = "%s.%s" % (fields['committime'], int(m.group('commitnum'))+1)
             break
 
-    return extra
+def packaging_tag_name(repo, spec, commit_info, options):
+    """Compose packaging tag as string"""
+    tag_str_fields = dict(spec.version, vendor=options.vendor)
+    update_tag_str_fields(tag_str_fields, options.packaging_tag, repo,
+                          commit_info)
+    return repo.version_to_tag(options.packaging_tag, tag_str_fields)
 
 def disable_hooks(options):
     """Disable all hooks (except for builder)"""
@@ -598,9 +599,8 @@ def main(argv):
         # Tag (note: tags the exported version)
         if options.tag or options.tag_only:
             gbp.log.info("Tagging %s" % RpmPkgPolicy.compose_full_version(spec.version))
-            tag_str_fields = dict(spec.version, vendor=options.vendor)
-            tag_str_fields = update_tag_str_fields(options.packaging_tag, tag_str_fields, repo, tree)
-            tag = repo.version_to_tag(options.packaging_tag, tag_str_fields)
+            commit_info = repo.get_commit_info(tree)
+            tag = packaging_tag_name(repo, spec, commit_info, options)
             if options.retag and repo.has_tag(tag):
                 repo.delete_tag(tag)
             repo.create_tag(name=tag, msg="%s release %s" % (options.vendor,
