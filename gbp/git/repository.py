@@ -142,7 +142,7 @@ class GitRepository(object):
         return output, popen.returncode
 
     def _git_inout(self, command, args, input=None, extra_env=None, cwd=None,
-                   capture_stderr=False):
+                   capture_stderr=False, capture_stdout=True):
         """
         Run a git command with input and return output
 
@@ -166,7 +166,8 @@ class GitRepository(object):
         stderr = ''
         try:
             for outdata in self.__git_inout(command, args, input, extra_env,
-                                            cwd, capture_stderr):
+                                            cwd, capture_stderr,
+                                            capture_stdout):
                 stdout += outdata[0]
                 stderr += outdata[1]
         except GitRepositoryError as err:
@@ -188,7 +189,7 @@ class GitRepository(object):
         stderr = ''
         try:
             for outdata in self.__git_inout(command, args, stdin, extra_env,
-                                            cwd, capture_stderr):
+                                            cwd, capture_stderr, True):
                 stderr += outdata[1]
                 yield outdata[0]
         except GitRepositoryError as err:
@@ -196,7 +197,8 @@ class GitRepository(object):
             raise err
 
     @classmethod
-    def __git_inout(cls, command, args, stdin, extra_env, cwd, capture_stderr):
+    def __git_inout(cls, command, args, stdin, extra_env, cwd, capture_stderr,
+                    capture_stdout):
         """
         Run a git command without a a GitRepostitory instance.
 
@@ -212,18 +214,21 @@ class GitRepository(object):
 
         cmd = ['git', command] + args
         env = cls.__build_env(extra_env)
+        stdout_arg = subprocess.PIPE if capture_stdout else None
         stdin_arg = subprocess.PIPE if stdin else None
         stderr_arg = subprocess.PIPE if capture_stderr else None
 
         log.debug(cmd)
         popen = subprocess.Popen(cmd,
                                  stdin=stdin_arg,
-                                 stdout=subprocess.PIPE,
+                                 stdout=stdout_arg,
                                  stderr=stderr_arg,
                                  env=env,
                                  close_fds=True,
                                  cwd=cwd)
-        out_fds = [popen.stdout] + ([popen.stderr] if capture_stderr else [])
+        out_fds = [popen.stdout] if capture_stdout else []
+        if capture_stderr:
+            out_fds.append(popen.stderr)
         in_fds = [popen.stdin] if stdin else []
         w_ind = 0
         while out_fds or in_fds:
@@ -248,7 +253,7 @@ class GitRepository(object):
             err.returncode = popen.returncode
             raise err
 
-    def _git_command(self, command, args=[], extra_env=None):
+    def _git_command(self, command, args=[], extra_env=None, interactive=False):
         """
         Execute git command with arguments args and environment env
         at path.
@@ -260,12 +265,14 @@ class GitRepository(object):
         @param extra_env: extra environment variables to set when running command
         @type extra_env: C{dict}
         """
+        capture_stdout = not interactive
         try:
             stdout, stderr, ret = self._git_inout(command=command,
                                                   args=args,
                                                   input=None,
                                                   extra_env=extra_env,
-                                                  capture_stderr=True)
+                                                  capture_stderr=True,
+                                                  capture_stdout=capture_stdout)
         except Exception as excobj:
             raise GitRepositoryError("Error running git %s: %s" % (command, excobj))
         if ret:
@@ -1861,7 +1868,8 @@ class GitRepository(object):
                                              stdin=None,
                                              extra_env=None,
                                              cwd=abspath,
-                                             capture_stderr=True):
+                                             capture_stderr=True,
+                                             capture_stdout=True):
                     stderr += out[1]
             except GitRepositoryError:
                 raise GitRepositoryError("Error running git init: %s" % stderr)
@@ -1924,7 +1932,8 @@ class GitRepository(object):
                                              stdin=None,
                                              extra_env=None,
                                              cwd=abspath,
-                                             capture_stderr=True):
+                                             capture_stderr=True,
+                                             capture_stdout=True):
                     stderr += out[1]
             except GitRepositoryError:
                 raise GitRepositoryError("Error running git clone: %s" % stderr)
