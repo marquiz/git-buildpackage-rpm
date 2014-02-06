@@ -315,17 +315,17 @@ def get_packager(spec):
             return GitModifier(match.group('name'), match.group('email'))
     return GitModifier()
 
-def import_gbp_conf(repo, commitish):
+def import_extra_files(repo, commitish, files):
     """Import branch-specific gbp.conf files to current branch"""
-    files = ['.gbp.conf', 'debian/gbp.conf']
     found = {}
     for fname in files:
-        try:
-            found[fname] = repo.show('%s:%s' % (commitish, fname))
-        except GitRepositoryError:
-            pass
+        if fname:
+            try:
+                found[fname] = repo.show('%s:%s' % (commitish, fname))
+            except GitRepositoryError:
+                pass
     if found:
-        gbp.log.info('Importing gbp.conf file(s) from %s into %s' %
+        gbp.log.info('Importing additional file(s) from %s into %s' %
                      (commitish, repo.get_branch()))
         for fname, content in found.iteritems():
             dirname = os.path.dirname(fname)
@@ -337,8 +337,9 @@ def import_gbp_conf(repo, commitish):
         files = found.keys()
         gbp.log.debug('Adding/commiting %s' % files)
         repo.add_files(files, force=True)
-        commit_msg = 'Auto-import gbp.conf file(s) from %s\n\n' \
-                     'Gbp: Ignore\nGbp-Rpm: Ignore' % commitish
+        commit_msg = ('Auto-import packaging file(s) from branch %s:\n'
+                      '    %s\n\nGbp: Ignore\nGbp-Rpm: Ignore' % (commitish,
+                      '    '.join(files)))
         repo.commit_files(files, msg=commit_msg)
 
 def import_spec_patches(repo, options):
@@ -394,7 +395,7 @@ def import_spec_patches(repo, options):
     try:
         gbp.log.info("Switching to %s" % pq_branch)
         repo.set_branch(pq_branch)
-        import_gbp_conf(repo, base)
+        import_extra_files(repo, base, options.import_files)
         gbp.log.info("Trying to apply patches from '%s' onto '%s'" %
                         (base, upstream_commit))
         for patch in queue:
@@ -475,6 +476,11 @@ def apply_single_patch(repo, patchfile, options):
     apply_and_commit_patch(repo, patch, fallback_author=None)
 
 
+def opt_split_cb(option, opt_str, value, parser):
+    """Split option string into a list"""
+    setattr(parser.values, option.dest, value.split(','))
+
+
 def main(argv):
     """Main function for the gbp pq-rpm command"""
     retval = 0
@@ -512,6 +518,9 @@ def main(argv):
                  "this is used as the 'base' branch. Default is "
                  "'%(packaging-branch)s'")
     parser.add_config_file_option(option_name="pq-branch", dest="pq_branch")
+    parser.add_config_file_option(option_name="import-files",
+            dest="import_files", type="string", action="callback",
+            callback=opt_split_cb)
     parser.add_option("--export-rev", action="store", dest="export_rev",
             default="",
             help="Export patches from treeish object TREEISH instead of head "

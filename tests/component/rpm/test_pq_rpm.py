@@ -492,8 +492,8 @@ class TestPqRpm(ComponentTestBase):
         branches = ['master', 'upstream', 'development/master']
         self._check_repo_state(repo, 'master', branches, files)
 
-    def test_gbp_conf_import(self):
-        """Test importing of gbp.conf files into pq branch"""
+    def test_option_import_files(self):
+        """Test the --import-files cmdline option"""
         repo = self.init_test_repo('gbp-test')
         # Add new conf file
         os.mkdir('debian')
@@ -502,12 +502,29 @@ class TestPqRpm(ComponentTestBase):
         repo.add_files(['debian/gbp.conf'], force=True)
         repo.commit_files(['debian/gbp.conf'], msg="Add conf file")
 
-        # Import
+        # Import with default settings (should import gbp conf files)
         branches = repo.get_local_branches() + ['my-pq-branch']
         eq_(mock_pq(['import']), 0)
         self._check_repo_state(repo, 'my-pq-branch', branches)
-
         ok_('debian/gbp.conf' in repo.list_files())
+        ok_('.gbp.conf' in repo.list_files())
+
+        # Re-import with user-defined files
+        eq_(mock_pq(['import', '--force', '--packaging-branch', 'master',
+                     '--import-files', 'foo.txt,my.patch']), 0)
+        self._check_repo_state(repo, 'my-pq-branch', branches)
+        ok_('foo.txt' in repo.list_files())
+        ok_('my.patch' in repo.list_files())
+
+        # Drop and re-import with no files
+        eq_(mock_pq(['switch', '--packaging-branch', 'master', '--pq-branch',
+                     'my-pq-branch']), 0)
+        eq_(mock_pq(['drop']), 0)
+        eq_(mock_pq(['import', '--packaging-branch', 'master',
+                     '--pq-branch', 'my-pq-branch', '--import-files=']), 0)
+        self._check_repo_state(repo, 'my-pq-branch', branches)
+        ok_('debian/gbp.conf' not in repo.list_files())
+        ok_('.gbp.conf' not in repo.list_files())
 
     def test_import_unapplicable_patch(self):
         """Test import when a patch does not apply"""

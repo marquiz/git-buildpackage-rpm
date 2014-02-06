@@ -542,6 +542,8 @@ class GbpOptionParserRpm(GbpOptionParser):
                        'packaging-tag'          : '%(vendor)s/%(version)s',
                        'upstream-tag'           : 'upstream/%(upstreamversion)s',
                        'pq-branch'              : 'development/%(branch)s',
+                       'import-files'           : ['.gbp.conf',
+                                                   'debian/gbp.conf'],
                        'spec-file'              : 'auto',
                        'export-dir'             : '../rpmbuild',
                        'ignore-untracked'       : 'False',
@@ -574,6 +576,11 @@ class GbpOptionParserRpm(GbpOptionParser):
                         "format string for packaging tags, rpm counterpart of the 'debian-tag' option, default is '%(packaging-tag)s'",
                    'pq-branch':
                         "format string for the patch-queue branch name, default is '%(pq-branch)s'",
+                   'import-files':
+                        ("Comma-separated list of additional file(s) to import "
+                         "from packaging branch. These will appear as one "
+                         "monolithic patch in the pq/development branch. "
+                         "Default is %(import-files)s"),
                    'spec-file':
                         "Spec file to use, 'auto' makes gbp to guess, other values make the packaging-dir option to be ignored, default is '%(spec-file)s'",
                    'ignore-untracked':
