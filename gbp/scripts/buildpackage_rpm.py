@@ -44,6 +44,7 @@ from gbp.scripts.common.buildpackage import (index_name, wc_names,
                                              write_wc, drop_index)
 from gbp.pkg import (compressor_opts, compressor_aliases)
 from gbp.scripts.pq_rpm import update_patch_series
+from gbp.scripts.common.pq import is_pq_branch, pq_branch_name, pq_branch_base
 
 
 class GbpAutoGenerateError(GbpError):
@@ -193,6 +194,46 @@ def get_tree(repo, tree_name):
     return tree
 
 
+def get_current_branch(repo):
+    """Get the currently checked-out branch"""
+    try:
+        branch = repo.get_branch()
+    except GitRepositoryError:
+        branch = None
+
+
+def guess_export_params(repo, options):
+    """Get commit and tree from where to export packaging and patches"""
+    branch = None
+    if options.export in wc_names.keys() + [index_name, 'HEAD']:
+        branch = get_current_branch(repo)
+    elif options.export in repo.get_local_branches():
+        branch = options.export
+    if branch:
+        pq_branch = pq_branch_name(branch, options)
+        if is_pq_branch(branch, options):
+            packaging_branch = pq_branch_base(branch, options)
+            if repo.has_branch(packaging_branch):
+                gbp.log.info("It seems you're building a development/patch-"
+                             "queue branch. Export target changed to '%s' and "
+                             "patch-export enabled!" % packaging_branch)
+                options.patch_export = True
+                if not options.patch_export_rev:
+                    options.patch_export_rev = options.export
+                options.export = packaging_branch
+            else:
+                gbp.log.warn("It seems you're building a development/patch-"
+                             "queue branch. No corresponding packaging branch "
+                             "found. Build may fail!")
+        elif (options.patch_export and repo.has_branch(pq_branch) and not
+              options.patch_export_rev):
+            gbp.log.info("Exporting patches from development/patch-queue "
+                         "branch '%s'" % pq_branch)
+            options.patch_export_rev = pq_branch
+
+    # Return tree-ish objects for for exporting packaging
+    return get_tree(repo, options.export)
+
 def git_archive_build_orig(repo, spec, output_dir, options):
     """
     Build orig tarball using git-archive
@@ -230,15 +271,6 @@ def export_patches(repo, spec, export_treeish, options):
     """
     Generate patches and update spec file
     """
-    # Fail if we have local patch files not marked for manual maintenance.
-    # Ignore patches listed in spec but not found in packaging dir
-    for patch in spec.patchseries():
-        if os.path.exists(patch.path):
-            raise GbpAutoGenerateError(
-                    'Patches not marked for manual maintenance found, '
-                    'refusing to overwrite! Fix by applying them to packaging '
-                    'branch and removing the files.')
-
     try:
         upstream_tree = get_upstream_tree(repo, spec, options)
         update_patch_series(repo, spec, upstream_tree, export_treeish, options)
@@ -389,6 +421,7 @@ def parse_args(argv, prefix, git_treeish=None):
     orig_group.add_config_file_option(option_name="orig-prefix", dest="orig_prefix")
     branch_group.add_config_file_option(option_name="upstream-branch", dest="upstream_branch")
     branch_group.add_config_file_option(option_name="packaging-branch", dest="packaging_branch")
+    branch_group.add_config_file_option(option_name="pq-branch", dest="pq_branch")
     branch_group.add_boolean_config_file_option(option_name = "ignore-branch", dest="ignore_branch")
     branch_group.add_boolean_config_file_option(option_name = "submodules", dest="with_submodules")
     cmd_group.add_config_file_option(option_name="builder", dest="builder",
@@ -428,6 +461,10 @@ def parse_args(argv, prefix, git_treeish=None):
     export_group.add_option("--git-export-only", action="store_true", dest="export_only", default=False,
                       help="only export packaging files, don't build")
     export_group.add_boolean_config_file_option("patch-export", dest="patch_export")
+    export_group.add_option("--git-patch-export-rev", dest="patch_export_rev",
+                      metavar="TREEISH",
+                      help="[experimental] Export patches from treeish object "
+                           "TREEISH")
     export_group.add_config_file_option("patch-export-ignore-path",
                                         dest="patch_export_ignore_path")
     export_group.add_config_file_option("patch-export-compress", dest="patch_export_compress")
@@ -475,6 +512,7 @@ def main(argv):
     # Re-parse config options with using the per-tree config file(s) from the
     # exported tree-ish
     options, gbp_args, builder_args = parse_args(argv, prefix, tree)
+    tree = guess_export_params(repo, options)
 
     try:
         # Create base temporary directory for this run
@@ -484,10 +522,7 @@ def main(argv):
         gbp.log.err(err)
         return 1
 
-    try:
-        branch = repo.get_branch()
-    except GitRepositoryError:
-        branch = None
+    branch = get_current_branch(repo)
 
     try:
         if not options.export_only:
@@ -529,7 +564,11 @@ def main(argv):
 
             # Generate patches, if requested
             if options.patch_export and not is_native(repo, options):
-                export_patches(repo, spec, tree, options)
+                if options.patch_export_rev:
+                    patch_tree = get_tree(repo, options.patch_export_rev)
+                else:
+                    patch_tree = tree
+                export_patches(repo, spec, patch_tree, options)
 
             # Prepare final export dirs
             export_dir = prepare_export_dir(options.export_dir)
