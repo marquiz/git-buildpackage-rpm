@@ -120,8 +120,9 @@ def determine_editor(options):
         return 'vi'
 
 
-def check_branch(repo, options):
-    """Check the current git branch"""
+def check_repo_state(repo, options):
+    """Check that the repository is in good state"""
+    # Check branch
     try:
         branch = repo.get_branch()
     except GitRepositoryError:
@@ -131,6 +132,18 @@ def check_branch(repo, options):
                     (options.packaging_branch, branch))
         raise GbpError("Use --ignore-branch to ignore or "
                        "--packaging-branch to set the branch name.")
+    # Check unstaged changes
+    if options.commit:
+        unstaged = []
+        status = repo.status()
+        for group, files in status.iteritems():
+            if group != '??' and group[1] != ' ':
+                unstaged.extend(files)
+        if unstaged:
+            gbp.log.error("Unstaged changes in:\n    %s" %
+                          '\n    '.join(unstaged))
+            raise GbpError("Please commit or stage your changes before using "
+                           "the --commit option")
 
 
 def parse_spec_file(repo, options):
@@ -303,6 +316,12 @@ def update_changelog(changelog, entries, repo, spec, options):
     for entry in entries:
         top_section.append_entry(entry)
 
+def commit_changelog(repo, changelog, author, committer, edit):
+    """Commit changelog to Git"""
+    repo.add_files(changelog.path)
+    repo.commit_staged("Update changelog", author_info=author,
+                        committer_info=committer, edit=edit)
+
 
 def build_parser(name):
     """Construct command line parser"""
@@ -319,9 +338,12 @@ def build_parser(name):
                     "how to format the changelog entries")
     naming_grp = GbpOptionGroup(parser, "naming",
                     "branch names, tag formats, directory and file naming")
+    commit_grp = GbpOptionGroup(parser, "commit",
+                    "automatic committing and tagging")
     parser.add_option_group(range_grp)
     parser.add_option_group(format_grp)
     parser.add_option_group(naming_grp)
+    parser.add_option_group(commit_grp)
 
     # Non-grouped options
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose",
@@ -340,9 +362,8 @@ def build_parser(name):
     parser.add_config_file_option(option_name="customizations",
                     dest="customization_file",
                     help="Load Python code from CUSTOMIZATION_FILE. At the "
-                    "moment, the only useful thing the code can do is define a "
-                    "custom ChangelogEntryFormatter class.")
-
+                         "moment, the only useful thing the code can do is "
+                         "define a custom ChangelogEntryFormatter class.")
     # Naming group options
     naming_grp.add_config_file_option(option_name="packaging-branch",
                     dest="packaging_branch")
@@ -377,6 +398,9 @@ def build_parser(name):
                     dest="spawn_editor")
     format_grp.add_config_file_option(option_name="editor-cmd",
                     dest="editor_cmd")
+    # Commit group options
+    commit_grp.add_option("-c", "--commit", action="store_true",
+                    help="commit changes")
     return parser
 
 def parse_args(argv):
@@ -407,7 +431,7 @@ def main(argv):
         editor_cmd = determine_editor(options)
 
         repo = RpmGitRepository('.')
-        check_branch(repo, options)
+        check_repo_state(repo, options)
 
         # Find and parse spec file
         spec = parse_spec_file(repo, options)
@@ -429,12 +453,15 @@ def main(argv):
         entries = entries_from_commits(ch_file.changelog, repo, commits,
                                        options)
         update_changelog(ch_file.changelog, entries, repo, spec, options)
-
         # Write to file
         ch_file.write()
 
         if editor_cmd:
             gbpc.Command(editor_cmd, [ch_file.path])()
+
+        if options.commit:
+            edit = True if editor_cmd else False
+            commit_changelog(repo, ch_file, None, None, edit)
 
     except (GbpError, GitRepositoryError, ChangelogError, NoSpecError) as err:
         if len(err.__str__()):
