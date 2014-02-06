@@ -193,5 +193,5 @@ done
 %defattr(-,root,root,-)
 %dir %{python_sitelib}/gbp/rpm
 %{_bindir}/*rpm*
-%{python_sitelib}/gbp/scripts/*rpm.py*
+%{python_sitelib}/gbp/scripts/*rpm*.py*
 %{python_sitelib}/gbp/rpm/*py*
