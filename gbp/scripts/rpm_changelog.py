@@ -30,10 +30,13 @@ import gbp.command_wrappers as gbpc
 import gbp.log
 from gbp.config import GbpOptionParserRpm, GbpOptionGroup
 from gbp.errors import GbpError
+from gbp.git.modifier import GitModifier
 from gbp.rpm import guess_spec, NoSpecError, SpecFile
 from gbp.rpm.changelog import Changelog, ChangelogParser, ChangelogError
 from gbp.rpm.git import GitRepositoryError, RpmGitRepository
 from gbp.rpm.policy import RpmPkgPolicy
+from gbp.scripts.buildpackage_rpm import packaging_tag_name
+from gbp.scripts.buildpackage_rpm import create_packaging_tag
 
 
 ChangelogEntryFormatter = RpmPkgPolicy.ChangelogEntryFormatter
@@ -109,14 +112,27 @@ def determine_editor(editor_cmd):
         return 'vi'
 
 
-def check_branch(repo, options):
-    """Check the current git branch"""
+def check_repo_state(repo, options):
+    """Check that the repository is in good state"""
+    # Check branch
     branch = repo.get_branch()
     if options.packaging_branch != branch and not options.ignore_branch:
         gbp.log.err("You are not on branch '%s' but on '%s'" %
                     (options.packaging_branch, branch))
         raise GbpError("Use --ignore-branch to ignore or "
                        "--packaging-branch to set the branch name.")
+    # Check unstaged changes
+    if options.tag:
+        unstaged = []
+        status = repo.status()
+        for group, files in status.iteritems():
+            if group != '??' and group[1] != ' ':
+                unstaged.extend(files)
+        if unstaged:
+            gbp.log.error("Unstaged changes in:\n    %s" %
+                          '\n    '.join(unstaged))
+            raise GbpError("Please commit or stage your changes before using "
+                           "the --tag option")
 
 
 def parse_spec_file(repo, options):
@@ -253,8 +269,18 @@ def update_changelog(changelog, commits, repo, spec, options):
     name, email = get_author(repo, options.git_author)
     rev_str_fields = dict(spec.version,
                 version=RpmPkgPolicy.compose_full_version(spec.version),
-                vendor=options.vendor,
-                tagname=repo.describe('HEAD', longfmt=True, always=True))
+                vendor=options.vendor)
+    if options.tag:
+        # Get fake information for the to-be-created git commit
+        now = datetime.now()
+        commit_info = {'author': GitModifier(date=now),
+                       'committer': GitModifier(date=now)}
+        tag = packaging_tag_name(repo, spec, commit_info, options)
+    else:
+        commit_info = {'author': None, 'committer': None}
+        tag = repo.describe('HEAD', longfmt=True, always=True)
+    rev_str_fields['tagname'] = tag
+
     try:
         revision = options.changelog_revision % rev_str_fields
     except KeyError as err:
@@ -278,6 +304,13 @@ def update_changelog(changelog, commits, repo, spec, options):
                         ignore_re=options.ignore_regex, id_len=options.idlen)
         if entry_text:
             top_section.add_entry(author=info['author'], text=entry_text)
+    return (tag, commit_info['author'], commit_info['committer'])
+
+def commit_changelog(repo, changelog, author, committer):
+    """Commit changelog and create a packaging/release tag"""
+    repo.add_files(changelog.path)
+    repo.commit_files(changelog.path, "Update changelog", author_info=author,
+                      committer_info=committer, edit=True)
 
 
 def parse_args(argv):
@@ -295,9 +328,12 @@ def parse_args(argv):
                     "how to format the changelog entries")
     naming_grp = GbpOptionGroup(parser, "naming",
                     "branch names, tag formats, directory and file naming")
+    commit_grp = GbpOptionGroup(parser, "commit",
+                    "automatic committing and tagging")
     parser.add_option_group(range_grp)
     parser.add_option_group(format_grp)
     parser.add_option_group(naming_grp)
+    parser.add_option_group(commit_grp)
 
     # Non-grouped options
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose",
@@ -313,9 +349,8 @@ def parse_args(argv):
     parser.add_config_file_option(option_name="customizations",
                     dest="customization_file",
                     help="Load Python code from CUSTOMIZATION_FILE. At the "
-                    "moment, the only useful thing the code can do is define a "
-                    "custom ChangelogEntryFormatter class.")
-
+                         "moment, the only useful thing the code can do is "
+                         "define a custom ChangelogEntryFormatter class.")
     # Naming group options
     naming_grp.add_config_file_option(option_name="packaging-branch",
                     dest="packaging_branch")
@@ -350,6 +385,15 @@ def parse_args(argv):
                     dest="changelog_revision")
     format_grp.add_config_file_option(option_name="editor-cmd",
                     dest="editor_cmd")
+    # Commit/tag group options
+    commit_grp.add_option("--tag", action="store_true",
+                    help="commit the changes and create a packaging/release"
+                         "tag")
+    commit_grp.add_option("--retag", action="store_true",
+                    help="Overwrite packaging tag if it already exists")
+    commit_grp.add_boolean_config_file_option(option_name="sign-tags",
+                    dest="sign_tags")
+    commit_grp.add_config_file_option(option_name="keyid", dest="keyid")
 
     options, args = parser.parse_args(argv[1:])
     if not options.changelog_revision:
@@ -370,7 +414,7 @@ def main(argv):
         editor_cmd = determine_editor(options.editor_cmd)
 
         repo = RpmGitRepository('.')
-        check_branch(repo, options)
+        check_repo_state(repo, options)
 
         # Find and parse spec file
         spec = parse_spec_file(repo, options)
@@ -390,13 +434,19 @@ def main(argv):
             gbp.log.info("No changes detected from %s to %s." % (since, 'HEAD'))
 
         # Do the actual update
-        update_changelog(changelog, commits, repo, spec, options)
-
+        tag, author, committer = update_changelog(changelog, commits, repo,
+                                                  spec, options)
         # Write to file
         changelog_file.write()
 
         if editor_cmd:
             gbpc.Command(editor_cmd, [changelog_file.path])()
+
+        if options.tag:
+            if options.retag and repo.has_tag(tag):
+                repo.delete_tag(tag)
+            commit = commit_changelog(repo, changelog_file, author, committer)
+            create_packaging_tag(repo, tag, 'HEAD', spec.version, options)
 
     except (GbpError, GitRepositoryError, ChangelogError, NoSpecError) as err:
         if len(err.__str__()):
