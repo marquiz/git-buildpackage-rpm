@@ -19,7 +19,7 @@
 import re
 
 from gbp.pkg import PkgPolicy, parse_archive_filename
-from gbp.scripts.pq import parse_gbp_commands
+from gbp.scripts.common.pq import parse_gbp_commands
 
 class RpmPkgPolicy(PkgPolicy):
     """Packaging policy for RPM"""
