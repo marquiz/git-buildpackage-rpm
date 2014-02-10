@@ -44,6 +44,25 @@ from gbp.scripts.common.pq import (is_pq_branch, pq_branch_name, pq_branch_base,
 from gbp.scripts.common.buildpackage import dump_tree
 
 
+USAGE_STRING = \
+"""%prog [options] action - maintain patches on a patch queue branch
+tions:
+export         Export the patch queue / devel branch associated to the
+               current branch into a patch series in and update the spec file
+import         Create a patch queue / devel branch from spec file
+               and patches in current dir.
+rebase         Switch to patch queue / devel branch associated to the current
+               branch and rebase against upstream.
+drop           Drop (delete) the patch queue /devel branch associated to
+               the current branch.
+apply          Apply a patch
+switch         Switch to patch-queue branch and vice versa.
+convert        [experimental] Convert package from single-branch development
+               model (packaging and source code changes in the same branch)
+               into the orphan-packaging plus patch-queue / development branch
+               development model."""
+
+
 def is_ancestor(repo, parent, child):
     """Check if commit is ancestor of another"""
     parent_sha1 = repo.rev_parse("%s^0" % parent)
@@ -493,6 +512,69 @@ def apply_single_patch(repo, patchfile, options):
     apply_and_commit_patch(repo, patch, fallback_author=None)
 
 
+def convert_package(repo, options):
+    """Convert package to orphan-packaging model"""
+    old_packaging = repo.get_branch()
+    # Check if we're on pq branch, already
+    err_msg_base = "Seems you're already using orphan-packaging model - "
+    if is_pq_branch(old_packaging, options):
+        raise GbpError(err_msg_base + "you're on patch-queue branch")
+    # Check if a pq branch already exists
+    spec = parse_spec(options, repo, treeish=old_packaging)
+    pq_branch = pq_branch_name(old_packaging, options, spec.version)
+    if repo.has_branch(pq_branch):
+        pq_branch = pq_branch_name(old_packaging, options, spec.version)
+        raise GbpError(err_msg_base + "pq branch %s already exists" % pq_branch)
+    # Check that the current branch is based on upstream
+    upstream_commit = find_upstream_commit(repo, spec, options.upstream_tag)
+    if not is_ancestor(repo, upstream_commit, old_packaging):
+        raise GbpError(err_msg_base + "%s is not based on upstream version %s" %
+                       (old_packaging, spec.upstreamversion))
+    # Check new branch
+    new_branch = old_packaging + "-orphan"
+    if repo.has_branch(new_branch):
+        if not options.force:
+            raise GbpError("Branch '%s' already exists!" % new_branch)
+        else:
+            gbp.log.info("Dropping branch '%s'" % new_branch)
+            repo.delete_branch(new_branch)
+
+    # Dump and commit packaging files
+    gbp.log.info("Importing packaging files from branch '%s' to '%s'" %
+                 (old_packaging, new_branch))
+    packaging_tree = '%s:%s' % (old_packaging, options.packaging_dir)
+    packaging_tmp = tempfile.mkdtemp(prefix='pack_')
+    dump_tree(repo, packaging_tmp, packaging_tree, with_submodules=False,
+              recursive=False)
+
+    msg = "Auto-import packaging files from branch '%s'" % old_packaging
+    repo.commit_dir(packaging_tmp, msg, new_branch, create_missing_branch=True)
+    repo.set_branch(new_branch)
+
+    # Generate patches
+    spec = SpecFile(spec.specfile)
+    patches = update_patch_series(repo, spec, upstream_commit, old_packaging,
+                                  options)
+
+    # Commit paches and spec
+    if patches:
+        gbp.log.info("Committing patches and modified spec file to git")
+        repo.add_files('.', untracked=False)
+        repo.add_files(patches)
+        msg = "Auto-generated patches from branch '%s'" % old_packaging
+        repo.commit_staged(msg=msg)
+
+    # Copy extra files
+    import_extra_files(repo, old_packaging, options.import_files,
+                       patch_ignore=False)
+
+    gbp.log.info("Package successfully converted to orphan-packaging.")
+    gbp.log.info("You're now on the new '%s' packaging branch (the old "
+            "packaging branch '%s' was left intact)." %
+            (new_branch, old_packaging))
+    gbp.log.info("Please check all files and test building the package!")
+
+
 def build_parser(name):
     """Construct command line parser"""
     try:
@@ -615,6 +697,8 @@ def main(argv):
             apply_single_patch(repo, patchfile, options)
         elif action == "switch":
             switch_pq(repo, options)
+        elif action == "convert":
+            convert_package(repo, options)
     except CommandExecFailed:
         retval = 1
     except GitRepositoryError as err:

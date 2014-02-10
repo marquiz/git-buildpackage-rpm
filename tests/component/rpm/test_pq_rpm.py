@@ -256,6 +256,45 @@ class TestPqRpm(RpmRepoTestBase):
         self._check_repo_state(repo, 'development/master', branches,
                                upstr_files + ['mydir/myfile.txt'])
 
+    def test_convert(self):
+        """Basic test for convert action"""
+        repo = self.init_test_repo('gbp-test2')
+        branches = repo.get_local_branches() + ['master-orphan']
+        files = ['bar.tar.gz', 'foo.txt', 'gbp-test2.spec',
+                 'gbp-test2-alt.spec', 'my.patch', '0001-My-addition.patch']
+
+        # First should fail because 'master-orphan' branch already exists
+        eq_(mock_pq(['convert']), 1)
+        self._check_log(-1, "gbp:error: Branch 'master-orphan' already exists")
+
+        # Re-try with force
+        eq_(mock_pq(['convert', '--import-files=', '--force']), 0)
+        self._check_repo_state(repo, 'master-orphan', branches, files)
+
+    def test_convert_fail(self):
+        """Tests for convert action error cases"""
+        repo = self.init_test_repo('gbp-test')
+        branches = repo.get_local_branches()
+
+        # Already on orphan packaging branch
+        eq_(mock_pq(['convert']), 1)
+        self._check_repo_state(repo, 'master', branches)
+        self._check_log(-1, ".*is not based on upstream version")
+
+        # Create a pq branch and try from there
+        eq_(mock_pq(['import']), 0)
+        eq_(mock_pq(['convert']), 1)
+        self._check_repo_state(repo, 'development/master',
+                               branches + ['development/master'])
+        self._check_log(-1, ".*you're on patch-queue branch")
+
+        # Switch back to orphan packaging branch and try again
+        eq_(mock_pq(['switch']), 0)
+        eq_(mock_pq(['convert']), 1)
+        self._check_repo_state(repo, 'master',
+                               branches + ['development/master'])
+        self._check_log(-1, r".*pq branch \S+ already exists")
+
     def test_option_patch_numbers(self):
         """Test the --patch-numbers cmdline option"""
         repo = self.init_test_repo('gbp-test')

@@ -37,7 +37,8 @@
         <arg><option>import</option></arg>
         <arg><option>rebase</option></arg>
         <arg><option>switch</option></arg>
-	<arg><option>apply</option></arg>
+      <arg><option>apply</option></arg>
+      <arg><option>convert</option></arg>
       </group>
     </cmdsynopsis>
   </refsynopsisdiv>
@@ -123,6 +124,21 @@
           <para>
           Switch between the development branch and the associated packaging
           branch.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>convert</option>
+        </term>
+        <listitem>
+          <para>
+          Convert a package from the "joint-packaging" maintenance model and
+          git-layout to the "orphan-packaging" model.  It takes the content of
+          the packaging directory, auto-generates patches and puts these into a
+          new orphan packaging branch. You can use the
+          <option>--retain-history</option> to try to preserve as much of the
+          git history as possible. Converting is a one-time action - conversion
+          back to the "joint-packaging" model is not supported (yet).
           </para>
         </listitem>
       </varlistentry>
