@@ -520,7 +520,8 @@ def convert_package(repo, options):
                  (old_packaging, new_branch))
     packaging_tree = '%s:%s' % (old_packaging, options.packaging_dir)
     packaging_tmp = tempfile.mkdtemp(prefix='pack_', dir=options.tmp_dir)
-    dump_tree(repo, packaging_tmp, packaging_tree, with_submodules=False,
+    dump_packaging_dir = os.path.join(packaging_tmp, options.new_packaging_dir)
+    dump_tree(repo, dump_packaging_dir, packaging_tree, with_submodules=False,
               recursive=False)
 
     msg = "Auto-import packaging files from branch '%s'" % old_packaging
@@ -528,9 +529,10 @@ def convert_package(repo, options):
     repo.set_branch(new_branch)
 
     # Generate patches
-    spec = SpecFile(spec.specfile)
+    spec = SpecFile(os.path.join(options.new_packaging_dir, spec.specfile))
     patches = update_patch_series(repo, spec, upstream_commit, old_packaging,
                                   options)
+    patches = [os.path.join(options.new_packaging_dir, pat) for pat in patches]
 
     # Commit paches and spec
     gbp.log.info("Committing patches and spec file to git")
@@ -585,6 +587,10 @@ def main(argv):
     parser.add_config_file_option(option_name="spec-file", dest="spec_file")
     parser.add_config_file_option(option_name="packaging-dir",
             dest="packaging_dir")
+    parser.add_option("--new-packaging-dir",
+            help="Packaging directory in the new packaging branch. Only "
+                 "relevant for the 'convert' action. If not defined, defaults "
+                 "to '--packaging-dir'")
     parser.add_config_file_option(option_name="packaging-branch",
             dest="packaging_branch",
             help="Branch the packaging is being maintained on. Only relevant "
@@ -609,6 +615,8 @@ def main(argv):
     (options, args) = parser.parse_args(argv)
     gbp.log.setup(options.color, options.verbose, options.color_scheme)
     options.patch_export_compress = string_to_int(options.patch_export_compress)
+    if options.new_packaging_dir is None:
+        options.new_packaging_dir = options.packaging_dir
 
     if len(args) < 2:
         gbp.log.err("No action given.")
