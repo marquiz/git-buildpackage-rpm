@@ -31,6 +31,7 @@
       <arg><option>--patch-compress=</option><replaceable>THRESHOLD</replaceable></arg>
       <arg><option>--patch-ignore-path=</option><replaceable>REGEX</replaceable></arg>
       <arg><option>--patch-squash=</option><replaceable>COMMITISH</replaceable></arg>
+      <arg><option>--new-packaging-dir=</option><replaceable>DIRECTORY</replaceable></arg>
       <group choice="plain">
         <arg><option>drop</option></arg>
         <arg><option>export</option></arg>
@@ -270,6 +271,17 @@
         <listitem>
           <para>
           Whether the patch files should start with a number or not.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--new-packaging-dir=</option><replaceable>DIRECTORY</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Directory where packaging files are put in the new orphan packaging
+          branch after convert. If <option>--new-packaging-dir=</option> is not
+          defined, <replaceable>packaging-dir</replaceable> is used.
           </para>
         </listitem>
       </varlistentry>

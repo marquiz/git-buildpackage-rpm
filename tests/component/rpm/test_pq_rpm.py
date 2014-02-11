@@ -260,15 +260,16 @@ class TestPqRpm(RpmRepoTestBase):
         """Basic test for convert action"""
         repo = self.init_test_repo('gbp-test2')
         branches = repo.get_local_branches() + ['master-orphan']
-        files = ['bar.tar.gz', 'foo.txt', 'gbp-test2.spec',
-                 'gbp-test2-alt.spec', 'my.patch', '0001-My-addition.patch']
-
+        files = ['packaging/bar.tar.gz', 'packaging/foo.txt',
+                 'packaging/gbp-test2.spec', 'packaging/gbp-test2-alt.spec',
+                 'packaging/my.patch', 'packaging/0001-My-addition.patch',
+                 '.gbp.conf']
         # First should fail because 'master-orphan' branch already exists
         eq_(mock_pq(['convert']), 1)
         self._check_log(-1, "gbp:error: Branch 'master-orphan' already exists")
 
         # Re-try with force
-        eq_(mock_pq(['convert', '--import-files=', '--force']), 0)
+        eq_(mock_pq(['convert', '--force']), 0)
         self._check_repo_state(repo, 'master-orphan', branches, files)
 
     def test_convert_fail(self):
@@ -513,6 +514,20 @@ class TestPqRpm(RpmRepoTestBase):
         self._check_repo_state(repo, 'development/master', branches)
         ok_('debian/gbp.conf' not in repo.list_files())
         ok_('.gbp.conf' not in repo.list_files())
+
+    def test_option_new_packaging_dir(self):
+        """Test the --new-packaging-dir cmdline option"""
+        repo = self.init_test_repo('gbp-test2')
+        branches = repo.get_local_branches() + ['master-orphan']
+        files = ['rpm/bar.tar.gz', 'rpm/foo.txt', 'rpm/gbp-test2.spec',
+                 'rpm/gbp-test2-alt.spec', 'rpm/my.patch',
+                 'rpm/0001-My-addition.patch']
+        # Drop already-existing master-orphan branch
+        repo.delete_branch('master-orphan')
+        # Try convert
+        eq_(mock_pq(['convert', '--import-files=',
+                     '--new-packaging-dir=rpm']), 0)
+        self._check_repo_state(repo, 'master-orphan', branches, files)
 
     def test_import_unapplicable_patch(self):
         """Test import when a patch does not apply"""

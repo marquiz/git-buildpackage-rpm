@@ -544,7 +544,8 @@ def convert_package(repo, options):
                  (old_packaging, new_branch))
     packaging_tree = '%s:%s' % (old_packaging, options.packaging_dir)
     packaging_tmp = tempfile.mkdtemp(prefix='pack_')
-    dump_tree(repo, packaging_tmp, packaging_tree, with_submodules=False,
+    dump_packaging_dir = os.path.join(packaging_tmp, options.new_packaging_dir)
+    dump_tree(repo, dump_packaging_dir, packaging_tree, with_submodules=False,
               recursive=False)
 
     msg = "Auto-import packaging files from branch '%s'" % old_packaging
@@ -552,9 +553,10 @@ def convert_package(repo, options):
     repo.set_branch(new_branch)
 
     # Generate patches
-    spec = SpecFile(spec.specfile)
+    spec = SpecFile(os.path.join(options.new_packaging_dir, spec.specfile))
     patches = update_patch_series(repo, spec, upstream_commit, old_packaging,
                                   options)
+    patches = [os.path.join(options.new_packaging_dir, pat) for pat in patches]
 
     # Commit paches and spec
     if patches:
@@ -627,6 +629,10 @@ switch         Switch to patch-queue branch and vice versa.""")
                                   dest="patch_compress")
     parser.add_config_file_option("patch-squash", dest="patch_squash")
     parser.add_config_file_option("patch-ignore-path", dest="patch_ignore_path")
+    parser.add_option("--new-packaging-dir",
+            help="Packaging directory in the new packaging branch. Only "
+                 "relevant for the 'convert' action. If not defined, defaults "
+                 "to '--packaging-dir'")
 
     return parser
 
@@ -639,6 +645,8 @@ def parse_args(argv):
 
     options, args = parser.parse_args(argv)
     options.patch_compress = string_to_int(options.patch_compress)
+    if options.new_packaging_dir is None:
+        options.new_packaging_dir = options.packaging_dir
     return options, args
 
 
