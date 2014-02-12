@@ -29,7 +29,8 @@ import gbp.tristate
 no_upstream_branch_msg = """
 Repository does not have branch '%s' for upstream sources. If there is none see
 file:///usr/share/doc/git-buildpackage/manual-html/gbp.import.html#GBP.IMPORT.CONVERT
-on howto create it otherwise use --upstream-branch to specify it.
+on howto create it or check the --create-missing-branches option. Otherwise,
+use --upstream-branch to specify it.
 """
 
 def expand_path(option, opt, value):
