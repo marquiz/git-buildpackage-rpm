@@ -209,6 +209,9 @@ def build_parser(name):
     branch_group.add_option("--upstream-vcs-tag", dest="vcs_tag",
                             help="Upstream VCS tag add to the merge commit")
     branch_group.add_boolean_config_file_option(option_name="merge", dest="merge")
+    branch_group.add_boolean_config_file_option(
+                      option_name="create-missing-branches",
+                      dest="create_missing_branches")
 
     tag_group.add_boolean_config_file_option(option_name="sign-tags",
                       dest="sign_tags")
@@ -283,7 +286,11 @@ def main(argv):
         is_empty = False if initial_branch else True
 
         if not repo.has_branch(options.upstream_branch) and not is_empty:
-            raise GbpError(no_upstream_branch_msg % options.upstream_branch)
+            if options.create_missing_branches:
+                gbp.log.info("Will create missing branch '%s'" %
+                             options.upstream_branch)
+            else:
+                raise GbpError(no_upstream_branch_msg % options.upstream_branch)
 
         (sourcepackage, version) = detect_name_and_version(repo, source, options)
 
@@ -334,10 +341,10 @@ def main(argv):
                 parents = None
 
             commit = repo.commit_dir(source.unpacked,
-                                     msg=msg,
-                                     branch=import_branch,
-                                     other_parents=parents,
-                                     )
+                        msg=msg,
+                        branch=import_branch,
+                        other_parents=parents,
+                        create_missing_branch=options.create_missing_branches)
 
             if options.pristine_tar:
                 if pristine_orig:
