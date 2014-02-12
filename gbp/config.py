@@ -542,7 +542,7 @@ class GbpOptionParserRpm(GbpOptionParser):
                        'upstream-tag'           : 'upstream/%(upstreamversion)s',
                        'pq-branch'              : 'development/%(branch)s',
                        'spec-file'              : 'auto',
-                       'export-dir'             : 'rpmbuild',
+                       'export-dir'             : '../rpmbuild',
                        'ignore-untracked'       : 'False',
                        'rpmbuild-builddir'      : 'BUILD',
                        'rpmbuild-rpmdir'        : 'RPMS',
