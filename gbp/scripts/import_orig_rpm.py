@@ -159,6 +159,9 @@ def parse_args(argv):
                             help="Upstream VCS tag add to the merge commit")
     branch_group.add_boolean_config_file_option(option_name="merge", dest="merge")
     branch_group.add_config_file_option(option_name="packaging-dir", dest="packaging_dir")
+    branch_group.add_boolean_config_file_option(
+                      option_name="create-missing-branches",
+                      dest="create_missing_branches")
 
     tag_group.add_boolean_config_file_option(option_name="sign-tags",
                       dest="sign_tags")
@@ -216,9 +219,14 @@ def main(argv):
         initial_branch = repo.get_branch()
         is_empty = False if initial_branch else True
 
-        if not repo.has_branch(options.upstream_branch) and not is_empty:
-            gbp.log.err(no_upstream_branch_msg % options.upstream_branch)
-            raise GbpError
+        if not repo.has_branch(options.upstream_branch):
+            if options.create_missing_branches:
+                gbp.log.info("Will create missing branch '%s'" %
+                             options.upstream_branch)
+            elif is_empty:
+                options.create_missing_branches = True
+            else:
+                raise GbpError(no_upstream_branch_msg % options.upstream_branch)
 
         (sourcepackage, version) = detect_name_and_version(repo, source, options)
 
@@ -264,11 +272,10 @@ def main(argv):
                 parents = None
 
             commit = repo.commit_dir(unpacked_orig,
-                                     msg=msg,
-                                     branch=options.upstream_branch,
-                                     other_parents=parents,
-                                     create_missing_branch=True,
-                                     )
+                        msg=msg,
+                        branch=options.upstream_branch,
+                        other_parents=parents,
+                        create_missing_branch=options.create_missing_branches)
             if options.pristine_tar and pristine_orig:
                 gbp.log.info("Pristine-tar: commiting %s" % pristine_orig)
                 repo.pristine_tar.commit(pristine_orig, options.upstream_branch)
