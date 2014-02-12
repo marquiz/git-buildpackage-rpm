@@ -87,6 +87,15 @@ class ImportOrigTestBase(ComponentTestBase):
 class TestImportOrig(ImportOrigTestBase):
     """Basic tests for git-import-orig-rpm"""
 
+    @staticmethod
+    def _init_repo_with_dummy_packaging():
+        """Create a dummy packaging branch with one commit"""
+        repo = GitRepository.create('.')
+        shutil.copy2('.git/HEAD', 'foobar')
+        repo.add_files('.')
+        repo.commit_all('First commit')
+        return repo
+
     def test_invalid_args(self):
         """
         See that import-orig-rpm fails gracefully when called with invalid args
@@ -173,10 +182,7 @@ class TestImportOrig(ImportOrigTestBase):
     def test_import_to_existing(self):
         """Test importing of to an existing repo"""
         # Create new repo and add dummy files
-        repo = GitRepository.create('.')
-        shutil.copy2('.git/HEAD', 'foobar')
-        repo.add_files('.')
-        repo.commit_all('First commit')
+        repo = self._init_repo_with_dummy_packaging()
         sha1 = repo.rev_parse('HEAD^0')
 
         # Test missing upstream branch
@@ -285,6 +291,21 @@ class TestImportOrig(ImportOrigTestBase):
         # Import "new" version, this time package name should be taken from spec
         eq_(mock_import(['--no-interactive', orig_renamed], stdin_data=''), 1)
         self._check_log(-1, "gbp:error: Couldn't determine upstream version")
+
+    def test_option_create_missing(self):
+        """Test importing of to an existing repo"""
+        # Create new repo and add dummy files
+        repo = self._init_repo_with_dummy_packaging()
+
+        # Test missing upstream branch
+        orig = os.path.join(DATA_DIR, 'gbp-test2-2.0.tar.gz')
+        eq_(mock_import([orig]), 1)
+        self._check_log(1, 'Repository does not have branch')
+
+        # Try again, with --create-missing-branches
+        eq_(mock_import(['--create-missing-branches', orig]), 0)
+        self._check_repo_state(repo, 'master', ['master', 'upstream'])
+        eq_(len(repo.get_commits(until='upstream')), 1)
 
     def test_misc_options(self):
         """Test various options of git-import-orig-rpm"""
