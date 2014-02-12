@@ -536,6 +536,7 @@ class GbpOptionParserRpm(GbpOptionParser):
                        'vendor'                 : 'vendor',
                        'builder'                : 'rpmbuild',
                        'cleaner'                : '/bin/true',
+                       'merge'                  : 'False',
                        'packaging-dir'          : '',
                        'packaging-tag'          : '%(vendor)s/%(version)s',
                        'upstream-tag'           : 'upstream/%(upstreamversion)s',

@@ -62,7 +62,44 @@ def mock_import(args, stdin_data="\n\n", cwd=None):
     return ret
 
 
-class TestImportOrig(ComponentTestBase):
+class ImportOrigTestBase(ComponentTestBase):
+    """Base class for all import-orig-rpm unit tests"""
+
+    @classmethod
+    def setup_class(cls):
+        """Class setup, common for all test cases"""
+        super(ImportOrigTestBase, cls).setup_class()
+
+    def __init__(self, *args, **kwargs):
+        super(ImportOrigTestBase, self).__init__(*args, **kwargs)
+
+    def setup(self):
+        """Test case setup"""
+        super(ImportOrigTestBase, self).setup()
+
+    @staticmethod
+    def ls_tree(repo, treeish):
+        """List contents (blobs) in a git treeish"""
+        objs = repo.list_tree(treeish, True)
+        blobs = [obj[3] for obj in objs if obj[1] == 'blob']
+        return set(blobs)
+
+    @staticmethod
+    def check_files(reference, filelist):
+        """Compare two file lists"""
+        extra = set(filelist) - set(reference)
+        assert not extra, "Unexpected files: %s" % list(extra)
+        missing = set(reference) - set(filelist)
+        assert not missing, "Missing files: %s" % list(missing)
+
+    @classmethod
+    def check_tree(cls, repo, treeish, filelist):
+        """Check the contents (list of files) in a git treeish"""
+        treeish_files = ImportOrigTestBase.ls_tree(repo, treeish)
+        ImportOrigTestBase.check_files(treeish_files, filelist)
+
+
+class TestImportOrig(ImportOrigTestBase):
     """Basic tests for git-import-orig-rpm"""
 
     def test_invalid_args(self):
@@ -119,9 +156,9 @@ class TestImportOrig(ComponentTestBase):
     def test_import_tars(self):
         """Test importing of tarballs, with and without merging"""
         repo = GitRepository.create('.')
-        # Import first version
+        # Import first version, with --merge
         orig = os.path.join(DATA_DIR, 'gbp-test-1.0.tar.bz2')
-        eq_(mock_import([orig]), 0)
+        eq_(mock_import(['--merge', orig]), 0)
         files = ['Makefile', 'README', 'dummy.sh']
         self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
         eq_(len(repo.get_commits(until='master')), 1)
@@ -130,7 +167,7 @@ class TestImportOrig(ComponentTestBase):
 
         # Import second version, don't merge to master branch
         orig = os.path.join(DATA_DIR, 'gbp-test-1.1.tar.bz2')
-        eq_(mock_import(['--no-merge', orig]), 0)
+        eq_(mock_import([orig]), 0)
         self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
         eq_(len(repo.get_commits(until='master')), 1)
         eq_(len(repo.get_commits(until='upstream')), 2)
@@ -142,9 +179,9 @@ class TestImportOrig(ComponentTestBase):
     def test_import_zip(self):
         """Test importing of zip archive"""
         repo = GitRepository.create('.')
-        # Import zip with --no-merge, no master branch should be present
+        # Import zip with, no master branch should be present
         orig = os.path.join(DATA_DIR, 'gbp-test-native-1.0.zip')
-        eq_(mock_import(['--no-merge', orig]), 0)
+        eq_(mock_import([orig]), 0)
         self._check_repo_state(repo, None, ['upstream'], [])
         eq_(repo.get_tags(), ['upstream/1.0'])
 
@@ -181,7 +218,7 @@ class TestImportOrig(ComponentTestBase):
         repo.set_branch('mytopic')
 
         # Finally, import should succeed
-        eq_(mock_import([orig]), 0)
+        eq_(mock_import([orig, '--merge']), 0)
         files = ['Makefile', 'README', 'dummy.sh', 'foobar']
         self._check_repo_state(repo, 'master',
                                ['master', 'mytopic', 'upstream'], files)
@@ -197,9 +234,9 @@ class TestImportOrig(ComponentTestBase):
         repo = GitRepository.create('.')
         orig1 = os.path.join(DATA_DIR, 'gbp-test-1.0.tar.bz2')
         orig2 = os.path.join(DATA_DIR, 'gbp-test-1.1.tar.bz2')
-        eq_(mock_import([orig1]), 0)
+        eq_(mock_import(['--merge', orig1]), 0)
         repo.set_branch('upstream')
-        eq_(mock_import(['--no-merge', orig2]), 0)
+        eq_(mock_import([orig2]), 0)
         files = ['Makefile', 'README', 'dummy.sh']
         self._check_repo_state(repo, 'upstream', ['master', 'upstream'], files)
         eq_(len(repo.get_commits(until='upstream')), 2)
@@ -215,7 +252,8 @@ class TestImportOrig(ComponentTestBase):
         # Import dir first, fool the version to be 0.9
         eq_(mock_import(['../gbp-test'], 'gbp-test\n0.9\n'), 0)
         files = ['Makefile', 'README', 'dummy.sh']
-        self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
+        self.check_tree(repo, 'upstream', files)
+        self._check_repo_state(repo, None, ['upstream'], [])
 
         # Import from unpacked and check that the contents is the same
         eq_(mock_import([orig]), 0)
@@ -230,7 +268,7 @@ class TestImportOrig(ComponentTestBase):
         self._check_log(0, 'gbp:error: The orig tarball contains .git')
 
         # Try filtering out .git directory and shell scripts
-        eq_(mock_import(['--filter=.git', '--filter=*.sh', orig],
+        eq_(mock_import(['--filter=.git', '--filter=*.sh', '--merge', orig],
                                  'gbp-test\n1.0\n'), 0)
         self._check_repo_state(repo, 'master', ['master', 'upstream'])
         eq_(len(repo.get_commits(until='master')), 1)
@@ -252,7 +290,8 @@ class TestImportOrig(ComponentTestBase):
         self._check_log(-1, "gbp:error: Couldn't determine upstream package")
 
         # Guessing from the original archive should succeed
-        eq_(mock_import(['--no-interactive', orig], stdin_data=''), 0)
+        eq_(mock_import(['--no-interactive', '--merge', orig],
+                        stdin_data=''), 0)
         files = ['.gbp.conf', 'Makefile', 'README', 'dummy.sh', 'packaging/',
                  'packaging/gbp-test-native.spec']
         self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
@@ -267,12 +306,12 @@ class TestImportOrig(ComponentTestBase):
         repo = GitRepository.create('.')
         # Import one orig with default options to get 'upstream' branch
         orig = os.path.join(DATA_DIR, 'gbp-test-1.0.tar.bz2')
-        eq_(mock_import(['-u0.8', '--no-merge', orig]), 0)
+        eq_(mock_import(['-u0.8', orig]), 0)
 
         # Import the "native" zip to get packaging files
         orig = os.path.join(DATA_DIR, 'gbp-test-native-1.0.zip')
         base_args = ['--packaging-branch=pack', '--upstream-branch=orig',
-                     '--upstream-tag=orig/%(upstreamversion)s']
+                     '--upstream-tag=orig/%(upstreamversion)s', '--merge']
         # Fake version to be 0.9
         extra_args = ['-u0.9', '--upstream-vcs-tag=upstream/0.8', orig]
         eq_(mock_import(base_args + extra_args), 0)
@@ -304,8 +343,9 @@ class TestImportOrig(ComponentTestBase):
         repo = GitRepository.create('.')
         orig = os.path.join(DATA_DIR, 'gbp-test-1.0.tar.bz2')
 
-        eq_(mock_import(['--postimport=echo -n branch: $GBP_BRANCH, version: '
-                            '%(upstreamversion)s > hook.txt', orig]), 0)
+        script = ("echo -n branch: $GBP_BRANCH, version: %(upstreamversion)s"
+                  " > hook.txt")
+        eq_(mock_import(['--postimport', script, '--merge', orig]), 0)
         self._check_repo_state(repo, 'master', ['master', 'upstream'])
         eq_(repo.get_tags(), ['upstream/1.0'])
         with open('hook.txt', 'r') as hookout:
@@ -316,14 +356,14 @@ class TestImportOrig(ComponentTestBase):
         """Test postimport hook failure"""
         repo = GitRepository.create('.')
         orig = os.path.join(DATA_DIR, 'gbp-test-1.0.tar.bz2')
-        eq_(mock_import(['--postimport=_notexist.sh', orig]), 1)
+        eq_(mock_import(['--postimport=_notexist.sh', '--merge', orig]), 1)
         self._check_log(-2, "gbp:error: Couldn't run '_notexist.sh':")
         self._check_log(-1, 'gbp:error: Import of %s failed' % orig)
         # Other parts of the import should've succeeded
         self._check_repo_state(repo, 'master', ['master', 'upstream'])
 
 
-class TestPristineTar(ComponentTestBase):
+class TestPristineTar(ImportOrigTestBase):
     """
     Test importing with pristine-tar
 
@@ -358,17 +398,14 @@ class TestPristineTar(ComponentTestBase):
         """Check the state of repo"""
         if branches is None:
             # Default branches
-            branches =  ['master', 'upstream', 'pristine-tar']
+            branches =  ['upstream', 'pristine-tar']
         return self._check_repo_state(self.repo, current_branch, branches,
                                       files)
 
-    @staticmethod
-    def check_files(reference, filelist):
-        """Compare two file lists"""
-        extra = filelist - reference
-        assert not extra, "Unexpected files: %s" % list(extra)
-        missing = reference - filelist
-        assert not missing, "Missing files: %s" % list(missing)
+    def check_tree(self, treeish, filelist):
+        """Check treeish content"""
+        return super(TestPristineTar, self).check_tree(self.repo, treeish,
+                                                       filelist)
 
     @staticmethod
     def unpack_tar(archive):
@@ -404,9 +441,10 @@ class TestPristineTar(ComponentTestBase):
     def test_basic_import_pristine_tar(self):
         """Test importing with pristine-tar"""
         orig = os.path.join(DATA_DIR, 'gbp-test-1.0.tar.bz2')
-        eq_(self.mock_import(['--pristine-tar', orig]), 0)
+        eq_(self.mock_import(['--pristine-tar', '--merge', orig]), 0)
         files = ['Makefile', 'README', 'dummy.sh']
-        self.check_repo('master', None, files)
+        branches = ['master', 'upstream', 'pristine-tar']
+        self.check_repo('master', branches, files)
         subject = self.repo.get_commit_info('pristine-tar')['subject']
         eq_(subject, 'pristine-tar data for %s' % os.path.basename(orig))
         self.check_files(ls_tar(orig),
@@ -417,28 +455,27 @@ class TestPristineTar(ComponentTestBase):
         orig = os.path.join(DATA_DIR, 'gbp-test-1.0.tar.bz2')
         args = ['--pristine-tar', '--pristine-tarball-name=my.tgz', orig]
         eq_(self.mock_import(args), 0)
-        files = ['Makefile', 'README', 'dummy.sh']
-        self.check_repo('master', None, files)
+        self.check_repo(None, None, [])
         self.check_files(ls_tar(orig), self.ls_pristine_tar('my.tgz'))
 
     def test_branch_update(self):
         """Check that the working copy is kept in sync with branch HEAD"""
         orig1 = os.path.join(DATA_DIR, 'gbp-test-1.0.tar.bz2')
         orig2 = os.path.join(DATA_DIR, 'gbp-test-1.1.tar.bz2')
-        base_args = ['--pristine-tar', '--no-merge']
-        eq_(self.mock_import(base_args + [orig1]), 0)
+        eq_(self.mock_import(['--pristine-tar', orig1]), 0)
         self.repo.set_branch('pristine-tar')
-        eq_(self.mock_import(base_args + [orig2]), 0)
-        self.check_repo('pristine-tar', ['upstream', 'pristine-tar'])
+        eq_(self.mock_import(['--pristine-tar', orig2]), 0)
+        self.check_repo('pristine-tar', None)
         eq_(len(self.repo.get_commits(until='pristine-tar')), 2)
 
     def test_zip(self):
         """Importing zip file"""
         orig = os.path.join(DATA_DIR, 'gbp-test-native-1.0.zip')
         eq_(self.mock_import(['--pristine-tar', orig]), 0)
-        files = ['.gbp.conf', 'Makefile', 'README', 'dummy.sh', 'packaging/',
+        files = ['.gbp.conf', 'Makefile', 'README', 'dummy.sh',
                  'packaging/gbp-test-native.spec']
-        self.check_repo('master', None, files)
+        self.check_repo(None, None, [])
+        self.check_tree('upstream', files)
         self.check_files(ls_zip(orig),
                          self.ls_pristine_tar('gbp-test-native-1.0.tar.gz'))
 
@@ -447,8 +484,8 @@ class TestPristineTar(ComponentTestBase):
         """Test --no-pristine-tar-filter"""
         orig = os.path.join(DATA_DIR, 'gbp-test-1.0.tar.bz2')
         eq_(self.mock_import(['--pristine-tar', '--filter=README', orig]), 0)
-        files = ['Makefile', 'dummy.sh']
-        self.check_repo('master', None, files)
+        self.check_repo(None, None, [])
+        self.check_tree('upstream', ['Makefile', 'dummy.sh'])
         self.check_files(ls_tar(orig),
                          self.ls_pristine_tar('gbp-test-1.0.tar.bz2'))
 
@@ -456,8 +493,8 @@ class TestPristineTar(ComponentTestBase):
         """Test prefix mangling without any filtering"""
         orig = os.path.join(DATA_DIR, 'gbp-test-1.0.tar.bz2')
         eq_(self.mock_import(['--pristine-tar', '--orig-prefix=new', orig]), 0)
-        files = ['Makefile', 'dummy.sh', 'README']
-        self.check_repo('master', None, files)
+        self.check_repo(None, None, None)
+        self.check_tree('upstream', ['Makefile', 'dummy.sh', 'README'])
         prist_ref = set([fname.replace('gbp-test', 'new') for
                             fname in ls_tar(orig)])
         self.check_files(prist_ref,
@@ -468,8 +505,8 @@ class TestPristineTar(ComponentTestBase):
         orig = os.path.join(DATA_DIR, 'gbp-test-1.0.tar.bz2')
         args = ['--pristine-tar', '--filter=README', '--orig-prefix=new', orig]
         eq_(self.mock_import(args), 0)
-        files = ['Makefile', 'dummy.sh']
-        self.check_repo('master', None, files)
+        self.check_repo(None, None, None)
+        self.check_tree('upstream', ['Makefile', 'dummy.sh'])
         prist_ref = set([fname.replace('gbp-test', 'new') for
                             fname in ls_tar(orig)])
         self.check_files(prist_ref,
@@ -482,8 +519,8 @@ class TestPristineTar(ComponentTestBase):
                 '--pristine-tarball-name=new.tbz2', '--filter-pristine-tar',
                 orig]
         eq_(self.mock_import(args), 0)
-        files = ['Makefile', 'dummy.sh']
-        self.check_repo('master', None, files)
+        self.check_repo(None, None, [])
+        self.check_tree('upstream', ['Makefile', 'dummy.sh'])
         prist_ref = set(['new', 'new/Makefile', 'new/dummy.sh'])
         self.check_files(prist_ref, self.ls_pristine_tar('new.tbz2'))
 
@@ -493,7 +530,8 @@ class TestPristineTar(ComponentTestBase):
         args = ['--pristine-tar', '--filter=README', orig]
         eq_(self.mock_import(args, 'gbp-test\n1.0\n'), 0)
         files = ['Makefile', 'dummy.sh']
-        self.check_repo('master', None, files)
+        self.check_repo(None, None, [])
+        self.check_tree('upstream', ['Makefile', 'dummy.sh'])
         prist_ref = set(['gbp-test-1.0/%s' % fname for fname in ls_dir(orig)] +
                         ['gbp-test-1.0'])
         self.check_files(prist_ref, self.ls_pristine_tar('gbp-test.tar.gz'))
@@ -505,11 +543,12 @@ class TestPristineTar(ComponentTestBase):
                 '--orig-prefix=', '--pristine-tarball-name=my.tgz', orig]
         eq_(self.mock_import(args, 'gbp-test\n1.0\n'), 0)
         files = ['Makefile', 'dummy.sh']
-        self.check_repo('master', None, files)
+        self.check_repo(None, None, [])
+        self.check_tree('upstream', files)
         self.check_files(set(files), self.ls_pristine_tar('my.tgz'))
 
 
-class TestBareRepo(ComponentTestBase):
+class TestBareRepo(ImportOrigTestBase):
     """Test importing to a bare repository"""
 
     def test_basic_import_to_bare_repo(self):
