@@ -23,6 +23,7 @@ import os
 import sys
 import gbp.tmpfile as tempfile
 import gbp.command_wrappers as gbpc
+import re
 import string
 from gbp.pkg import parse_archive_filename
 from gbp.rpm import (RpmUpstreamSource, SpecFile, NoSpecError, guess_spec,
@@ -35,6 +36,7 @@ import gbp.log
 from gbp.scripts.common.import_orig import (cleanup_tmp_tree, ask_package_name,
                                             ask_package_version,
                                             prepare_sources)
+from gbp.scripts.import_srpm import download_file
 
 
 def upstream_import_commit_msg(options, version):
@@ -99,7 +101,10 @@ def find_source(options, args):
     elif len(args) == 0:
         raise GbpError, "No archive to import specified. Try --help."
     else:
-        return RpmUpstreamSource(args[0])
+        path = args[0]
+    if re.match(r'[a-z]{1,5}://', path):
+        path = download_file('..', path)
+    return RpmUpstreamSource(path)
 
 
 def pristine_tarball_name(source, pkg_name, pkg_version, pristine_name):
