@@ -93,7 +93,6 @@ def find_source(options, args):
     @return: upstream source filename or None if nothing to import
     @rtype: string
     @raise GbpError: raised on all detected errors
-    @todo: implement 'uscan' functionality (i.e. possibility to scan get from upstream source)
     """
     if len(args) > 1: # source specified
         raise GbpError, "More than one archive specified. Try --help."
@@ -132,8 +131,9 @@ def set_bare_repo_options(options):
 
 def parse_args(argv):
     try:
-        parser = GbpOptionParserRpm(command=os.path.basename(argv[0]), prefix='',
-                                    usage='%prog [options] /path/to/upstream-version.tar.gz | --uscan')
+        parser = GbpOptionParserRpm(command=os.path.basename(argv[0]),
+                    prefix='',
+                    usage='%prog [options] /path/to/upstream-version.tar.gz')
     except ConfigParser.ParsingError, err:
         gbp.log.err(err)
         return None, None
