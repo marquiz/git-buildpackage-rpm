@@ -64,6 +64,20 @@ class PatchImportError(Exception):
     pass
 
 
+def download_file(target_dir, url):
+    """Download a remote file"""
+    gbp.log.info("Downloading '%s'..." % url)
+    try:
+        urlobj = urllib2.urlopen(url)
+        local_fn = os.path.join(target_dir, os.path.basename(url))
+        with open(local_fn, "wb") as local_file:
+            local_file.write(urlobj.read())
+    except urllib2.HTTPError as err:
+        raise GbpError("Download failed: %s" % err)
+    except urllib2.URLError as err:
+        raise GbpError("Download failed: %s" % err.reason)
+    return local_fn
+
 def download_source(pkg, dirs):
     """Download package from a remote location"""
     if re.match(r'[a-z]{1,5}://', pkg):
@@ -72,7 +86,7 @@ def download_source(pkg, dirs):
         mode = 'yumdownloader'
 
     tmpdir = tempfile.mkdtemp(dir=dirs['tmp_base'], prefix='download_')
-    gbp.log.info("Downloading '%s' using '%s'..." % (pkg, mode))
+    gbp.log.info("Trying to download '%s' using '%s'..." % (pkg, mode))
     if mode == 'yumdownloader':
         gbpc.RunAtCommand('yumdownloader',
                           ['--source', '--destdir=', '.', pkg],
