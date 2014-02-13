@@ -103,6 +103,7 @@ class TestSpecFile(object):
 
         orig = spec.orig_src
         assert orig['filename'] == 'gbp-test-1.0.tar.bz2'
+        assert orig['uri'] == 'gbp-test-1.0.tar.bz2'
         assert orig['filename_base'] == 'gbp-test-1.0'
         assert orig['archive_fmt'] == 'tar'
         assert orig['compression'] == 'bzip2'
@@ -124,6 +125,7 @@ class TestSpecFile(object):
 
         orig = spec.orig_src
         assert orig['filename'] == 'gbp-test2-3.0.tar.gz'
+        assert orig['uri'] == 'ftp://ftp.host.com/gbp-test2-3.0.tar.gz'
         assert orig['archive_fmt'] == 'tar'
         assert orig['compression'] == 'gzip'
         assert orig['prefix'] == ''

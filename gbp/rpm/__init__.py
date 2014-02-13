@@ -245,7 +245,7 @@ class SpecFile(object):
         """Get all source tags as a dict"""
         sources = {}
         for src in self._sources().values():
-            sources[src['num']] = os.path.basename(src['linevalue'])
+            sources[src['num']] = src['linevalue']
         return sources
 
     def _macro_replace(self, matchobj):
@@ -429,7 +429,7 @@ class SpecFile(object):
             # workaround rpm parsing bug
             if typ == 1 or typ == 9:
                 if num in sources:
-                    sources[num]['linevalue'] = os.path.basename(name)
+                    sources[num]['linevalue'] = name
                 else:
                     gbp.log.err("BUG: failed to parse all 'Source' tags!")
             elif typ == 2 or typ == 10:
@@ -783,7 +783,8 @@ class SpecFile(object):
         orig = None
         sources = self.sources()
         for num, filename in sorted(sources.iteritems()):
-            src = {'num': num, 'filename': os.path.basename(filename)}
+            src = {'num': num, 'filename': os.path.basename(filename),
+                   'uri': filename}
             src['filename_base'], src['archive_fmt'], src['compression'] = \
                 parse_archive_filename(os.path.basename(filename))
             if (src['filename_base'].startswith(self.name) and

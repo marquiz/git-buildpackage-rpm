@@ -332,7 +332,7 @@ def main(argv):
             files = [os.path.basename(patch.path) \
                     for patch in spec.patchseries(unapplied=True, ignored=True)]
             for filename in spec.sources().values():
-                files.append(filename)
+                files.append(os.path.basename(filename))
             files.append(os.path.join(spec.specdir, spec.specfile))
         # Don't copy orig source archive, though
         if spec.orig_src and spec.orig_src['filename'] in files:
