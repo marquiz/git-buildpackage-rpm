@@ -42,36 +42,41 @@ from gbp.tmpfile import init_tmpdir, del_tmpdir, tempfile
 def upstream_import_commit_msg(options, version):
     return options.import_msg % dict(version=version)
 
+def find_spec(repo, options):
+    """Find spec in the working tree or repository"""
+    try:
+        preferred_fn = os.path.basename(repo.path) + '.spec'
+        spec = guess_spec(os.path.join(repo.path, options.packaging_dir), True,
+                          preferred_fn)
+    except NoSpecError:
+        try:
+            # Check the spec file from the repository, in case we're not on the
+            # packaging-branch (but upstream, for example).
+            spec = guess_spec_repo(repo, options.packaging_branch,
+                                   options.packaging_dir, True, preferred_fn)
+        except NoSpecError:
+            spec = None
+    return spec
 
-def detect_name_and_version(repo, source, options):
+def detect_name_and_version(repo, source, spec, options):
+    """Determine name and version of the upstream project"""
     # Guess defaults for the package name and version from the
     # original tarball.
     (guessed_package, guessed_version) = source.guess_version() or ('', '')
 
     # Try to find the source package name
-    try:
-        preferred_fn = os.path.basename(repo.path) + '.spec'
-        spec = guess_spec(os.path.join(repo.path, options.packaging_dir), True,
-                          preferred_fn)
+    if spec:
         sourcepackage = spec.name
-    except NoSpecError:
-        try:
-            # Check the spec file from the repository, in case
-            # we're not on the packaging-branch (but upstream, for
-            # example).
-            spec = guess_spec_repo(repo, options.packaging_branch,
-                                   options.packaging_dir, True, preferred_fn)
-            sourcepackage = spec.name
-        except NoSpecError:
-            if options.interactive:
-                sourcepackage = ask_package_name(guessed_package,
-                                                 RpmPkgPolicy.is_valid_packagename,
-                                                 RpmPkgPolicy.packagename_msg)
+    else:
+        if options.interactive:
+            sourcepackage = ask_package_name(guessed_package,
+                                             RpmPkgPolicy.is_valid_packagename,
+                                             RpmPkgPolicy.packagename_msg)
+        else:
+            if guessed_package:
+                sourcepackage = guessed_package
             else:
-                if guessed_package:
-                    sourcepackage = guessed_package
-                else:
-                    raise GbpError, "Couldn't determine upstream package name. Use --interactive."
+                raise GbpError, "Couldn't determine upstream package name. Use --interactive."
 
     # Try to find the version.
     if options.version:
@@ -90,16 +95,24 @@ def detect_name_and_version(repo, source, options):
     return (sourcepackage, version)
 
 
-def find_source(options, args):
+def find_source(spec, options, args):
     """Find the tarball to import
     @return: upstream source filename or None if nothing to import
     @rtype: string
     @raise GbpError: raised on all detected errors
     """
     if len(args) > 1: # source specified
-        raise GbpError, "More than one archive specified. Try --help."
+        raise GbpError("More than one archive specified. Try --help.")
     elif len(args) == 0:
-        raise GbpError, "No archive to import specified. Try --help."
+        if spec and spec.orig_src:
+            path = spec.orig_src['uri']
+            gbp.log.info("Archive file path from spec is used ('%s')" % path)
+        elif spec:
+            raise GbpError("No archive to import specified and unable to "
+                           "determine source from spec. Try --help.")
+        else:
+            raise GbpError("No archive to import specified and no spec file "
+                           "found. Try --help.")
     else:
         path = args[0]
     if re.match(r'[a-z]{1,5}://', path):
@@ -214,11 +227,13 @@ def main(argv):
         init_tmpdir(options.tmp_dir, prefix='import-orig-rpm_')
         tmpdir = tempfile.mkdtemp()
 
-        source = find_source(options, args)
         try:
             repo = RpmGitRepository('.')
         except GitRepositoryError:
             raise GbpError, "%s is not a git repository" % (os.path.abspath('.'))
+
+        spec = find_spec(repo, options)
+        source = find_source(spec, options, args)
 
         # an empty repo has now branches:
         initial_branch = repo.get_branch()
@@ -233,7 +248,8 @@ def main(argv):
             else:
                 raise GbpError(no_upstream_branch_msg % options.upstream_branch)
 
-        (sourcepackage, version) = detect_name_and_version(repo, source, options)
+        sourcepackage, version = detect_name_and_version(repo, source, spec,
+                                                         options)
 
         (clean, out) = repo.is_clean()
         if not clean and not is_empty:
