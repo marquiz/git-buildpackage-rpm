@@ -70,7 +70,7 @@ def test_parser_fallback():
     >>> tmpdir = str(context.new_tmpdir('foo'))
     >>> confname = os.path.join(tmpdir, 'gbp.conf')
     >>> f = open(confname, 'w')
-    >>> f.write('[foo]\\nthere = is\\n[git-foo]\\nno = truth\\n')
+    >>> f.write('[DEFAULT]\\nthere = was\\n[foo]\\nthere = is\\n[git-foo]\\nno = truth\\n')
     >>> f.close()
     >>> os.environ['GBP_CONF_FILES'] = confname
     >>> parser = GbpOptionParser('foo')
