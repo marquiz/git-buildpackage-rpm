@@ -293,7 +293,7 @@ class TestSpecFile(object):
         # Check all the tags
         for name, val in spec.protected('_tags').iteritems():
             rval = None
-            if name in ('version', 'release', 'epoch', 'nosource', 'nopatch'):
+            if name in ('version', 'release', 'epoch'):
                 rval = '0'
             elif name in ('autoreq', 'autoprov', 'autoreqprov'):
                 rval = 'No'

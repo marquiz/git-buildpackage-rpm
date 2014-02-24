@@ -153,7 +153,8 @@ class SpecFile(object):
                                   'provides', 'obsoletes', 'buildrequires',
                                   'buildconflicts', 'buildrecommends',
                                   'buildsuggests', 'buildsupplements',
-                                  'buildenhances', 'collections')
+                                  'buildenhances', 'collections',
+                                  'nosource', 'nopatch')
         self._specinfo = self._parse_filtered_spec(self._filtertags)
 
         # Other initializations
@@ -312,8 +313,8 @@ class SpecFile(object):
             tagvalue = None
         elif not tagvalue:
             # Rpm python doesn't give the following, for reason or another
-            if tagname not in ('buildroot', 'nopatch', 'nosource', 'autoprov',
-                               'autoreq', 'autoreqprov') + self._filtertags:
+            if tagname not in ('buildroot', 'autoprov', 'autoreq',
+                               'autoreqprov') + self._filtertags:
                 gbp.log.warn("BUG: '%s:' tag not found by rpm" % tagname)
             tagvalue = matchobj.group('value')
         linerecord = {'line': lineobj,
