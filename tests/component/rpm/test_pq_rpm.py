@@ -36,11 +36,11 @@ DATA_DIR = RPM_TEST_DATA_DIR
 
 def mock_pq(args):
     """Wrapper for pq"""
-    # Call import-orig-rpm with added arg0
+    # Call pq-rpm with added arg0
     return pq(['arg0'] + args)
 
 class TestPqRpm(ComponentTestBase):
-    """Basic tests for git-import-orig-rpm"""
+    """Basic tests for gbp-pq-rpm"""
 
     @classmethod
     def setup_class(cls):
