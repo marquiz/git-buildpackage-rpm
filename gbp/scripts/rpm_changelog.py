@@ -139,11 +139,11 @@ def parse_spec_file(repo, options):
     """Find and parse spec file"""
     if options.spec_file != 'auto':
         spec_path = os.path.join(repo.path, options.spec_file)
-        options.packaging_dir = os.path.dirname(spec_path)
         spec = SpecFile(spec_path)
     else:
         spec = guess_spec(os.path.join(repo.path, options.packaging_dir),
                           True, os.path.basename(repo.path) + '.spec')
+    options.packaging_dir = spec.specdir
     return spec
 
 
