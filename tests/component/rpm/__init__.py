@@ -51,7 +51,8 @@ class RepoManifest(object):
         for prj_e in self._doc.getElementsByTagName('project'):
             branches = {}
             for br_e in prj_e.getElementsByTagName('branch'):
-                branches[br_e.getAttribute('name')] = br_e.getAttribute('revision')
+                rev = br_e.getAttribute('revision')
+                branches[br_e.getAttribute('name')] = rev
             yield prj_e.getAttribute('name'), branches
 
 
