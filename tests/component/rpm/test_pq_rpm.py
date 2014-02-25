@@ -17,21 +17,17 @@
 """Tests for the gbp pq-rpm tool"""
 
 import os
-import shutil
 import tempfile
-from nose.tools import assert_raises, nottest, eq_, ok_ # pylint: disable=E0611
+from nose.tools import assert_raises, eq_, ok_ # pylint: disable=E0611
 
 from gbp.scripts.pq_rpm import main as pq
-from gbp.git import GitRepository, GitRepositoryError
+from gbp.git import GitRepository
 from gbp.command_wrappers import GitCommand
 
-from tests.component import ComponentTestBase
-from tests.component.rpm import RPM_TEST_DATA_DIR, RepoManifest
+from tests.component.rpm import RpmRepoTestBase
 
 # Disable "Method could be a function warning"
 # pylint: disable=R0201
-
-DATA_DIR = RPM_TEST_DATA_DIR
 
 
 def mock_pq(args):
@@ -39,49 +35,8 @@ def mock_pq(args):
     # Call pq-rpm with added arg0
     return pq(['arg0'] + args)
 
-class TestPqRpm(ComponentTestBase):
+class TestPqRpm(RpmRepoTestBase):
     """Basic tests for gbp-pq-rpm"""
-
-    @classmethod
-    def setup_class(cls):
-        """Initializations only made once per test run"""
-        super(TestPqRpm, cls).setup_class()
-        cls.manifest = RepoManifest(os.path.join(DATA_DIR,
-                                                 'test-repo-manifest.xml'))
-        cls.orig_repos = {}
-        for prj, brs in cls.manifest.projects_iter():
-            repo = GitRepository.create(os.path.join(cls._tmproot,
-                                        '%s.repo' % prj))
-            try:
-                repo.add_remote_repo('origin', DATA_DIR, fetch=True)
-            except GitRepositoryError:
-                # Workaround for older git working on submodules initialized
-                # with newer git
-                gitfile = os.path.join(DATA_DIR, '.git')
-                if os.path.isfile(gitfile):
-                    with open(gitfile) as fobj:
-                        link = fobj.readline().replace('gitdir:', '').strip()
-                    link_dir = os.path.join(DATA_DIR, link)
-                    repo.remove_remote_repo('origin')
-                    repo.add_remote_repo('origin', link_dir, fetch=True)
-                else:
-                    raise
-            # Fetch all remote refs of the orig repo, too
-            repo.fetch('origin', tags=True,
-                       refspec='refs/remotes/*:refs/upstream/*')
-            for branch, rev in brs.iteritems():
-                repo.create_branch(branch, rev)
-            repo.force_head('master', hard=True)
-            cls.orig_repos[prj] = repo
-
-    @classmethod
-    @nottest
-    def init_test_repo(cls, pkg_name):
-        """Initialize git repository for testing"""
-        dirname = os.path.basename(cls.orig_repos[pkg_name].path)
-        shutil.copytree(cls.orig_repos[pkg_name].path, dirname)
-        os.chdir(dirname)
-        return GitRepository('.')
 
     def test_invalid_args(self):
         """See that pq-rpm fails gracefully when called with invalid args"""
