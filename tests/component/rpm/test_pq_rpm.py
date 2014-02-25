@@ -335,7 +335,7 @@ class TestPqRpm(ComponentTestBase):
         eq_(mock_pq(['convert']), 1)
         self._check_repo_state(repo, 'master',
                                branches + ['development/master'])
-        self._check_log(-1, ".*pq branch \S+ already exists")
+        self._check_log(-1, r".*pq branch \S+ already exists")
 
     def test_option_patch_numbers(self):
         """Test the --patch-numbers cmdline option"""
