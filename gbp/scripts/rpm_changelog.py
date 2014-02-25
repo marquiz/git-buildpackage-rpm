@@ -319,7 +319,7 @@ def parse_args(argv):
         parser = GbpOptionParserRpm(command=os.path.basename(argv[0]),
                                     prefix='', usage='%prog [options] paths')
     except ConfigParser.ParsingError as err:
-        gbp.log.error(err)
+        gbp.log.error('invalid config file: %s' % err)
         return None, None
 
     range_grp = GbpOptionGroup(parser, "commit range options",
