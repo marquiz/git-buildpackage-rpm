@@ -148,13 +148,13 @@ class ChangelogParser(object):
         """Parse changelog - only splits out raw changelog sections."""
         changelog = Changelog(self._pkgpolicy)
         ch_section = ""
-        for line in string:
+        for line in string.splitlines():
             if re.match(self.section_match_re, line, re.M | re.S):
                 if ch_section:
                     changelog.sections.append(ch_section)
-                ch_section = line
+                ch_section = line + '\n'
             elif ch_section:
-                ch_section += line
+                ch_section += line + '\n'
             else:
                 raise ChangelogError("First line in changelog is invalid")
         if ch_section:
