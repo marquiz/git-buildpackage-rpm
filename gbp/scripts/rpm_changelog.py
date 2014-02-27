@@ -309,8 +309,8 @@ def update_changelog(changelog, commits, repo, spec, options):
 def commit_changelog(repo, changelog, author, committer):
     """Commit changelog and create a packaging/release tag"""
     repo.add_files(changelog.path)
-    repo.commit_files(changelog.path, "Update changelog", author_info=author,
-                      committer_info=committer, edit=True)
+    repo.commit_staged("Update changelog", author_info=author,
+                        committer_info=committer, edit=True)
 
 
 def parse_args(argv):
