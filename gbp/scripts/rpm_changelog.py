@@ -102,10 +102,19 @@ def load_customizations(customization_file):
         ChangelogEntryFormatter = customizations.get('ChangelogEntryFormatter')
 
 
-def determine_editor(editor_cmd):
+def determine_editor(options):
     """Determine text editor"""
-    if editor_cmd:
-        return editor_cmd
+
+    # Check if we need to spawn an editor
+    states = ['always']
+    if options.release:
+        states.append('release')
+    if options.spawn_editor not in states:
+        return None
+
+    # Determine the correct editor
+    if options.editor_cmd:
+        return options.editor_cmd
     elif 'EDITOR' in os.environ:
         return os.environ['EDITOR']
     else:
@@ -306,11 +315,11 @@ def update_changelog(changelog, commits, repo, spec, options):
             top_section.add_entry(author=info['author'], text=entry_text)
     return (tag, commit_info['author'], commit_info['committer'])
 
-def commit_changelog(repo, changelog, author, committer):
+def commit_changelog(repo, changelog, author, committer, edit):
     """Commit changelog and create a packaging/release tag"""
     repo.add_files(changelog.path)
     repo.commit_staged("Update changelog", author_info=author,
-                        committer_info=committer, edit=True)
+                        committer_info=committer, edit=edit)
 
 
 def parse_args(argv):
@@ -383,6 +392,8 @@ def parse_args(argv):
                          "default is '%(ignore-regex)s'")
     format_grp.add_config_file_option(option_name="changelog-revision",
                     dest="changelog_revision")
+    format_grp.add_config_file_option(option_name="spawn-editor",
+                    dest="spawn_editor")
     format_grp.add_config_file_option(option_name="editor-cmd",
                     dest="editor_cmd")
     # Commit/tag group options
@@ -411,7 +422,7 @@ def main(argv):
 
     try:
         load_customizations(options.customization_file)
-        editor_cmd = determine_editor(options.editor_cmd)
+        editor_cmd = determine_editor(options)
 
         repo = RpmGitRepository('.')
         check_repo_state(repo, options)
@@ -445,7 +456,9 @@ def main(argv):
         if options.tag:
             if options.retag and repo.has_tag(tag):
                 repo.delete_tag(tag)
-            commit = commit_changelog(repo, changelog_file, author, committer)
+            edit = True if editor_cmd else False
+            commit = commit_changelog(repo, changelog_file, author, committer,
+                                      edit)
             create_packaging_tag(repo, tag, 'HEAD', spec.version, options)
 
     except (GbpError, GitRepositoryError, ChangelogError, NoSpecError) as err:

@@ -563,6 +563,7 @@ class GbpOptionParserRpm(GbpOptionParser):
                        'spec-vcs-tag'           : '',
                        'changelog-file'         : 'auto',
                        'changelog-revision'     : '',
+                       'spawn-editor'           : 'always',
                        'editor-cmd'             : 'vim',
                      } )
 
