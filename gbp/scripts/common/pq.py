@@ -168,7 +168,7 @@ def parse_gbp_commands(info, cmd_tag, noarg_cmds, arg_cmds):
                 gbp.log.warn("Ignoring unknown gbp-command '%s' in commit %s"
                                 % (line, info['id']))
         else:
-            other_lines += line
+            other_lines.append(line)
     return commands, other_lines
 
 
