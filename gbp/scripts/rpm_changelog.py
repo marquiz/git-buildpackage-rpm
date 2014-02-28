@@ -188,7 +188,7 @@ def guess_commit(section, repo, options):
     rev_re = '^%s$' % re.sub(r'%\((\S+)\)s', r'(?P<\1>\S+)',
                              options.changelog_revision)
     match = re.match(rev_re, header['revision'], re.I)
-    fields = match.groupdict()
+    fields = match.groupdict() if match else {}
 
     # First, try to find tag-name, if present
     if 'tagname' in fields:
