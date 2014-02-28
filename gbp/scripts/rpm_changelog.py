@@ -257,7 +257,9 @@ def get_author(repo, use_git_config):
 
     passwd_data = pwd.getpwuid(os.getuid())
     if not author:
-        author = passwd_data.pw_gecos
+        author = passwd_data.pw_gecos.strip()
+        if not author:
+            author = passwd_data.pw_name
     if not email:
         if 'EMAIL' in os.environ:
             email = os.environ['EMAIL']
