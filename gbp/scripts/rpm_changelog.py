@@ -363,8 +363,6 @@ def parse_args(argv):
     # Naming group options
     naming_grp.add_config_file_option(option_name="packaging-branch",
                     dest="packaging_branch")
-    naming_grp.add_config_file_option(option_name="upstream-tag",
-                    dest="upstream_tag")
     naming_grp.add_config_file_option(option_name="packaging-tag",
                     dest="packaging_tag")
     naming_grp.add_config_file_option(option_name="packaging-dir",
