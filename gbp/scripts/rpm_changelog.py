@@ -251,18 +251,14 @@ def get_author(repo, use_git_config):
     author = email = None
 
     if use_git_config:
-        try:
-            author = repo.get_config('user.name')
-        except KeyError:
-            pass
-        try:
-            email = repo.get_config('user.email')
-        except KeyError:
-            pass
-    else:
-        passwd_data = pwd.getpwuid(os.getuid())
-        author = passwd_data.pw_gecos
+        modifier = repo.get_author_info()
+        author = modifier.name
+        email = modifier.email
 
+    passwd_data = pwd.getpwuid(os.getuid())
+    if not author:
+        author = passwd_data.pw_gecos
+    if not email:
         if 'EMAIL' in os.environ:
             email = os.environ['EMAIL']
         else:
