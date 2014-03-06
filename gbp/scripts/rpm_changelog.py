@@ -257,7 +257,9 @@ def get_author(repo, use_git_config):
 
     passwd_data = pwd.getpwuid(os.getuid())
     if not author:
-        author = passwd_data.pw_gecos.strip()
+        # On some distros (Ubuntu, at least) the gecos field has it's own
+        # internal structure of comma-separated fields
+        author = passwd_data.pw_gecos.split(',')[0].strip()
         if not author:
             author = passwd_data.pw_name
     if not email:
