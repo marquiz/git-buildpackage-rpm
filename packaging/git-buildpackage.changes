@@ -1,3 +1,44 @@
+* Wed May 21 2014 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.12-20140521
+- Rebase on top of upstream version 0.6.12
+- Changes in rpm-ch
+  * add --message cmdline option
+    For giving the text for new changelog entry/entries, skipping git commit
+    messages entirely.
+  * implement '--all' option
+    If defined, git-rpm-ch uses all commits in the Git history. Also,
+    '--since' option is omitted.
+  * implement --color-scheme option
+  * use name (string) as the entry author
+  * internal refactoring
+  * fix crash in guessing the start commit
+- Changes in pq-rpm
+  * implement --retain-history option
+    With this option defined gbp tries to preserve the history when
+    converting. That is, for each commit in the old branch create one
+    corresponding commit in the new orphan packaging branch. This works by
+    dumping packaging files and updating patches for each commit. However,
+    empty commits are not generated - these are caused e.g. by changes in
+    files that are ignored by patch-generation.
+    NOTE! Only valid for the 'convert' action.
+  * convert: don't try to commit empty set of patches
+  * make sure we always get a sane author
+  * slight unification of log messages
+  * decrease (default) verbosity a bit
+  * don't create pq branch when switching
+- Changes in buildpackage-rpm
+  * buildpackage-rpm: fix desktop notifications
+  * buildpackage-rpm: remove --purge option
+  * guess/parse spec as early as possible
+- Documentation
+  * Include man pages in RPM packages
+  * Add -doc subpackage to RPM packaging
+  * Build deb and rpm html docs in one docbook
+  * A multitude of small cosmetic fixes
+- Other misc. internal changes
+  * GitRepository: implement create_tree() method
+  * rpm: suppress some verbosity when updating patches in spec file
+  * [ Li Jinjing ] Fix missing return value in get_current_branch method
+
 * Thu Mar 06 2014 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.8-20140306
 - Rebase on top of upstream version 0.6.8
 - Introduce git-rpm-ch tool.
