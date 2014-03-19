@@ -1,3 +1,9 @@
+git-buildpackage (0.6.12-tizen20140402) UNRELEASED; urgency=low
+
+  * Rebase on top of upstream version 0.6.12
+
+ -- Markus Lehtonen <markus.lehtonen@linux.intel.com>  Wed, 02 Apr 2014 16:59:59 +0300
+
 git-buildpackage (0.6.12) unstable; urgency=medium
 
   * [89f3005] Use a much simpler version to fix the command name in --help
