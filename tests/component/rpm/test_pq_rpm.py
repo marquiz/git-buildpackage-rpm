@@ -68,7 +68,7 @@ class TestPqRpm(RpmRepoTestBase):
         with open('.gbp.conf', 'w') as conffd:
             conffd.write('foobar\n')
         eq_(mock_pq(['foo']), 1)
-        self._check_log(0, 'gbp:error: invalid config file: File contains no '
+        self._check_log(0, 'gbp:error: Invalid config file: File contains no '
                            'section headers.')
 
     def test_import_export(self):

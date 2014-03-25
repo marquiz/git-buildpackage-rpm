@@ -239,7 +239,7 @@ def parse_spec(options, repo, treeish=None):
         raise GbpError("Can't parse spec: %s" % err)
     relpath = spec.specpath if treeish else os.path.relpath(spec.specpath,
                                                             repo.path)
-    gbp.log.info("Using '%s' from %s" % (relpath, treeish or 'working copy'))
+    gbp.log.info("Using '%s' from '%s'" % (relpath, treeish or 'working copy'))
     return spec
 
 
@@ -259,7 +259,7 @@ def export_patches(repo, options):
     current = repo.get_branch()
     if is_pq_branch(current, options):
         base = pq_branch_base(current, options)
-        gbp.log.info("On '%s', switching to '%s'" % (current, base))
+        gbp.log.info("On branch '%s', switching to '%s'" % (current, base))
         repo.set_branch(base)
         spec = parse_spec(options, repo)
         pq_branch = current
@@ -336,7 +336,7 @@ def import_extra_files(repo, commitish, files, patch_ignore=True):
             except GitRepositoryError:
                 pass
     if found:
-        gbp.log.info('Importing additional file(s) from %s into %s' %
+        gbp.log.info("Importing additional file(s) from branch '%s' into '%s'" %
                      (commitish, repo.get_branch()))
         for fname, content in found.iteritems():
             dirname = os.path.dirname(fname)
@@ -403,13 +403,15 @@ def import_spec_patches(repo, options):
         spec.specdir = packaging_tmp
     in_queue = spec.patchseries()
     queue = safe_patches(in_queue, options.tmp_dir)
-
     # Do import
     try:
-        gbp.log.info("Switching to %s" % pq_branch)
+        gbp.log.info("Switching to branch '%s'" % pq_branch)
         repo.set_branch(pq_branch)
         import_extra_files(repo, base, options.import_files)
-        gbp.log.info("Trying to apply patches from '%s' onto '%s'" %
+
+        if not queue:
+            return
+        gbp.log.info("Trying to apply patches from branch '%s' onto '%s'" %
                         (base, upstream_commit))
         for patch in queue:
             gbp.log.debug("Applying %s" % patch.path)
@@ -443,7 +445,7 @@ def switch_pq(repo, options):
     current = repo.get_branch()
     if is_pq_branch(current, options):
         base = pq_branch_base(current, options)
-        gbp.log.info("Switching to %s" % base)
+        gbp.log.info("Switching to branch '%s'" % base)
         repo.checkout(base)
     else:
         switch_to_pq_branch(repo, current, options)
@@ -477,7 +479,7 @@ def switch_to_pq_branch(repo, branch, options):
         except GitRepositoryError as err:
             raise GbpError("Cannot create patch-queue branch: %s" % err)
 
-    gbp.log.info("Switching to '%s'" % pq_branch)
+    gbp.log.info("Switching to branch '%s'" % pq_branch)
     repo.set_branch(pq_branch)
 
 def apply_single_patch(repo, patchfile, options):
@@ -516,7 +518,7 @@ def convert_package(repo, options):
             repo.delete_branch(new_branch)
 
     # Dump and commit packaging files
-    gbp.log.info("Importing packaging files from '%s' to '%s'" %
+    gbp.log.info("Importing packaging files from branch '%s' to '%s'" %
                  (old_packaging, new_branch))
     packaging_tree = '%s:%s' % (old_packaging, options.packaging_dir)
     packaging_tmp = tempfile.mkdtemp(prefix='pack_', dir=options.tmp_dir)
@@ -536,7 +538,7 @@ def convert_package(repo, options):
 
     # Commit paches and spec
     if patches:
-        gbp.log.info("Committing patches and spec file to git")
+        gbp.log.info("Committing patches and modified spec file to git")
         repo.add_files('.', untracked=False)
         repo.add_files(patches)
         msg = "Auto-generated patches from branch '%s'" % old_packaging
@@ -566,7 +568,7 @@ def main(argv):
         parser = GbpOptionParserRpm(command=os.path.basename(argv[0]),
                                     prefix='', usage=USAGE_STRING)
     except ConfigParser.ParsingError as err:
-        gbp.log.err('invalid config file: %s' % err)
+        gbp.log.err('Invalid config file: %s' % err)
         return 1
 
     parser.add_boolean_config_file_option(option_name="patch-numbers",
