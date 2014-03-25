@@ -535,11 +535,12 @@ def convert_package(repo, options):
     patches = [os.path.join(options.new_packaging_dir, pat) for pat in patches]
 
     # Commit paches and spec
-    gbp.log.info("Committing patches and spec file to git")
-    repo.add_files('.', untracked=False)
-    repo.add_files(patches)
-    msg = "Auto-generate and import patches from branch '%s'" % old_packaging
-    repo.commit_staged(msg=msg)
+    if patches:
+        gbp.log.info("Committing patches and spec file to git")
+        repo.add_files('.', untracked=False)
+        repo.add_files(patches)
+        msg = "Auto-generated patches from branch '%s'" % old_packaging
+        repo.commit_staged(msg=msg)
 
     # Copy gbs.conf
     import_extra_files(repo, old_packaging, options.import_files,
