@@ -274,14 +274,13 @@ def get_author(repo, use_git_config):
 def update_changelog(changelog, commits, repo, spec, options):
     """Update the changelog with a range of commits"""
     # Get info for section header
-    time = datetime.now()
+    now = datetime.now()
     name, email = get_author(repo, options.git_author)
     rev_str_fields = dict(spec.version,
                 version=RpmPkgPolicy.compose_full_version(spec.version),
                 vendor=options.vendor)
     if options.tag:
         # Get fake information for the to-be-created git commit
-        now = datetime.now()
         commit_info = {'author': GitModifier(date=now),
                        'committer': GitModifier(date=now)}
         tag = packaging_tag_name(repo, spec, commit_info, options)
@@ -298,12 +297,12 @@ def update_changelog(changelog, commits, repo, spec, options):
 
     # Add a new changelog section if new release or an empty changelog
     if options.release or not changelog.sections:
-        top_section = changelog.add_section(time=time, name=name,
+        top_section = changelog.add_section(time=now, name=name,
                                             email=email, revision=revision)
     else:
         # Re-use already parsed top section
         top_section = changelog.sections[0]
-        top_section.set_header(time=time, name=name,
+        top_section.set_header(time=now, name=name,
                                email=email, revision=revision)
 
     # Add new entries to the topmost section
@@ -429,9 +428,8 @@ def main(argv):
         spec = parse_spec_file(repo, options)
 
         # Find and parse changelog file
-        changelog_file = parse_changelog_file(repo, spec, options)
-        changelog = changelog_file.changelog
-        since = get_start_commit(changelog, repo, options)
+        ch_file = parse_changelog_file(repo, spec, options)
+        since = get_start_commit(ch_file.changelog, repo, options)
 
         # Get range of commits from where to generate changes
         if args:
@@ -443,20 +441,19 @@ def main(argv):
             gbp.log.info("No changes detected from %s to %s." % (since, 'HEAD'))
 
         # Do the actual update
-        tag, author, committer = update_changelog(changelog, commits, repo,
-                                                  spec, options)
+        tag, author, committer = update_changelog(ch_file.changelog, commits,
+                                                  repo, spec, options)
         # Write to file
-        changelog_file.write()
+        ch_file.write()
 
         if editor_cmd:
-            gbpc.Command(editor_cmd, [changelog_file.path])()
+            gbpc.Command(editor_cmd, [ch_file.path])()
 
         if options.tag:
             if options.retag and repo.has_tag(tag):
                 repo.delete_tag(tag)
             edit = True if editor_cmd else False
-            commit = commit_changelog(repo, changelog_file, author, committer,
-                                      edit)
+            commit_changelog(repo, ch_file, author, committer, edit)
             create_packaging_tag(repo, tag, 'HEAD', spec.version, options)
 
     except (GbpError, GitRepositoryError, ChangelogError, NoSpecError) as err:
