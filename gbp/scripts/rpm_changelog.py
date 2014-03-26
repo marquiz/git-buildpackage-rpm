@@ -312,7 +312,7 @@ def update_changelog(changelog, commits, repo, spec, options):
         entry_text = ChangelogEntryFormatter.compose(info, full=options.full,
                         ignore_re=options.ignore_regex, id_len=options.idlen)
         if entry_text:
-            top_section.add_entry(author=info['author'], text=entry_text)
+            top_section.add_entry(author=info['author'].name, text=entry_text)
     return (tag, commit_info['author'], commit_info['committer'])
 
 def commit_changelog(repo, changelog, author, committer, edit):
