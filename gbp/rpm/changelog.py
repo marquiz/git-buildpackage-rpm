@@ -106,9 +106,8 @@ class _ChangelogSection(object):
         """Change the section header"""
         self.header = _ChangelogHeader(self._pkgpolicy, *args, **kwargs)
 
-    def add_entry(self, *args, **kwargs):
-        """Add new entry"""
-        entry = _ChangelogEntry(self._pkgpolicy, *args, **kwargs)
+    def append_entry(self, entry):
+        """Add a new entry to the end of the list of entries"""
         self.entries.append(entry)
         return entry
 
@@ -125,6 +124,10 @@ class Changelog(object):
         for section in self.sections:
             string += str(section)
         return string
+
+    def create_entry(self, *args, **kwargs):
+        """Create and return new entry object"""
+        return _ChangelogEntry(self._pkgpolicy, *args, **kwargs)
 
     def add_section(self, *args, **kwargs):
         """Add new empty section"""
@@ -191,21 +194,25 @@ class ChangelogParser(object):
         kwargs = match.groupdict()
         return _ChangelogSection(self._pkgpolicy, time=time, **kwargs)
 
-    def _parse_section_entries(self, section, text):
+    def _create_entry(self, author, text):
+        """Create a new changelog entry"""
+        return _ChangelogEntry(self._pkgpolicy, author=author, text=text)
+
+    def _parse_section_entries(self, text, default_author):
         """Parse entries from a string and add them to a section"""
-        header = section.header
-        author = header['name'] if 'name' in header else header['email']
+        entries = []
         entry_text = []
+        author = default_author
         for line in text.splitlines():
             match = re.match(self.body_name_re, line)
             if match:
                 if entry_text:
-                    section.add_entry(author=author, text=entry_text)
+                    entries.append(self._create_entry(author, entry_text))
                 author = match.group('name')
             else:
                 if line.startswith("-"):
                     if entry_text:
-                        section.add_entry(author=author, text=entry_text)
+                        entries.append(self._create_entry(author, entry_text))
                     entry_text = [line]
                 else:
                     if not entry_text:
@@ -214,7 +221,10 @@ class ChangelogParser(object):
                                      line)
                     entry_text.append(line)
         if entry_text:
-            section.add_entry(author=author, text=entry_text)
+            entries.append(self._create_entry(author, entry_text))
+
+        return entries
+
 
     def parse_section(self, text):
         """Parse one section"""
@@ -223,9 +233,14 @@ class ChangelogParser(object):
         if not match:
             raise ChangelogError("Doesn't look like changelog header: %s..." %
                                  text.splitlines()[0])
-        # Parse header and entries
+        # Parse header
         section = self._parse_section_header(match.group('ch_header'))
-        self._parse_section_entries(section, match.group('ch_body'))
+        header = section.header
+        # Parse entries
+        default_author = header['name'] if 'name' in header else header['email']
+        for entry in self._parse_section_entries(match.group('ch_body'),
+                                                 default_author):
+            section.append_entry(entry)
 
         return section
 

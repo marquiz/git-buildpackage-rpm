@@ -271,7 +271,20 @@ def get_author(repo, use_git_config):
     return author, email
 
 
-def update_changelog(changelog, commits, repo, spec, options):
+def entries_from_commits(changelog, repo, commits, options):
+    """Generate a list of formatted changelog entries from a list of commits"""
+    entries = []
+    for commit in commits:
+        info = repo.get_commit_info(commit)
+        entry_text = ChangelogEntryFormatter.compose(info, full=options.full,
+                        ignore_re=options.ignore_regex, id_len=options.idlen)
+        if entry_text:
+            entries.append(changelog.create_entry(author=info['author'].name,
+                                                  text=entry_text))
+    return entries
+
+
+def update_changelog(changelog, entries, repo, spec, options):
     """Update the changelog with a range of commits"""
     # Get info for section header
     now = datetime.now()
@@ -306,12 +319,8 @@ def update_changelog(changelog, commits, repo, spec, options):
                                email=email, revision=revision)
 
     # Add new entries to the topmost section
-    for commit in commits:
-        info = repo.get_commit_info(commit)
-        entry_text = ChangelogEntryFormatter.compose(info, full=options.full,
-                        ignore_re=options.ignore_regex, id_len=options.idlen)
-        if entry_text:
-            top_section.add_entry(author=info['author'].name, text=entry_text)
+    for entry in entries:
+        top_section.append_entry(entry)
     return (tag, commit_info['author'], commit_info['committer'])
 
 def commit_changelog(repo, changelog, author, committer, edit):
@@ -441,7 +450,9 @@ def main(argv):
             gbp.log.info("No changes detected from %s to %s." % (since, 'HEAD'))
 
         # Do the actual update
-        tag, author, committer = update_changelog(ch_file.changelog, commits,
+        entries = entries_from_commits(ch_file.changelog, repo, commits,
+                                       options)
+        tag, author, committer = update_changelog(ch_file.changelog, entries,
                                                   repo, spec, options)
         # Write to file
         ch_file.write()

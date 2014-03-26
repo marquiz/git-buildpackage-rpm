@@ -81,10 +81,12 @@ class TestChangelogSection(object):
         section = self.default_sect
         eq_(str(section), "* Wed Jan 29 2014 J. D. <u@h> 1\n- my change\n\n")
 
-    def test_add_entry(self):
+    def test_append_entry(self):
         """Test add_entry() method"""
         section = self.default_sect
-        new_entry = section.add_entry(author="", text="- another\n  change")
+        entry = _ChangelogEntry(RpmPkgPolicy, author="",
+                                text="- another\n  change")
+        new_entry = section.append_entry(entry)
         eq_(str(section), "* Wed Jan 29 2014 J. D. <u@h> 1\n- my change\n"
                           "- another\n  change\n\n")
         eq_(new_entry, section.entries[-1])
