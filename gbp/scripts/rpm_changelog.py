@@ -388,6 +388,8 @@ def parse_args(argv):
                     help="verbose command execution")
     parser.add_config_file_option(option_name="color", dest="color",
                     type='tristate')
+    parser.add_config_file_option(option_name="color-scheme",
+                    dest="color_scheme")
     parser.add_config_file_option(option_name="vendor", action="store",
                     dest="vendor")
     parser.add_config_file_option(option_name="git-log", dest="git_log",
@@ -450,7 +452,7 @@ def parse_args(argv):
     if not options.changelog_revision:
         options.changelog_revision = RpmPkgPolicy.Changelog.header_rev_format
 
-    gbp.log.setup(options.color, options.verbose)
+    gbp.log.setup(options.color, options.verbose, options.color_scheme)
 
     return options, args
 
