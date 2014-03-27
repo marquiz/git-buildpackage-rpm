@@ -377,3 +377,15 @@ class TestRpmCh(RpmRepoTestBase):
         eq_(mock_ch(['--changelog-revision=%(upstreamversion)s-%(release)s']),
             0)
 
+    def test_commit_guessing_fail(self):
+        """Test for failure of start commit guessing"""
+        repo = self.init_test_repo('gbp-test-native')
+
+        # Add "very old" header to changelog
+        with open('packaging/gbp-test-native.changes', 'w') as ch_fp:
+            ch_fp.write('* Sat Jan 01 2000 User <user@host.com> 123\n- foo\n')
+        # rpm-ch should fail by not being able to find any commits before the
+        # last changelog section
+        eq_(mock_ch([]), 1)
+        self._check_log(-1, "gbp:error: Couldn't determine starting point")
+

@@ -222,11 +222,11 @@ def guess_commit(section, repo, options):
 
     # As a last resort we look at the timestamp
     timestamp = header['time'].isoformat()
-    last = repo.get_commits(num=1, options="--until='%s'" % timestamp)[0]
+    last = repo.get_commits(num=1, options="--until='%s'" % timestamp)
     if last:
         gbp.log.info("Using commit (%s) before the last changelog timestamp "
                      "(%s)" % (last, timestamp))
-        return last
+        return last[0]
     return None
 
 
