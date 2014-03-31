@@ -540,7 +540,7 @@ def convert_package(repo, options):
         msg = "Auto-generated patches from branch '%s'" % old_packaging
         repo.commit_staged(msg=msg)
 
-    # Copy gbs.conf
+    # Copy extra files
     import_extra_files(repo, old_packaging, options.import_files,
                        patch_ignore=False)
 
