@@ -256,7 +256,7 @@ class TestPqRpm(RpmRepoTestBase):
         """Basic test for convert action"""
         repo = self.init_test_repo('gbp-test2')
         branches = repo.get_local_branches() + ['master-orphan']
-        files = ['packaging/', 'packaging/bar.tar.gz', 'packaging/foo.txt',
+        files = ['packaging/bar.tar.gz', 'packaging/foo.txt',
                  'packaging/gbp-test2.spec', 'packaging/gbp-test2-alt.spec',
                  'packaging/my.patch', 'packaging/0001-My-addition.patch',
                  '.gbp.conf']
@@ -525,15 +525,31 @@ class TestPqRpm(RpmRepoTestBase):
         """Test the --new-packaging-dir cmdline option"""
         repo = self.init_test_repo('gbp-test2')
         branches = repo.get_local_branches() + ['master-orphan']
-        files = ['rpm/', 'rpm/bar.tar.gz', 'rpm/foo.txt',
-                 'rpm/gbp-test2.spec', 'rpm/gbp-test2-alt.spec',
-                 'rpm/my.patch', 'rpm/0001-My-addition.patch']
+        files = ['rpm/bar.tar.gz', 'rpm/foo.txt', 'rpm/gbp-test2.spec',
+                 'rpm/gbp-test2-alt.spec', 'rpm/my.patch',
+                 'rpm/0001-My-addition.patch']
         # Drop already-existing master-orphan branch
         repo.delete_branch('master-orphan')
         # Try convert
         eq_(mock_pq(['convert', '--import-files=',
                      '--new-packaging-dir=rpm']), 0)
         self._check_repo_state(repo, 'master-orphan', branches, files)
+
+    def test_option_retain_history(self):
+        """Test the --retain-history cmdline option"""
+        repo = self.init_test_repo('gbp-test2')
+        branches = repo.get_local_branches() + ['master-orphan']
+        files = ['packaging/bar.tar.gz', 'packaging/foo.txt',
+                 'packaging/gbp-test2.spec', 'packaging/gbp-test2-alt.spec',
+                 'packaging/my.patch', 'packaging/0001-My-addition.patch',
+                 '.gbp.conf']
+        # Drop pre-existing master-orphan branch
+        repo.delete_branch('master-orphan')
+
+        # Convert with history
+        eq_(mock_pq(['convert', '--retain-history']), 0)
+        self._check_repo_state(repo, 'master-orphan', branches, files)
+        eq_(len(repo.get_commits('', 'master-orphan')), 7)
 
     def test_import_unapplicable_patch(self):
         """Test import when a patch does not apply"""
