@@ -24,6 +24,7 @@ import errno
 import gzip
 import os
 import re
+import shutil
 import subprocess
 import sys
 
@@ -539,33 +540,25 @@ def convert_package(repo, options):
             gbp.log.info("Dropping branch '%s'" % new_branch)
             repo.delete_branch(new_branch)
 
-    # Dump and commit packaging files
+    # Determine "history"
+    if options.retain_history:
+        # Find first commit that has the spec file and list commits from there
+        try:
+            repo.show('%s:%s' % (upstream_commit, spec.specpath))
+            history = repo.get_commits(upstream_commit, old_packaging)
+        except GitRepositoryError:
+            history_start = repo.get_commits(upstream_commit, old_packaging,
+                                             spec.specpath)[-1]
+            history = repo.get_commits('%s^' % history_start, old_packaging)
+    else:
+        history = [repo.rev_parse(old_packaging)]
+    history.reverse()
+
+    # Do import
     gbp.log.info("Importing packaging files from branch '%s' to '%s'" %
                  (old_packaging, new_branch))
-    packaging_tree = '%s:%s' % (old_packaging, options.packaging_dir)
-    packaging_tmp = tempfile.mkdtemp(prefix='pack_')
-    dump_packaging_dir = os.path.join(packaging_tmp, options.new_packaging_dir)
-    dump_tree(repo, dump_packaging_dir, packaging_tree, with_submodules=False,
-              recursive=False)
-
-    msg = "Auto-import packaging files from branch '%s'" % old_packaging
-    repo.commit_dir(packaging_tmp, msg, new_branch, create_missing_branch=True)
-    repo.set_branch(new_branch)
-
-    # Generate patches
-    spec = SpecFile(os.path.join(options.new_packaging_dir, spec.specfile))
-    patches = update_patch_series(repo, spec, upstream_commit, old_packaging,
-                                  options)
-    patches = [os.path.join(options.new_packaging_dir, pat) for pat in patches]
-
-    # Commit paches and spec
-    if patches:
-        gbp.log.info("Committing patches and modified spec file to git")
-        repo.add_files('.', untracked=False)
-        repo.add_files(patches)
-        msg = "Auto-generated patches from branch '%s'" % old_packaging
-        repo.commit_staged(msg=msg)
-
+    convert_with_history(repo, upstream_commit, history, new_branch,
+                         spec.specfile, options)
     # Copy extra files
     import_extra_files(repo, old_packaging, options.import_files,
                        patch_ignore=False)
@@ -575,6 +568,59 @@ def convert_package(repo, options):
             "packaging branch '%s' was left intact)." %
             (new_branch, old_packaging))
     gbp.log.info("Please check all files and test building the package!")
+
+
+def convert_with_history(repo, upstream, commits, new_branch, spec_fn, options):
+    """Auto-import packaging files and (auto-generated) patches"""
+
+    # Dump and commit packaging files
+    packaging_tree = '%s:%s' % (commits[0], options.packaging_dir)
+    packaging_tmp = tempfile.mkdtemp(prefix='pack_')
+    dump_packaging_dir = os.path.join(packaging_tmp, options.new_packaging_dir)
+    dump_tree(repo, dump_packaging_dir, packaging_tree, with_submodules=False,
+              recursive=False)
+
+    msg = "Auto-import packaging files\n\n" \
+          "Imported initial packaging files from commit '%s'" % (commits[0])
+    new_tree = repo.create_tree(packaging_tmp)
+    tip_commit = repo.commit_tree(new_tree, msg, [])
+
+    # Generate initial patches
+    spec = SpecFile(os.path.join(dump_packaging_dir, spec_fn))
+    update_patch_series(repo, spec, upstream, commits[0], options)
+    # Commit updated packaging files only if something was changed
+    new_tree = repo.create_tree(packaging_tmp)
+    if new_tree != repo.rev_parse(tip_commit + ':'):
+        msg = "Auto-generate patches\n\n" \
+              "Generated patches from\n'%s..%s'\n\n" \
+              "updating spec file and possibly removing old patches." \
+              % (upstream, commits[0])
+        tip_commit = repo.commit_tree(new_tree, msg, [tip_commit])
+
+    # Import rest of the commits
+    for commit in commits[1:]:
+        shutil.rmtree(dump_packaging_dir)
+        packaging_tree = '%s:%s' % (commit, options.packaging_dir)
+        dump_tree(repo, dump_packaging_dir, packaging_tree,
+                  with_submodules=False, recursive=False)
+        try:
+            spec = SpecFile(os.path.join(dump_packaging_dir, spec_fn))
+            update_patch_series(repo, spec, upstream, commit, options)
+        except (NoSpecError, GbpError):
+            gbp.log.warn("Failed to generate patches from '%s'" % commit)
+
+        new_tree = repo.create_tree(packaging_tmp)
+        if new_tree == repo.rev_parse(tip_commit + ':'):
+            gbp.log.info("Skipping commit '%s' which generated no change" %
+                         commit)
+        else:
+            info = repo.get_commit_info(commit)
+            msg = "%s\n\n%sAuto-imported by gbp from '%s'" % (info['subject'],
+                        info['body'], commit)
+            tip_commit = repo.commit_tree(new_tree, msg, [tip_commit])
+
+    repo.create_branch(new_branch, tip_commit)
+    repo.set_branch(new_branch)
 
 
 def build_parser(name):
@@ -633,6 +679,10 @@ switch         Switch to patch-queue branch and vice versa.""")
             help="Packaging directory in the new packaging branch. Only "
                  "relevant for the 'convert' action. If not defined, defaults "
                  "to '--packaging-dir'")
+    parser.add_option("--retain-history", action="store_true",
+            help="When doing convert, preserve as much of the git history as "
+                 "possible, i.e. create one commit per commit. Only "
+                 "relevant for the 'convert' action.")
 
     return parser
 

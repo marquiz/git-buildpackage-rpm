@@ -32,6 +32,7 @@
       <arg><option>--patch-ignore-path=</option><replaceable>REGEX</replaceable></arg>
       <arg><option>--patch-squash=</option><replaceable>COMMITISH</replaceable></arg>
       <arg><option>--new-packaging-dir=</option><replaceable>DIRECTORY</replaceable></arg>
+      <arg><option>--retain-history</option></arg>
       <group choice="plain">
         <arg><option>drop</option></arg>
         <arg><option>export</option></arg>
@@ -282,6 +283,20 @@
           Directory where packaging files are put in the new orphan packaging
           branch after convert. If <option>--new-packaging-dir=</option> is not
           defined, <replaceable>packaging-dir</replaceable> is used.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--retain-history</option>
+        </term>
+        <listitem>
+          <para>
+          Try to preserve as much history as possible when converting. That is,
+          for each commit in the old branch create one corresponding commit in
+          the new orphan packaging branch. However, commits that will not
+          generate any changes are skipped (i.e. no empty commits are
+          generated) - these are caused e.g. by changes in files that are
+          ignored by patch-generation.
           </para>
         </listitem>
       </varlistentry>
