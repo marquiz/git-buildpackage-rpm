@@ -1,3 +1,8 @@
+* Wed Apr 02 2014 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.8-20140402
+- Revert "GitRepository/add_remote_repo: fix the 'tags' argument"
+  Which caused an unwanted behavior of not fetching refs/heads at all --
+  only tags were fetched.
+
 * Thu Mar 06 2014 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.8-20140306
 - Rebase on top of upstream version 0.6.8
 - Introduce git-rpm-ch tool.

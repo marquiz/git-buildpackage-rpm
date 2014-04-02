@@ -1,3 +1,11 @@
+git-buildpackage (0.6.8-tizen20140402) unstable; urgency=low
+
+  * Revert "GitRepository/add_remote_repo: fix the 'tags' argument"
+    Which caused an unwanted behavior of not fetching refs/heads at all --
+    only tags were fetched.
+
+ -- Markus Lehtonen <markus.lehtonen@linux.intel.com>  Wed, 02 Apr 2014 09:53:35 +0300
+
 git-buildpackage (0.6.8-tizen20140306) unstable; urgency=low
 
   [ Markus Lehtonen ]
