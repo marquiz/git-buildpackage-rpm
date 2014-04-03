@@ -1,3 +1,11 @@
+git-buildpackage (0.6.8-tizen20140403) unstable; urgency=low
+
+  * Cherry-picked config-parsing fixes from upstream
+    * config: Don't pull in config defaults twice (Closes: #733759)
+    * Test option parser fallbacks more thoroughly (Closes: #733759)
+
+ -- Markus Lehtonen <markus.lehtonen@linux.intel.com>  Thu, 03 Apr 2014 11:32:22 +0300
+
 git-buildpackage (0.6.8-tizen20140402) unstable; urgency=low
 
   * Revert "GitRepository/add_remote_repo: fix the 'tags' argument"

@@ -1,3 +1,8 @@
+* Thu Apr 03 2014 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.8-20140403
+- Cherry-picked config-parsing fixes from upstream
+  * config: Don't pull in config defaults twice (Closes: #733759)
+  * Test option parser fallbacks more thoroughly (Closes: #733759)
+
 * Wed Apr 02 2014 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.8-20140402
 - Revert "GitRepository/add_remote_repo: fix the 'tags' argument"
   Which caused an unwanted behavior of not fetching refs/heads at all --
