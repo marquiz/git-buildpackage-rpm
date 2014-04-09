@@ -158,11 +158,16 @@ class TestPqRpm(RpmRepoTestBase):
         repo = self.init_test_repo('gbp-test')
         pkg_files = repo.list_files()
         branches = repo.get_local_branches() + ['development/master']
-        upstr_files = ['dummy.sh', 'Makefile', 'README']
-        # Switch to pq branch
+        # Switch to non-existent pq-branch should fail
+        eq_(mock_pq(['switch']), 1)
+        self._check_log(-1, ".*Branch 'development/master' does not exist")
+
+        # Import and switch to base branch and back to pq
+        eq_(mock_pq(['import']), 0)
         eq_(mock_pq(['switch']), 0)
-        self._check_repo_state(repo, 'development/master', branches,
-                               upstr_files)
+        self._check_repo_state(repo, 'master', branches)
+        eq_(mock_pq(['switch']), 0)
+        self._check_repo_state(repo, 'development/master', branches)
 
         # Switch back to packaging branch
         eq_(mock_pq(['switch']), 0)
@@ -235,6 +240,9 @@ class TestPqRpm(RpmRepoTestBase):
         # No patch given
         eq_(mock_pq(['apply']), 1)
         self._check_log(-1, "gbp:error: No patch name given.")
+
+        # Create a pristine pq-branch
+        repo.create_branch('development/master', 'upstream')
 
         # Apply patch
         with tempfile.NamedTemporaryFile() as tmp_patch:
@@ -361,8 +369,6 @@ class TestPqRpm(RpmRepoTestBase):
 
         # Invalid branch name
         eq_(mock_pq(['import', '--pq-branch=foo:']), 1)
-        self._check_log(-1, "gbp:error: Cannot create patch-queue branch")
-        eq_(mock_pq(['switch', '--pq-branch=foo:']), 1)
         self._check_log(-1, "gbp:error: Cannot create patch-queue branch")
 
         # Try all possible keys in pq-branch format string
