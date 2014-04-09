@@ -495,14 +495,11 @@ def switch_to_pq_branch(repo, branch, options):
     spec = parse_spec(options, repo, branch)
     pq_branch = pq_branch_name(branch, options, spec.version)
     if not repo.has_branch(pq_branch):
-        upstream_commit = find_upstream_commit(repo, spec, options.upstream_tag)
-        try:
-            repo.create_branch(pq_branch, rev=upstream_commit)
-        except GitRepositoryError as err:
-            raise GbpError("Cannot create patch-queue branch: %s" % err)
+        raise GbpError("Branch '%s' does not exist" % pq_branch)
 
     gbp.log.info("Switching to branch '%s'" % pq_branch)
     repo.set_branch(pq_branch)
+
 
 def apply_single_patch(repo, patchfile, options):
     """Apply a single patch onto the pq branch"""

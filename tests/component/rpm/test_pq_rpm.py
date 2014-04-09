@@ -160,18 +160,22 @@ class TestPqRpm(RpmRepoTestBase):
         """Basic test for switch action"""
         repo = self.init_test_repo('gbp-test')
         branches = repo.get_local_branches() + ['development/master']
-        upstr_files = ['dummy.sh', 'Makefile', 'README']
-        # Switch to non-existent pq-branch should create one
+        # Switch to non-existent pq-branch should fail
+        eq_(mock_pq(['switch']), 1)
+        self._check_log(-1, ".*Branch 'development/master' does not exist")
+
+        # Import and switch to base branch and back to pq
+        eq_(mock_pq(['import']), 0)
         eq_(mock_pq(['switch']), 0)
-        self._check_repo_state(repo, 'development/master', branches,
-                               upstr_files)
+        self._check_repo_state(repo, 'master', branches)
+        eq_(mock_pq(['switch']), 0)
+        self._check_repo_state(repo, 'development/master', branches)
 
         # Switch to base branch and back to pq
         eq_(mock_pq(['switch']), 0)
         self._check_repo_state(repo, 'master', branches)
         eq_(mock_pq(['switch']), 0)
-        self._check_repo_state(repo, 'development/master', branches,
-                               upstr_files)
+        self._check_repo_state(repo, 'development/master', branches)
 
     def test_switch_drop(self):
         """Basic test for drop action"""
