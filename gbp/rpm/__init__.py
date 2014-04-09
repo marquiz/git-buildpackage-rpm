@@ -643,35 +643,35 @@ class SpecFile(object):
 
         # Determine where to add Patch tag lines
         if tag_prev:
-            gbp.log.info("Adding 'Patch' tags in place of the removed tags")
+            gbp.log.debug("Adding 'Patch' tags in place of the removed tags")
             tag_line = tag_prev
         elif 'patch' in self._tags:
-            gbp.log.info("Adding new 'Patch' tags after the last 'Patch' tag")
+            gbp.log.debug("Adding new 'Patch' tags after the last 'Patch' tag")
             tag_line = self._tags['patch']['lines'][-1]['line']
         elif 'source' in self._tags:
-            gbp.log.info("Didn't find any old 'Patch' tags, adding new "
-                         "patches after the last 'Source' tag.")
+            gbp.log.debug("Didn't find any old 'Patch' tags, adding new "
+                          "patches after the last 'Source' tag.")
             tag_line = self._tags['source']['lines'][-1]['line']
         else:
-            gbp.log.info("Didn't find any old 'Patch' or 'Source' tags, "
-                         "adding new patches after the last 'Name' tag.")
+            gbp.log.debug("Didn't find any old 'Patch' or 'Source' tags, "
+                          "adding new patches after the last 'Name' tag.")
             tag_line = self._tags['name']['lines'][-1]['line']
 
         # Determine where to add %patch macro lines
         if 'patch-macros' in self._gbp_tags:
-            gbp.log.info("Adding '%patch' macros after the start marker")
+            gbp.log.debug("Adding '%patch' macros after the start marker")
             macro_line = self._gbp_tags['patch-macros'][-1]['line']
         elif macro_prev:
-            gbp.log.info("Adding '%patch' macros in place of the removed "
-                         "macros")
+            gbp.log.debug("Adding '%patch' macros in place of the removed "
+                          "macros")
             macro_line = macro_prev
         elif self._special_directives['patch']:
-            gbp.log.info("Adding new '%patch' macros after the last existing"
-                         "'%patch' macro")
+            gbp.log.debug("Adding new '%patch' macros after the last existing"
+                          "'%patch' macro")
             macro_line = self._special_directives['patch'][-1]['line']
         elif self._special_directives['setup']:
-            gbp.log.info("Didn't find any old '%patch' macros, adding new "
-                         "patches after the last '%setup' macro")
+            gbp.log.debug("Didn't find any old '%patch' macros, adding new "
+                          "patches after the last '%setup' macro")
             macro_line = self._special_directives['setup'][-1]['line']
         elif self._special_directives['prep']:
             gbp.log.warn("Didn't find any old '%patch' or '%setup' macros, "
