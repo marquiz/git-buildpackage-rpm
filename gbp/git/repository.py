@@ -1511,6 +1511,24 @@ class GitRepository(object):
                        work_tree=unpack_dir)
         return self.write_tree(git_index_file)
 
+    def create_tree(self, unpack_dir):
+        """
+        Create a tree object out of a directory content
+
+        @param unpack_dir: content to add
+        @type unpack_dir: C{str}
+        @return: the tree object hash
+        @rtype: C{str}
+        """
+        git_index_file = os.path.join(self.path, self._git_dir, 'gbp_index')
+        try:
+            os.unlink(git_index_file)
+        except OSError:
+            pass
+        self.add_files('.', force=True, index_file=git_index_file,
+                       work_tree=unpack_dir)
+        return self.write_tree(git_index_file)
+
     def commit_dir(self, unpack_dir, msg, branch, other_parents=None,
                    author={}, committer={}, create_missing_branch=False):
         """
