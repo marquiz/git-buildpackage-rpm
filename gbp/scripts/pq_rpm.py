@@ -320,7 +320,7 @@ def safe_patches(queue, tmpdir_base):
 def get_packager(spec):
     """Get packager information from spec"""
     if spec.packager:
-        match = re.match('(?P<name>.*[^ ])\s*<(?P<email>\S*)>',
+        match = re.match(r'(?P<name>.*[^ ])\s*<(?P<email>\S*)>',
                          spec.packager.strip())
         if match:
             return GitModifier(match.group('name'), match.group('email'))
