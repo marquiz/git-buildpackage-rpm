@@ -200,6 +200,7 @@ def get_current_branch(repo):
         branch = repo.get_branch()
     except GitRepositoryError:
         branch = None
+    return branch
 
 
 def guess_export_params(repo, options):
