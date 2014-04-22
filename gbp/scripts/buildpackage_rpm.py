@@ -43,7 +43,7 @@ from gbp.scripts.common.buildpackage import (index_name, wc_names,
                                              git_archive_single, dump_tree,
                                              write_wc, drop_index)
 from gbp.pkg import (compressor_opts, compressor_aliases)
-from gbp.scripts.pq_rpm import update_patch_series
+from gbp.scripts.pq_rpm import update_patch_series, parse_spec
 from gbp.scripts.common.pq import is_pq_branch, pq_branch_name, pq_branch_base
 
 
@@ -205,13 +205,13 @@ def get_current_branch(repo):
 
 def guess_export_params(repo, options):
     """Get commit and tree from where to export packaging and patches"""
+    tree = None
     branch = None
     if options.export in wc_names.keys() + [index_name, 'HEAD']:
         branch = get_current_branch(repo)
     elif options.export in repo.get_local_branches():
         branch = options.export
     if branch:
-        pq_branch = pq_branch_name(branch, options)
         if is_pq_branch(branch, options):
             packaging_branch = pq_branch_base(branch, options)
             if repo.has_branch(packaging_branch):
@@ -226,14 +226,20 @@ def guess_export_params(repo, options):
                 gbp.log.warn("It seems you're building a development/patch-"
                              "queue branch. No corresponding packaging branch "
                              "found. Build may fail!")
-        elif (options.patch_export and repo.has_branch(pq_branch) and not
-              options.patch_export_rev):
-            gbp.log.info("Exporting patches from development/patch-queue "
-                         "branch '%s'" % pq_branch)
-            options.patch_export_rev = pq_branch
+        elif options.patch_export and not options.patch_export_rev:
+            tree = get_tree(repo, options.export)
+            spec = parse_spec(options, repo, treeish=tree)
+            pq_branch = pq_branch_name(branch, options, spec.version)
+            if repo.has_branch(pq_branch):
+                gbp.log.info("Exporting patches from development/patch-queue "
+                             "branch '%s'" % pq_branch)
+                options.patch_export_rev = pq_branch
+    if tree is None:
+        tree = get_tree(repo, options.export)
+        spec = parse_spec(options, repo, treeish=tree)
 
-    # Return tree-ish objects for for exporting packaging
-    return get_tree(repo, options.export)
+    # Return tree-ish object and relative spec path for for exporting packaging
+    return tree, spec.specpath
 
 def git_archive_build_orig(repo, spec, output_dir, options):
     """
@@ -513,7 +519,7 @@ def main(argv):
     # Re-parse config options with using the per-tree config file(s) from the
     # exported tree-ish
     options, gbp_args, builder_args = parse_args(argv, prefix, tree)
-    tree = guess_export_params(repo, options)
+    tree, relative_spec_path = guess_export_params(repo, options)
 
     try:
         # Create base temporary directory for this run
@@ -546,18 +552,8 @@ def main(argv):
         gbp.log.debug("Dumping tree '%s' to '%s'" % (options.export, dump_dir))
         if not dump_tree(repo, dump_dir, tree, options.with_submodules):
             raise GbpError
-        # Find and parse spec from dump dir to get version etc.
-        if options.spec_file != 'auto':
-            specfile = os.path.join(dump_dir, options.spec_file)
-            options.packaging_dir = os.path.dirname(specfile)
-            if not os.path.exists(specfile):
-                raise rpm.NoSpecError("Failed to export specfile: %s" % options.spec_file)
-            spec = rpm.SpecFile(specfile)
-        else:
-            spec = rpm.guess_spec(os.path.join(dump_dir, options.packaging_dir),
-                                  True,
-                                  os.path.basename(repo.path) + '.spec')
-        gbp.log.debug("Using spec file '%s'" % spec.specfile)
+        # Parse spec from dump dir to get version etc.
+        spec = rpm.SpecFile(os.path.join(dump_dir, relative_spec_path))
 
         if not options.tag_only:
             # Setup builder opts
