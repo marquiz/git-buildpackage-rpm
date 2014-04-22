@@ -239,7 +239,7 @@ def parse_spec(options, repo, treeish=None):
         raise GbpError("Can't parse spec: %s" % err)
     relpath = spec.specpath if treeish else os.path.relpath(spec.specpath,
                                                             repo.path)
-    gbp.log.info("Using '%s' from '%s'" % (relpath, treeish or 'working copy'))
+    gbp.log.debug("Using '%s' from '%s'" % (relpath, treeish or 'working copy'))
     return spec
 
 
