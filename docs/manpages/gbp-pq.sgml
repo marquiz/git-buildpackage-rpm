@@ -201,7 +201,7 @@
   <refsect1>
     <title>SEE ALSO</title>
     <para>
-      <xref linkend="man.gbp.buildpackage">,
+      <xref linkend="man.gbp.buildpackage"/>,
       <citerefentry>
         <refentrytitle>dpkg-source</refentrytitle>
         <manvolnum>1</manvolnum>
@@ -210,7 +210,7 @@
         <refentrytitle>quilt</refentrytitle>
         <manvolnum>1</manvolnum>
       </citerefentry>,
-      <xref linkend="man.gbp.conf">
+      <xref linkend="man.gbp.conf"/>
     </para>
   </refsect1>
   <refsect1>
