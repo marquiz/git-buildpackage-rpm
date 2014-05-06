@@ -55,8 +55,8 @@
         When developing a non-native package with packaging and sources
         in the same branch
         (see <xref linkend="gbp.rpm.development.models.nonnative1">)
-        you usually want for git-buildpackage-rpm to automatically generate
-        patches. In this mode, git-buildpackage-rpm generates the upstream
+        you usually want for &git-buildpackage-rpm; to automatically generate
+        patches. In this mode, &git-buildpackage-rpm; generates the upstream
         tarball and copies packaging files to the build dir. After that it
         generates patches from commits between <option>upstream</> and the
         revision to be built, and, updates the spec file accordingly.
@@ -108,7 +108,7 @@
         <screen>
     $ <command>git add</> *patch *spec
     $ <command>git commit</> -a
-    $ &git-buildpackage-rpm
+    $ &git-buildpackage-rpm;
         </screen>
         Of course you can build even without committing by using the
         <option>--git-export=WC.UNTRACKED</> option of &git-buildpackage-rpm;.
