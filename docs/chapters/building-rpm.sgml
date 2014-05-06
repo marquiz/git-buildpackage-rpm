@@ -1,7 +1,7 @@
 <chapter id="gbp.rpm.building">
     <title>Building RPM packages from the &git; repository</title>
     <para>
-    The &git-buildpackage-rpm; tool is used for building.
+    The &gbp-buildpackage-rpm; tool is used for building.
     The tool creates the source tarball and copies it and the packaging files
     to a separate build directory and builds the package there. By default,
     &rpmbuild; is used as the builder command. You can define a different
@@ -12,16 +12,16 @@
     To build the (non-native) package when on <emphasis>packaging-branch</>,
     using pristine-tar to create upstream tarball:
     <screen>
-    $ &git-buildpackage-rpm; --pristine-tar
+    $ &gbp-buildpackage-rpm; --pristine-tar
     </screen>
     During development, if you have unclean git tree (untracked files and/or
     uncommitted changes) you may use:
     <screen>
-    $ &git-buildpackage-rpm; --git-ignore-untracked
+    $ &gbp-buildpackage-rpm; --git-ignore-untracked
     </screen>
     or:
     <screen>
-    $ &git-buildpackage-rpm; --git-ignore-new
+    $ &gbp-buildpackage-rpm; --git-ignore-new
     </screen>
     </para>
 
@@ -40,12 +40,12 @@
     excluding ignore files.
     Some examples:
     <screen>
-    $ &git-buildpackage-rpm; --git-export-dir=/home/user/rpmbuild
-    $ &git-buildpackage-rpm; --git-export-dir=/home/user/rpmbuild --git-export=v1.2.3
-    $ &git-buildpackage-rpm; --git-export=WC.UNTRACKED
-    $ &git-buildpackage-rpm; --git-export=INDEX
-    $ &git-buildpackage-rpm; --git-export=feature/cool-new-thing
-    $ &git-buildpackage-rpm; --git-export=8d55173610f
+    $ &gbp-buildpackage-rpm; --git-export-dir=/home/user/rpmbuild
+    $ &gbp-buildpackage-rpm; --git-export-dir=/home/user/rpmbuild --git-export=v1.2.3
+    $ &gbp-buildpackage-rpm; --git-export=WC.UNTRACKED
+    $ &gbp-buildpackage-rpm; --git-export=INDEX
+    $ &gbp-buildpackage-rpm; --git-export=feature/cool-new-thing
+    $ &gbp-buildpackage-rpm; --git-export=8d55173610f
     </screen>
     </para>
 
@@ -55,20 +55,20 @@
         When developing a non-native package with packaging and sources
         in the same branch
         (see <xref linkend="gbp.rpm.development.models.nonnative1">)
-        you usually want for &git-buildpackage-rpm; to automatically generate
-        patches. In this mode, &git-buildpackage-rpm; generates the upstream
+        you usually want for &gbp-buildpackage-rpm; to automatically generate
+        patches. In this mode, &gbp-buildpackage-rpm; generates the upstream
         tarball and copies packaging files to the build dir. After that it
         generates patches from commits between <option>upstream</> and the
         revision to be built, and, updates the spec file accordingly.
         Git-buildpackage-rpm also have some options to alter the patch
         generation. Build package with patch generation:
         <screen>
-    $ &git-buildpackage-rpm; --git-patch-export
+    $ &gbp-buildpackage-rpm; --git-patch-export
         </screen>
         Ignore changes to packaging/ directory and compress patches larger
         than 100 kilobytes:
         <screen>
-    $ &git-buildpackage-rpm; --git-patch-export --git-patch-export-compress=100k --git-patch-export-ignore-path='^packaging/.*'
+    $ &gbp-buildpackage-rpm; --git-patch-export --git-patch-export-compress=100k --git-patch-export-ignore-path='^packaging/.*'
         </screen>
         </para>
     </sect1>
@@ -108,10 +108,10 @@
         <screen>
     $ <command>git add</> *patch *spec
     $ <command>git commit</> -a
-    $ &git-buildpackage-rpm;
+    $ &gbp-buildpackage-rpm;
         </screen>
         Of course you can build even without committing by using the
-        <option>--git-export=WC.UNTRACKED</> option of &git-buildpackage-rpm;.
+        <option>--git-export=WC.UNTRACKED</> option of &gbp-buildpackage-rpm;.
         </para>
 
         <para>
