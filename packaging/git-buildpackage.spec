@@ -104,6 +104,16 @@ Set of tools from Debian that integrate the package build system with Git.
 This package contains the tools for building RPM packages.
 
 
+%if %{with docs}
+%package doc
+Summary:    Documentation for the git-buildpackage suite
+Group:      Development/Tools/Building
+
+%description doc
+This package contains documentation for the git-buildpackage suite - both the
+Debian and the RPM tool set.
+%endif
+
 
 %prep
 %setup -q -n %{name}-%{version}
@@ -142,6 +152,11 @@ rm -rf %{buildroot}%{python_sitelib}/*info
 install -d  %{buildroot}%{_mandir}/man1 %{buildroot}%{_mandir}/man5
 install docs/*.1 %{buildroot}%{_mandir}/man1/
 install docs/*.5 %{buildroot}%{_mandir}/man5/
+
+# Install html documentation
+mkdir -p %{buildroot}%{_docdir}/%{name}
+cp -r docs/manual-html %{buildroot}%{_docdir}/%{name}
+cp -r docs/apidocs %{buildroot}%{_docdir}/%{name}
 %endif
 
 cat > files.list << EOF
@@ -223,3 +238,10 @@ done
 %{_bindir}/*rpm*
 %{python_sitelib}/gbp/scripts/*rpm*.py*
 %{python_sitelib}/gbp/rpm/*py*
+
+
+%if %{with docs}
+%files doc
+%defattr(-,root,root,-)
+%{_docdir}/%{name}/
+%endif
