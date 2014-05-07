@@ -137,6 +137,13 @@ rm -rf %{buildroot}
 WITHOUT_NOSETESTS=1 python ./setup.py install --root=%{buildroot} --prefix=/usr
 rm -rf %{buildroot}%{python_sitelib}/*info
 
+%if %{with docs}
+# Install man pages
+install -d  %{buildroot}%{_mandir}/man1 %{buildroot}%{_mandir}/man5
+install docs/*.1 %{buildroot}%{_mandir}/man1/
+install docs/*.5 %{buildroot}%{_mandir}/man5/
+%endif
+
 cat > files.list << EOF
 %{_bindir}/gbp-pq
 %{_bindir}/git-buildpackage
@@ -155,6 +162,19 @@ cat > files.list << EOF
 %{python_sitelib}/gbp/scripts/import_orig.py*
 %{python_sitelib}/gbp/scripts/create_remote_repo.py*
 EOF
+
+%if %{with docs}
+cat >> files.list << EOF
+%{_mandir}/man1/gbp-buildpackage.1*
+%{_mandir}/man1/gbp-create-remote-repo.1*
+%{_mandir}/man1/gbp-dch.1*
+%{_mandir}/man1/gbp-import-dsc.1*
+%{_mandir}/man1/gbp-import-dscs.1*
+%{_mandir}/man1/gbp-import-orig.1*
+%{_mandir}/man1/gbp-pq.1*
+%{_mandir}/man1/git-pbuilder.1*
+EOF
+%endif
 
 # Disable the debian tools for CentOS
 %if 0%{?centos_version}
@@ -188,6 +208,13 @@ done
 %{python_sitelib}/gbp/git/*.py*
 %{python_sitelib}/gbp/pkg/*.py*
 %config %{_sysconfdir}/git-buildpackage
+%if %{with docs}
+%{_mandir}/man1/gbp.1*
+%{_mandir}/man1/gbp-clone.1*
+%{_mandir}/man1/gbp-config.1*
+%{_mandir}/man1/gbp-pull.1*
+%{_mandir}/man5/*.5*
+%endif
 
 
 %files rpm
