@@ -1,13 +1,3 @@
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
-  <!ENTITY % COMMON SYSTEM "common.ent">
-  %COMMON;
-  <!ENTITY % VERSION SYSTEM "version.ent">
-  %VERSION;
-  <!ENTITY % CHAPTERS SYSTEM "chapters/chapters-rpm.ent">
-  %CHAPTERS;
-  <!ENTITY gbp.copyright SYSTEM "copyright.sgml">
-]>
-
 <book id="gbp-rpm">
   <bookinfo>
     <title>Building RPM Packages with git-buildpackage-rpm</title>
@@ -20,7 +10,7 @@
   &ch.development-rpm;
   &ch.building-rpm;
 
-  <appendix id="gbp.copyleft">
+  <appendix id="gbp.rpm.copyleft">
     <title>Copyright</title>
     &gbp.copyright;
   </appendix>
