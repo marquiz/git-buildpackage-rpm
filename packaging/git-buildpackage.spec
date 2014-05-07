@@ -1,5 +1,5 @@
-# Add --with docs rpmbuild option, disabled by default
-%bcond_with docs
+# Add --without docs rpmbuild option, i.e. docs are enabled by default
+%bcond_without docs
 
 Name:       git-buildpackage
 Summary:    Build packages from git
