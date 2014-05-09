@@ -52,6 +52,9 @@ BuildRequires:  python-setuptools
 BuildRequires:  docbook-utils
 BuildRequires:  gtk-doc
 BuildRequires:  epydoc
+%if 0%{?fedora}
+BuildRequires:  perl-podlators
+%endif
 %endif
 
 %if 0%{?do_unittests}
