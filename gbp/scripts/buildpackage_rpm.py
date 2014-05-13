@@ -496,7 +496,7 @@ def parse_args(argv, prefix, git_treeish=None):
 def main(argv):
     retval = 0
     prefix = "git-"
-    cp = None
+    spec = None
 
     options, gbp_args, builder_args = parse_args(argv, prefix)
     if not options:
@@ -699,9 +699,14 @@ def main(argv):
         if options.purge and not retval and not options.export_only:
             RemoveTree(export_dir)()
 
-        if cp and not gbp.notifications.notify(cp, not retval, options.notify):
-            gbp.log.err("Failed to send notification")
-            retval = 1
+        if spec and options.notify:
+            summary = "Gbp-rpm %s" % ["failed", "successful"][not retval]
+            message = ("Build of %s %s %s" % (spec.name,
+                            RpmPkgPolicy.compose_full_version(spec.version),
+                            ["failed", "succeeded"][not retval]))
+            if not gbp.notifications.notify(summary, message, options.notify):
+                gbp.log.err("Failed to send notification")
+                retval = 1
 
     return retval
 
