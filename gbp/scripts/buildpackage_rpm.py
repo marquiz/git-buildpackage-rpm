@@ -460,8 +460,6 @@ def parse_args(argv, prefix, git_treeish=None):
                       help="subdir for build-time alternative root (under EXPORT_DIR), i.e. rpmbuild buildrootdir, default is '%(rpmbuild-buildrootdir)s'")
     export_group.add_config_file_option("export", dest="export",
                       help="export treeish object TREEISH, default is '%(export)s'", metavar="TREEISH")
-    export_group.add_option("--git-purge", action="store_true", dest="purge", default=False,
-                      help="purge exported package build directory")
     export_group.add_config_file_option(option_name="packaging-dir",
                       dest="packaging_dir")
     export_group.add_config_file_option(option_name="spec-file", dest="spec_file")
@@ -696,9 +694,6 @@ def main(argv):
         shutil.rmtree(options.tmp_dir)
 
     if not options.tag_only:
-        if options.purge and not retval and not options.export_only:
-            RemoveTree(export_dir)()
-
         if spec and options.notify:
             summary = "Gbp-rpm %s" % ["failed", "successful"][not retval]
             message = ("Build of %s %s %s" % (spec.name,
