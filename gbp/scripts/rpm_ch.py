@@ -237,7 +237,9 @@ def guess_commit(section, repo, options):
 
 def get_start_commit(changelog, repo, options):
     """Get the start commit from which to generate new entries"""
-    if options.since:
+    if options.all:
+        since = None
+    elif options.since:
         since = options.since
     else:
         if changelog.sections:
@@ -246,7 +248,7 @@ def get_start_commit(changelog, repo, options):
             since = None
         if not since:
             raise GbpError("Couldn't determine starting point from "
-                           "changelog, please use the '--since' option")
+                           "changelog, please use the '--since' or '--all'")
         gbp.log.info("Continuing from commit '%s'" % since)
     return since
 
@@ -436,6 +438,9 @@ def build_parser(name):
     # Range group options
     range_grp.add_option("-s", "--since", dest="since",
                     help="commit to start from (e.g. HEAD^^^, release/0.1.2)")
+    range_grp.add_option("--all", action="store_true",
+                    help="use all commits from the Git history, overrides "
+                         "--since")
     # Formatting group options
     format_grp.add_option("--no-release", action="store_false", default=True,
                     dest="release",
