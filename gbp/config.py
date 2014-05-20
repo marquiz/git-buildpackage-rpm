@@ -636,6 +636,9 @@ class GbpOptionParserRpm(GbpOptionParser):
                          "default from packaging policy is used."),
                    'editor-cmd':
                         "Editor command to use",
+                   'git-author':
+                        ("Use name and email from git-config for the changelog "
+                          "header, default is '%(git-author)s'"),
                  } )
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
