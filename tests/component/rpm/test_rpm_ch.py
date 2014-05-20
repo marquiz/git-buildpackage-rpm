@@ -20,7 +20,7 @@ import os
 import re
 from nose.tools import assert_raises, eq_, ok_ # pylint: disable=E0611
 
-from gbp.scripts.rpm_changelog import main as rpm_ch
+from gbp.scripts.rpm_ch import main as rpm_ch
 from gbp.git import GitRepository
 
 from tests.component.rpm import RpmRepoTestBase
