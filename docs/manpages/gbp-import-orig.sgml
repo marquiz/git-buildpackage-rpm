@@ -223,6 +223,15 @@
           </para>
         </listitem>
       </varlistentry>
+      <varlistentry>
+        <term><option>--[no-]interactive</option></term>
+        <listitem>
+          <para>
+          Run command interactively, i.e. ask package name and version if
+          needed.
+          </para>
+        </listitem>
+      </varlistentry>
     </variablelist>
   </refsect1>
   <refsect1>
