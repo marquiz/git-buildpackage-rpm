@@ -21,7 +21,7 @@
     <cmdsynopsis>
       &gbp-pull;
 
-      <arg><option>--verbose</option></arg>
+      &man.common.options.synopsis;
       <arg><option>--force=</option><replaceable>[merge|clean]</replaceable></arg>
       <arg><option>--all</option></arg>
       <arg><option>--redo-pq</option></arg>
@@ -48,6 +48,8 @@
     <title>OPTIONS</title>
 
     <variablelist>
+      &man.common.options.description;
+
       <varlistentry>
         <term><option>--force=</option><replaceable>[merge|clean]</replaceable></term>
         <listitem>
@@ -109,13 +111,6 @@
         </term>
         <listitem>
           <para>Git history depth, for deepening shallow git clones.</para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><option>--verbose</option></term>
-	<term><option>-v</option></term>
-        <listitem>
-          <para>verbose execution</para>
         </listitem>
       </varlistentry>
       <varlistentry>
