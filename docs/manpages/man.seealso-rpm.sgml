@@ -1,0 +1,12 @@
+      <citerefentry>
+        <refentrytitle>rpmbuild</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>git</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>pristine-tar</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,

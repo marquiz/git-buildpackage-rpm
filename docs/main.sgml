@@ -6,6 +6,8 @@
   %VERSION;
   <!ENTITY % MANPAGES SYSTEM "manpages/manpages.ent">
   %MANPAGES;
+  <!ENTITY % MANPAGES.RPM SYSTEM "manpages/manpages-rpm.ent">
+  %MANPAGES.RPM;
   <!ENTITY % CHAPTERS SYSTEM "chapters/chapters.ent">
   %CHAPTERS;
   <!ENTITY % CHAPTERS.RPM SYSTEM "chapters/chapters-rpm.ent">

@@ -10,6 +10,14 @@
   &ch.development-rpm;
   &ch.building-rpm;
 
+  <appendix id="man.rpm.reference">
+    <title>Command Reference</title>
+    &man.gbp.buildpackage.rpm;
+    &man.gbp.import.orig.rpm;
+    &man.gbp.import.srpm;
+    &man.gbp.pq.rpm;
+    &man.gbp.rpm.ch;
+  </appendix>
   <appendix id="gbp.rpm.copyleft">
     <title>Copyright</title>
     &gbp.copyright;

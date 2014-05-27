@@ -1,0 +1,399 @@
+<refentry id="man.gbp.pq.rpm">
+  <refentryinfo>
+    <address>
+      &rpm-email;
+    </address>
+    <author>
+      &rpm-firstname;
+      &rpm-surname;
+    </author>
+  </refentryinfo>
+  <refmeta>
+   <refentrytitle>gbp-pq-rpm</refentrytitle>
+    &rpm-mansection;
+  </refmeta>
+  <refnamediv>
+    <refname>gbp-pq-rpm</refname>
+    <refpurpose>Manage patches and development branches in Git</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      &gbp-pq-rpm;
+      &man.common.options.synopsis;
+      <arg><option>--vendor</option>=<replaceable>VENDOR</replaceable></arg>
+      <arg><option>--packaging-branch=</option><replaceable>BRANCH-NAME</replaceable></arg>
+      <arg><option>--pq-branch=</option><replaceable>BRANCH-NAME</replaceable></arg>
+      <arg><option>--packaging-dir=</option><replaceable>DIRECTORY</replaceable></arg>
+      <arg><option>--spec-file=</option><replaceable>FILEPATH</replaceable></arg>
+      <arg><option>--upstream-tag=</option><replaceable>TAG-FORMAT</replaceable></arg>
+      <arg><option>--force</option></arg>
+      <arg><option>--import-files=</option><replaceable>FILES</replaceable></arg>
+      <arg><option>--export-rev=</option><replaceable>TREEISH</replaceable></arg>
+      <arg><option>--patch-export-compress=</option><replaceable>THRESHOLD</replaceable></arg>
+      <arg><option>--patch-export-ignore-path=</option><replaceable>REGEX</replaceable></arg>
+      <arg><option>--patch-export-squash-until=</option><replaceable>COMMITISH</replaceable></arg>
+      <arg><option>--[no-]patch-numbers</option></arg>
+      <arg><option>--new-packaging-dir=</option><replaceable>DIRECTORY</replaceable></arg>
+      <arg><option>--retain-history</option></arg>
+      <group choice="plain">
+        <arg><option>drop</option></arg>
+        <arg><option>export</option></arg>
+        <arg><option>import</option></arg>
+        <arg><option>rebase</option></arg>
+        <arg><option>switch</option></arg>
+        <arg><option>convert</option></arg>
+      </group>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+    <title>DESCRIPTION</title>
+    <para>
+    &gbp-pq-rpm; helps in managing patches and development branch(es) for
+    packages that are maintained with &gbp;. It designed to be used for
+    packages that are maintained using the "orphan-packaging" model.
+    &gbp-pq-rpm; has multiple subcommands, or actions, for working with the
+    branches and patches.
+    </para>
+    <para>
+    &gbp-pq-rpm; makes it easy to do source code development on a separate
+    development branch (patch-queue branch in Debian git-buildpackage terms).
+    For example, if the packaging files would be stored in
+    <replaceable>master</replaceable> the associated development branch would
+    be <replaceable>development/master</replaceable>.
+    </para>
+  </refsect1>
+  <refsect1>
+    <title>ACTIONS</title>
+    <variablelist>
+      <varlistentry>
+        <term><option>import</option>
+        </term>
+        <listitem>
+          <para>
+          Create a development (patch-queue) branch by applying all patches
+          from the packaging branch on top of the upstream version. The patches
+          must apply without fuzz.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>export</option>
+        </term>
+        <listitem>
+          <para>
+          Export patches from the development branch into the packaging branch.
+          It generates patches (one-per-commit) from the development branch and
+          updates the spec file accordingly. It doesn't automatically commit
+          the changes though - they need to verified and committed manually.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>rebase</option>
+        </term>
+        <listitem>
+          <para>
+          Switch to the development branch and rebase it against the current
+          upstream version (indicated in the spec file of the associated
+          packaging branch).
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>drop</option>
+        </term>
+        <listitem>
+          <para>
+          Drop (delete) the development branch associated to the current
+          branch. For example, you're on branch <replaceable>foo</replaceable>
+          this would drop branch <replaceable>development/foo</replaceable>.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>apply</option>
+        </term>
+        <listitem>
+          <para>
+          Add a single patch to the development branch - similar to using
+          <command>git-am</command>.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>switch</option>
+        </term>
+        <listitem>
+          <para>
+          Switch between the development branch and the associated packaging
+          branch.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>convert</option>
+        </term>
+        <listitem>
+          <para>
+          Convert a package from the "joint-packaging" maintenance model and
+          git-layout to the "orphan-packaging" model.  It takes the content of
+          the packaging directory, auto-generates patches and puts these into a
+          new orphan packaging branch. You can use the
+          <option>--retain-history</option> to try to preserve as much of the
+          git history as possible. Converting is a one-time action - conversion
+          back to the "joint-packaging" model is not supported (yet).
+          </para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1>
+    <title>OPTIONS</title>
+    <variablelist>
+      &man.common.options.description;
+
+      <varlistentry>
+        <term><option>--vendor</option>=<replaceable>VENDOR</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Distribution vendor name.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--packaging-branch</option>=<replaceable>BRANCH-NAME</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Branch the packaging files are being maintained on. Only relevant if
+          a invariable/single development (pq-branch) is defined with
+          <option>--pq-branch</option>, in which case this is used as the
+          "base" branch.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--pq-branch</option>=<replaceable>BRANCH_NAME</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Name (format string) of the development (patch-queue) branch. The
+          following string fields are accepted: "%(branch)s" (the base branch,
+          i.e. the packaging branch that the development branch is associated
+          to), "%(upstreamversion)s" (the upstream version), "%(release)s" (the
+          rpm patchlevel, i.e. Release), "%(version)s" (full rpm package
+          version).
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--packaging-dir=</option><replaceable>DIRECTORY</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Subdirectory that contains the RPM packaging files.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--spec-file=</option><replaceable>FILEPATH</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Relative path to the spec file to use. Special value
+          <replaceable>auto</replaceable> causes &gbp; to search and guess.
+          Other values cause the <option>--packaging-dir</option> option to be
+          ignored: the directory of the spec file is used, instead.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--upstream-tag=</option><replaceable>TAG-FORMAT</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Use this tag format when looking for tags of upstream versions,
+          default is <replaceable>upstream/%(version)s</replaceable>.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--force</option></term>
+        <listitem>
+          <para>
+          Import even if the development (patch-queue) branch already exists.
+          Only valid for the import action.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--import-files=</option><replaceable>FILES</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Comma-separated list of additional file(s) to import from packaging
+          branch. These will appear as one monolithic patch in the development
+          (patch-queue) branch. By default, the local gbp conf files are
+          imported in order to try to ensure that gbp sees the same settings on
+          the development (pq) branch as on the packaging branch.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--export-rev=</option><replaceable>TREEISH</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Export patches from <replaceable>TREEISH</replaceable> instead of the
+          default which is HEAD of the development (patch-queue) branch.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--patch-export-compress=</option><replaceable>THRESHOLD</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Compress patches larger than given
+          <replaceable>THRESHOLD</replaceable> bytes. Special value 0 disabled
+          patch compression.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--patch-export-ignore-path=</option><replaceable>REGEX</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Exclude changes to path(s) matching <replaceable>REGEX</replaceable>
+          in patch generation.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--patch-export-squash-until=</option><replaceable>COMMITISH</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Squash commits up to the given <replaceable>COMMITISH</replaceable>
+          into one monolitic diff. Could be used if one wants to squash commits
+          from an upstream release up to a stable update into a single diff
+          (commits on top of the stable would generate one patch per commit as
+          usual). The format is '&lt;commit_ish&gt;[:&lt;filename_base&gt;]',
+          i.e. commitish optionally followed by a colon and the desired
+          filename base for the diff (suffix '.diff' is automatically added by
+          &gbp;). Magic word 'HEAD' translates to the patch-export-treeish when
+          given as the squash-point. This allows one to configure gbp to
+          always squash all commits into one monolithic diff.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--[no-]patch-numbers</option>
+        </term>
+        <listitem>
+          <para>
+          Whether the patch files should start with a number or not.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--new-packaging-dir=</option><replaceable>DIRECTORY</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Directory where packaging files are put in the new orphan packaging
+          branch after convert. If <option>--new-packaging-dir=</option> is not
+          defined, <replaceable>packaging-dir</replaceable> is used.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--retain-history</option>
+        </term>
+        <listitem>
+          <para>
+          Try to preserve as much history as possible when converting. That is,
+          for each commit in the old branch create one corresponding commit in
+          the new orphan packaging branch. However, commits that will not
+          generate any changes are skipped (i.e. no empty commits are
+          generated) - these are caused e.g. by changes in files that are
+          ignored by patch-generation.
+          </para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1>
+    <title>META TAGS</title>
+    <para>
+    When exporting patches from a patch-queue branch &gbp-pq-rpm; will look at
+    the commit message for special tags it recognizes. All tags need to start
+    at the first column and require at least one whitespace after the colon.
+    </para>
+    <variablelist>
+      <varlistentry>
+        <term><option>Gbp-Rpm: Ignore</option>
+        </term>
+        <listitem>
+          <para>
+          Ignores the commit, no patch is generated out of it.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>Gbp-Rpm: If &lt;expression&gt;</option>
+        </term>
+        <listitem>
+          <para>
+          Conditional patch. Put patch inside "%if &lt;expression&gt;" in the
+          spec file.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>Gbp-Rpm: IfArch&lt;expression&gt;</option>
+        </term>
+        <listitem>
+          <para>
+          Conditional patch. Put patch inside "%ifarch &lt;expression&gt;" in
+          the spec file.
+          </para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+    <para>
+    For example, the following commit message:
+    </para>
+    <screen>
+      Fix around a problem in Fedora
+
+      which is not applicable elsewhere.
+
+      Gbp-Rpm: If 0%{?fedora}
+    </screen>
+    <para>
+    Will result something like this in the spec file:
+    </para>
+    <screen>
+      # 0001-Fix-around-a-problem-in-Fedora.patch
+      %if 0%{?fedora}
+      %patch0 -p1
+      %endif
+    </screen>
+  </refsect1>
+  <refsect1>
+    <title>SEE ALSO</title>
+    <para>
+      <xref linkend="man.gbp.buildpackage.rpm">,
+      <xref linkend="man.gbp.conf">
+    </para>
+  </refsect1>
+  <refsect1>
+    <title>AUTHOR</title>
+    <para>
+      &rpm-username; &rpm-email;
+    </para>
+  </refsect1>
+</refentry>

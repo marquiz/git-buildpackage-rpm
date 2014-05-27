@@ -1,0 +1,10 @@
+<!ENTITY man.gbp.buildpackage.rpm SYSTEM "gbp-buildpackage-rpm.sgml">
+<!ENTITY man.gbp.import.orig.rpm SYSTEM "gbp-import-orig-rpm.sgml">
+<!ENTITY man.gbp.import.srpm SYSTEM "gbp-import-srpm.sgml">
+<!ENTITY man.gbp.pq.rpm SYSTEM "gbp-pq-rpm.sgml">
+<!ENTITY man.gbp.rpm.ch SYSTEM "gbp-rpm-ch.sgml">
+<!ENTITY man.gbp.conf SYSTEM "gbp.conf.sgml">
+<!ENTITY man.gbp.config-files SYSTEM "man.conffiles.sgml">
+<!ENTITY man.seealso.common SYSTEM "man.seealso-rpm.sgml">
+<!ENTITY % COMMON.OPTIONS SYSTEM "man.common-options.ent">
+%COMMON.OPTIONS;

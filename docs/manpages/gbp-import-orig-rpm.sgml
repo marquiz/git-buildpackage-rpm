@@ -1,0 +1,324 @@
+<refentry id="man.gbp.import.orig.rpm">
+  <refentryinfo>
+    <address>
+      &rpm-email;
+    </address>
+    <author>
+      &rpm-firstname;
+      &rpm-surname;
+    </author>
+  </refentryinfo>
+  <refmeta>
+    <refentrytitle>gbp-import-orig-rpm</refentrytitle>
+    &rpm-mansection;
+  </refmeta>
+  <refnamediv>
+    <refname>git-import-orig-rpm</refname>
+    <refname>gbp-import-orig-rpm</refname>
+    <refpurpose>Import an upstream source into a git repository.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      &gbp-import-orig-rpm;
+
+      &man.common.options.synopsis;
+      <arg><option>--vendor</option>=<replaceable>VENDOR</replaceable></arg>
+      <arg><option>--upstream-version=</option><replaceable>VERSION</replaceable></arg>
+      <arg><option>--[no-]merge</option></arg>
+      <arg><option>--upstream-branch=</option><replaceable>BRANCH-NAME</replaceable></arg>
+      <arg><option>--packaging-branch=</option><replaceable>BRANCH-NAME</replaceable></arg>
+      <arg><option>--packaging-dir=</option><replaceable>DIRECTORY</replaceable></arg>
+      <arg><option>--[no-]create-missing-branches</option></arg>
+      <arg><option>--upstream-vcs-tag=</option><replaceable>TAG-NAME</replaceable></arg>
+      <arg><option>--[no-]sign-tags</option></arg>
+      <arg><option>--keyid=</option><replaceable>GPG-KEYID</replaceable></arg>
+      <arg><option>--upstream-tag=</option><replaceable>TAG-FORMAT</replaceable></arg>
+      <arg><option>--filter=</option><replaceable>PATTERN</replaceable></arg>
+      <arg><option>--[no-]pristine-tar</option></arg>
+      <arg><option>--[no-]filter-pristine-tar</option></arg>
+      <arg><option>--pristine-tarball-name=<replaceable>FILENAME</replaceable></option></arg>
+      <arg><option>--orig-prefix=<replaceable>PREFIX</replaceable></option></arg>
+      <arg><option>--postimport=<replaceable>CMD</replaceable></option></arg>
+      <arg><option>--[no-]interactive</option></arg>
+      <group choice="plain">
+        <arg choice="plain"><replaceable>UPSTREAM-SOURCE</replaceable></arg>
+      </group>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+    <title>DESCRIPTION</title>
+    <para>
+    &gbp-import-orig-rpm; is an basically identical to the &gbp-import-orig;
+    tool, with only some rpm-specific functionality added and some
+    Debian-specific functionality removed.
+    </para>
+    <para>
+    &gbp-import-orig-rpm; imports <replaceable>UPSTREAM-SOURCE</replaceable>
+    into the &git; repository. <replaceable>UPSTREAM-SOURCE</replaceable> can
+    either be a gzip, bzip2, lzma or xz compressed tar archive, a zip archive
+    or an already unpacked source tree. If it is already of the form
+    <replaceable>package-name-version.tar.gz</replaceable>, the version
+    information is read from the tarball's filename otherwise it can be given
+    on the command line via <option>--upstream-version</option>.  If the source
+    package name or version can't be determined &gbp-import-orig-rpm; will
+    prompt for it unless <option>--no-interactive</option> is given.
+    </para>
+    <para>
+    &gbp-import-orig-rpm; tries to download the archive from a remote server if
+    a remote URL is given. In addition, if no
+    <replaceable>UPSTREAM-SOURCE</replaceable> is given &gbp-import-orig-rpm;
+    takes the archive URI from the spec file - this makes it possible to import
+    a new upstream version just by bumping the version number in the spec file
+    and running &gbp-import-orig-rpm; (assuming that the spec file contains
+    a full URL for the archive and its filename automatically follows the
+    package version e.g. by using the %{version} macro, of course).
+    </para>
+    <para>
+    The sources are placed on the upstream branch (default:
+    <replaceable>upstream</replaceable>) and tagged.
+    </para>
+  </refsect1>
+  <refsect1>
+    <title>OPTIONS</title>
+    <variablelist>
+      &man.common.options.description;
+
+      <varlistentry>
+        <term><option>--vendor</option>=<replaceable>VENDOR</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Distribution vendor name.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--upstream-version</option>=<replaceable>VERSION</replaceable></term>
+        <term><option>-u</option><replaceable>VERSION</replaceable></term>
+        <listitem>
+          <para>
+          The upstream version number.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--merge</option></term>
+        <listitem>
+          <para>
+          Merge the upstream branch to the packaging branch after import.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--upstream-branch</option>=<replaceable>BRANCH-NAME</replaceable>
+        </term>
+        <listitem>
+          <para>
+          The branch in the Git repository the upstream sources are put
+          onto. Default is <replaceable>upstream</replaceable>.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--packaging-branch</option>=<replaceable>BRANCH-NAME</replaceable>
+        </term>
+        <listitem>
+          <para>
+          The branch in the Git repository the package is being developed on,
+          default is <replaceable>master</replaceable>. After importing the new
+          sources on the upstream branch, &gbp-import-orig-rpm; will try to
+          merge the new version onto this branch.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--packaging-dir=</option><replaceable>DIRECTORY</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Subdirectory that contains the RPM packaging files.
+          &gbp-import-orig-rpm; uses this to try to find a spec file which, in
+          turn, is used to get the upstream source archive URI if one is not
+          specified on the command line.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--[no-]create-missing-branches</option>
+        </term>
+        <listitem>
+          <para>
+          Create missing upstream branch if it does not exist.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--upstream-vcs-tag</option>=<replaceable>TAG-NAME</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Add <replaceable>TAG-NAME</replaceable> as additional parent to the
+          commit of the upstream tarball. Useful when upstream uses git and you
+          want to link to it's revision history.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--[no-]sign-tags</option>
+        </term>
+        <listitem>
+          <para>
+          GPG sign all created tags.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--keyid=</option><replaceable>GPG-KEYID</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Use this keyid for gpg signing tags.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--upstream-tag=</option><replaceable>TAG-FORMAT</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Use this tag format when tagging upstream versions,
+          default is <replaceable>upstream/%(version)s</replaceable>.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--import-msg=</option><replaceable>MSG-FORMAT</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Use this format string for the commit message when importing upstream
+          versions, default is
+          <replaceable>Imported Upstream version %(version)s</replaceable>.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--filter=</option><replaceable>PATTERN</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Filter out files glob-matching pattern. Can be given multiple times.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--[no-]pristine-tar</option>
+        </term>
+        <listitem>
+          <para>
+          Generate <command>pristine-tar</command> delta file.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--[no-]filter-pristine-tar</option>
+        </term>
+        <listitem>
+          <para>
+          If using a filter also filter the files out of the tarball
+          passed to <command>pristine-tar</command>.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--pristine-tarball-name=</option><replaceable>FILENAME</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Filename to record to pristine-tar. This does not alter the tarball
+          content, just the filename with which the tarball can be checked out
+          with pristine-tar.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--orig-prefix=</option><replaceable>PREFIX</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Prefix (directory) to be used when importing sources into
+          pristine-tar. Only takes effect when <option>--pristine-tar</option>
+          is used.  Special value <replaceable>auto</replaceable> causes &gbp-import-orig-rpm; to guess
+          the prefix when importing unpacked sources, or, not to change the
+          prefix when importing source archives.
+          </para>
+          <note>
+            <para>
+            Using this option will alter the source archive that is imported to
+            pristine-tar! That is, pristine-tar does not produce and identical
+            copy of the original tarball (but the mangled tarball, instead).
+            </para>
+          </note>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--postimport=<replaceable>CMD</replaceable></option></term>
+        <listitem>
+          <para>
+          Run <replaceable>CMD</replaceable> after the import.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--[no-]interactive</option></term>
+        <listitem>
+          <para>
+          Run command interactively, i.e. ask package name and version if
+          needed.
+          </para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1>
+    <title>EXAMPLES</title>
+    <para>
+    Download and import a new upstream version using the informantion from the
+    spec file
+    </para>
+    <screen>
+      &gbp-import-orig-rpm;
+    </screen>
+    <para>
+    After manually downloading an upstream import it
+    </para>
+    <screen>
+      &gbp-import-orig-rpm; ../upstream-tarball-0.1.tar.gz
+    </screen>
+    <para>
+    Import unpacked sources
+    </para>
+    <screen>
+      &gbp-import-orig-rpm; --orig-prefix=upstream-0.1 ../upstream/
+    </screen>
+  </refsect1>
+  <refsect1>
+    &man.gbp.config-files;
+  </refsect1>
+  <refsect1>
+    <title>SEE ALSO</title>
+    <para>
+      <xref linkend="man.gbp.buildpackage">,
+      <xref linkend="man.gbp.import.srpm">,
+      <xref linkend="man.gbp.rpm.ch">,
+      <xref linkend="man.gbp.conf">,
+      &man.seealso.common;
+    </para>
+  </refsect1>
+  <refsect1>
+    <title>AUTHOR</title>
+    <para>
+    &rpm-username; &rpm-email;
+    </para>
+  </refsect1>
+</refentry>
