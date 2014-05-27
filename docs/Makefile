@@ -3,6 +3,7 @@
 MAN1S = \
         gbp               \
         gbp-buildpackage  \
+        gbp-buildpackage-rpm \
         gbp-clone         \
         gbp-config        \
         gbp-create-remote-repo \
@@ -10,8 +11,12 @@ MAN1S = \
         gbp-import-dsc    \
         gbp-import-dscs   \
         gbp-import-orig   \
+        gbp-import-orig-rpm \
+        gbp-import-srpm   \
         gbp-pq            \
+        gbp-pq-rpm        \
         gbp-pull          \
+        gbp-rpm-ch        \
         $(NULL)
 
 MAN5S = gbp.conf

@@ -241,6 +241,13 @@ done
 %{_bindir}/*rpm*
 %{python_sitelib}/gbp/scripts/*rpm*.py*
 %{python_sitelib}/gbp/rpm/*py*
+%if %{with docs}
+%{_mandir}/man1/gbp-buildpackage-rpm.1*
+%{_mandir}/man1/gbp-import-orig-rpm.1*
+%{_mandir}/man1/gbp-import-srpm.1*
+%{_mandir}/man1/gbp-pq-rpm.1*
+%{_mandir}/man1/gbp-rpm-ch.1*
+%endif
 
 
 %if %{with docs}
