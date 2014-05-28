@@ -543,7 +543,7 @@ class GbpConfArgParser(object):
         else:
             kwargs['default'] = self.config.get_value(name)
         self.conf_file_args.add(name)
-        if not 'help' in kwargs:
+        if not 'help' in kwargs and name in self.config.default_helps:
             kwargs['help'] = self.config.default_helps[name]
         new_arg = self.add_arg(*args, **kwargs)
 
