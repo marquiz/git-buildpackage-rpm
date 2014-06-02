@@ -203,6 +203,23 @@ def get_current_branch(repo):
     return branch
 
 
+def get_vcs_info(repo, treeish):
+    """Get the info for spec vcs tag"""
+    info = {}
+    try:
+        info['tagname'] = repo.describe(treeish, longfmt=True, always=True,
+                                        abbrev=40)
+        info['commit'] = repo.rev_parse('%s^0' % treeish)
+        info['commitish'] = repo.rev_parse('%s' % treeish)
+    except GitRepositoryError:
+        # If tree is not commit-ish, expect it to be from current HEAD
+        info['tagname'] = repo.describe('HEAD', longfmt=True, always=True,
+                                        abbrev=40) + '-dirty'
+        info['commit'] = repo.rev_parse('HEAD') + '-dirty'
+        info['commitish'] = info['commit']
+    return info
+
+
 def guess_export_params(repo, options):
     """Get commit and tree from where to export packaging and patches"""
     tree = None
@@ -650,8 +667,7 @@ def main(argv):
                 repo.delete_tag(tag)
             create_packaging_tag(repo, tag, commit=tree, version=spec.version,
                                  options=options)
-            tree_name = tag
-            commit_sha1 = repo.rev_parse('%s^0' % tag)
+            vcs_info = get_vcs_info(repo, tag)
             if options.posttag:
                 sha = repo.rev_parse("%s^{}" % tag)
                 Command(options.posttag, shell=True,
@@ -659,19 +675,9 @@ def main(argv):
                                    'GBP_BRANCH': branch,
                                    'GBP_SHA1': sha})()
         else:
-            try:
-                tree_name = repo.describe(tree, longfmt=True, always=True,
-                                          abbrev=40)
-                commit_sha1 = repo.rev_parse('%s^0' % tree)
-            except GitRepositoryError:
-                # If tree is not commit-ish, expect it to be from current HEAD
-                tree_name = repo.describe('HEAD', longfmt=True, always=True,
-                                          abbrev=40) + '-dirty'
-                commit_sha1 = repo.rev_parse('HEAD') + '-dirty'
+            vcs_info = get_vcs_info(repo, tree)
         # Put 'VCS:' tag to .spec
-        spec.set_tag('VCS', None,
-                     options.spec_vcs_tag % {'tagname': tree_name,
-                                             'commit': commit_sha1})
+        spec.set_tag('VCS', None, options.spec_vcs_tag % vcs_info)
         spec.write_spec_file()
 
     except CommandExecFailed:
