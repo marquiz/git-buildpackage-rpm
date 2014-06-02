@@ -1,3 +1,17 @@
+git-buildpackage (0.6.12-tizen20140602) unstable; urgency=low
+
+  * tristate: implement __nonzero__() method
+    Fixes some problems with notifications='off' in buildpackage-rpm, by not
+    even trying to import pynotify when notifications are turned off.
+  * buildpackage-rpm: new 'commitish' keyword for spec vcs tag
+    Add a new keyword '%(commitish)s' that can be used in the
+    --git-spec-vcs-tag option. This will be translated to the sha1 of the
+    commitish (i.e. tag or commit). That is, if you export a tag you will
+    get the sha1 of the tag object - not resolving to a commit object unlike
+    '%(commit)s' does.
+
+ -- Markus Lehtonen <markus.lehtonen@linux.intel.com>  Mon, 02 Jun 2014 12:02:08 +0300
+
 git-buildpackage (0.6.12-tizen20140521) unstable; urgency=low
 
   [ Markus Lehtonen ]

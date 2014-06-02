@@ -1,3 +1,14 @@
+* Mon Jun 02 2014 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.12-20140602
+- tristate: implement __nonzero__() method
+  Fixes some problems with notifications='off' in buildpackage-rpm, by not
+  even trying to import pynotify when notifications are turned off.
+- buildpackage-rpm: new 'commitish' keyword for spec vcs tag
+  Add a new keyword '%(commitish)s' that can be used in the
+  --git-spec-vcs-tag option. This will be translated to the sha1 of the
+  commitish (i.e. tag or commit). That is, if you export a tag you will
+  get the sha1 of the tag object - not resolving to a commit object unlike
+  '%(commit)s' does.
+
 * Wed May 21 2014 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.12-20140521
 - Rebase on top of upstream version 0.6.12
 - Changes in rpm-ch
