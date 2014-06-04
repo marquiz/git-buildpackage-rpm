@@ -324,80 +324,88 @@ class GbpPqHelpFormatter(RawDescriptionHelpFormatter,
     pass
 
 def build_parser(name):
-    description = "maintain patches on a patch queue branch\n" \
-    "Actions:\n" \
-    "  export         export the patch queue associated to the current branch\n" \
-    "                 into a quilt patch series in debian/patches/ and update the\n" \
-    "                 series file.\n" \
-    "  import         create a patch queue branch from quilt patches in debian/patches.\n" \
-    "  rebase         switch to patch queue branch associated to the current\n" \
-    "                 branch and rebase against current branch.\n" \
-    "  drop           drop (delete) the patch queue associated to the current branch.\n" \
-    "  apply          apply a patch\n" \
-    "  switch         switch to patch-queue branch and vice versa"
+    description = "maintain patches on a patch queue branch"
+    usage = "%(prog)s [-h] [--version] ACTION [options]"
+    epilog = "See '%(prog)s ACTION --help' for action-specific options"
     try:
         parser = GbpConfArgParserDebian.create_parser(prog=name,
-                                    description=description,
-                                    formatter_class=GbpPqHelpFormatter)
+                                                      usage=usage,
+                                                      description=description,
+                                                      epilog=epilog)
+        _parent = GbpConfArgParserDebian.create_parser(prog=name,
+                                                       add_help=False,
+                                                       version=None)
     except configparser.ParsingError as err:
         gbp.log.err(err)
         return None
 
-    parser.add_bool_conf_file_arg("--patch-numbers")
-    parser.add_conf_file_arg("--patch-num-format")
-    parser.add_bool_conf_file_arg("--renumber")
-    parser.add_arg("-v", "--verbose", action="store_true",
-                   help="verbose command execution")
-    parser.add_arg("--topic",
-                   help="in case of 'apply' topic (subdir) to put patch into")
-    parser.add_conf_file_arg("--time-machine", type=int)
-    parser.add_bool_conf_file_arg("--drop")
-    parser.add_bool_conf_file_arg("--commit")
-    parser.add_arg("--force", action="store_true",
-                   help="in case of import even import if the branch already "
-                        "exists")
-    parser.add_conf_file_arg("--color", type='tristate')
-    parser.add_conf_file_arg("--color-scheme")
-    parser.add_conf_file_arg("--meta-closes")
-    parser.add_conf_file_arg("--meta-closes-bugnum")
+    # Add common arguments
+    _parent.add_arg("-v", "--verbose", action="store_true",
+                help="verbose command execution")
+    _parent.add_conf_file_arg("--color", type='tristate')
+    _parent.add_conf_file_arg("--color-scheme")
+
+    # Add subcommands
+    subparsers = parser.add_subparsers(title='actions', dest='action')
+
+    # Export
+    _parser = subparsers.add_parser('export', parents=[_parent],
+                help="export the patch queue associated to the current "
+                     "branch into a quilt patch series in debian/patches/ "
+                     "and update the series file.")
+    _parser.add_bool_conf_file_arg("--patch-numbers")
+    _parser.add_conf_file_arg("--patch-num-format")
+    _parser.add_bool_conf_file_arg("--renumber")
+    _parser.add_bool_conf_file_arg("--drop")
+    _parser.add_bool_conf_file_arg("--commit")
+    _parser.add_conf_file_arg("--meta-closes")
+    _parser.add_conf_file_arg("--meta-closes-bugnum")
+    # Import
+    _parser = subparsers.add_parser('import', parents=[_parent],
+                help="create a patch queue branch from quilt patches in "
+                     "debian/patches.")
+    _parser.add_arg("--force", action="store_true",
+                help="in case of import even import if the branch already "
+                     "exists")
+    _parser.add_conf_file_arg("--time-machine", type=int)
+    # Rebase
+    _parser = subparsers.add_parser('rebase', parents=[_parent],
+                help="switch to patch queue branch associated to the current "
+                     "branch and rebase against current branch.")
+    # Drop
+    _parser = subparsers.add_parser('drop', parents=[_parent],
+                help="drop (delete) the patch queue associated to the current "
+                     "branch.")
+    # Apply
+    _parser = subparsers.add_parser('apply', parents=[_parent],
+                help="apply a patch")
+    _parser.add_arg("--topic",
+                help="in case of 'apply' topic (subdir) to put patch into")
+    _parser.add_argument("patch", metavar="PATCH",
+                help="Patch to apply")
+    # Switch
+    _parser = subparsers.add_parser('switch', parents=[_parent],
+                help="switch to patch-queue branch and vice versa")
     return parser
 
 
 def parse_args(argv):
     parser = build_parser(os.path.basename(argv[0]))
     if not parser:
-        return None, None
-    return parser.parse_known_args(argv[1:])
+        return None
+    return parser.parse_args(argv[1:])
 
 
 def main(argv):
     retval = 0
 
-    (options, args) = parse_args(argv)
+    options = parse_args(argv)
     if not options:
         return 1
 
     gbp.log.setup(options.color, options.verbose, options.color_scheme)
 
-    if len(args) < 1:
-        gbp.log.err("No action given.")
-        return 1
-    else:
-        action = args[0]
-
-    if action in ["export", "import", "rebase", "drop", "switch"]:
-        if len(args) != 1:
-            gbp.log.err("Invalid options: %s" % ", ".join(args[1:]))
-            return 1
-    elif action in ["apply"]:
-        if len(args) != 2:
-            gbp.log.err("No patch name given.")
-            return 1
-        else:
-            patchfile = args[1]
-    else:
-        gbp.log.err("Unknown action '%s'." % action)
-        return 1
+    action = options.action
 
     try:
         repo = GitRepository(os.path.curdir)
@@ -421,7 +429,7 @@ def main(argv):
         elif action == "rebase":
             rebase_pq(repo, current)
         elif action == "apply":
-            patch = Patch(patchfile)
+            patch = Patch(options.patch)
             maintainer = get_maintainer_from_control(repo)
             apply_single_patch(repo, current, patch, maintainer, options.topic)
         elif action == "switch":
