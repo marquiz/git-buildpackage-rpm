@@ -356,11 +356,22 @@ def update_changelog(changelog, entries, repo, spec, options):
         top_section.append_entry(entry)
     return (tag, commit_info['author'], commit_info['committer'])
 
-def commit_changelog(repo, changelog, author, committer, edit):
+def create_commit_message(spec, options):
+    """Generate commit message"""
+    fields = spec.version
+    fields['version'] = version=RpmPkgPolicy.compose_full_version(spec.version)
+    fields['vendor'] = options.vendor
+    try:
+        return options.commit_msg % fields
+    except KeyError as err:
+        raise GbpError("Unknown key %s in commit-msg string, "
+                       "only %s are accepted" % (err, fields.keys()))
+
+def commit_changelog(repo, changelog, message, author, committer, edit):
     """Commit changelog and create a packaging/release tag"""
     repo.add_files(changelog.path)
-    repo.commit_staged("Update changelog", author_info=author,
-                        committer_info=committer, edit=edit)
+    repo.commit_staged(message, author_info=author, committer_info=committer,
+                       edit=edit)
 
 
 def parse_args(argv):
@@ -446,6 +457,8 @@ def parse_args(argv):
     # Commit/tag group options
     commit_grp.add_option("-c", "--commit", action="store_true",
                     help="commit changes")
+    commit_grp.add_config_file_option(option_name="commit-msg",
+                                      dest="commit_msg")
     commit_grp.add_option("--tag", action="store_true",
                     help="commit the changes and create a packaging/release"
                          "tag")
@@ -498,7 +511,8 @@ def main(argv):
 
         if options.commit:
             edit = True if editor_cmd else False
-            commit_changelog(repo, ch_file, author, committer, edit)
+            msg = create_commit_message(spec, options)
+            commit_changelog(repo, ch_file, msg, author, committer, edit)
             if options.tag:
                 if options.retag and repo.has_tag(tag):
                     repo.delete_tag(tag)
