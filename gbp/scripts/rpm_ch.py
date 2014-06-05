@@ -131,7 +131,7 @@ def check_repo_state(repo, options):
         raise GbpError("Use --ignore-branch to ignore or "
                        "--packaging-branch to set the branch name.")
     # Check unstaged changes
-    if options.tag:
+    if options.commit:
         unstaged = []
         status = repo.status()
         for group, files in status.iteritems():
@@ -141,7 +141,7 @@ def check_repo_state(repo, options):
             gbp.log.error("Unstaged changes in:\n    %s" %
                           '\n    '.join(unstaged))
             raise GbpError("Please commit or stage your changes before using "
-                           "the --tag option")
+                           "the --commit or --tag option")
 
 
 def parse_spec_file(repo, options):
@@ -325,7 +325,7 @@ def update_changelog(changelog, entries, repo, spec, options):
     rev_str_fields = dict(spec.version,
                 version=RpmPkgPolicy.compose_full_version(spec.version),
                 vendor=options.vendor)
-    if options.tag:
+    if options.commit:
         # Get fake information for the to-be-created git commit
         commit_info = {'author': GitModifier(date=now),
                        'committer': GitModifier(date=now)}
@@ -444,6 +444,8 @@ def parse_args(argv):
                     help="text to use as new changelog entries - git commit "
                          "messages and the --since are ignored in this case")
     # Commit/tag group options
+    commit_grp.add_option("-c", "--commit", action="store_true",
+                    help="commit changes")
     commit_grp.add_option("--tag", action="store_true",
                     help="commit the changes and create a packaging/release"
                          "tag")
@@ -454,6 +456,8 @@ def parse_args(argv):
     commit_grp.add_config_file_option(option_name="keyid", dest="keyid")
 
     options, args = parser.parse_args(argv[1:])
+    if options.tag:
+        options.commit = True
     if not options.changelog_revision:
         options.changelog_revision = RpmPkgPolicy.Changelog.header_rev_format
 
@@ -492,12 +496,13 @@ def main(argv):
         if editor_cmd and not options.message:
             gbpc.Command(editor_cmd, [ch_file.path])()
 
-        if options.tag:
-            if options.retag and repo.has_tag(tag):
-                repo.delete_tag(tag)
+        if options.commit:
             edit = True if editor_cmd else False
             commit_changelog(repo, ch_file, author, committer, edit)
-            create_packaging_tag(repo, tag, 'HEAD', spec.version, options)
+            if options.tag:
+                if options.retag and repo.has_tag(tag):
+                    repo.delete_tag(tag)
+                create_packaging_tag(repo, tag, 'HEAD', spec.version, options)
 
     except (GbpError, GitRepositoryError, ChangelogError, NoSpecError) as err:
         if len(err.__str__()):
