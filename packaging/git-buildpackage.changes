@@ -1,3 +1,6 @@
+* Thu Jun 05 2014 Markus Lehtonen <markus.lehtonen@linux.intel.com> debian/0.6.15-212-gdbb401b
+- Rebase on top of upstream version 0.6.15
+
 * Wed May 21 2014 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.12-20140521
 - Rebase on top of upstream version 0.6.12
 - Changes in rpm-ch
