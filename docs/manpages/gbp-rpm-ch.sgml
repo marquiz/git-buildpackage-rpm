@@ -286,6 +286,16 @@
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term><option>--commit-msg=</option><replaceable>MSG-FORMAT</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Format string for the commit message when committing changes
+          (when <option>--commit</option> is given).
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
         <term><option>--tag</option>
         </term>
         <listitem>
