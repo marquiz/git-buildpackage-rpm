@@ -1,3 +1,46 @@
+* Thu Aug 28 2014 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.15-20140828
+- Rebase on top of upstream version 0.6.15
+- Changes in buildpackage-rpm
+  * new 'commitish' keyword for spec vcs tag
+  * notify: catch RuntimeError when importing pynotify
+  * fix exit code in case of GitRepositoryError
+  * always create tarball for native packages
+  * check submodules from the exported treeish
+  * fix crash when running prebuild hook
+  * always run cleaner hook
+  * add --git-no-build option
+  * don't crash on invalid vcs format strings
+  * add '--git-native' option
+  * remove some outdated/unnecessary exception handling
+  * get rid of prepare_export_dir()
+  * handle invalid keys in orig prefix
+  * internal refactoring and fixes
+- Changes in rpm-ch
+  * implement --commit option
+  * implement --commit-msg option
+  * rpm-ch: implement --meta-bts option
+  * rpm.policy: don't allow leading whitespace in bts meta tags
+- docs: manpages for the rpm tools
+- Misc. fixes and features
+  * buildpackage: refactor tarball compression
+  * gbp-dch: fix handling of the '--meta' option
+  * import-orig-rpm: download tarball into parent directory
+  * GitRepository/has_submodules: add treeish argument
+  * tristate: implement __nonzero__() method
+- Logging:
+  * don't automatically setup gbp-specific logger
+  * fix auto colorizing for custom streams
+- Tests
+  * multiple fixes and additions in ComponentTestBase class
+  * testutils: add directories arg to ls_* functions
+  * add unit tests for buildpackage-rpm
+- Packaging
+  * rpm-packaging: recommend/require unzip
+  * recommend/require zipmerge
+  * depend/recommend rpmbuild
+  * [ Junchun Guan ] Add PKGBUILD to support arch linux
+  * [ Li Jinjing ] rpm packaging: use macro for python binary
+
 * Wed May 21 2014 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.12-20140521
 - Rebase on top of upstream version 0.6.12
 - Changes in rpm-ch
