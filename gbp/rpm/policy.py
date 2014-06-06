@@ -187,7 +187,7 @@ class RpmPkgPolicy(PkgPolicy):
             """
             tags = {}
             other_lines = []
-            bts_re = re.compile(r'^\s*(?P<tag>%s):\s*(?P<ids>.*)' %
+            bts_re = re.compile(r'^(?P<tag>%s):\s*(?P<ids>.*)' %
                                 ('|'.join(meta_tags)), re.I)
             bug_id_re = re.compile(cls.bug_id_re)
             for line in lines:
