@@ -279,7 +279,8 @@ def entries_from_commits(changelog, repo, commits, options):
     for commit in commits:
         info = repo.get_commit_info(commit)
         entry_text = ChangelogEntryFormatter.compose(info, full=options.full,
-                        ignore_re=options.ignore_regex, id_len=options.idlen)
+                        ignore_re=options.ignore_regex, id_len=options.idlen,
+                        meta_bts=options.meta_bts)
         if entry_text:
             entries.append(changelog.create_entry(author=info['author'].name,
                                                   text=entry_text))
@@ -431,6 +432,7 @@ def parse_args(argv):
                     help="use all commits from the Git history, overrides "
                          "--since")
     # Formatting group options
+    format_grp.add_config_file_option(option_name="meta-bts", dest="meta_bts")
     format_grp.add_option("--no-release", action="store_false", default=True,
                     dest="release",
                     help="no release, just update the last changelog section")
