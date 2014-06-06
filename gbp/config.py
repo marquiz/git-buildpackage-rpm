@@ -123,7 +123,7 @@ class GbpOptionParser(OptionParser):
                  'tarball-dir'     : '',
                  'ignore-new'      : 'False',
                  'ignore-branch'   : 'False',
-                 'meta'            : 'False',
+                 'meta'            : 'True',
                  'meta-closes'     : 'Closes|LP',
                  'full'            : 'False',
                  'id-length'       : '0',
