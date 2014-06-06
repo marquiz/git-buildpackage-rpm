@@ -715,6 +715,7 @@ class GbpOptionParserRpm(GbpOptionParser):
             'changelog-revision'        : '',
             'spawn-editor'              : 'always',
             'editor-cmd'                : 'vim',
+            'meta-bts'                  : '(Close|Closes|Fixes|Fix)',
                     })
 
     help = dict(GbpOptionParser.help)
@@ -805,6 +806,8 @@ class GbpOptionParserRpm(GbpOptionParser):
             'git-author':
                 "Use name and email from git-config for the changelog header, "
                 "default is '%(git-author)s'",
+            'meta-bts':
+                "Meta tags for the bts commands, default is '%(meta-bts)s'",
                  })
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
