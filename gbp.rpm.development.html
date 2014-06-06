@@ -7,6 +7,9 @@
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REL="HOME"
+TITLE="Building Packages with git-buildpackage suite"
+HREF="index.html"><LINK
+REL="UP"
 TITLE="Building RPM Packages with git-buildpackage-rpm"
 HREF="gbp-rpm.html"><LINK
 REL="PREVIOUS"
@@ -74,8 +77,19 @@ ALT="Prev"></A
 ></TD
 ><TD
 ><A
-ACCESSKEY="h"
+ACCESSKEY="u"
 HREF="gbp-rpm.html"
+><IMG
+SRC="up.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Up"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
+HREF="index.html"
 ><IMG
 SRC="home.png"
 WIDTH="24"
@@ -86,7 +100,7 @@ ALT="Home"></A
 ><TH
 WIDTH="100%"
 align="center"
->Building RPM Packages with git-buildpackage-rpm: Version: 0.6.10</TH
+>Building Packages with git-buildpackage suite: Version: 0.6.15</TH
 ><TD
 ><A
 ACCESSKEY="n"
@@ -143,7 +157,7 @@ NAME="GBP.RPM.DEVELOPMENT.MODELS"
 ><P
 >        The <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 > toolset basically supports three different
         models of package maintenance.
         </P
@@ -167,7 +181,7 @@ CLASS="OPTION"
             changes can be directly committed to upstream (which is you).
             When building, <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 > will create the source
             tarball and copy it and the packaging to the build directory.
             </P
@@ -195,7 +209,7 @@ CLASS="OPTION"
 >. When package is built,
             <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 > can automatically generate patches from
             upstream version to packaging branch head (one patch per commit).
             and modify the spec file accordingly.
@@ -232,12 +246,12 @@ CLASS="OPTION"
             code but no packaging files. When building the package,
             <B
 CLASS="COMMAND"
->gbp-pq-rpm</B
+>gbp pq-rpm</B
 > tool is used to export patches from the patch queue
             branch to the packaging branch and edit the spec file accordingly.
             Finally, <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 > will create the upstream source
             tarball and export it and the packaging files to the build
             directory, and, build the RPM package.
@@ -377,7 +391,7 @@ CLASS="COMMAND"
 > nor
         <B
 CLASS="COMMAND"
->git-import-srpm</B
+>gbp import-srpm</B
 >.
         You need to have a separate branch for upstream sources.
         If you already have that, you can simply rename that branch to the
@@ -465,7 +479,7 @@ CLASS="COMMAND"
     # Now, you can create the development branch (and import possible patches)
     $ <B
 CLASS="COMMAND"
->gbp-pq-rpm</B
+>gbp pq-rpm</B
 > import
         </PRE
 >

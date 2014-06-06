@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->gbp-pull</TITLE
+>gbp-config</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,11 +13,11 @@ REL="UP"
 TITLE="Command Reference"
 HREF="man.reference.html"><LINK
 REL="PREVIOUS"
-TITLE="gbp-config"
-HREF="man.gbp.config.html"><LINK
+TITLE="gbp-clone"
+HREF="man.gbp.clone.html"><LINK
 REL="NEXT"
-TITLE="gbp-pq"
-HREF="man.gbp.pq.html"><STYLE
+TITLE="gbp-pull"
+HREF="man.gbp.pull.html"><STYLE
 TYPE="text/css"
 >.synopsis, .classsynopsis {
     background: #eeeeee;
@@ -67,7 +67,7 @@ VALIGN="middle"
 ><TD
 ><A
 ACCESSKEY="p"
-HREF="man.gbp.config.html"
+HREF="man.gbp.clone.html"
 ><IMG
 SRC="left.png"
 WIDTH="24"
@@ -104,7 +104,7 @@ align="center"
 ><TD
 ><A
 ACCESSKEY="n"
-HREF="man.gbp.pq.html"
+HREF="man.gbp.pull.html"
 ><IMG
 SRC="right.png"
 WIDTH="24"
@@ -116,28 +116,28 @@ ALT="Next"></A
 ></TABLE
 ><H1
 ><A
-NAME="MAN.GBP.PULL"
+NAME="MAN.GBP.CONFIG"
 ></A
->gbp-pull</H1
+>gbp-config</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN2730"
+NAME="AEN2615"
 ></A
 ><H2
 >Name</H2
->gbp-pull&nbsp;--&nbsp;Safely update a repository from remote</DIV
+>gbp-config&nbsp;--&nbsp;Query configuration values</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN2733"
+NAME="AEN2618"
 ></A
 ><H2
 >Synopsis</H2
 ><P
 ><B
 CLASS="COMMAND"
->gbp pull</B
+>gbp config</B
 >  [<CODE
 CLASS="OPTION"
 >--version</CODE
@@ -163,105 +163,48 @@ CLASS="REPLACEABLE"
 ><I
 >COLOR_SCHEME</I
 ></TT
->] [<CODE
-CLASS="OPTION"
->--force=</CODE
-><TT
+>] {<TT
 CLASS="REPLACEABLE"
 ><I
->[merge|clean]</I
+>command.option</I
 ></TT
->] [<CODE
-CLASS="OPTION"
->--all</CODE
->] [<CODE
-CLASS="OPTION"
->--redo-pq</CODE
->] [<CODE
-CLASS="OPTION"
->--[no-]pristine-tar</CODE
->] [<CODE
-CLASS="OPTION"
->--ignore-branch</CODE
->] [<CODE
-CLASS="OPTION"
->--debian-branch=</CODE
-><TT
+> | <TT
 CLASS="REPLACEABLE"
 ><I
->branch_name</I
+>command</I
 ></TT
-> | <CODE
-CLASS="OPTION"
->--packaging-branch=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->branch_name</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--upstream-branch=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->branch_name</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--depth=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->depth</I
-></TT
->]</P
+>}</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2772"
+NAME="AEN2638"
 ></A
 ><H2
 >DESCRIPTION</H2
 ><P
 >    <B
 CLASS="COMMAND"
->gbp pull</B
-> updates the <SPAN
-CLASS="emphasis"
+>gbp config</B
+> prints values from the configuration files. It interpolates the
+    value for <TT
+CLASS="REPLACEABLE"
 ><I
-CLASS="EMPHASIS"
->debian</I
-></SPAN
->,
-    <SPAN
-CLASS="emphasis"
+>option</I
+></TT
+> of
+    <TT
+CLASS="REPLACEABLE"
 ><I
-CLASS="EMPHASIS"
->upstream</I
-></SPAN
-> and <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->pristine-tar</I
-></SPAN
->
-    branches from a remote repository in one go. It checks if the update is safe (would
-    result in a <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->fast-forward</I
-></SPAN
-> merge) and aborts otherwise.
+>command</I
+></TT
+>.
     </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2780"
+NAME="AEN2644"
 ></A
 ><H2
 >OPTIONS</H2
@@ -278,7 +221,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2783"><SPAN
+NAME="AEN2647"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -299,7 +242,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2788"><SPAN
+NAME="AEN2652"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -325,7 +268,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2795"><SPAN
+NAME="AEN2659"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -351,7 +294,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2802"><SPAN
+NAME="AEN2666"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -376,7 +319,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2808"><SPAN
+NAME="AEN2672"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -402,315 +345,21 @@ VALIGN="TOP"
           </P
 ></TD
 ></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2814"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--force=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->[merge|clean]</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Force a branch update even if this results in a non fast
-	      forward update.
-          <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->merge</I
-></SPAN
-> does a git-merge.
-          <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->clean</I
-></SPAN
-> checks out a clean copy from upstream.
-          <DIV
-CLASS="WARNING"
-><P
-></P
-><TABLE
-CLASS="WARNING"
-BORDER="1"
-WIDTH="90%"
-><TR
-><TD
-ALIGN="CENTER"
-><B
->Warning</B
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-><P
->using <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->clean</I
-></SPAN
->
-          makes you lose your modifications.</P
-></TD
-></TR
-></TABLE
-></DIV
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2825"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--all</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Update all remote-tracking branches that have identical name in the
-            remote repository.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2830"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--redo-pq</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->also rebuild the corresponding patch-queue using <B
-CLASS="COMMAND"
->gbp pq</B
->.
-	  <DIV
-CLASS="WARNING"
-><P
-></P
-><TABLE
-CLASS="WARNING"
-BORDER="1"
-WIDTH="90%"
-><TR
-><TD
-ALIGN="CENTER"
-><B
->Warning</B
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-><P
->This drops the patch-queue branch if it exists.</P
-></TD
-></TR
-></TABLE
-></DIV
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2838"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--ignore-branch</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Don't care if we're on a branch or in detached head state.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2843"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--debian-branch</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->branch_name</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->The branch in the Git repository the Debian package is being
-	  developed on, default is <TT
-CLASS="REPLACEABLE"
-><I
->master</I
-></TT
->.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2850"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--packaging-branch</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->branch_name</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->The branch the packaging is being maintained on.
-          Alternative to the <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->--debian-branch</I
-></SPAN
-> option.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2857"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--upstream-branch</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->branch_name</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->The branch in the <SPAN
-CLASS="PRODUCTNAME"
->Git</SPAN
-> repository the upstream sources are put
-	  onto. Default is <TT
-CLASS="REPLACEABLE"
-><I
->upstream</I
-></TT
->.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2865"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--depth</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->depth</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Git history depth, for deepening shallow git clones.</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2871"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--pristine-tar</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->Whether to update the pristine-tar branch too.</P
-></TD
-></TR
 ></TBODY
 ></TABLE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2876"
+NAME="AEN2678"
 ></A
 ><H2
 >EXIT CODES</H2
 ><P
 >    When <B
 CLASS="COMMAND"
->gbp pull</B
-> finishes it indicates success or failure with it's exit code:
+>gbp config</B
+> finishes it indicates success or failure with its exit code:
     </P
 ><P
 ></P
@@ -725,7 +374,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2881"><SPAN
+NAME="AEN2683"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -744,7 +393,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2886"><SPAN
+NAME="AEN2688"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -755,7 +404,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->An error occured during the pull, see the printed error message for details.</P
+>Failed to parse command line</P
 ></TD
 ></TR
 ><TR
@@ -763,7 +412,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2891"><SPAN
+NAME="AEN2693"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -774,7 +423,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->At least one branch couldn't be fast forwarded.</P
+>The value did not exist</P
 ></TD
 ></TR
 ></TBODY
@@ -783,7 +432,41 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2896"
+NAME="AEN2698"
+></A
+><H2
+>EXAMPLES</H2
+><P
+>Print the value <CODE
+CLASS="OPTION"
+>upstream-branch</CODE
+> that <B
+CLASS="COMMAND"
+>gbp buildpackage</B
+>
+    would use:</P
+><PRE
+CLASS="SCREEN"
+>    $ gbp config buildpackage.upstream-branch
+    buildpackage.upstream-branch=upstream
+    </PRE
+><P
+>Print the values of all of <B
+CLASS="COMMAND"
+>gbp buildpackage</B
+>s options</P
+><PRE
+CLASS="SCREEN"
+>    $ gbp config buildpackage
+    buildpackage.upstream-branch=upstream
+    buildpackage.debian-branch=master
+    ...
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2707"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -801,24 +484,12 @@ HREF="man.gbp.conf.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2901"
+NAME="AEN2712"
 ></A
 ><H2
 >SEE ALSO</H2
 ><P
 >      <A
-HREF="man.gbp.buildpackage.html"
->gbp-buildpackage(1)</A
->,
-      <A
-HREF="man.gbp.clone.html"
->gbp-clone(1)</A
->,
-      <A
-HREF="man.gbp.pq.html"
->gbp-pq(1)</A
->,
-      <A
 HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
 >
@@ -827,7 +498,7 @@ HREF="man.gbp.conf.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2908"
+NAME="AEN2716"
 ></A
 ><H2
 >AUTHOR</H2
@@ -852,18 +523,18 @@ VALIGN="middle"
 ALIGN="left"
 ><A
 ACCESSKEY="p"
-HREF="man.gbp.config.html"
+HREF="man.gbp.clone.html"
 ><B
->&lt;&lt;&lt;&nbsp;gbp-config</B
+>&lt;&lt;&lt;&nbsp;gbp-clone</B
 ></A
 ></TD
 ><TD
 ALIGN="right"
 ><A
 ACCESSKEY="n"
-HREF="man.gbp.pq.html"
+HREF="man.gbp.pull.html"
 ><B
->gbp-pq&nbsp;&gt;&gt;&gt;</B
+>gbp-pull&nbsp;&gt;&gt;&gt;</B
 ></A
 ></TD
 ></TR

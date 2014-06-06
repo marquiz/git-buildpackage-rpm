@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->gbp-buildpackage</TITLE
+>gbp-buildpackage-rpm</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -11,13 +11,13 @@ TITLE="Building Packages with git-buildpackage suite"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="Command Reference"
-HREF="man.reference.html"><LINK
+HREF="man.rpm.reference.html"><LINK
 REL="PREVIOUS"
-TITLE="gbp"
-HREF="man.gbp.html"><LINK
+TITLE="Command Reference"
+HREF="man.rpm.reference.html"><LINK
 REL="NEXT"
-TITLE="gbp-import-dsc"
-HREF="man.gbp.import.dsc.html"><STYLE
+TITLE="gbp-import-orig-rpm"
+HREF="man.gbp.import.orig.rpm.html"><STYLE
 TYPE="text/css"
 >.synopsis, .classsynopsis {
     background: #eeeeee;
@@ -67,7 +67,7 @@ VALIGN="middle"
 ><TD
 ><A
 ACCESSKEY="p"
-HREF="man.gbp.html"
+HREF="man.rpm.reference.html"
 ><IMG
 SRC="left.png"
 WIDTH="24"
@@ -78,7 +78,7 @@ ALT="Prev"></A
 ><TD
 ><A
 ACCESSKEY="u"
-HREF="man.reference.html"
+HREF="man.rpm.reference.html"
 ><IMG
 SRC="up.png"
 WIDTH="24"
@@ -104,7 +104,7 @@ align="center"
 ><TD
 ><A
 ACCESSKEY="n"
-HREF="man.gbp.import.dsc.html"
+HREF="man.gbp.import.orig.rpm.html"
 ><IMG
 SRC="right.png"
 WIDTH="24"
@@ -116,31 +116,34 @@ ALT="Next"></A
 ></TABLE
 ><H1
 ><A
-NAME="MAN.GBP.BUILDPACKAGE"
+NAME="MAN.GBP.BUILDPACKAGE.RPM"
 ></A
->gbp-buildpackage</H1
+>gbp-buildpackage-rpm</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN951"
+NAME="AEN3638"
 ></A
 ><H2
 >Name</H2
->git-buildpackage, gbp-buildpackage&nbsp;--&nbsp;Build Debian packages from a Git repository</DIV
+>git-buildpackage-rpm, gbp-buildpackage-rpm&nbsp;--&nbsp;Build RPM packages from a Git repository</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN955"
+NAME="AEN3642"
 ></A
 ><H2
 >Synopsis</H2
 ><P
 ><B
 CLASS="COMMAND"
->gbp buildpackage</B
+>gbp buildpackage-rpm</B
 >  [<CODE
 CLASS="OPTION"
 >--git-[no-]ignore-new</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-[no-]ignore-untracked</CODE
 >] [<CODE
 CLASS="OPTION"
 >--git-tag</CODE
@@ -157,8 +160,8 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
->--git-color-scheme</CODE
->=<TT
+>--git-color-scheme=</CODE
+><TT
 CLASS="REPLACEABLE"
 ><I
 >COLOR_SCHEME</I
@@ -173,6 +176,22 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
+>--git-tmp-dir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-vendor</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>VENDOR</I
+></TT
+>] [<CODE
+CLASS="OPTION"
 >--git-upstream-branch=</CODE
 ><TT
 CLASS="REPLACEABLE"
@@ -181,7 +200,15 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
->--git-debian-branch=</CODE
+>--git-packaging-branch=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>BRANCH_NAME</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-pq-branch=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
@@ -209,34 +236,6 @@ CLASS="REPLACEABLE"
 ><I
 >CLEAN_CMD</I
 ></TT
->] [<CODE
-CLASS="OPTION"
->--git-[no-]pbuilder</CODE
->] [<CODE
-CLASS="OPTION"
->--git-[no-]qemubuilder</CODE
->] [<CODE
-CLASS="OPTION"
->--git-dist=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->DIST</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--git-arch=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->ARCH</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--git-[no-]pbuilder-autoconf</CODE
->] [<CODE
-CLASS="OPTION"
->--git-pbuilder-options</CODE
 >] [<CODE
 CLASS="OPTION"
 >--git-[no-]sign-tags</CODE
@@ -288,7 +287,7 @@ CLASS="OPTION"
 >--git-[no-]hooks</CODE
 >] [<CODE
 CLASS="OPTION"
->--git-debian-tag=</CODE
+>--git-packaging-tag=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
@@ -326,14 +325,6 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
->--git-compression=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->TYPE</I
-></TT
->] [<CODE
-CLASS="OPTION"
 >--git-compression-level=</CODE
 ><TT
 CLASS="REPLACEABLE"
@@ -342,8 +333,64 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
+>--git-orig-prefix=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>PREFIX</I
+></TT
+>] [<CODE
+CLASS="OPTION"
 >--git-export-dir=</CODE
 ><TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-rpmbuild-builddir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-rpmbuild-buidrootdir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-rpmbuild-rpmdir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-rpmbuild-sourcedir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-rpmbuild-specdir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-rpmbuild-srpmdir</CODE
+>=<TT
 CLASS="REPLACEABLE"
 ><I
 >DIRECTORY</I
@@ -358,45 +405,108 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
+>--git-export-only</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-packaging-dir=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-spec-file=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>FILEPATH</I
+></TT
+>] [<CODE
+CLASS="OPTION"
 >--git-[no-]pristine-tar</CODE
 >] [<CODE
 CLASS="OPTION"
 >--git-[no-]pristine-tar-commit</CODE
 >] [<CODE
 CLASS="OPTION"
->--git-[no-]-purge</CODE
->] [<CODE
-CLASS="OPTION"
->--git-dont-purge</CODE
->] [<CODE
-CLASS="OPTION"
 >--git-tag-only</CODE
 >] [<CODE
 CLASS="OPTION"
 >--git-retag</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-[no-]patch-export</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-patch-export-rev=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>TREEISH</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-patch-export-compress=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>THRESHOLD</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-patch-export-ignore-path=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>REGEX</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-patch-export-squash-until=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>COMMITISH</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-[no-]patch-numbers</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-spec-vcs-tag</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>TAG_FORMAT</I
+></TT
 >]</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1064"
+NAME="AEN3789"
 ></A
 ><H2
 >DESCRIPTION</H2
 ><P
 >    <B
 CLASS="COMMAND"
->gbp buildpackage</B
-> is used to build Debian source and .deb packages from
-    a <SPAN
+>gbp buildpackage-rpm</B
+> is used to build RPM packages from a <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
-> repository.
+>
+    repository. It is an RPM counterpart for the <B
+CLASS="COMMAND"
+>gbp buildpackage</B
+> tool that
+    is designed for building Debian packages.
     </P
 ><P
 >    <B
 CLASS="COMMAND"
->gbp buildpackage</B
+>gbp buildpackage-rpm</B
 > will, in order:
     </P
 ><P
@@ -420,51 +530,45 @@ CLASS="COMMAND"
 ></LI
 ><LI
 ><P
->        (Optionally) export the source tree to a separate build area
+>        Export packaging files to a separate build area.
         </P
 ></LI
 ><LI
 ><P
->        Build an orig tarball if it doesn't exist.
+>        Create an orig source tarball if it doesn't exist.
         </P
 ></LI
 ><LI
 ><P
 >        Call <SPAN
 CLASS="APPLICATION"
->debuild</SPAN
+>rpmbuild</SPAN
 >(1) (or the application
         specified via <CODE
 CLASS="OPTION"
 >--git-builder</CODE
->) with arguments
-        instructing it to ignore <SPAN
-CLASS="PRODUCTNAME"
->Git</SPAN
-> meta-data in the diff.gz, passing along
-        all arguments given to <B
-CLASS="COMMAND"
->gbp buildpackage</B
-> that don't start with --git-.
+>), passing along all
+        command line arguments that don't start with --git-.
         </P
 ></LI
 ><LI
 ><P
->        (Optionally) tag the tree after a successful build
+>        (Optionally) tag the tree after a successful build.
         </P
 ></LI
 ><LI
 ><P
->        (Optionally) call a post build hook - e.g. to run <SPAN
+>        (Optionally) call a post build hook - e.g. to run
+        <SPAN
 CLASS="PRODUCTNAME"
->lintian</SPAN
->
+>rpmlint</SPAN
+>.
         </P
 ></LI
 ><LI
 ><P
 >        (Optionally) call a post tag hook - e.g. to push the results to a
-        remote repository after creating the tag
+        remote repository after creating the tag.
         </P
 ></LI
 ></UL
@@ -472,7 +576,7 @@ CLASS="PRODUCTNAME"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1095"
+NAME="AEN3819"
 ></A
 ><H2
 >OPTIONS</H2
@@ -489,7 +593,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1098"><SPAN
+NAME="AEN3822"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -505,7 +609,7 @@ VALIGN="TOP"
           <TT
 CLASS="REPLACEABLE"
 ><I
->DEBIAN-BRANCH</I
+>PACKAGING-BRANCH</I
 ></TT
 >.
           </P
@@ -516,7 +620,27 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1104"><SPAN
+NAME="AEN3828"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-[no-]ignore-untracked</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Don't abort if there are untracked files in the source tree.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN3833"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -536,7 +660,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1109"><SPAN
+NAME="AEN3838"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -560,8 +684,8 @@ CLASS="REPLACEABLE"
 > instead of
           <B
 CLASS="COMMAND"
->debuild -i -I</B
->
+>rpmbuild -ba</B
+>.
           </P
 ></TD
 ></TR
@@ -570,7 +694,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1117"><SPAN
+NAME="AEN3846"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -591,149 +715,6 @@ CLASS="REPLACEABLE"
 ><I
 >CLEAN_CMD</I
 ></TT
-> instead of
-          <B
-CLASS="COMMAND"
->debuild clean</B
->
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1125"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--git-pbuilder</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Build package using <B
-CLASS="COMMAND"
->git-pbuilder</B
->. Note that this
-          overwrites any <CODE
-CLASS="OPTION"
->--git-builder</CODE
-> and
-          <CODE
-CLASS="OPTION"
->--git-cleaner</CODE
-> options.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1133"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--git-qemubuilder</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Build package using <B
-CLASS="COMMAND"
->git-pbuilder</B
-> with
-          <B
-CLASS="COMMAND"
->qemubuilder</B
->. Note that this overwrites any
-          <CODE
-CLASS="OPTION"
->--git-builder</CODE
-> and <CODE
-CLASS="OPTION"
->--git-cleaner</CODE
->
-          options.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1142"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--git-dist=<TT
-CLASS="REPLACEABLE"
-><I
->DIST</I
-></TT
-></CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Build for distribution <TT
-CLASS="REPLACEABLE"
-><I
->DIST</I
-></TT
-> when using
-          <B
-CLASS="COMMAND"
->--git-pbuilder</B
->. If unset build for the unstable
-          distribution.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1150"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--git-arch=<TT
-CLASS="REPLACEABLE"
-><I
->ARCH</I
-></TT
-></CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Build for architecture <TT
-CLASS="REPLACEABLE"
-><I
->ARCH</I
-></TT
-> when using
-          <B
-CLASS="COMMAND"
->--git-pbuilder</B
->. If unset no architecture is passed
-          to <B
-CLASS="COMMAND"
->git-pbuilder</B
 >.
           </P
 ></TD
@@ -743,55 +724,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1159"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--git-pbuilder-autoconf</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Whether to try to autoconfigure <B
-CLASS="COMMAND"
->git-pbuilder</B
-> or to
-          rely on the settings in .pbuilderrc. See the
-          <B
-CLASS="COMMAND"
->git-pbuilder</B
-> manpage for details.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1166"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--git-pbuilder-options</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Options to pass to pbuilder
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1171"><SPAN
+NAME="AEN3853"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -802,7 +735,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          verbose execution
+>          Verbose execution
           </P
 ></TD
 ></TR
@@ -811,7 +744,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1176"><SPAN
+NAME="AEN3858"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -836,37 +769,12 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1182"><SPAN
+NAME="AEN3864"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--git-notify=</CODE
+>--git-color-scheme=</CODE
 ><TT
-CLASS="REPLACEABLE"
-><I
->[auto|on|off]</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Whether to send a desktop notification after the build.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1188"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--git-color-scheme</CODE
->=<TT
 CLASS="REPLACEABLE"
 ><I
 >COLOR_SCHEME</I
@@ -892,7 +800,82 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1194"><SPAN
+NAME="AEN3870"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-notify=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>[auto|on|off]</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Whether to send a desktop notification after the build.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN3876"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-tmp-dir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Base directory under which temporary directories are created.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN3882"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-vendor</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>VENDOR</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Distribution vendor name.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN3888"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -933,11 +916,11 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1203"><SPAN
+NAME="AEN3897"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--git-debian-branch</CODE
+>--git-packaging-branch</CODE
 >=<TT
 CLASS="REPLACEABLE"
 ><I
@@ -951,15 +934,15 @@ VALIGN="TOP"
 ><P
 >          If you're not on this branch when invoking <B
 CLASS="COMMAND"
->gbp buildpackage</B
-> it will
-          fail. Default is <TT
+>gbp buildpackage-rpm</B
+> it
+          will fail. Default is <TT
 CLASS="REPLACEABLE"
 ><I
 >master</I
 ></TT
->. This is done to
-          make sure you don't accidentally release from a topic branch.  Not
+>. This is done
+          to make sure you don't accidentally release from a topic branch.  Not
           being on this branch will be ignored when using
           <CODE
 CLASS="OPTION"
@@ -973,7 +956,60 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1212"><SPAN
+NAME="AEN3906"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-pq-branch</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>BRANCH_NAME</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Name (format string) of the patch-queue/development branch. This
+          makes building easier when working with separate packaging and
+          development branches.
+          </P
+><P
+>          If <CODE
+CLASS="OPTION"
+>--git-patch-export</CODE
+> is enabled and
+          <B
+CLASS="COMMAND"
+>gbp buildpackage-rpm</B
+> detects that the current branch has a
+          patch-queue/development branch it exports the patches from there
+          instead of the tip of the current branch (unless
+          <CODE
+CLASS="OPTION"
+>--git-patch-export-rev</CODE
+> is defined, of course).
+          Similarly, if the current branch is a patch-queue/development branch
+          <B
+CLASS="COMMAND"
+>gbp buildpackage-rpm</B
+> will automatically enable patch-export and
+          export packaging files from the packaging branch instead of the
+          current branch (unless <CODE
+CLASS="OPTION"
+>--git-export</CODE
+>) is defined.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN3918"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -988,7 +1024,7 @@ VALIGN="TOP"
           <TT
 CLASS="REPLACEABLE"
 ><I
->DEBIAN-BRANCH</I
+>PACKAGING-BRANCH</I
 ></TT
 >.
           </P
@@ -999,27 +1035,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1218"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--git-[no-]sign-tags</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          GPG sign all created tags
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1223"><SPAN
+NAME="AEN3924"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1039,7 +1055,27 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1228"><SPAN
+NAME="AEN3929"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-[no-]sign-tags</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          GPG sign all created tags.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN3934"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1055,7 +1091,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          use this keyid for gpg signing tags
+>          Use this keyid for gpg signing tags.
           </P
 ></TD
 ></TR
@@ -1064,7 +1100,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1234"><SPAN
+NAME="AEN3940"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1080,7 +1116,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          excecute <TT
+>          Excecute <TT
 CLASS="REPLACEABLE"
 ><I
 >COMMAND</I
@@ -1110,7 +1146,7 @@ CLASS="ENVAR"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1245"><SPAN
+NAME="AEN3951"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1126,7 +1162,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          execute <TT
+>          Execute <TT
 CLASS="REPLACEABLE"
 ><I
 >COMMAND</I
@@ -1152,7 +1188,7 @@ CLASS="ENVAR"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1255"><SPAN
+NAME="AEN3961"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1168,13 +1204,13 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          execute <TT
+>          Execute <TT
 CLASS="REPLACEABLE"
 ><I
 >COMMAND</I
 ></TT
 > after exporting the source
-          tree - valid only if --git-export-dir has been specified.
+          tree.
           </P
 ><P
 >          Exported environment variables are: <CODE
@@ -1195,7 +1231,7 @@ CLASS="ENVAR"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1265"><SPAN
+NAME="AEN3971"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1211,7 +1247,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          execute <TT
+>          Execute <TT
 CLASS="REPLACEABLE"
 ><I
 >COMMAND</I
@@ -1219,7 +1255,7 @@ CLASS="REPLACEABLE"
 > from the build directory
           before calling <SPAN
 CLASS="APPLICATION"
->debuild</SPAN
+>rpmbuild</SPAN
 > or the application
           specified via <CODE
 CLASS="OPTION"
@@ -1244,7 +1280,7 @@ CLASS="ENVAR"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1277"><SPAN
+NAME="AEN3983"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1268,7 +1304,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1283"><SPAN
+NAME="AEN3989"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1293,11 +1329,11 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1289"><SPAN
+NAME="AEN3995"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--git-debian-tag=</CODE
+>--git-packaging-tag=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
@@ -1309,13 +1345,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          use this tag format when tagging Debian versions, default is
-          <TT
-CLASS="REPLACEABLE"
-><I
->debian/%(version)s</I
-></TT
->
+>          Use this tag format when tagging released versions of the package.
           </P
 ></TD
 ></TR
@@ -1324,7 +1354,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1296"><SPAN
+NAME="AEN4001"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1340,7 +1370,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          use this tag format when looking for tags of upstream versions,
+>          Use this tag format when looking for tags of upstream versions,
           default is <TT
 CLASS="REPLACEABLE"
 ><I
@@ -1355,7 +1385,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1303"><SPAN
+NAME="AEN4008"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1367,7 +1397,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >          Force creation of an orig tarball (overwriting a pre-existing one if
-          present)
+          present).
           </P
 ></TD
 ></TR
@@ -1376,7 +1406,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1308"><SPAN
+NAME="AEN4013"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1387,7 +1417,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          Don't try to create any orig tarball
+>          Don't try to create any orig tarball.
           </P
 ></TD
 ></TR
@@ -1396,28 +1426,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1313"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--git-overlay</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Extract orig tarball when using export-dir option (analog to
-          mergeWithUpstream in svn-bp)
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1318"><SPAN
+NAME="AEN4018"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1433,17 +1442,17 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          Export the current branch head (or the treeish object given via
-          <CODE
+>          Export the packaging files from  the current branch head (or the
+          treeish object given via <CODE
 CLASS="OPTION"
 >--git-export</CODE
-> to <TT
+> to
+          <TT
 CLASS="REPLACEABLE"
 ><I
 >DIRECTORY</I
 ></TT
->
-          before building.
+> before building.
           </P
 ></TD
 ></TR
@@ -1452,7 +1461,100 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1326"><SPAN
+NAME="AEN4026"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-rpmbuild-builddir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+></SPAN
+>, <SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-rpmbuild-buildrootdir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+></SPAN
+>, <SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-rpmbuild-rpmdir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+></SPAN
+>, <SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-rpmbuild-sourcedir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+></SPAN
+>, <SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-rpmbuild-specdir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+></SPAN
+>, <SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-rpmbuild-srpmdir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Build subdirectory options for rpmbuild builder. Of these
+          <CODE
+CLASS="OPTION"
+>--git-rpmbuild-sourcedir</CODE
+> and
+          <CODE
+CLASS="OPTION"
+>--git-rpmbuild-specdir</CODE
+> also affects where
+          <B
+CLASS="COMMAND"
+>gbp buildpackage-rpm</B
+> exports the packaging files under the export
+          directory.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4050"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1480,14 +1582,33 @@ CLASS="REPLACEABLE"
 ><I
 >INDEX</I
 ></TT
-> exports the current index whereas
-          the special name <TT
+> exports the current index,
+          <TT
+CLASS="REPLACEABLE"
+><I
+>WC.TRACKED</I
+></TT
+> exports all files tracked by
+          Git in the current working copy as is,
+          <TT
+CLASS="REPLACEABLE"
+><I
+>WC.UNTRACKED</I
+></TT
+> exports all untracked files
+          too whereas <TT
 CLASS="REPLACEABLE"
 ><I
 >WC</I
 ></TT
-> exports the current
-          working copy as is.
+> (or
+          <TT
+CLASS="REPLACEABLE"
+><I
+>WC.IGNORED</I
+></TT
+>) exports all files in the
+          current working directory, even ignored files.
           </P
 ></TD
 ></TR
@@ -1496,7 +1617,92 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1335"><SPAN
+NAME="AEN4062"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-export-only</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Only export packaging files without running builder.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4067"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-packaging-dir=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Subdirectory that contains the RPM packaging files.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4073"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-spec-file=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>FILEPATH</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Relative path to the spec file to use. Special value
+          <TT
+CLASS="REPLACEABLE"
+><I
+>auto</I
+></TT
+> causes <B
+CLASS="COMMAND"
+>gbp buildpackage-rpm</B
+> to
+          search and guess.  Other values cause the
+          <CODE
+CLASS="OPTION"
+>--git-packaging-dir</CODE
+> option to be ignored: the
+          directory of the spec file is used, instead.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4082"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1546,7 +1752,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1346"><SPAN
+NAME="AEN4093"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1568,7 +1774,7 @@ CLASS="REPLACEABLE"
 >DIRECTORY</I
 ></TT
 >
-          instead of generating them
+          instead of generating them.
           </P
 ></TD
 ></TR
@@ -1577,63 +1783,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1353"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--git-compression=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->TYPE</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Specifies the upstream tarball compression type. This will be used to
-          locate and build the upstream tarball if necessary. The default is
-          <TT
-CLASS="REPLACEABLE"
-><I
->auto</I
-></TT
-> which derives the compression type
-          from the pristine-tar branch if available and falls back to gzip
-          otherwise. Other options are <TT
-CLASS="REPLACEABLE"
-><I
->gzip</I
-></TT
->,
-          <TT
-CLASS="REPLACEABLE"
-><I
->bzip2</I
-></TT
->, <TT
-CLASS="REPLACEABLE"
-><I
->lzma</I
-></TT
-> and
-          <TT
-CLASS="REPLACEABLE"
-><I
->xz</I
-></TT
->.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1364"><SPAN
+NAME="AEN4100"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1659,18 +1809,33 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1370"><SPAN
+NAME="AEN4106"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--git[-no]-purge</CODE
+>--git-orig-prefix=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>PREFIX</I
+></TT
 ></SPAN
 ></TD
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          Purge (remove) temporary build directory after build
+>          Prefix (directory) to be used when generating tarballs. Special value
+          <TT
+CLASS="REPLACEABLE"
+><I
+>auto</I
+></TT
+> causes <B
+CLASS="COMMAND"
+>gbp buildpackage-rpm</B
+> to
+          guess the prefix.
           </P
 ></TD
 ></TR
@@ -1679,27 +1844,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1375"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--git-dont-purge</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Deprecated, use --git-no-purge instead.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1380"><SPAN
+NAME="AEN4114"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1710,7 +1855,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          don't build, only tag and run post-tag hooks
+>          Don't build, only tag and run post-tag hooks.
           </P
 ></TD
 ></TR
@@ -1719,7 +1864,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1385"><SPAN
+NAME="AEN4119"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1730,8 +1875,8 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          don't fail tag operations if a tag with the same version already
-          exists
+>          Don't fail tag operations if a tag with the same version already
+          exists, but, overwrite the existing tag, instead.
           </P
 ></TD
 ></TR
@@ -1740,7 +1885,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1390"><SPAN
+NAME="AEN4124"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1761,7 +1906,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1395"><SPAN
+NAME="AEN4129"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1777,53 +1922,276 @@ VALIGN="TOP"
           </P
 ></TD
 ></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4134"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-[no-]patch-export</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Create patches from the commits between the upstream version and
+          export-treeish.  That is, after exporting packaging files (from the
+          pacakging directory) <B
+CLASS="COMMAND"
+>gbp buildpackage-rpm</B
+> creates one patch per
+          commit (similar to git-format-patch) and updates the spec file in the
+          export dir. You use <CODE
+CLASS="OPTION"
+>--git-patch-export-rev</CODE
+> to
+          specify the tip commit of the patch series.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4141"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-patch-export-rev=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>TREEISH</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Use <TT
+CLASS="REPLACEABLE"
+><I
+>TREEISH</I
+></TT
+> as the tip commit of the patch
+          series instead of the default - i.e. treeish from which the packaging
+          files are exported (which is defined with
+          <CODE
+CLASS="OPTION"
+>--git-export</CODE
+>.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4149"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-patch-export-compress=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>THRESHOLD</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Compress (auto-generated) patches larger than given
+          <TT
+CLASS="REPLACEABLE"
+><I
+>THRESHOLD</I
+></TT
+> bytes. Special value 0 disabled
+          patch compression.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4156"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-patch-export-ignore-path=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>REGEX</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Exclude changes to path(s) matching <TT
+CLASS="REPLACEABLE"
+><I
+>REGEX</I
+></TT
+>
+          in patch generation.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4163"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-patch-export-squash-until=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>COMMITISH</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Squash commits up to the given <TT
+CLASS="REPLACEABLE"
+><I
+>COMMITISH</I
+></TT
+>
+          into one monolitic diff. Could be used if one wants to squash commits
+          from an upstream release up to a stable update into a single diff
+          (commits on top of the stable would generate one patch per commit as
+          usual). The format is '&lt;commit_ish&gt;[:&lt;filename_base&gt;]',
+          i.e. commitish optionally followed by a colon and the desired
+          filename base for the diff (suffix '.diff' is automatically added by
+          <B
+CLASS="COMMAND"
+>gbp buildpackage-rpm</B
+>). Magic word 'HEAD' translates to the
+          patch-export-treeish when given as the squash-point. This allows one
+          to configure gbp to always squash all commits into one monolithic
+          diff.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4171"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-[no-]patch-numbers</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Whether the patch files should start with a number or not.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4176"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-spec-vcs-tag</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>TAG_FORMAT</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          <B
+CLASS="COMMAND"
+>gbp buildpackage-rpm</B
+> always automatically sets/updates the 'VCS:'
+          tag in the spec file after exporting.  This option defines the format
+          string for the 'VCS:' tag. An empty value causes no 'VCS:' tag to be
+          inserted and possible old 'VCS:' tag to be removed. Otherwise, the
+          old 'VCS:' tag is updated or a new 'VCS:' tag is added if one does
+          not exist. In the format string '%(tagname)s' expands to the long tag
+          name (from git-describe) and '%(commit)s' expans to the sha1 of the
+          exported commit.
+          </P
+></TD
+></TR
 ></TBODY
 ></TABLE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1400"
+NAME="AEN4183"
 ></A
 ><H2
 >EXAMPLES</H2
 ><P
->    Build a Debian package using <B
+>    Only build a source RPM with <B
 CLASS="COMMAND"
->git pbuilder</B
-> which in turn invokes
-    <B
-CLASS="COMMAND"
->cowbuilder</B
->.  Instruct cowbuilder to build within a Wheezy chroot for
-    i386.
+>rpmbuild</B
+>
     </P
 ><PRE
 CLASS="SCREEN"
 >      <B
 CLASS="COMMAND"
->gbp buildpackage</B
-> --git-pbuilder --git-arch=i386 --git-dist=wheezy
+>gbp buildpackage-rpm</B
+> -bs
     </PRE
 ><P
->    Note that the above needs a <B
+>    Build an RPM package with <B
 CLASS="COMMAND"
->cowbuilder</B
-> chroot already. This can be
-    created using:
+>rpmbuild</B
+> on a custom branch with the uncommitted
+    changes included.
     </P
 ><PRE
 CLASS="SCREEN"
->      DIST=wheezy ARCH=i386 <B
+>      <B
 CLASS="COMMAND"
->git pbuilder</B
-> create
+>gbp buildpackage-rpm</B
+> --git-ignore-branch --git-export=WC.UNTRACKED
     </PRE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1411"
+NAME="AEN4193"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -1844,39 +2212,32 @@ HREF="man.gbp.conf.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1417"
+NAME="AEN4199"
 ></A
 ><H2
 >SEE ALSO</H2
 ><P
 >    <A
-HREF="man.gbp.import.dsc.html"
->gbp-import-dsc(1)</A
+HREF="man.gbp.import.srpm.html"
+>gbp-import-srpm(1)</A
 >,
     <A
-HREF="man.gbp.import.dscs.html"
->gbp-import-dscs(1)</A
+HREF="man.gbp.import.orig.rpm.html"
+>gbp-import-orig-rpm(1)</A
 >,
     <A
-HREF="man.gbp.import.orig.html"
->gbp-import-orig(1)</A
+HREF="man.gbp.rpm.ch.html"
+>gbp-rpm-ch(1)</A
 >,
     <A
-HREF="man.gbp.dch.html"
->gbp-dch(1)</A
+HREF="man.gbp.pq.rpm.html"
+>gbp-pq-rpm(1)</A
 >,
     <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
 CLASS="REFENTRYTITLE"
->git-pbuilder</SPAN
->(1)</SPAN
->,
-    <SPAN
-CLASS="CITEREFENTRY"
-><SPAN
-CLASS="REFENTRYTITLE"
->cowbuilder</SPAN
+>rpmbuild</SPAN
 >(8)</SPAN
 >,
     <A
@@ -1918,16 +2279,16 @@ CLASS="CITETITLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1442"
+NAME="AEN4221"
 ></A
 ><H2
 >AUTHOR</H2
 ><P
->    Guido Guenther <CODE
+>    Markus Lehtonen <CODE
 CLASS="EMAIL"
 >&#60;<A
-HREF="mailto:agx@sigxcpu.org"
->agx@sigxcpu.org</A
+HREF="mailto:markus.lehtonen@linux.intel.com"
+>markus.lehtonen@linux.intel.com</A
 >&#62;</CODE
 >
     </P
@@ -1944,18 +2305,18 @@ VALIGN="middle"
 ALIGN="left"
 ><A
 ACCESSKEY="p"
-HREF="man.gbp.html"
+HREF="man.rpm.reference.html"
 ><B
->&lt;&lt;&lt;&nbsp;gbp</B
+>&lt;&lt;&lt;&nbsp;Command Reference</B
 ></A
 ></TD
 ><TD
 ALIGN="right"
 ><A
 ACCESSKEY="n"
-HREF="man.gbp.import.dsc.html"
+HREF="man.gbp.import.orig.rpm.html"
 ><B
->gbp-import-dsc&nbsp;&gt;&gt;&gt;</B
+>gbp-import-orig-rpm&nbsp;&gt;&gt;&gt;</B
 ></A
 ></TD
 ></TR

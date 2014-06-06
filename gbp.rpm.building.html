@@ -7,14 +7,17 @@
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REL="HOME"
+TITLE="Building Packages with git-buildpackage suite"
+HREF="index.html"><LINK
+REL="UP"
 TITLE="Building RPM Packages with git-buildpackage-rpm"
 HREF="gbp-rpm.html"><LINK
 REL="PREVIOUS"
 TITLE="Development flow"
 HREF="gbp.rpm.development.html"><LINK
 REL="NEXT"
-TITLE="Copyright"
-HREF="gbp.copyleft.html"><STYLE
+TITLE="Command Reference"
+HREF="man.rpm.reference.html"><STYLE
 TYPE="text/css"
 >.synopsis, .classsynopsis {
     background: #eeeeee;
@@ -74,8 +77,19 @@ ALT="Prev"></A
 ></TD
 ><TD
 ><A
-ACCESSKEY="h"
+ACCESSKEY="u"
 HREF="gbp-rpm.html"
+><IMG
+SRC="up.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Up"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
+HREF="index.html"
 ><IMG
 SRC="home.png"
 WIDTH="24"
@@ -86,11 +100,11 @@ ALT="Home"></A
 ><TH
 WIDTH="100%"
 align="center"
->Building RPM Packages with git-buildpackage-rpm: Version: 0.6.10</TH
+>Building Packages with git-buildpackage suite: Version: 0.6.15</TH
 ><TD
 ><A
 ACCESSKEY="n"
-HREF="gbp.copyleft.html"
+HREF="man.rpm.reference.html"
 ><IMG
 SRC="right.png"
 WIDTH="24"
@@ -132,7 +146,7 @@ HREF="gbp.rpm.building.html#GBP.RPM.BUILDING.PATCH-QUEUE"
 ><P
 >    The <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 > tool is used for building.
     The tool creates the source tarball and copies it and the packaging files
     to a separate build directory and builds the package there. By default,
@@ -158,7 +172,7 @@ CLASS="EMPHASIS"
 CLASS="SCREEN"
 >    $ <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 > --pristine-tar
     </PRE
 >
@@ -168,7 +182,7 @@ CLASS="COMMAND"
 CLASS="SCREEN"
 >    $ <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 > --git-ignore-untracked
     </PRE
 >
@@ -177,7 +191,7 @@ CLASS="COMMAND"
 CLASS="SCREEN"
 >    $ <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 > --git-ignore-new
     </PRE
 >
@@ -236,27 +250,27 @@ CLASS="EMPHASIS"
 CLASS="SCREEN"
 >    $ <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 > --git-export-dir=/home/user/rpmbuild
     $ <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 > --git-export-dir=/home/user/rpmbuild --git-export=v1.2.3
     $ <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 > --git-export=WC.UNTRACKED
     $ <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 > --git-export=INDEX
     $ <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 > --git-export=feature/cool-new-thing
     $ <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 > --git-export=8d55173610f
     </PRE
 >
@@ -277,8 +291,14 @@ NAME="GBP.RPM.BUILDING.PATCH-GENERATION"
 HREF="gbp.rpm.development.html#GBP.RPM.DEVELOPMENT.MODELS.NONNATIVE1"
 >Non-native package, model 1</A
 >)
-        you usually want for git-buildpackage-rpm to automatically generate
-        patches. In this mode, git-buildpackage-rpm generates the upstream
+        you usually want for <B
+CLASS="COMMAND"
+>gbp buildpackage-rpm</B
+> to automatically generate
+        patches. In this mode, <B
+CLASS="COMMAND"
+>gbp buildpackage-rpm</B
+> generates the upstream
         tarball and copies packaging files to the build dir. After that it
         generates patches from commits between <CODE
 CLASS="OPTION"
@@ -291,7 +311,7 @@ CLASS="OPTION"
 CLASS="SCREEN"
 >    $ <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 > --git-patch-export
         </PRE
 >
@@ -301,7 +321,7 @@ CLASS="COMMAND"
 CLASS="SCREEN"
 >    $ <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 > --git-patch-export --git-patch-export-compress=100k --git-patch-export-ignore-path='^packaging/.*'
         </PRE
 >
@@ -325,7 +345,7 @@ HREF="gbp.rpm.development.html#GBP.RPM.DEVELOPMENT.MODELS.NONNATIVE2"
 >)
         you use the <B
 CLASS="COMMAND"
->gbp-pq-rpm</B
+>gbp pq-rpm</B
 > tool to handle the patches. You work on the
         source code on the development branch and then <SPAN
 CLASS="emphasis"
@@ -370,7 +390,7 @@ CLASS="EMPHASIS"
 CLASS="SCREEN"
 >    $ <B
 CLASS="COMMAND"
->gbp-pq-rpm</B
+>gbp pq-rpm</B
 > import
         </PRE
 >
@@ -386,7 +406,7 @@ CLASS="EMPHASIS"
 ></SPAN
 > the patches with <B
 CLASS="COMMAND"
->gbp-pq-rpm</B
+>gbp pq-rpm</B
 >. This will change
         back to you packaging branch, generate patches from commits between
         between <SPAN
@@ -401,7 +421,7 @@ CLASS="EMPHASIS"
 CLASS="SCREEN"
 >    $ <B
 CLASS="COMMAND"
->gbp-pq-rpm</B
+>gbp pq-rpm</B
 > export
         </PRE
 >
@@ -418,8 +438,9 @@ CLASS="COMMAND"
 > -a
     $ <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
->        </PRE
+>gbp buildpackage-rpm</B
+>
+        </PRE
 >
         Of course you can build even without committing by using the
         <CODE
@@ -427,7 +448,7 @@ CLASS="OPTION"
 >--git-export=WC.UNTRACKED</CODE
 > option of <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 >.
         </P
 ><P
@@ -450,7 +471,7 @@ CLASS="COMMAND"
 > *spec
     $ <B
 CLASS="COMMAND"
->gbp-pq-rpm</B
+>gbp pq-rpm</B
 > rebase
         </PRE
 >
@@ -480,9 +501,9 @@ HREF="gbp.rpm.development.html"
 ALIGN="right"
 ><A
 ACCESSKEY="n"
-HREF="gbp.copyleft.html"
+HREF="man.rpm.reference.html"
 ><B
->Copyright&nbsp;&gt;&gt;&gt;</B
+>Command Reference&nbsp;&gt;&gt;&gt;</B
 ></A
 ></TD
 ></TR

@@ -7,8 +7,8 @@
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REL="HOME"
-TITLE="Building Debian Packages with git-buildpackage"
-HREF="gbp.html"><LINK
+TITLE="Building Packages with git-buildpackage suite"
+HREF="index.html"><LINK
 REL="UP"
 TITLE="Command Reference"
 HREF="man.reference.html"><LINK
@@ -89,7 +89,7 @@ ALT="Up"></A
 ><TD
 ><A
 ACCESSKEY="h"
-HREF="gbp.html"
+HREF="index.html"
 ><IMG
 SRC="home.png"
 WIDTH="24"
@@ -100,7 +100,7 @@ ALT="Home"></A
 ><TH
 WIDTH="100%"
 align="center"
->Building Debian Packages with git-buildpackage: Version: 0.6.10</TH
+>Building Packages with git-buildpackage suite: Version: 0.6.15</TH
 ><TD
 ><A
 ACCESSKEY="n"
@@ -122,7 +122,7 @@ NAME="MAN.GBP.IMPORT.DSC"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN1460"
+NAME="AEN1456"
 ></A
 ><H2
 >Name</H2
@@ -130,7 +130,7 @@ NAME="AEN1460"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN1464"
+NAME="AEN1460"
 ></A
 ><H2
 >Synopsis</H2
@@ -139,6 +139,31 @@ NAME="AEN1464"
 CLASS="COMMAND"
 >gbp import-dsc</B
 >  [<CODE
+CLASS="OPTION"
+>--version</CODE
+>] [<CODE
+CLASS="OPTION"
+>--help</CODE
+>] [<CODE
+CLASS="OPTION"
+>--verbose</CODE
+>] [<CODE
+CLASS="OPTION"
+>--color=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>[auto|on|off]</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--color-scheme=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>COLOR_SCHEME</I
+></TT
+>] [<CODE
 CLASS="OPTION"
 >--allow-same-versions</CODE
 >] [<CODE
@@ -210,9 +235,6 @@ CLASS="REPLACEABLE"
 ><I
 >tag-format</I
 ></TT
->] [<CODE
-CLASS="OPTION"
->--verbose</CODE
 >]  <TT
 CLASS="REPLACEABLE"
 ><I
@@ -247,7 +269,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1518"
+NAME="AEN1524"
 ></A
 ><H2
 >DESCRIPTION</H2
@@ -267,7 +289,7 @@ CLASS="PRODUCTNAME"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1523"
+NAME="AEN1529"
 ></A
 ><H2
 >OPTIONS</H2
@@ -284,7 +306,136 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1526"><SPAN
+NAME="AEN1532"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--version</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Print version of the program, i.e. version of the git-buildpackage
+          suite
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1537"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>-v</CODE
+></SPAN
+>, <SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--verbose</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Verbose execution
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1544"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>-h</CODE
+></SPAN
+>, <SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--help</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Print help and exit
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1551"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--color=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>[auto|on|off]</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Whether to use colored output.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1557"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--color-scheme=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>COLOR_SCHEME</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Colors to use in output (when color is enabled). The format for
+          COLOR_SCHEME is
+          '&lt;debug&gt;:&lt;info&gt;:&lt;warning&gt;:&lt;error&gt;'.
+          Numerical values and color names are accepted, empty fields imply
+          the default color. For example --git-color-scheme='cyan:34::' would
+          show debug messages in cyan, info messages in blue and other messages
+          in default (i.e. warning and error messages in red).
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1563"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -300,16 +451,17 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->The branch in the <SPAN
+>          The branch in the <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
 > repository the upstream sources are put
-	  onto. Default is <TT
+          onto. Default is <TT
 CLASS="REPLACEABLE"
 ><I
 >upstream</I
 ></TT
->.</P
+>.
+          </P
 ></TD
 ></TR
 ><TR
@@ -317,7 +469,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1534"><SPAN
+NAME="AEN1571"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -333,16 +485,17 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->The branch in the <SPAN
+>          The branch in the <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
 > repository the debian sources are put
-	  onto. Default is <TT
+          onto. Default is <TT
 CLASS="REPLACEABLE"
 ><I
 >master</I
 ></TT
->.</P
+>.
+          </P
 ></TD
 ></TR
 ><TR
@@ -350,32 +503,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1542"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--verbose</CODE
-></SPAN
->, <SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->-v</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->verbose execution</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN1549"><SPAN
+NAME="AEN1579"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -386,7 +514,8 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->GPG sign all created tags</P
+>          GPG sign all created tags
+          </P
 ></TD
 ></TR
 ><TR
@@ -394,7 +523,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1554"><SPAN
+NAME="AEN1584"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -410,7 +539,8 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->use this keyid for gpg signing tags</P
+>          use this keyid for gpg signing tags
+          </P
 ></TD
 ></TR
 ><TR
@@ -418,7 +548,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1560"><SPAN
+NAME="AEN1590"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -434,13 +564,14 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->use this tag format when tagging Debian versions,
-	  default is <TT
+>          use this tag format when tagging Debian versions,
+          default is <TT
 CLASS="REPLACEABLE"
 ><I
 >debian/%(version)s</I
 ></TT
-></P
+>
+          </P
 ></TD
 ></TR
 ><TR
@@ -448,7 +579,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1567"><SPAN
+NAME="AEN1597"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -464,13 +595,14 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->use this tag format when tagging upstream versions, 
-	  default is <TT
+>          use this tag format when tagging upstream versions,
+          default is <TT
 CLASS="REPLACEABLE"
 ><I
 >upstream/%(version)s</I
 ></TT
-></P
+>
+          </P
 ></TD
 ></TR
 ><TR
@@ -478,7 +610,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1574"><SPAN
+NAME="AEN1604"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -489,9 +621,10 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Don't create Debian tag after importing the Debian patch. This can be useful
-          if you already created a package but want to further work on it after importing it
-          into git.</P
+>          Don't create Debian tag after importing the Debian patch. This can be
+          useful if you already created a package but want to further work on
+          it after importing it into git.
+          </P
 ></TD
 ></TR
 ><TR
@@ -499,7 +632,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1579"><SPAN
+NAME="AEN1609"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -515,7 +648,8 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->filter out files glob-matching pattern. Can be given multiple times.</P
+>          filter out files glob-matching pattern. Can be given multiple times.
+          </P
 ></TD
 ></TR
 ><TR
@@ -523,7 +657,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1585"><SPAN
+NAME="AEN1615"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -534,7 +668,8 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->generate pristine-tar delta file</P
+>          generate pristine-tar delta file
+          </P
 ></TD
 ></TR
 ><TR
@@ -542,7 +677,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1590"><SPAN
+NAME="AEN1620"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -553,15 +688,15 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Download the source package instead of looking for it in the local
-	  file system. The argument can either be a
-	  <TT
+>          Download the source package instead of looking for it in the local
+          file system. The argument can either be a
+          <TT
 CLASS="REPLACEABLE"
 ><I
 >source-package</I
 ></TT
 > name or an
-	  <TT
+          <TT
 CLASS="REPLACEABLE"
 ><I
 >URL</I
@@ -570,11 +705,11 @@ CLASS="REPLACEABLE"
 CLASS="PRODUCTNAME"
 >apt-get</SPAN
 > to download
-	  the source while the later uses <SPAN
+          the source while the later uses <SPAN
 CLASS="PRODUCTNAME"
 >dget</SPAN
 >.
-	  </P
+          </P
 ></TD
 ></TR
 ><TR
@@ -582,7 +717,7 @@ CLASS="PRODUCTNAME"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1599"><SPAN
+NAME="AEN1629"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -593,7 +728,8 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Whether to skip signature verification on downloads.</P
+>          Whether to skip signature verification on downloads.
+          </P
 ></TD
 ></TR
 ><TR
@@ -601,7 +737,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1604"><SPAN
+NAME="AEN1634"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -612,7 +748,8 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Allow to import a package with the same debian version.</P
+>          Allow to import a package with the same debian version.
+          </P
 ></TD
 ></TR
 ><TR
@@ -620,7 +757,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1609"><SPAN
+NAME="AEN1639"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -631,8 +768,9 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->When importing the Debian patch, use the author identity as
-          comitter identity.</P
+>          When importing the Debian patch, use the author identity as
+          committer identity.
+          </P
 ></TD
 ></TR
 ><TR
@@ -640,7 +778,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1614"><SPAN
+NAME="AEN1644"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -651,8 +789,9 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->When importing the Debian patch, use the author date as
-          comitter date. <DIV
+>          When importing the Debian patch, use the author date as
+          committer date.
+          <DIV
 CLASS="WARNING"
 ><P
 ></P
@@ -671,14 +810,15 @@ ALIGN="CENTER"
 ><TD
 ALIGN="LEFT"
 ><P
->Git will subtly misbehave if the
-          committer date of a commit is not later than or equal to all
-          its parents.</P
+>            Git will subtly misbehave if the committer date of a commit is not
+            later than or equal to all its parents.
+            </P
 ></TD
 ></TR
 ></TABLE
 ></DIV
-></P
+>
+          </P
 ></TD
 ></TR
 ><TR
@@ -686,7 +826,7 @@ ALIGN="LEFT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1621"><SPAN
+NAME="AEN1651"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -697,7 +837,8 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Create missing upstream and debian branch if missing.</P
+>          Create missing upstream and debian branch if missing.
+          </P
 ></TD
 ></TR
 ></TBODY
@@ -706,7 +847,7 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1626"
+NAME="AEN1656"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -724,38 +865,26 @@ HREF="man.gbp.conf.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1631"
+NAME="AEN1661"
 ></A
 ><H2
 >SEE ALSO</H2
 ><P
->      <SPAN
-CLASS="CITEREFENTRY"
-><SPAN
-CLASS="REFENTRYTITLE"
->gbp-import-dscs</SPAN
->(1)</SPAN
+>      <A
+HREF="man.gbp.import.dscs.html"
+>gbp-import-dscs(1)</A
 >,
-      <SPAN
-CLASS="CITEREFENTRY"
-><SPAN
-CLASS="REFENTRYTITLE"
->gbp-buildpackage</SPAN
->(1)</SPAN
+      <A
+HREF="man.gbp.buildpackage.html"
+>gbp-buildpackage(1)</A
 >,
-      <SPAN
-CLASS="CITEREFENTRY"
-><SPAN
-CLASS="REFENTRYTITLE"
->gbp-import-orig</SPAN
->(1)</SPAN
+      <A
+HREF="man.gbp.import.orig.html"
+>gbp-import-orig(1)</A
 >,
-      <SPAN
-CLASS="CITEREFENTRY"
-><SPAN
-CLASS="REFENTRYTITLE"
->gbp-dch</SPAN
->(1)</SPAN
+      <A
+HREF="man.gbp.dch.html"
+>gbp-dch(1)</A
 >,
       <SPAN
 CLASS="CITEREFENTRY"
@@ -771,12 +900,9 @@ CLASS="REFENTRYTITLE"
 >dget</SPAN
 >(1)</SPAN
 >,
-      <SPAN
-CLASS="CITEREFENTRY"
-><SPAN
-CLASS="REFENTRYTITLE"
->gbp.conf</SPAN
->(5)</SPAN
+      <A
+HREF="man.gbp.conf.html"
+>gbp.conf(5)</A
 >,
             <SPAN
 CLASS="CITEREFENTRY"
@@ -813,18 +939,19 @@ CLASS="CITETITLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1666"
+NAME="AEN1686"
 ></A
 ><H2
 >AUTHOR</H2
 ><P
->Guido Guenther <CODE
+>    Guido Guenther <CODE
 CLASS="EMAIL"
 >&#60;<A
 HREF="mailto:agx@sigxcpu.org"
 >agx@sigxcpu.org</A
 >&#62;</CODE
-></P
+>
+    </P
 ></DIV
 ><TABLE
 CLASS="navigation"

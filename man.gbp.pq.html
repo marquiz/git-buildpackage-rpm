@@ -7,8 +7,8 @@
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REL="HOME"
-TITLE="Building Debian Packages with git-buildpackage"
-HREF="gbp.html"><LINK
+TITLE="Building Packages with git-buildpackage suite"
+HREF="index.html"><LINK
 REL="UP"
 TITLE="Command Reference"
 HREF="man.reference.html"><LINK
@@ -89,7 +89,7 @@ ALT="Up"></A
 ><TD
 ><A
 ACCESSKEY="h"
-HREF="gbp.html"
+HREF="index.html"
 ><IMG
 SRC="home.png"
 WIDTH="24"
@@ -100,7 +100,7 @@ ALT="Home"></A
 ><TH
 WIDTH="100%"
 align="center"
->Building Debian Packages with git-buildpackage: Version: 0.6.10</TH
+>Building Packages with git-buildpackage suite: Version: 0.6.15</TH
 ><TD
 ><A
 ACCESSKEY="n"
@@ -122,7 +122,7 @@ NAME="MAN.GBP.PQ"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN2683"
+NAME="AEN2922"
 ></A
 ><H2
 >Name</H2
@@ -130,7 +130,7 @@ NAME="AEN2683"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN2686"
+NAME="AEN2925"
 ></A
 ><H2
 >Synopsis</H2
@@ -140,6 +140,12 @@ CLASS="COMMAND"
 >gbp pq</B
 >  [<CODE
 CLASS="OPTION"
+>--version</CODE
+>] [<CODE
+CLASS="OPTION"
+>--help</CODE
+>] [<CODE
+CLASS="OPTION"
 >--verbose</CODE
 >] [<CODE
 CLASS="OPTION"
@@ -148,6 +154,14 @@ CLASS="OPTION"
 CLASS="REPLACEABLE"
 ><I
 >[auto|on|off]</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--color-scheme=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>COLOR_SCHEME</I
 ></TT
 >] [<CODE
 CLASS="OPTION"
@@ -168,6 +182,9 @@ CLASS="REPLACEABLE"
 ><I
 >num</I
 ></TT
+>] [<CODE
+CLASS="OPTION"
+>--force</CODE
 >]  <CODE
 CLASS="OPTION"
 >drop</CODE
@@ -188,32 +205,32 @@ CLASS="OPTION"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2713"
+NAME="AEN2961"
 ></A
 ><H2
 >DESCRIPTION</H2
 ><P
->  <B
+>    <B
 CLASS="COMMAND"
 >gbp pq</B
-> helps one to manage quilt patches in Debian packages that are maintained
-  with <B
+> helps one to manage quilt patches in Debian packages that are
+    maintained with <B
 CLASS="COMMAND"
 >gbp</B
 >. This is especially useful with packages using the
-  3.0 (quilt) source format. With <B
+    3.0 (quilt) source format. With <B
 CLASS="COMMAND"
 >gbp pq</B
 > you can maintain the quilt patches
-  that should be applied to a package on a separate branch called patch-queue
-  branch. So if your Debian package lives on <TT
+    that should be applied to a package on a separate branch called patch-queue
+    branch. So if your Debian package lives on
+    <TT
 CLASS="REPLACEABLE"
 ><I
 >master</I
 ></TT
->
-  the associated patch-queue branch will be called
-  <TT
+> the associated patch-queue branch will be
+    called <TT
 CLASS="REPLACEABLE"
 ><I
 >patch-queue/master</I
@@ -221,17 +238,18 @@ CLASS="REPLACEABLE"
 >.
     </P
 ><P
->   See <A
+>    See <A
 HREF="https://honk.sigxcpu.org/piki/development/debian_packages_in_git/"
 TARGET="_top"
 >https://honk.sigxcpu.org/piki/development/debian_packages_in_git/</A
-> for example workflows.
+>
+    for example workflows.
     </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2723"
+NAME="AEN2971"
 ></A
 ><H2
 >ACTIONS</H2
@@ -248,7 +266,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2726"><SPAN
+NAME="AEN2974"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -259,9 +277,10 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->	Create a patch queue branch from quilt patches in debian/patches/ that
-	are listed in debian/patches/series.
-	  </P
+>          Create a patch queue branch from quilt patches in debian/patches/
+          that are listed in debian/patches/series. The patches must apply
+          without fuzz.
+          </P
 ></TD
 ></TR
 ><TR
@@ -269,7 +288,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2731"><SPAN
+NAME="AEN2979"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -280,10 +299,10 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->	Export the patches on the patch-queue branch associated to the current
-	branch into a quilt patch series in debian/patches/ and update the
-	series file.
-	  </P
+>          Export the patches on the patch-queue branch associated to the
+          current branch into a quilt patch series in debian/patches/ and
+          update the series file.
+          </P
 ></TD
 ></TR
 ><TR
@@ -291,7 +310,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2736"><SPAN
+NAME="AEN2984"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -302,9 +321,9 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->	Switch to the patch-queue branch associated to the current branch and
-	rebase it against the current branch.
-	  </P
+>          Switch to the patch-queue branch associated to the current branch and
+          rebase it against the current branch.
+          </P
 ></TD
 ></TR
 ><TR
@@ -312,7 +331,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2741"><SPAN
+NAME="AEN2989"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -323,20 +342,20 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->	Drop (delete) the patch queue associated to the current branch. So if
-	you're on branch <TT
+>          Drop (delete) the patch queue associated to the current branch. So if
+          you're on branch <TT
 CLASS="REPLACEABLE"
 ><I
 >foo</I
 ></TT
-> this would drop branch
-	<TT
+> this would drop
+          branch <TT
 CLASS="REPLACEABLE"
 ><I
 >patch-queue/foo</I
 ></TT
 >.
-	  </P
+          </P
 ></TD
 ></TR
 ><TR
@@ -344,7 +363,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2748"><SPAN
+NAME="AEN2996"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -355,20 +374,21 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->	Add a single patch to the patch-queue similar to using
-	<B
+>          Add a single patch to the patch-queue similar to using
+          <B
 CLASS="COMMAND"
 >git-am</B
 >. Use <CODE
 CLASS="OPTION"
 >--topic</CODE
 > if you want
-	the patch to appear in a separate subdir when exporting the patch queue
-	using <CODE
+          the patch to appear in a separate subdir when exporting the patch queue
+          using <CODE
 CLASS="OPTION"
 >export</CODE
 >. This can be used to separate upstream
-	pathes from debian specific patches.</P
+          pathes from debian specific patches.
+          </P
 ></TD
 ></TR
 ><TR
@@ -376,7 +396,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2756"><SPAN
+NAME="AEN3004"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -387,9 +407,9 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->	    Switch to the patch-queue branch if on the base branch and switch
-	    to base branch if on patch-queue branch.
-	  </P
+>          Switch to the patch-queue branch if on the base branch and switch
+          to base branch if on patch-queue branch.
+          </P
 ></TD
 ></TR
 ></TBODY
@@ -398,7 +418,7 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2761"
+NAME="AEN3009"
 ></A
 ><H2
 >OPTIONS</H2
@@ -415,24 +435,20 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2764"><SPAN
+NAME="AEN3012"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--verbose</CODE
-></SPAN
->, <SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->-v</CODE
+>--version</CODE
 ></SPAN
 ></TD
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->verbose execution</P
+>          Print version of the program, i.e. version of the git-buildpackage
+          suite
+          </P
 ></TD
 ></TR
 ><TR
@@ -440,7 +456,59 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2771"><SPAN
+NAME="AEN3017"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>-v</CODE
+></SPAN
+>, <SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--verbose</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Verbose execution
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN3024"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>-h</CODE
+></SPAN
+>, <SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--help</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Print help and exit
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN3031"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -456,7 +524,8 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Whether to use colored output.</P
+>          Whether to use colored output.
+          </P
 ></TD
 ></TR
 ><TR
@@ -464,7 +533,38 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2777"><SPAN
+NAME="AEN3037"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--color-scheme=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>COLOR_SCHEME</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Colors to use in output (when color is enabled). The format for
+          COLOR_SCHEME is
+          '&lt;debug&gt;:&lt;info&gt;:&lt;warning&gt;:&lt;error&gt;'.
+          Numerical values and color names are accepted, empty fields imply
+          the default color. For example --git-color-scheme='cyan:34::' would
+          show debug messages in cyan, info messages in blue and other messages
+          in default (i.e. warning and error messages in red).
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN3043"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -475,7 +575,8 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Whether the patch files should start with a number or not.</P
+>          Whether the patch files should start with a number or not.
+          </P
 ></TD
 ></TR
 ><TR
@@ -483,7 +584,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2782"><SPAN
+NAME="AEN3048"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -499,7 +600,8 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Topic to use when importing a single patch</P
+>          Topic to use when importing a single patch
+          </P
 ></TD
 ></TR
 ><TR
@@ -507,7 +609,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2788"><SPAN
+NAME="AEN3054"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -523,17 +625,37 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->When importing a patch queue fails, go back commit by
-	  commit on the current branch to check if the patch-queue applies
-	  there. Do this at most <TT
+>          When importing a patch queue fails, go back commit by commit on the
+          current branch to check if the patch-queue applies there. Do this at
+          most <TT
 CLASS="REPLACEABLE"
 ><I
 >NUM</I
 ></TT
-> times. This can
-	  be useful if the patch-queue doesn't apply to the current branch HEAD
-	  anymore, e.g.  after importing a new upstream version.
-	  </P
+> times. This can be useful if the
+          patch-queue doesn't apply to the current branch HEAD anymore, e.g.
+          after importing a new upstream version.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN3061"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--force</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>In case of import even import if the branch already
+            exists</P
 ></TD
 ></TR
 ></TBODY
@@ -542,7 +664,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2795"
+NAME="AEN3066"
 ></A
 ><H2
 >TAGS</H2
@@ -567,7 +689,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2800"><SPAN
+NAME="AEN3071"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -578,7 +700,8 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Ignores the commit, no patch is generated out of it.</P
+>          Ignores the commit, no patch is generated out of it.
+          </P
 ></TD
 ></TR
 ><TR
@@ -586,7 +709,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2805"><SPAN
+NAME="AEN3076"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -602,26 +725,24 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Moves the patch into a subdir called
-                <TT
+>          Moves the patch into a subdir called <TT
 CLASS="REPLACEABLE"
 ><I
 >topic</I
 ></TT
-> when running
-                <PRE
+>
+          when running <PRE
 CLASS="SCREEN"
 ><B
 CLASS="COMMAND"
 >gbp pq</B
 > export</PRE
->
-                This allows for some structure below
-                <TT
+> This allows for some
+          structure below <TT
 CLASS="FILENAME"
 >debian/patches</TT
 >.
-            </P
+          </P
 ></TD
 ></TR
 ><TR
@@ -629,7 +750,7 @@ CLASS="FILENAME"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2815"><SPAN
+NAME="AEN3086"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -645,17 +766,17 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Deprecated: use <CODE
+>          Deprecated: use <CODE
 CLASS="OPTION"
 >Gbp[-Pq]: Topic</CODE
 >
-                <TT
+          <TT
 CLASS="REPLACEABLE"
 ><I
 >topic</I
 ></TT
 > instead.
-            </P
+          </P
 ></TD
 ></TR
 ></TBODY
@@ -664,17 +785,14 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2823"
+NAME="AEN3094"
 ></A
 ><H2
 >SEE ALSO</H2
 ><P
->      <SPAN
-CLASS="CITEREFENTRY"
-><SPAN
-CLASS="REFENTRYTITLE"
->gbp-buildpackage</SPAN
->(1)</SPAN
+>      <A
+HREF="man.gbp.buildpackage.html"
+>gbp-buildpackage(1)</A
 >,
       <SPAN
 CLASS="CITEREFENTRY"
@@ -690,30 +808,28 @@ CLASS="REFENTRYTITLE"
 >quilt</SPAN
 >(1)</SPAN
 >,
-      <SPAN
-CLASS="CITEREFENTRY"
-><SPAN
-CLASS="REFENTRYTITLE"
->gbp.conf</SPAN
->(5)</SPAN
+      <A
+HREF="man.gbp.conf.html"
+>gbp.conf(5)</A
 >
     </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2838"
+NAME="AEN3105"
 ></A
 ><H2
 >AUTHOR</H2
 ><P
->Guido Guenther <CODE
+>      Guido Guenther <CODE
 CLASS="EMAIL"
 >&#60;<A
 HREF="mailto:agx@sigxcpu.org"
 >agx@sigxcpu.org</A
 >&#62;</CODE
-></P
+>
+    </P
 ></DIV
 ><TABLE
 CLASS="navigation"

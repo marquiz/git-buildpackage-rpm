@@ -7,6 +7,9 @@
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REL="HOME"
+TITLE="Building Packages with git-buildpackage suite"
+HREF="index.html"><LINK
+REL="UP"
 TITLE="Building RPM Packages with git-buildpackage-rpm"
 HREF="gbp-rpm.html"><LINK
 REL="PREVIOUS"
@@ -74,8 +77,19 @@ ALT="Prev"></A
 ></TD
 ><TD
 ><A
-ACCESSKEY="h"
+ACCESSKEY="u"
 HREF="gbp-rpm.html"
+><IMG
+SRC="up.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Up"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
+HREF="index.html"
 ><IMG
 SRC="home.png"
 WIDTH="24"
@@ -86,7 +100,7 @@ ALT="Home"></A
 ><TH
 WIDTH="100%"
 align="center"
->Building RPM Packages with git-buildpackage-rpm: Version: 0.6.10</TH
+>Building Packages with git-buildpackage suite: Version: 0.6.15</TH
 ><TD
 ><A
 ACCESSKEY="n"
@@ -151,7 +165,7 @@ TARGET="_top"
     information (version number, name etc). Another clear difference is
     that <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 > will always build in a separate build
     directory whereas <B
 CLASS="COMMAND"
@@ -174,7 +188,7 @@ CLASS="COMMAND"
 >gbp buildpackage</B
 > -&#62; RPM: <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 ></P
 ></LI
 ><LI
@@ -184,7 +198,7 @@ CLASS="COMMAND"
 >gbp import-dsc</B
 > -&#62; RPM: <B
 CLASS="COMMAND"
->git-import-srpm</B
+>gbp import-srpm</B
 ></P
 ></LI
 ><LI
@@ -194,7 +208,7 @@ CLASS="COMMAND"
 >gbp import-orig</B
 > -&#62; RPM: <B
 CLASS="COMMAND"
->git-import-orig-rpm</B
+>gbp import-orig-rpm</B
 ></P
 ></LI
 ><LI
@@ -204,7 +218,7 @@ CLASS="COMMAND"
 >gbp pq</B
 > -&#62; RPM: <B
 CLASS="COMMAND"
->gbp-pq-rpm</B
+>gbp pq-rpm</B
 ></P
 ></LI
 ><LI
@@ -345,7 +359,7 @@ TYPE="1"
 ><P
 >        Import a package via <B
 CLASS="COMMAND"
->git-import-srpm</B
+>gbp import-srpm</B
 > OR clone from the
         distro git with <B
 CLASS="COMMAND"
@@ -353,7 +367,7 @@ CLASS="COMMAND"
 > if the package is already maintained with
         <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 >.
         </P
 ></LI
@@ -366,7 +380,7 @@ CLASS="COMMAND"
 >Once satisfied you can build the final package with
         <B
 CLASS="COMMAND"
->git-buildpackage-rpm</B
+>gbp buildpackage-rpm</B
 > (optionally with --git-tag to create a tag in
         git) and push it to git server.
         </P

@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Copyright</TITLE
+>Command Reference</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -10,14 +10,14 @@ REL="HOME"
 TITLE="Building Packages with git-buildpackage suite"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Building Debian Packages with git-buildpackage"
-HREF="gbp.html"><LINK
-REL="PREVIOUS"
-TITLE="gbp.conf"
-HREF="man.gbp.conf.html"><LINK
-REL="NEXT"
 TITLE="Building RPM Packages with git-buildpackage-rpm"
-HREF="gbp-rpm.html"><STYLE
+HREF="gbp-rpm.html"><LINK
+REL="PREVIOUS"
+TITLE="Building RPM packages from the Git repository"
+HREF="gbp.rpm.building.html"><LINK
+REL="NEXT"
+TITLE="gbp-buildpackage-rpm"
+HREF="man.gbp.buildpackage.rpm.html"><STYLE
 TYPE="text/css"
 >.synopsis, .classsynopsis {
     background: #eeeeee;
@@ -67,7 +67,7 @@ VALIGN="middle"
 ><TD
 ><A
 ACCESSKEY="p"
-HREF="man.gbp.conf.html"
+HREF="gbp.rpm.building.html"
 ><IMG
 SRC="left.png"
 WIDTH="24"
@@ -78,7 +78,7 @@ ALT="Prev"></A
 ><TD
 ><A
 ACCESSKEY="u"
-HREF="gbp.html"
+HREF="gbp-rpm.html"
 ><IMG
 SRC="up.png"
 WIDTH="24"
@@ -104,7 +104,7 @@ align="center"
 ><TD
 ><A
 ACCESSKEY="n"
-HREF="gbp-rpm.html"
+HREF="man.gbp.buildpackage.rpm.html"
 ><IMG
 SRC="right.png"
 WIDTH="24"
@@ -118,29 +118,43 @@ ALT="Next"></A
 CLASS="APPENDIX"
 ><H1
 ><A
-NAME="GBP.COPYLEFT"
+NAME="MAN.RPM.REFERENCE"
 ></A
->Copyright</H1
-><P
->    git-buildpackage, all associated scripts and programs, this manual,
-    and all build scripts are Copyright &copy; 2006-2014 Guido Guenther.
-  </P
-><P
->        This program is free software; you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation; Version 2 of the License.
-      </P
-><P
->        This program is distributed in the hope that it will be useful,
-        but WITHOUT ANY WARRANTY; without even the implied warranty of
-        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-        GNU General Public License for more details.
-      </P
-><P
->        You should have received a copy of the GNU General Public License
-        along with this program; if not, write to the Free Software
-        Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-      </P
+>Command Reference</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="man.gbp.buildpackage.rpm.html"
+>gbp-buildpackage-rpm</A
+>&nbsp;--&nbsp;Build RPM packages from a Git repository</DT
+><DT
+><A
+HREF="man.gbp.import.orig.rpm.html"
+>gbp-import-orig-rpm</A
+>&nbsp;--&nbsp;Import an upstream source into a git repository.</DT
+><DT
+><A
+HREF="man.gbp.import.srpm.html"
+>gbp-import-srpm</A
+>&nbsp;--&nbsp;Import source RPM packages into a Git repository</DT
+><DT
+><A
+HREF="man.gbp.pq.rpm.html"
+>gbp-pq-rpm</A
+>&nbsp;--&nbsp;Manage patches and development branches in Git</DT
+><DT
+><A
+HREF="man.gbp.rpm.ch.html"
+>gbp-rpm-ch</A
+>&nbsp;--&nbsp;Generate the RPM changelog from git commit messages</DT
+></DL
+></DIV
 ></DIV
 ><TABLE
 CLASS="navigation"
@@ -154,18 +168,21 @@ VALIGN="middle"
 ALIGN="left"
 ><A
 ACCESSKEY="p"
-HREF="man.gbp.conf.html"
+HREF="gbp.rpm.building.html"
 ><B
->&lt;&lt;&lt;&nbsp;gbp.conf</B
+>&lt;&lt;&lt;&nbsp;Building RPM packages from the <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> repository</B
 ></A
 ></TD
 ><TD
 ALIGN="right"
 ><A
 ACCESSKEY="n"
-HREF="gbp-rpm.html"
+HREF="man.gbp.buildpackage.rpm.html"
 ><B
->Building RPM Packages with git-buildpackage-rpm&nbsp;&gt;&gt;&gt;</B
+>gbp-buildpackage-rpm&nbsp;&gt;&gt;&gt;</B
 ></A
 ></TD
 ></TR

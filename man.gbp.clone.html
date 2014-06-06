@@ -7,8 +7,8 @@
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
 REL="HOME"
-TITLE="Building Debian Packages with git-buildpackage"
-HREF="gbp.html"><LINK
+TITLE="Building Packages with git-buildpackage suite"
+HREF="index.html"><LINK
 REL="UP"
 TITLE="Command Reference"
 HREF="man.reference.html"><LINK
@@ -16,8 +16,8 @@ REL="PREVIOUS"
 TITLE="gbp-dch"
 HREF="man.gbp.dch.html"><LINK
 REL="NEXT"
-TITLE="gbp-pull"
-HREF="man.gbp.pull.html"><STYLE
+TITLE="gbp-config"
+HREF="man.gbp.config.html"><STYLE
 TYPE="text/css"
 >.synopsis, .classsynopsis {
     background: #eeeeee;
@@ -89,7 +89,7 @@ ALT="Up"></A
 ><TD
 ><A
 ACCESSKEY="h"
-HREF="gbp.html"
+HREF="index.html"
 ><IMG
 SRC="home.png"
 WIDTH="24"
@@ -100,11 +100,11 @@ ALT="Home"></A
 ><TH
 WIDTH="100%"
 align="center"
->Building Debian Packages with git-buildpackage: Version: 0.6.10</TH
+>Building Packages with git-buildpackage suite: Version: 0.6.15</TH
 ><TD
 ><A
 ACCESSKEY="n"
-HREF="man.gbp.pull.html"
+HREF="man.gbp.config.html"
 ><IMG
 SRC="right.png"
 WIDTH="24"
@@ -122,7 +122,7 @@ NAME="MAN.GBP.CLONE"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN2401"
+NAME="AEN2471"
 ></A
 ><H2
 >Name</H2
@@ -130,7 +130,7 @@ NAME="AEN2401"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN2404"
+NAME="AEN2474"
 ></A
 ><H2
 >Synopsis</H2
@@ -140,7 +140,29 @@ CLASS="COMMAND"
 >gbp clone</B
 >  [<CODE
 CLASS="OPTION"
+>--version</CODE
+>] [<CODE
+CLASS="OPTION"
+>--help</CODE
+>] [<CODE
+CLASS="OPTION"
 >--verbose</CODE
+>] [<CODE
+CLASS="OPTION"
+>--color=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>[auto|on|off]</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--color-scheme=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>COLOR_SCHEME</I
+></TT
 >] [<CODE
 CLASS="OPTION"
 >--all</CODE
@@ -189,7 +211,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2428"
+NAME="AEN2508"
 ></A
 ><H2
 >DESCRIPTION</H2
@@ -227,7 +249,7 @@ CLASS="COMMAND"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2436"
+NAME="AEN2516"
 ></A
 ><H2
 >OPTIONS</H2
@@ -244,7 +266,136 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2439"><SPAN
+NAME="AEN2519"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--version</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Print version of the program, i.e. version of the git-buildpackage
+          suite
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2524"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>-v</CODE
+></SPAN
+>, <SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--verbose</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Verbose execution
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2531"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>-h</CODE
+></SPAN
+>, <SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--help</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Print help and exit
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2538"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--color=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>[auto|on|off]</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Whether to use colored output.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2544"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--color-scheme=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>COLOR_SCHEME</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Colors to use in output (when color is enabled). The format for
+          COLOR_SCHEME is
+          '&lt;debug&gt;:&lt;info&gt;:&lt;warning&gt;:&lt;error&gt;'.
+          Numerical values and color names are accepted, empty fields imply
+          the default color. For example --git-color-scheme='cyan:34::' would
+          show debug messages in cyan, info messages in blue and other messages
+          in default (i.e. warning and error messages in red).
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2550"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -274,7 +425,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2446"><SPAN
+NAME="AEN2557"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -304,7 +455,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2453"><SPAN
+NAME="AEN2564"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -335,7 +486,7 @@ CLASS="EMPHASIS"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2460"><SPAN
+NAME="AEN2571"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -368,7 +519,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2468"><SPAN
+NAME="AEN2579"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -392,32 +543,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2474"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--verbose</CODE
-></SPAN
->, <SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->-v</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->verbose execution</P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2481"><SPAN
+NAME="AEN2585"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -437,7 +563,7 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2486"
+NAME="AEN2590"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -455,38 +581,29 @@ HREF="man.gbp.conf.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2491"
+NAME="AEN2595"
 ></A
 ><H2
 >SEE ALSO</H2
 ><P
->      <SPAN
-CLASS="CITEREFENTRY"
-><SPAN
-CLASS="REFENTRYTITLE"
->gbp-buildpackage</SPAN
->(1)</SPAN
+>      <A
+HREF="man.gbp.buildpackage.html"
+>gbp-buildpackage(1)</A
 >,
-      <SPAN
-CLASS="CITEREFENTRY"
-><SPAN
-CLASS="REFENTRYTITLE"
->gbp-pull</SPAN
->(1)</SPAN
+      <A
+HREF="man.gbp.pull.html"
+>gbp-pull(1)</A
 >,
-      <SPAN
-CLASS="CITEREFENTRY"
-><SPAN
-CLASS="REFENTRYTITLE"
->gbp.conf</SPAN
->(5)</SPAN
+      <A
+HREF="man.gbp.conf.html"
+>gbp.conf(5)</A
 >
     </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2503"
+NAME="AEN2601"
 ></A
 ><H2
 >AUTHOR</H2
@@ -520,9 +637,9 @@ HREF="man.gbp.dch.html"
 ALIGN="right"
 ><A
 ACCESSKEY="n"
-HREF="man.gbp.pull.html"
+HREF="man.gbp.config.html"
 ><B
->gbp-pull&nbsp;&gt;&gt;&gt;</B
+>gbp-config&nbsp;&gt;&gt;&gt;</B
 ></A
 ></TD
 ></TR

@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->gbp-dch</TITLE
+>gbp-rpm-ch</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -11,13 +11,13 @@ TITLE="Building Packages with git-buildpackage suite"
 HREF="index.html"><LINK
 REL="UP"
 TITLE="Command Reference"
-HREF="man.reference.html"><LINK
+HREF="man.rpm.reference.html"><LINK
 REL="PREVIOUS"
-TITLE="gbp-import-orig"
-HREF="man.gbp.import.orig.html"><LINK
+TITLE="gbp-pq-rpm"
+HREF="man.gbp.pq.rpm.html"><LINK
 REL="NEXT"
-TITLE="gbp-clone"
-HREF="man.gbp.clone.html"><STYLE
+TITLE="Copyright"
+HREF="gbp.rpm.copyleft.html"><STYLE
 TYPE="text/css"
 >.synopsis, .classsynopsis {
     background: #eeeeee;
@@ -67,7 +67,7 @@ VALIGN="middle"
 ><TD
 ><A
 ACCESSKEY="p"
-HREF="man.gbp.import.orig.html"
+HREF="man.gbp.pq.rpm.html"
 ><IMG
 SRC="left.png"
 WIDTH="24"
@@ -78,7 +78,7 @@ ALT="Prev"></A
 ><TD
 ><A
 ACCESSKEY="u"
-HREF="man.reference.html"
+HREF="man.rpm.reference.html"
 ><IMG
 SRC="up.png"
 WIDTH="24"
@@ -104,7 +104,7 @@ align="center"
 ><TD
 ><A
 ACCESSKEY="n"
-HREF="man.gbp.clone.html"
+HREF="gbp.rpm.copyleft.html"
 ><IMG
 SRC="right.png"
 WIDTH="24"
@@ -116,28 +116,28 @@ ALT="Next"></A
 ></TABLE
 ><H1
 ><A
-NAME="MAN.GBP.DCH"
+NAME="MAN.GBP.RPM.CH"
 ></A
->gbp-dch</H1
+>gbp-rpm-ch</H1
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN2050"
+NAME="AEN5088"
 ></A
 ><H2
 >Name</H2
->git-dch;, gbp-dch;&nbsp;--&nbsp;Generate the Debian changelog from git commit messages</DIV
+>git-rpm-ch;, gbp-rpm-ch;&nbsp;--&nbsp;Generate the RPM changelog from git commit messages</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN2054"
+NAME="AEN5092"
 ></A
 ><H2
 >Synopsis</H2
 ><P
 ><B
 CLASS="COMMAND"
->gbp dch</B
+>gbp rpm-ch</B
 >  [<CODE
 CLASS="OPTION"
 >--version</CODE
@@ -165,111 +165,98 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
->--debian-branch=</CODE
-><TT
+>--vendor</CODE
+>=<TT
 CLASS="REPLACEABLE"
 ><I
->branch_name</I
+>VENDOR</I
 ></TT
 >] [<CODE
 CLASS="OPTION"
->--debian-tag=</CODE
+>--packaging-branch=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
->tag-format</I
+>BRANCH-NAME</I
 ></TT
 >] [<CODE
 CLASS="OPTION"
->--upstream-tag=</CODE
+>--packaging-tag=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
->tag-format</I
+>TAG-FORMAT</I
 ></TT
 >] [<CODE
 CLASS="OPTION"
 >--ignore-branch</CODE
 >] [<CODE
 CLASS="OPTION"
->--snapshot</CODE
-> | <CODE
-CLASS="OPTION"
->--release</CODE
+>--packaging-dir=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
 >] [<CODE
 CLASS="OPTION"
->--auto</CODE
+>--changelog-file=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>FILEPATH</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--spec-file=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>FILEPATH</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--all</CODE
+> | <CODE
+CLASS="OPTION"
+>--message=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>MESSAGE</I
+></TT
 > | <CODE
 CLASS="OPTION"
 >--since=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
->commitish</I
+>COMMITISH</I
 ></TT
 >] [<CODE
 CLASS="OPTION"
->--new-version=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->version</I
-></TT
+>--no-release</CODE
 >] [<CODE
 CLASS="OPTION"
->--bpo</CODE
-> | <CODE
-CLASS="OPTION"
->--nmu</CODE
-> | <CODE
-CLASS="OPTION"
->--qa</CODE
-> | <CODE
-CLASS="OPTION"
->--team</CODE
->] [<CODE
-CLASS="OPTION"
->--distribution=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->name</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--force-distribution</CODE
->] [<CODE
-CLASS="OPTION"
->--urgency=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->level</I
-></TT
+>--[no-]git-author</CODE
 >] [<CODE
 CLASS="OPTION"
 >--[no-]full</CODE
->] [<CODE
-CLASS="OPTION"
->--[no-]meta</CODE
->] [<CODE
-CLASS="OPTION"
->--meta-closes=bug-close-tags</CODE
->] [<CODE
-CLASS="OPTION"
->--snapshot-number=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->expression</I
-></TT
 >] [<CODE
 CLASS="OPTION"
 >--id-length=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
->number</I
+>NUMBER</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--changelog-revision=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>REV-FORMAT</I
 ></TT
 >] [<CODE
 CLASS="OPTION"
@@ -277,97 +264,93 @@ CLASS="OPTION"
 ><TT
 CLASS="REPLACEABLE"
 ><I
->git-log-options</I
+>GIT-LOG-OPTIONS</I
 ></TT
 >] [<CODE
 CLASS="OPTION"
->--[no-]git-author</CODE
+>--spawn-editor=<TT
+CLASS="REPLACEABLE"
+><I
+>[always|release|no]</I
+></TT
+></CODE
 >] [<CODE
 CLASS="OPTION"
->--[no-]multimaint</CODE
->] [<CODE
-CLASS="OPTION"
->--[no-]multimaint-merge</CODE
->] [<CODE
-CLASS="OPTION"
->--spawn-editor=[always|snapshot|release]</CODE
->] [<CODE
-CLASS="OPTION"
->--commit-msg=</CODE
+>--editor-cmd=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
->msg-format</I
+>EDITOR</I
 ></TT
 >] [<CODE
 CLASS="OPTION"
->--commit</CODE
+>--tag</CODE
+>] [<CODE
+CLASS="OPTION"
+>--retag</CODE
+>] [<CODE
+CLASS="OPTION"
+>--[no-]sign-tags</CODE
+>] [<CODE
+CLASS="OPTION"
+>--keyid=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>GPG-KEYID</I
+></TT
 >] [<CODE
 CLASS="OPTION"
 >--customizations=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
->customization-file</I
+>CUSTOMIZATION-FILE</I
 ></TT
 >]  <TT
 CLASS="REPLACEABLE"
 ><I
->[path1 path2]</I
+>[PATH1 PATH2]</I
 ></TT
 > </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2144"
+NAME="AEN5171"
 ></A
 ><H2
 >DESCRIPTION</H2
 ><P
 >    <B
 CLASS="COMMAND"
->gbp dch</B
-> reads git commit messages and generates the Debian changelog from
-    it. If no arguments are given <B
-CLASS="COMMAND"
->gbp dch</B
-> starts from the last tagged Debian
-    package version up to the current tip of the current branch. If the
-    distribution of the topmost section in
-    <TT
-CLASS="FILENAME"
->debian/changelog</TT
-> is <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->UNRELEASED</I
-></SPAN
->
-    the changelog entries will be inserted into this section. Otherwise a new
-    section will be created.
+>gbp rpm-ch</B
+> reads git commit messages up to the current tip of the current
+    branch and updates the RPM changelog from them.
     </P
 ><P
->    If <CODE
-CLASS="OPTION"
->--auto</CODE
-> is given <B
+>    By default, <B
 CLASS="COMMAND"
->gbp dch</B
-> tries to guess the
-    last <SPAN
+>gbp rpm-ch</B
+> tries to guess the last <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
-> commit documented in the changelog - this only works in snapshot
-    mode. Otherwise <CODE
+> commit documented in
+    the changelog. Alternatively, <CODE
 CLASS="OPTION"
 >--since</CODE
-> can be used to tell <B
+> can be used to
+    tell <B
 CLASS="COMMAND"
->gbp dch</B
->
-    at which point it should start in the <SPAN
+>gbp rpm-ch</B
+> at which point it should start in the <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> history, or,
+    <CODE
+CLASS="OPTION"
+>--all</CODE
+> to use all commits from the <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
 > history.
@@ -376,35 +359,13 @@ CLASS="PRODUCTNAME"
 >    The additional path arguments can be used to restrict the repository paths
     <B
 CLASS="COMMAND"
->gbp dch</B
-> looks at. Setting <TT
-CLASS="REPLACEABLE"
-><I
->path</I
-></TT
-> to
-    <SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->debian/</I
-></SPAN
-> is a good choice if upstream uses <SPAN
-CLASS="PRODUCTNAME"
->Git</SPAN
-> and
-    all Debian packaging changes are restricted to the
-    <TT
-CLASS="REPLACEABLE"
-><I
->debian/</I
-></TT
-> subdir. In more sophisticated cases
-    (like backports) you can use <CODE
+>gbp rpm-ch</B
+> looks at. For even more detailed control, you can use
+    <CODE
 CLASS="OPTION"
 >--git-log</CODE
-> to restrict the
-    generated changelog entries further. E.g. by using
+> to restrict the generated changelog entries
+    further. E.g. by using
     <CODE
 CLASS="OPTION"
 >--git-log=</CODE
@@ -419,7 +380,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2167"
+NAME="AEN5188"
 ></A
 ><H2
 >OPTIONS</H2
@@ -436,7 +397,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2170"><SPAN
+NAME="AEN5191"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -457,7 +418,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2175"><SPAN
+NAME="AEN5196"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -483,7 +444,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2182"><SPAN
+NAME="AEN5203"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -509,7 +470,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2189"><SPAN
+NAME="AEN5210"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -534,7 +495,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2195"><SPAN
+NAME="AEN5216"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -565,15 +526,15 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2201"><SPAN
+NAME="AEN5222"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--debian-branch</CODE
+>--vendor</CODE
 >=<TT
 CLASS="REPLACEABLE"
 ><I
->branch_name</I
+>VENDOR</I
 ></TT
 ></SPAN
 ></TD
@@ -581,8 +542,33 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          The branch in the Git repository the Debian package is being
-          developed on, default is <TT
+>          Distribution vendor name.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5228"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--packaging-branch</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>BRANCH-NAME</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          The branch in the Git repository the package is being developed on,
+          default is <TT
 CLASS="REPLACEABLE"
 ><I
 >master</I
@@ -596,7 +582,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2208"><SPAN
+NAME="AEN5235"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -611,7 +597,7 @@ VALIGN="TOP"
           <TT
 CLASS="REPLACEABLE"
 ><I
->debian-branch</I
+>PACKAGING-BRANCH</I
 ></TT
 >.
           </P
@@ -622,15 +608,15 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2214"><SPAN
+NAME="AEN5241"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--debian-tag=</CODE
+>--packaging-tag=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
->tag-format</I
+>TAG-FORMAT</I
 ></TT
 ></SPAN
 ></TD
@@ -638,11 +624,11 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          tag format used, when tagging debian versions,
+>          Tag format used, when tagging releases,
           default is <TT
 CLASS="REPLACEABLE"
 ><I
->debian/%(version)s</I
+>%(vendor)s/%(version)s</I
 ></TT
 >
           </P
@@ -653,7 +639,144 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2221"><SPAN
+NAME="AEN5248"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--packaging-dir=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Subdirectory that contains the RPM packaging files.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5254"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--changelog-file=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>FILEPATH</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Relative path to the changelog file to use. Special value
+          <TT
+CLASS="REPLACEABLE"
+><I
+>auto</I
+></TT
+> causes <B
+CLASS="COMMAND"
+>gbp</B
+> to guess,
+          <TT
+CLASS="REPLACEABLE"
+><I
+>SPEC</I
+></TT
+> uses the spec file,
+          <TT
+CLASS="REPLACEABLE"
+><I
+>CHANGES</I
+></TT
+> uses a separate changelog file
+          (name derived spec file name with .spec suffix replaced by .changes).
+          Guessing logic is simple: use separate changelog file if it is found,
+          otherwise use the spec file.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5264"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--spec-file=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>FILEPATH</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Relative path to the spec file to use. Special value
+          <TT
+CLASS="REPLACEABLE"
+><I
+>auto</I
+></TT
+> causes <B
+CLASS="COMMAND"
+>gbp</B
+> to search and guess.
+          Other values cause the <CODE
+CLASS="OPTION"
+>--packaging-dir</CODE
+> option to be
+          ignored: the directory of the spec file is used, instead.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5273"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--all</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Use all commits from the Git history, overrides
+          <CODE
+CLASS="OPTION"
+>--since</CODE
+>.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5279"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -661,7 +784,7 @@ CLASS="OPTION"
 ><TT
 CLASS="REPLACEABLE"
 ><I
->committish</I
+>COMMITTISH</I
 ></TT
 ></SPAN
 ></TD
@@ -673,7 +796,7 @@ VALIGN="TOP"
           <TT
 CLASS="REPLACEABLE"
 ><I
->committish</I
+>COMMITTISH</I
 ></TT
 >.
           </P
@@ -684,23 +807,19 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2228"><SPAN
+NAME="AEN5286"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--auto</CODE
->,
-          <CODE
-CLASS="OPTION"
->-a</CODE
+>--no-release</CODE
 ></SPAN
 ></TD
 ><TD
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          Guess the last commit documented in the changelog from the
-          snapshot banner (or from the last tag if no snapshot banner exists).
+>           Do not create a new changelog section, just update the last
+           changelog section.
           </P
 ></TD
 ></TR
@@ -709,64 +828,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2234"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--[no-]meta</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Parse meta tags like <CODE
-CLASS="OPTION"
->Closes:</CODE
->,
-          <CODE
-CLASS="OPTION"
->Thanks:</CODE
-> and <CODE
-CLASS="OPTION"
->Git-Dch:</CODE
->. See META TAGS
-          below.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2242"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--meta-closes=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->bug-close-tags</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          What meta tags to look for to generate bug-closing changelog entries.
-          The default is 'Closes|LP' to support Debian and Launchpad.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2248"><SPAN
+NAME="AEN5291"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -786,306 +848,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2253"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--snapshot</CODE
->,
-              <CODE
-CLASS="OPTION"
->-S</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Create a snapshot release entry. This adds a snapshot release
-          number and a warning banner to the changelog entry. The release
-          version number is being auto incremented with every new snapshot
-          release to avoid packages downgrades during snapshot testing.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2259"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--snapshot-number=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->expression</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Python expression that gets eval()ed to the new snapshot number.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2265"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--release</CODE
->,
-              <CODE
-CLASS="OPTION"
->-R</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Remove any snapshot release banners and version suffixes, set
-          the current distribution to <TT
-CLASS="REPLACEABLE"
-><I
->unstable</I
-></TT
-> and
-          open the changelog for final tweaking.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2272"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--new-version=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->version</I
-></TT
->,
-              <CODE
-CLASS="OPTION"
->-N</CODE
-> <TT
-CLASS="REPLACEABLE"
-><I
->version</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Add a new changelog section with version
-          <TT
-CLASS="REPLACEABLE"
-><I
->newversion</I
-></TT
->. Together with
-          <CODE
-CLASS="OPTION"
->--snapshot</CODE
-> the snapshot number will be appended to
-          <TT
-CLASS="REPLACEABLE"
-><I
->newversion</I
-></TT
->.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2283"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--team</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Create a Team upload changelog entry.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2288"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--bpo</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Increment the Debian release number for an upload to backports, and
-          add a backport upload changelog comment.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2293"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--nmu</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Increment  the  Debian  release  number  for a non-maintainer upload.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2298"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--qa</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Increment the Debian release number for a Debian QA Team upload, and
-          add a QA upload changelog comment.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2303"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--distribution=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->name</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Set the distribution field to <TT
-CLASS="REPLACEABLE"
-><I
->name</I
-></TT
->.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2310"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--force-distribution</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Force the distribution specified with <CODE
-CLASS="OPTION"
->--distribution</CODE
->
-          to be used, even if it doesn't match the list of known distributions.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2316"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--urgency=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->level</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Set the urgency field to <TT
-CLASS="REPLACEABLE"
-><I
->level</I
-></TT
->.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2323"><SPAN
+NAME="AEN5296"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1093,7 +856,7 @@ CLASS="OPTION"
 ><TT
 CLASS="REPLACEABLE"
 ><I
->git-log-options</I
+>GIT-LOG-OPTIONS</I
 ></TT
 ></SPAN
 ></TD
@@ -1110,7 +873,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2329"><SPAN
+NAME="AEN5302"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1141,7 +904,62 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2336"><SPAN
+NAME="AEN5309"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--changelog-revision=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>REV-FORMAT</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Format string to use for revision field in the changelog header.  The
+          following string fields are accepted:
+          <TT
+CLASS="REPLACEABLE"
+><I
+>%(upstreamversion)s</I
+></TT
+> the upstream version;
+          <TT
+CLASS="REPLACEABLE"
+><I
+>%(release)s</I
+></TT
+> the rpm patchlevel, i.e.
+          Release; <TT
+CLASS="REPLACEABLE"
+><I
+>%(version)s</I
+></TT
+> full rpm package
+          version; <TT
+CLASS="REPLACEABLE"
+><I
+>%(tagname)s</I
+></TT
+> tag/commit, i.e.
+          basically what <B
+CLASS="COMMAND"
+>git-describe</B
+> would give.
+          If empty or not defined the default from packaging policy is used.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5320"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1149,7 +967,7 @@ CLASS="OPTION"
 ><TT
 CLASS="REPLACEABLE"
 ><I
->regex</I
+>REGEX</I
 ></TT
 ></SPAN
 ></TD
@@ -1160,7 +978,7 @@ VALIGN="TOP"
 >          Ignore commit lines matching <TT
 CLASS="REPLACEABLE"
 ><I
->regex</I
+>REGEX</I
 ></TT
 >
           when generating the changelog.
@@ -1172,7 +990,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2343"><SPAN
+NAME="AEN5327"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1187,7 +1005,7 @@ VALIGN="TOP"
           <SPAN
 CLASS="APPLICATION"
 >git-config</SPAN
->(1) for changelog trailer.
+>(1) for the changelog header.
           </P
 ></TD
 ></TR
@@ -1196,34 +1014,14 @@ CLASS="APPLICATION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2349"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--[no-]multimaint-merge</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Merge commits by maintainer.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2354"><SPAN
+NAME="AEN5333"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
 >--spawn-editor=<TT
 CLASS="REPLACEABLE"
 ><I
->[always|snapshot|release]</I
+>[always|release|no]</I
 ></TT
 ></CODE
 ></SPAN
@@ -1232,8 +1030,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          Whether to spawn an editor: always, when doing snapshots or when
-          doing a release.
+>          Whether to spawn an editor: always, when doing a release or never.
           </P
 ></TD
 ></TR
@@ -1242,15 +1039,142 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2360"><SPAN
+NAME="AEN5339"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--commit-msg=</CODE
+>--editor-cmd=<TT
+CLASS="REPLACEABLE"
+><I
+>EDITOR</I
+></TT
+></CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          The editor to use for editing the changelog.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5345"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--message=<TT
+CLASS="REPLACEABLE"
+><I
+>MESSAGE</I
+></TT
+></CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Text to use for new changelog entries. Git history and the commit
+          messages, including <CODE
+CLASS="OPTION"
+>--since</CODE
+> and
+          <CODE
+CLASS="OPTION"
+>--all</CODE
+> options are ignored in this case.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5353"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--tag</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Commit the changes and create a packaging (release) tag. All
+          changelog modifications (and importantly, all other staged changes)
+          are committed to git before creating the tag. This option makes it
+          possible to create a release and correctly document the the tag name
+          in the rpm changelog (by using %(tagname)s in the
+          <CODE
+CLASS="OPTION"
+>--changelog-revision</CODE
+> string).
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5359"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--retag</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Don't fail tag operations if a tag with the same version already
+          exists, but, overwrite the existing tag, instead.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5364"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--[no-]sign-tags</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          GPG sign all created tags.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5369"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--keyid=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
->msg-format</I
+>GPG-KEYID</I
 ></TT
 ></SPAN
 ></TD
@@ -1258,18 +1182,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          use this format string for the commit message when committing the
-          generated changelog file (when <CODE
-CLASS="OPTION"
->--commit</CODE
-> is given).
-          Default is
-          <TT
-CLASS="REPLACEABLE"
-><I
->Update changelog for %(version)s release</I
-></TT
->
+>          Use this keyid for gpg signing tags.
           </P
 ></TD
 ></TR
@@ -1278,27 +1191,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2368"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--commit</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Commit the generated changelog.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2373"><SPAN
+NAME="AEN5375"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1306,7 +1199,7 @@ CLASS="OPTION"
 ><TT
 CLASS="REPLACEABLE"
 ><I
->customization-file</I
+>CUSTOMIZATION-FILE</I
 ></TT
 ></SPAN
 ></TD
@@ -1317,11 +1210,11 @@ VALIGN="TOP"
 >          Load Python code from <TT
 CLASS="REPLACEABLE"
 ><I
->customization-file</I
+>CUSTOMIZATION-FILE</I
 ></TT
 >.
           At the moment, the only useful thing the code can do is define a
-          custom format_changelog_entry() function.
+          custom ChangelogEntryFormatter class.
           </P
 ></TD
 ></TR
@@ -1331,84 +1224,25 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2380"
-></A
-><H2
->Snapshot mode</H2
-><P
->    Snapshot mode can be used for quick test and install cycles without
-    having to worry about version numbers or changelog entries.
-    </P
-><P
->    When using <CODE
-CLASS="OPTION"
->--snapshot</CODE
-> or <CODE
-CLASS="OPTION"
->-S</CODE
-> <B
-CLASS="COMMAND"
->gbp dch</B
->
-    uses a pseudo header in the Debian changelog to remember the last git
-    commit it added a changelog entry for. It also sets a version number
-    ending in
-    <TT
-CLASS="REPLACEABLE"
-><I
->~&lt;snaspshotnumber&gt;.gbp&lt;commitid&gt;</I
-></TT
->.
-    It automatically increments the snapshot number on subsequent invocations
-    of <B
-CLASS="COMMAND"
->gbp dch</B
-> <CODE
-CLASS="OPTION"
->-S</CODE
-> so that later snapshots automatically
-    have a higher version number. To leave snapshot mode invoke <B
-CLASS="COMMAND"
->gbp dch</B
->
-    with the <CODE
-CLASS="OPTION"
->--release</CODE
-> option. This removes the pseudo
-    header and unmangles the version number so the released version has a
-    higher version number than the snapshots.
-    </P
-></DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN2392"
+NAME="AEN5382"
 ></A
 ><H2
 >META TAGS</H2
 ><P
->    Additional to the above options the formatting of the commit message
-    in <TT
-CLASS="FILENAME"
->debian/changelog</TT
-> can be modified by special tags
-    (called Meta Tags)
-    given in the git commit message. Meta Tag processing can be activated via
-    the <CODE
-CLASS="OPTION"
->--meta</CODE
-> option. The tags must start at the first column of
-    a commit message but can appear on any line.
-    They are of the form <CODE
+>    Additional to the above options the formatting of the new changelog entries
+    (one-per-commit) in the changelog can be modified by special tags (called
+    Meta Tags) given in the git commit message. The tags must start at the
+    first column of a commit message but can appear on any line.  They are of
+    the form <CODE
 CLASS="OPTION"
 >Tagname</CODE
->:
-    <TT
+>: <TT
 CLASS="REPLACEABLE"
 ><I
->value</I
+>VALUE</I
 ></TT
->. Valid Meta Tags are:
+>. Valid
+    Meta Tags are:
     </P
 ><P
 ></P
@@ -1423,15 +1257,15 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2400"><SPAN
+NAME="AEN5388"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->Git-Dch</CODE
+>Git-Rpm-Ch</CODE
 >: <TT
 CLASS="REPLACEABLE"
 ><I
->action</I
+>ACTION</I
 ></TT
 ></SPAN
 ></TD
@@ -1445,11 +1279,7 @@ CLASS="REPLACEABLE"
 >Ignore</I
 ></TT
 > which will
-          ignore this commit when generating
-          <TT
-CLASS="FILENAME"
->debian/changelog</TT
->,
+          ignore this commit when generating new changelog entries.
           <TT
 CLASS="REPLACEABLE"
 ><I
@@ -1480,15 +1310,15 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2412"><SPAN
+NAME="AEN5399"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->Thanks</CODE
+>[Close|Closes|Fix|Fixes]</CODE
 >: <TT
 CLASS="REPLACEABLE"
 ><I
->msg</I
+>BUGNUMBER</I
 ></TT
 ></SPAN
 ></TD
@@ -1496,40 +1326,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          Add a thanks message after the commit message.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN2418"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->Closes</CODE
->: <TT
-CLASS="REPLACEABLE"
-><I
->bugnumber</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Indicate in the <TT
-CLASS="FILENAME"
->debian/changelog</TT
-> that the bug
-          was closed by this commit. See the <CODE
-CLASS="OPTION"
->--meta-closes</CODE
-> on
-          how to extend this for other bugtrackers.
+>          Indicate in the changelog that the bug was addressed by this commit.
           </P
 ></TD
 ></TR
@@ -1544,26 +1341,21 @@ CLASS="SCREEN"
 
       so one doesn't have to consult the manual
 
-      Git-Dch: Short
+      Git-Rpm-Ch: Short
       Closes: #636088
-      Thanks: Raphaël Hertzog for the suggestion
     </PRE
 ><P
->    Results in this <TT
-CLASS="FILENAME"
->debian/changelog</TT
-> entry:
+>    Results in this changelog entry:
     </P
 ><PRE
 CLASS="SCREEN"
->      * Document meta tags.
-        Thanks to Raphaël Hertzog for the suggestion (Closes: #636088)
+>      - Document meta tags (Closes: #636088)
     </PRE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2431"
+NAME="AEN5409"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -1581,26 +1373,22 @@ HREF="man.gbp.conf.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2436"
+NAME="AEN5414"
 ></A
 ><H2
 >SEE ALSO</H2
 ><P
 >      <A
-HREF="man.gbp.buildpackage.html"
->gbp-buildpackage(1)</A
+HREF="man.gbp.buildpackage.rpm.html"
+>gbp-buildpackage-rpm(1)</A
 >,
       <A
-HREF="man.gbp.import.dsc.html"
->gbp-import-dsc(1)</A
+HREF="man.gbp.import.srpm.html"
+>gbp-import-srpm(1)</A
 >,
       <A
-HREF="man.gbp.import.dscs.html"
->gbp-import-dscs(1)</A
->,
-      <A
-HREF="man.gbp.import.orig.html"
->gbp-import-orig(1)</A
+HREF="man.gbp.import.orig.rpm.html"
+>gbp-import-orig-rpm(1)</A
 >,
       <A
 HREF="man.gbp.conf.html"
@@ -1649,16 +1437,16 @@ CLASS="CITETITLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2457"
+NAME="AEN5434"
 ></A
 ><H2
 >AUTHOR</H2
 ><P
->    Guido Guenther <CODE
+>    Markus Lehtonen <CODE
 CLASS="EMAIL"
 >&#60;<A
-HREF="mailto:agx@sigxcpu.org"
->agx@sigxcpu.org</A
+HREF="mailto:markus.lehtonen@linux.intel.com"
+>markus.lehtonen@linux.intel.com</A
 >&#62;</CODE
 >
     </P
@@ -1675,18 +1463,18 @@ VALIGN="middle"
 ALIGN="left"
 ><A
 ACCESSKEY="p"
-HREF="man.gbp.import.orig.html"
+HREF="man.gbp.pq.rpm.html"
 ><B
->&lt;&lt;&lt;&nbsp;gbp-import-orig</B
+>&lt;&lt;&lt;&nbsp;gbp-pq-rpm</B
 ></A
 ></TD
 ><TD
 ALIGN="right"
 ><A
 ACCESSKEY="n"
-HREF="man.gbp.clone.html"
+HREF="gbp.rpm.copyleft.html"
 ><B
->gbp-clone&nbsp;&gt;&gt;&gt;</B
+>Copyright&nbsp;&gt;&gt;&gt;</B
 ></A
 ></TD
 ></TR

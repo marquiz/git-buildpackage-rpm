@@ -1,0 +1,1294 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>gbp-pq-rpm</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Building Packages with git-buildpackage suite"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Command Reference"
+HREF="man.rpm.reference.html"><LINK
+REL="PREVIOUS"
+TITLE="gbp-import-srpm"
+HREF="man.gbp.import.srpm.html"><LINK
+REL="NEXT"
+TITLE="gbp-rpm-ch"
+HREF="man.gbp.rpm.ch.html"><STYLE
+TYPE="text/css"
+>.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE
+></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><TABLE
+WIDTH="100%"
+CLASS="navigation"
+SUMMARY="Navigation header"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+><A
+ACCESSKEY="p"
+HREF="man.gbp.import.srpm.html"
+><IMG
+SRC="left.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Prev"></A
+></TD
+><TD
+><A
+ACCESSKEY="u"
+HREF="man.rpm.reference.html"
+><IMG
+SRC="up.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Up"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
+HREF="index.html"
+><IMG
+SRC="home.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Home"></A
+></TD
+><TH
+WIDTH="100%"
+align="center"
+>Building Packages with git-buildpackage suite: Version: 0.6.15</TH
+><TD
+><A
+ACCESSKEY="n"
+HREF="man.gbp.rpm.ch.html"
+><IMG
+SRC="right.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Next"></A
+></TD
+></TR
+></TABLE
+><H1
+><A
+NAME="MAN.GBP.PQ.RPM"
+></A
+>gbp-pq-rpm</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4787"
+></A
+><H2
+>Name</H2
+>gbp-pq-rpm&nbsp;--&nbsp;Manage patches and development branches in Git</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4790"
+></A
+><H2
+>Synopsis</H2
+><P
+><B
+CLASS="COMMAND"
+>gbp pq-rpm</B
+>  [<CODE
+CLASS="OPTION"
+>--version</CODE
+>] [<CODE
+CLASS="OPTION"
+>--help</CODE
+>] [<CODE
+CLASS="OPTION"
+>--verbose</CODE
+>] [<CODE
+CLASS="OPTION"
+>--color=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>[auto|on|off]</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--color-scheme=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>COLOR_SCHEME</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--vendor</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>VENDOR</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--packaging-branch=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>BRANCH-NAME</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--pq-branch=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>BRANCH-NAME</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--packaging-dir=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--spec-file=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>FILEPATH</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--upstream-tag=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>TAG-FORMAT</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--force</CODE
+>] [<CODE
+CLASS="OPTION"
+>--import-files=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>FILES</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--export-rev=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>TREEISH</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--patch-export-compress=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>THRESHOLD</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--patch-export-ignore-path=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>REGEX</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--patch-export-squash-until=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>COMMITISH</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--[no-]patch-numbers</CODE
+>] [<CODE
+CLASS="OPTION"
+>--new-packaging-dir=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--retain-history</CODE
+>]  <CODE
+CLASS="OPTION"
+>drop</CODE
+> | <CODE
+CLASS="OPTION"
+>export</CODE
+> | <CODE
+CLASS="OPTION"
+>import</CODE
+> | <CODE
+CLASS="OPTION"
+>rebase</CODE
+> | <CODE
+CLASS="OPTION"
+>switch</CODE
+> | <CODE
+CLASS="OPTION"
+>convert</CODE
+> </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4860"
+></A
+><H2
+>DESCRIPTION</H2
+><P
+>    <B
+CLASS="COMMAND"
+>gbp pq-rpm</B
+> helps in managing patches and development branch(es) for
+    packages that are maintained with <B
+CLASS="COMMAND"
+>gbp</B
+>. It designed to be used for
+    packages that are maintained using the "orphan-packaging" model.
+    <B
+CLASS="COMMAND"
+>gbp pq-rpm</B
+> has multiple subcommands, or actions, for working with the
+    branches and patches.
+    </P
+><P
+>    <B
+CLASS="COMMAND"
+>gbp pq-rpm</B
+> makes it easy to do source code development on a separate
+    development branch (patch-queue branch in Debian git-buildpackage terms).
+    For example, if the packaging files would be stored in
+    <TT
+CLASS="REPLACEABLE"
+><I
+>master</I
+></TT
+> the associated development branch would
+    be <TT
+CLASS="REPLACEABLE"
+><I
+>development/master</I
+></TT
+>.
+    </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4870"
+></A
+><H2
+>ACTIONS</H2
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4873"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>import</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Create a development (patch-queue) branch by applying all patches
+          from the packaging branch on top of the upstream version. The patches
+          must apply without fuzz.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4878"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>export</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Export patches from the development branch into the packaging branch.
+          It generates patches (one-per-commit) from the development branch and
+          updates the spec file accordingly. It doesn't automatically commit
+          the changes though - they need to verified and committed manually.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4883"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>rebase</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Switch to the development branch and rebase it against the current
+          upstream version (indicated in the spec file of the associated
+          packaging branch).
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4888"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>drop</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Drop (delete) the development branch associated to the current
+          branch. For example, you're on branch <TT
+CLASS="REPLACEABLE"
+><I
+>foo</I
+></TT
+>
+          this would drop branch <TT
+CLASS="REPLACEABLE"
+><I
+>development/foo</I
+></TT
+>.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4895"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>apply</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Add a single patch to the development branch - similar to using
+          <B
+CLASS="COMMAND"
+>git-am</B
+>.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4901"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>switch</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Switch between the development branch and the associated packaging
+          branch.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4906"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>convert</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Convert a package from the "joint-packaging" maintenance model and
+          git-layout to the "orphan-packaging" model.  It takes the content of
+          the packaging directory, auto-generates patches and puts these into a
+          new orphan packaging branch. You can use the
+          <CODE
+CLASS="OPTION"
+>--retain-history</CODE
+> to try to preserve as much of the
+          git history as possible. Converting is a one-time action - conversion
+          back to the "joint-packaging" model is not supported (yet).
+          </P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4912"
+></A
+><H2
+>OPTIONS</H2
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4915"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--version</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Print version of the program, i.e. version of the git-buildpackage
+          suite
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4920"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>-v</CODE
+></SPAN
+>, <SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--verbose</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Verbose execution
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4927"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>-h</CODE
+></SPAN
+>, <SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--help</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Print help and exit
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4934"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--color=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>[auto|on|off]</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Whether to use colored output.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4940"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--color-scheme=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>COLOR_SCHEME</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Colors to use in output (when color is enabled). The format for
+          COLOR_SCHEME is
+          '&lt;debug&gt;:&lt;info&gt;:&lt;warning&gt;:&lt;error&gt;'.
+          Numerical values and color names are accepted, empty fields imply
+          the default color. For example --git-color-scheme='cyan:34::' would
+          show debug messages in cyan, info messages in blue and other messages
+          in default (i.e. warning and error messages in red).
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4946"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--vendor</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>VENDOR</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Distribution vendor name.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4952"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--packaging-branch</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>BRANCH-NAME</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Branch the packaging files are being maintained on. Only relevant if
+          a invariable/single development (pq-branch) is defined with
+          <CODE
+CLASS="OPTION"
+>--pq-branch</CODE
+>, in which case this is used as the
+          "base" branch.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4959"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--pq-branch</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>BRANCH_NAME</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Name (format string) of the development (patch-queue) branch. The
+          following string fields are accepted: "%(branch)s" (the base branch,
+          i.e. the packaging branch that the development branch is associated
+          to), "%(upstreamversion)s" (the upstream version), "%(release)s" (the
+          rpm patchlevel, i.e. Release), "%(version)s" (full rpm package
+          version).
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4965"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--packaging-dir=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Subdirectory that contains the RPM packaging files.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4971"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--spec-file=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>FILEPATH</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Relative path to the spec file to use. Special value
+          <TT
+CLASS="REPLACEABLE"
+><I
+>auto</I
+></TT
+> causes <B
+CLASS="COMMAND"
+>gbp</B
+> to search and guess.
+          Other values cause the <CODE
+CLASS="OPTION"
+>--packaging-dir</CODE
+> option to be
+          ignored: the directory of the spec file is used, instead.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4980"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--upstream-tag=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>TAG-FORMAT</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Use this tag format when looking for tags of upstream versions,
+          default is <TT
+CLASS="REPLACEABLE"
+><I
+>upstream/%(version)s</I
+></TT
+>.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4987"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--force</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Import even if the development (patch-queue) branch already exists.
+          Only valid for the import action.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4992"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--import-files=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>FILES</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Comma-separated list of additional file(s) to import from packaging
+          branch. These will appear as one monolithic patch in the development
+          (patch-queue) branch. By default, the local gbp conf files are
+          imported in order to try to ensure that gbp sees the same settings on
+          the development (pq) branch as on the packaging branch.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4998"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--export-rev=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>TREEISH</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Export patches from <TT
+CLASS="REPLACEABLE"
+><I
+>TREEISH</I
+></TT
+> instead of the
+          default which is HEAD of the development (patch-queue) branch.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5005"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--patch-export-compress=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>THRESHOLD</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Compress patches larger than given
+          <TT
+CLASS="REPLACEABLE"
+><I
+>THRESHOLD</I
+></TT
+> bytes. Special value 0 disabled
+          patch compression.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5012"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--patch-export-ignore-path=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>REGEX</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Exclude changes to path(s) matching <TT
+CLASS="REPLACEABLE"
+><I
+>REGEX</I
+></TT
+>
+          in patch generation.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5019"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--patch-export-squash-until=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>COMMITISH</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Squash commits up to the given <TT
+CLASS="REPLACEABLE"
+><I
+>COMMITISH</I
+></TT
+>
+          into one monolitic diff. Could be used if one wants to squash commits
+          from an upstream release up to a stable update into a single diff
+          (commits on top of the stable would generate one patch per commit as
+          usual). The format is '&lt;commit_ish&gt;[:&lt;filename_base&gt;]',
+          i.e. commitish optionally followed by a colon and the desired
+          filename base for the diff (suffix '.diff' is automatically added by
+          <B
+CLASS="COMMAND"
+>gbp</B
+>). Magic word 'HEAD' translates to the patch-export-treeish when
+          given as the squash-point. This allows one to configure gbp to
+          always squash all commits into one monolithic diff.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5027"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--[no-]patch-numbers</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Whether the patch files should start with a number or not.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5032"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--new-packaging-dir=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Directory where packaging files are put in the new orphan packaging
+          branch after convert. If <CODE
+CLASS="OPTION"
+>--new-packaging-dir=</CODE
+> is not
+          defined, <TT
+CLASS="REPLACEABLE"
+><I
+>packaging-dir</I
+></TT
+> is used.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5040"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--retain-history</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Try to preserve as much history as possible when converting. That is,
+          for each commit in the old branch create one corresponding commit in
+          the new orphan packaging branch. However, commits that will not
+          generate any changes are skipped (i.e. no empty commits are
+          generated) - these are caused e.g. by changes in files that are
+          ignored by patch-generation.
+          </P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN5045"
+></A
+><H2
+>META TAGS</H2
+><P
+>    When exporting patches from a patch-queue branch <B
+CLASS="COMMAND"
+>gbp pq-rpm</B
+> will look at
+    the commit message for special tags it recognizes. All tags need to start
+    at the first column and require at least one whitespace after the colon.
+    </P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5050"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>Gbp-Rpm: Ignore</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Ignores the commit, no patch is generated out of it.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5055"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>Gbp-Rpm: If &lt;expression&gt;</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Conditional patch. Put patch inside "%if &lt;expression&gt;" in the
+          spec file.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5060"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>Gbp-Rpm: IfArch&lt;expression&gt;</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Conditional patch. Put patch inside "%ifarch &lt;expression&gt;" in
+          the spec file.
+          </P
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+>    For example, the following commit message:
+    </P
+><PRE
+CLASS="SCREEN"
+>      Fix around a problem in Fedora
+
+      which is not applicable elsewhere.
+
+      Gbp-Rpm: If 0%{?fedora}
+    </PRE
+><P
+>    Will result something like this in the spec file:
+    </P
+><PRE
+CLASS="SCREEN"
+>      # 0001-Fix-around-a-problem-in-Fedora.patch
+      %if 0%{?fedora}
+      %patch0 -p1
+      %endif
+    </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN5069"
+></A
+><H2
+>SEE ALSO</H2
+><P
+>      <A
+HREF="man.gbp.buildpackage.rpm.html"
+>gbp-buildpackage-rpm(1)</A
+>,
+      <A
+HREF="man.gbp.conf.html"
+>gbp.conf(5)</A
+>
+    </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN5074"
+></A
+><H2
+>AUTHOR</H2
+><P
+>      Markus Lehtonen <CODE
+CLASS="EMAIL"
+>&#60;<A
+HREF="mailto:markus.lehtonen@linux.intel.com"
+>markus.lehtonen@linux.intel.com</A
+>&#62;</CODE
+>
+    </P
+></DIV
+><TABLE
+CLASS="navigation"
+WIDTH="100%"
+SUMMARY="Navigation footer"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+ALIGN="left"
+><A
+ACCESSKEY="p"
+HREF="man.gbp.import.srpm.html"
+><B
+>&lt;&lt;&lt;&nbsp;gbp-import-srpm</B
+></A
+></TD
+><TD
+ALIGN="right"
+><A
+ACCESSKEY="n"
+HREF="man.gbp.rpm.ch.html"
+><B
+>gbp-rpm-ch&nbsp;&gt;&gt;&gt;</B
+></A
+></TD
+></TR
+></TABLE
+></BODY
+></HTML
+>
