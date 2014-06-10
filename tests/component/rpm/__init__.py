@@ -43,17 +43,6 @@ class RepoManifest(object):
         else:
             self._doc.appendChild(self._doc.createElement("gbp-test-manifest"))
 
-    def add_project(self, name, branches):
-        """Add new project to the manifest"""
-        prj_e = self._doc.createElement('project')
-        prj_e.setAttribute('name', name)
-        for branch, revision in branches.iteritems():
-            br_e = self._doc.createElement('branch')
-            br_e.setAttribute('name', branch)
-            br_e.setAttribute('revision', revision)
-            prj_e.appendChild(br_e)
-        self._doc.firstChild.appendChild(prj_e)
-
     def projects_iter(self):
         """Return an iterator over projects"""
         for prj_e in self._doc.getElementsByTagName('project'):
