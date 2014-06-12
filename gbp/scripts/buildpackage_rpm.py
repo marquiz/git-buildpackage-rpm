@@ -684,7 +684,7 @@ def main(argv):
         retval = 1
     except GitRepositoryError as err:
         gbp.log.err("Git command failed: %s" % err)
-        ret = 1
+        retval = 1
     except GbpAutoGenerateError as err:
         if len(err.__str__()):
             gbp.log.err(err)
