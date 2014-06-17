@@ -116,7 +116,7 @@ def find_source(spec, options, args):
     else:
         path = args[0]
     if re.match(r'[a-z]{1,5}://', path):
-        path = download_file('.', path)
+        path = download_file('..', path)
     return RpmUpstreamSource(path)
 
 
