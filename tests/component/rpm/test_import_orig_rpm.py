@@ -89,13 +89,6 @@ class ImportOrigTestBase(ComponentTestBase):
         """Test case setup"""
         super(ImportOrigTestBase, self).setup()
 
-    @staticmethod
-    def ls_tree(repo, treeish):
-        """List contents (blobs) in a git treeish"""
-        objs = repo.list_tree(treeish, True)
-        blobs = [obj[3] for obj in objs if obj[1] == 'blob']
-        return set(blobs)
-
     @classmethod
     def check_tree(cls, repo, treeish, filelist):
         """Check the contents (list of files) in a git treeish"""
