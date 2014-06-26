@@ -96,14 +96,6 @@ class ImportOrigTestBase(ComponentTestBase):
         blobs = [obj[3] for obj in objs if obj[1] == 'blob']
         return set(blobs)
 
-    @staticmethod
-    def check_files(reference, filelist):
-        """Compare two file lists"""
-        extra = set(filelist) - set(reference)
-        assert not extra, "Unexpected files: %s" % list(extra)
-        missing = set(reference) - set(filelist)
-        assert not missing, "Missing files: %s" % list(missing)
-
     @classmethod
     def check_tree(cls, repo, treeish, filelist):
         """Check the contents (list of files) in a git treeish"""
