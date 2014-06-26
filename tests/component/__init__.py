@@ -85,6 +85,9 @@ class ComponentTestBase(object):
         # Don't let git see that we're (possibly) under a git directory
         cls.orig_env = os.environ.copy()
         os.environ['GIT_CEILING_DIRECTORIES'] = os.getcwd()
+        # Prevent local config files from messing up the tests
+        os.environ['GBP_CONF_FILES'] = '%(top_dir)s/.gbp.conf:' \
+                            '%(top_dir)s/debian/gbp.conf:%(git_dir)s/gbp.conf'
 
     @classmethod
     def teardown_class(cls):
