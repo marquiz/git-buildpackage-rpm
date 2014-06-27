@@ -63,7 +63,7 @@ def git_archive(repo, spec, output_dir, tmpdir_base, treeish, prefix,
     # Remove extra slashes from prefix, will be added by git_archive_x funcs
     prefix = prefix.strip('/')
     try:
-        if repo.has_submodules() and with_submodules:
+        if repo.has_submodules(treeish) and with_submodules:
             repo.update_submodules()
             git_archive_submodules(repo, treeish, output, tmpdir_base,
                                    prefix, spec.orig_src['compression'],
