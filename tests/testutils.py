@@ -115,34 +115,35 @@ def get_dch_default_urgency():
             shutil.rmtree(tempdir)
     return urgency
 
-def ls_dir(directory):
+def ls_dir(directory, directories=True):
     """List the contents of directory, recurse to subdirectories"""
     contents = set()
     for root, dirs, files in os.walk(directory):
         prefix = ''
         if root != directory:
             prefix = os.path.relpath(root, directory) + '/'
-        contents.update(['%s%s' % (prefix, fname) for fname in files] +
-                        ['%s%s' % (prefix, dname) for dname in dirs])
+        contents.update(['%s%s' % (prefix, fname) for fname in files])
+        if directories:
+            contents.update(['%s%s' % (prefix, dname) for dname in dirs])
     return contents
 
-def ls_tar(tarball):
+def ls_tar(tarball, directories=True):
     """List the contents of tar archive"""
     tmpdir = tempfile.mkdtemp()
     try:
         tarobj = tarfile.open(tarball, 'r')
         tarobj.extractall(tmpdir)
-        return ls_dir(tmpdir)
+        return ls_dir(tmpdir, directories)
     finally:
         shutil.rmtree(tmpdir)
 
-def ls_zip(archive):
+def ls_zip(archive, directories=True):
     """List the contents of zip file"""
     tmpdir = tempfile.mkdtemp()
     try:
         zipobj = zipfile.ZipFile(archive, 'r')
         zipobj.extractall(tmpdir)
-        return ls_dir(tmpdir)
+        return ls_dir(tmpdir, directories)
     finally:
         shutil.rmtree(tmpdir)
 
