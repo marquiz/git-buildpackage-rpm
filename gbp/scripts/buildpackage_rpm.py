@@ -640,7 +640,7 @@ def main(argv):
             if not options.export_only and not options.tag_only:
                 if options.prebuild:
                     RunAtCommand(options.prebuild, shell=True,
-                                 extra_env={'GBP_GIT_DIR': repo.git_dir(),
+                                 extra_env={'GBP_GIT_DIR': repo.git_dir,
                                             'GBP_BUILD_DIR': export_dir})(dir=export_dir)
 
                 # Finally build the package:
