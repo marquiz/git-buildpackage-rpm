@@ -548,8 +548,7 @@ def main(argv):
     try:
         tree, relative_spec_path = guess_export_params(repo, options)
 
-        if not options.export_only:
-            Command(options.cleaner, shell=True)()
+        Command(options.cleaner, shell=True)()
         if not options.ignore_new:
             (ret, out) = repo.is_clean(options.ignore_untracked)
             if not ret:
