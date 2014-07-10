@@ -91,6 +91,8 @@ class ComponentTestBase(object):
         # Prevent local config files from messing up the tests
         os.environ['GBP_CONF_FILES'] = '%(top_dir)s/.gbp.conf:' \
                             '%(top_dir)s/debian/gbp.conf:%(git_dir)s/gbp.conf'
+        # Initialize gbp logging module
+        gbp.log.initialize()
 
     @classmethod
     def teardown_class(cls):
