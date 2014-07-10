@@ -210,6 +210,8 @@ def main(argv):
     ret = 0
     skipped = False
 
+    gbp.log.initialize()
+
     options, args = parse_args(argv)
 
     if len(args) != 1:

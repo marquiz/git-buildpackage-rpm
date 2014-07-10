@@ -308,6 +308,8 @@ def main(argv):
     changelog = 'debian/changelog'
     cmd = []
 
+    gbp.log.initialize()
+
     try:
         options, args = parse_args(argv)
     except Exception as e:

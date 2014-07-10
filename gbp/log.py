@@ -20,9 +20,11 @@
 import os
 import sys
 import logging
-from logging import (DEBUG, INFO, WARNING, ERROR, CRITICAL, getLogger)
+from logging import DEBUG, INFO, WARNING, ERROR, CRITICAL
 import gbp.tristate
 
+# Initialize default logger
+LOGGER = logging.getLogger(__name__)
 
 COLORS = dict([('none', 0)] + list(zip(['black', 'red', 'green', 'yellow', 'blue',
                                         'magenta', 'cyan', 'white'], range(30, 38))))
@@ -162,8 +164,18 @@ def _parse_color_scheme(color_scheme=""):
             except KeyError: pass
     return scheme
 
+def getLogger(*args, **kwargs):
+    """Gbp-specific function"""
+    if not issubclass(logging.getLoggerClass(), GbpLogger):
+        logging.setLoggerClass(GbpLogger)
+    return logging.getLogger(*args, **kwargs)
+
 def setup(color, verbose, color_scheme=""):
     """Basic logger setup"""
+    # Initialize, if not done yet
+    if not isinstance(LOGGER, GbpLogger):
+        initialize()
+
     LOGGER.set_color(color)
     LOGGER.set_color_scheme(_parse_color_scheme(color_scheme))
     if verbose:
@@ -171,9 +183,8 @@ def setup(color, verbose, color_scheme=""):
     else:
         LOGGER.setLevel(INFO)
 
-
-# Initialize the module
-logging.setLoggerClass(GbpLogger)
-
-LOGGER = getLogger("gbp")
+def initialize():
+    """Initialize the logger module"""
+    global LOGGER
+    LOGGER = getLogger("gbp")
 

@@ -405,6 +405,7 @@ def main(argv):
     version_change = {}
     branch = None
 
+    gbp.log.initialize()
 
     options, args, dch_options, editor_cmd = parse_args(argv)
 

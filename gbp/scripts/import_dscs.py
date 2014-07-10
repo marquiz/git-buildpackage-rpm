@@ -94,6 +94,7 @@ def main(argv):
     dscs = []
     ret = 0
     verbose = False
+    gbp.log.initialize()
     dsc_cmp = DscCompareVersions()
     use_debsnap = False
 

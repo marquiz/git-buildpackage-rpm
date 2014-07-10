@@ -435,6 +435,8 @@ def main(argv):
     """Main function for the gbp pq-rpm command"""
     retval = 0
 
+    gbp.log.initialize()
+
     (options, args) = parse_args(argv)
     if not options:
         return 1

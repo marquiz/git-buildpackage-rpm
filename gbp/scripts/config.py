@@ -116,6 +116,8 @@ def value_printer(value):
 def main(argv):
     retval = 1
 
+    gbp.log.initialize()
+
     (options, args) = parse_args(argv)
     gbp.log.setup(options.color, options.verbose, options.color_scheme)
 

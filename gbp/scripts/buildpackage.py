@@ -585,6 +585,8 @@ def main(argv):
     branch = None
     hook_env = {}
 
+    gbp.log.initialize()
+
     options, gbp_args, dpkg_args = parse_args(argv, prefix)
 
     if not options:

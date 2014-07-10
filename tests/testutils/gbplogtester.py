@@ -10,6 +10,12 @@ class GbpLogTester(object):
     """
     Helper class for tests that need to capture logging output
     """
+    @classmethod
+    def init_class(cls):
+        """Test class setup"""
+        # Initialize gbp logging module
+        gbp.log.initialize()
+
     def __init__(self):
         """Object initialization"""
         self._log = None

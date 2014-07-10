@@ -365,6 +365,8 @@ def parse_args(argv):
 def main(argv):
     retval = 0
 
+    gbp.log.initialize()
+
     (options, args) = parse_args(argv)
     if not options:
         return 1

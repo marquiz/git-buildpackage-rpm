@@ -99,6 +99,7 @@ class ComponentTestBase(unittest.TestCase, GbpLogTester):
         os.environ['GBP_CONF_FILES'] = ':'.join(['%(top_dir)s/.gbp.conf',
                                                  '%(top_dir)s/debian/gbp.conf',
                                                  '%(git_dir)s/gbp.conf'])
+        super(ComponentTestBase, cls).init_class()
 
     @classmethod
     def tearDownClass(cls):

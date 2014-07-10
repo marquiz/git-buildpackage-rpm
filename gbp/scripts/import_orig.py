@@ -344,6 +344,8 @@ def main(argv):
     pristine_orig = None
     linked = False
 
+    gbp.log.initialize()
+
     (options, args) = parse_args(argv)
     if not options:
         return 1

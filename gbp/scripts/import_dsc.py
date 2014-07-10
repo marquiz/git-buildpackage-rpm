@@ -294,6 +294,8 @@ def main(argv):
     ret = 0
     skipped = False
 
+    gbp.log.initialize()
+
     options, args = parse_args(argv)
     if not options:
         return 1
