@@ -461,6 +461,9 @@ def parse_args(argv, prefix, git_treeish=None):
     cmd_group.add_config_file_option(option_name="posttag", dest="posttag",
                       help="hook run after a successful tag operation, default is '%(posttag)s'")
     cmd_group.add_boolean_config_file_option(option_name="hooks", dest="hooks")
+    export_group.add_option("--git-no-build", action="store_true",
+                      dest="no_build",
+                      help="Don't run builder or the associated hooks")
     export_group.add_config_file_option(option_name="export-dir", dest="export_dir", type="path",
                       help="Build topdir, also export the sources under EXPORT_DIR, default is '%(export-dir)s'")
     export_group.add_config_file_option(option_name="rpmbuild-builddir", dest="build_dir", type="path",
@@ -504,6 +507,12 @@ def parse_args(argv, prefix, git_treeish=None):
         if not options.tag and not options.tag_only:
             gbp.log.err("'--%sretag' needs either '--%stag' or '--%stag-only'" % (prefix, prefix, prefix))
             return None, None, None
+    # Use git_treeish as a way to print the warning only on the second parsing
+    # round
+    if options.export_only and git_treeish:
+        gbp.log.warn("Deprecated option '--git-export-only', please use "
+                     "'--no-build' instead!")
+        options.no_build = True
 
     return options, args, builder_args
 
@@ -636,7 +645,7 @@ def main(argv):
                              extra_env={'GBP_GIT_DIR': repo.git_dir,
                                         'GBP_TMP_DIR': export_dir})(dir=export_dir)
             # Do actual build
-            if not options.export_only and not options.tag_only:
+            if not options.no_build and not options.tag_only:
                 if options.prebuild:
                     RunAtCommand(options.prebuild, shell=True,
                                  extra_env={'GBP_GIT_DIR': repo.git_dir,
