@@ -685,7 +685,10 @@ def main(argv):
         else:
             vcs_info = get_vcs_info(repo, tree)
         # Put 'VCS:' tag to .spec
-        spec.set_tag('VCS', None, options.spec_vcs_tag % vcs_info)
+        try:
+            spec.set_tag('VCS', None, options.spec_vcs_tag % vcs_info)
+        except KeyError as err:
+            raise GbpError("Unknown key %s in vcs tag format string" % err)
         spec.write_spec_file()
 
     except CommandExecFailed:
