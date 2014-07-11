@@ -82,9 +82,6 @@ def git_archive(repo, spec, output_dir, tmpdir_base, treeish, prefix,
         return False
     except GbpError:
         raise
-    except Exception as e:
-        gbp.log.err("Error creating %s: %s" % (output, e))
-        return False
     return True
 
 
