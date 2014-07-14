@@ -75,11 +75,6 @@ def git_archive(repo, spec, output_dir, tmpdir_base, treeish, prefix,
     except (GitRepositoryError, CommandExecFailed):
         gbp.log.err("Error generating submodules' archives")
         return False
-    except OSError, err:
-        gbp.log.err("Error creating %s: %s" % (output, err[0]))
-        return False
-    except GbpError:
-        raise
     return True
 
 
