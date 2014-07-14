@@ -55,6 +55,27 @@ def sanitize_prefix(prefix):
     return '/'
 
 
+def compress(cmd, options, output, input_data=None):
+    """
+    Filter data through a compressor cmd.
+
+    For better performance input_data should feed data in bigger chunks.
+    """
+    stdin = subprocess.PIPE if input_data else None
+    try:
+      with open(output, 'w') as fobj:
+            popen = subprocess.Popen([cmd] + options, stdin=stdin, stdout=fobj)
+            if stdin:
+                for chunk in input_data:
+                    popen.stdin.write(chunk)
+                popen.stdin.close()
+            if popen.wait():
+                raise GbpError("Error creating %s: running '%s' failed" %
+                                (output, ' '.join([cmd] + options)))
+    except (OSError, IOError) as err:
+        raise GbpError("Error creating %s: %s" % (output, err))
+
+
 def git_archive_submodules(repo, treeish, output, prefix, comp_type, comp_level,
                            comp_opts, format='tar'):
     """
@@ -91,11 +112,8 @@ def git_archive_submodules(repo, treeish, output, prefix, comp_type, comp_level,
         if comp_type:
             # Redirect through stdout directly to the correct output file in
             # order to avoid determining the output filename of the compressor
-            ret = os.system("%s --stdout -%s %s %s > %s" %
-                            (comp_type, comp_level, " ".join(comp_opts),
-                             main_archive, output))
-            if ret:
-                raise GbpError("Error creating %s: %d" % (output, ret))
+            compress(comp_type, ['--stdout', '-%s' % comp_level] + comp_opts +
+                     [main_archive], output)
         else:
             shutil.move(main_archive, output)
     finally:
@@ -110,19 +128,14 @@ def git_archive_single(repo, treeish, output, prefix, comp_type, comp_level,
     Exception handling is left to the caller.
     """
     prefix = sanitize_prefix(prefix)
-    with open(output, 'w') as archive_fd:
-        if comp_type:
-            cmd = [comp_type, '--stdout', '-%s' % comp_level] + comp_opts
-        else:
-            cmd = ['cat']
-
-        popen = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=archive_fd)
-        for chunk in repo.archive(format, prefix, None, treeish):
-            popen.stdin.write(chunk)
-        popen.stdin.close()
-        if popen.wait():
-            raise GbpError("Error creating %s: compressor cmd failed" % output)
-
+    if comp_type:
+        cmd = comp_type
+        opts = ['--stdout', '-%s' % comp_level] + comp_opts
+    else:
+        cmd= 'cat'
+        opts = []
+    input_data = repo.archive(format, prefix, None, treeish)
+    compress(cmd, opts, output, input_data)
 
 def untar_data(outdir, data):
     """Extract tar provided as an iterable"""
