@@ -116,12 +116,6 @@ def makedir(dir):
     return dir
 
 
-def prepare_export_dir(dir):
-    if not dir:
-        dir = 'rpmbuild'
-    return makedir(dir)
-
-
 def pristine_tar_build_orig(repo, orig_file, output_dir, options):
     """
     build orig using pristine-tar
@@ -584,7 +578,7 @@ def main(argv):
                 export_patches(repo, spec, patch_tree, options)
 
             # Prepare final export dirs
-            export_dir = prepare_export_dir(options.export_dir)
+            export_dir = makedir(options.export_dir)
             source_dir = makedir(os.path.join(export_dir, options.source_dir))
             spec_dir = makedir(os.path.join(export_dir, options.spec_dir))
 
