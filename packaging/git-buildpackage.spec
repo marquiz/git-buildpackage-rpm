@@ -86,8 +86,10 @@ Requires:   %{man_pkg_name}
 Requires:   %{python_pkg_name}
 %if 0%{?suse_version} || 0%{?tizen_version:1}
 Recommends:     pristine-tar
+Recommends:     unzip
 %else
 Requires:       pristine-tar
+Requires:       unzip
 %endif
 
 %description common
