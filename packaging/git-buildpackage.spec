@@ -66,6 +66,7 @@ BuildRequires:  %{dpkg_pkg_name}
 BuildRequires:  %{rpm_python_pkg_name}
 BuildRequires:  pristine-tar
 BuildRequires:  unzip
+BuildRequires:  libzip
 BuildRequires:  gnupg
 # Missing dep of dpkg in openSUSE
 %if 0%{?suse_version}
@@ -87,9 +88,11 @@ Requires:   %{python_pkg_name}
 %if 0%{?suse_version} || 0%{?tizen_version:1}
 Recommends:     pristine-tar
 Recommends:     unzip
+Recommends:     libzip
 %else
 Requires:       pristine-tar
 Requires:       unzip
+Requires:       libzip
 %endif
 
 %description common
