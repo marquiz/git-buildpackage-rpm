@@ -578,6 +578,7 @@ class GbpOptionParserRpm(GbpOptionParser):
     defaults = dict(GbpOptionParser.defaults)
     defaults.update( {
                        'vendor'                 : 'vendor',
+                       'native'                 : 'auto',
                        'builder'                : 'rpmbuild',
                        'cleaner'                : '/bin/true',
                        'merge'                  : 'False',
@@ -615,6 +616,8 @@ class GbpOptionParserRpm(GbpOptionParser):
     help.update( {
                    'vendor':
                         "Distribution vendor name",
+                   'native':
+                        "Treat this package as native, default is '%(native)s'",
                    'packaging-dir':
                         "subdir where packaging files are stored, default is '%(packaging-dir)s'",
                    'packaging-tag':
