@@ -298,9 +298,9 @@ def export_patches(repo, spec, export_treeish, options):
 
 def is_native(repo, options):
     """Determine whether a package is native or non-native"""
-    if repo.has_branch(options.upstream_branch):
-        return False
-    return True
+    if options.native.is_auto():
+        return not repo.has_branch(options.upstream_branch)
+    return options.native.is_on()
 
 
 def setup_builder(options, builder_args):
@@ -416,6 +416,8 @@ def parse_args(argv, prefix, git_treeish=None):
                                   dest="color_scheme")
     parser.add_config_file_option(option_name="notify", dest="notify", type='tristate')
     parser.add_config_file_option(option_name="vendor", action="store", dest="vendor")
+    parser.add_config_file_option(option_name="native", dest="native",
+                                  type='tristate')
     tag_group.add_option("--git-tag", action="store_true", dest="tag", default=False,
                       help="create a tag after a successful build")
     tag_group.add_option("--git-tag-only", action="store_true", dest="tag_only", default=False,

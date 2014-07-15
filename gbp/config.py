@@ -604,6 +604,7 @@ class GbpOptionParserRpm(GbpOptionParser):
             'builder'                   : 'rpmbuild',
             'cleaner'                   : '/bin/true',
             'export-dir'                : '../rpmbuild',
+            'native'                    : 'auto',
             'ignore-untracked'          : 'False',
             'rpmbuild-builddir'         : 'BUILD',
             'rpmbuild-rpmdir'           : 'RPMS',
@@ -655,6 +656,8 @@ class GbpOptionParserRpm(GbpOptionParser):
                 "Spec file to use, 'auto' makes gbp to guess, other values "
                 "make the packaging-dir option to be ignored, default is "
                 "'%(spec-file)s'",
+            'native':
+                "Treat this package as native, default is '%(native)s'",
             'ignore-untracked':
                 "build with untracked files in the source tree, default is "
                 "'%(ignore-untracked)s'",
