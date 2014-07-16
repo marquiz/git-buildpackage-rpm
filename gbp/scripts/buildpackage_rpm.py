@@ -591,14 +591,11 @@ def main(argv):
                     dst = os.path.join(spec_dir, f)
                 else:
                     dst = os.path.join(source_dir, f)
-                try:
-                    if os.path.isdir(src):
-                        # dir is not packaging files, skip it
-                        continue
-                    else:
+                if not os.path.isdir(src):
+                    try:
                         shutil.copy2(src, dst)
-                except IOError, err:
-                    raise GbpError, "Error exporting files: %s" % err
+                    except IOError as err:
+                        raise GbpError, "Error exporting files: %s" % err
             spec.specdir = os.path.abspath(spec_dir)
 
             if options.orig_prefix != 'auto':
