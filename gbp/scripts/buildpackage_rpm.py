@@ -599,10 +599,13 @@ def main(argv):
             spec.specdir = os.path.abspath(spec_dir)
 
             if options.orig_prefix != 'auto':
-                options.orig_prefix = options.orig_prefix % dict(spec.version,
-                                                                 version=RpmPkgPolicy.compose_full_version(spec.version),
-                                                                 name=spec.name,
-                                                                 vendor=options.vendor)
+                try:
+                    options.orig_prefix %= dict(spec.version,
+                        version=RpmPkgPolicy.compose_full_version(spec.version),
+                        name=spec.name, vendor=options.vendor)
+                except KeyError as err:
+                    raise GbpError("Unknown key %s in orig prefix format "
+                                   "string" % err)
             elif spec.orig_src:
                 options.orig_prefix = spec.orig_src['prefix']
 
