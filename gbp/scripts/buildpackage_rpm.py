@@ -690,9 +690,6 @@ def main(argv):
         if len(err.__str__()):
             gbp.log.err(err)
         retval = 1
-    except rpm.NoSpecError, err:
-        gbp.log.err(err)
-        retval = 1
     finally:
         drop_index(repo)
         shutil.rmtree(options.tmp_dir)
