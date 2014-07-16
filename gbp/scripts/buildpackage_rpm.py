@@ -620,7 +620,8 @@ def main(argv):
                                        tree, options.orig_prefix,
                                        options.comp_level,
                                        options.with_submodules):
-                        raise GbpError, "Cannot create source tarball at '%s'" % export_dir
+                        raise GbpError("Cannot create source tarball at '%s'" %
+                                        source_dir)
             # Non-native packages: create orig tarball from upstream
             elif spec.orig_src:
                  prepare_upstream_tarball(repo, spec, options, source_dir)
