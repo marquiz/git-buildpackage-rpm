@@ -1,0 +1,83 @@
+pkgbase='git-buildpackage'
+pkgname=('git-buildpackage-rpm' 'git-buildpackage-common' 'git-buildpackage-doc')
+pkgver=0.6.15
+pkgrel=0
+pkgdesc="Tools from Debian to integrate the package build system with Git"
+arch=(any)
+url="https://honk.sigxcpu.org/piki/projects/git-buildpackage/"
+license=('GPLv2')
+conflicts=('git-buildpackage')
+provides=('git-buildpackage')
+makedepends=('python2-distribute' 'gtk-doc' 'docbook-sgml' 'docbook-utils')
+source=(git-buildpackage_${pkgver}.tar.gz)
+sha256sums=(SKIP)
+
+prepare()
+{
+  cd "$srcdir/$pkgbase-${pkgver}"
+  for patch_file in $(find ../../ -maxdepth 1 -name '*.patch' |sort)
+  do
+    patch -p1 -i $patch_file
+  done
+}
+
+build() {
+  cd $srcdir/$pkgbase-$pkgver
+  WITHOUT_NOSETESTS=1 \
+      python2 setup.py build
+
+# Prepare apidocs
+  epydoc -n git-buildpackage --no-sourcecode -o docs/apidocs/ \
+      gbp*.py git*.py gbp/
+
+# HTML docs
+  HAVE_SGML2X=0 make -C docs/
+}
+
+package_git-buildpackage-common() {
+  depends=('man-db'
+           'python2'
+           'git')
+  optdepends=('pristine-tar: regenerate pristine tarballs')
+  cd $srcdir/$pkgbase-$pkgver
+  WITHOUT_NOSETESTS=1 \
+    python2 setup.py install \
+    --root="$pkgdir" \
+    --prefix=/usr \
+    -O1
+  rm $pkgdir/usr/lib/python*/site-packages/*info -rf
+  rm $pkgdir/usr/bin/*rpm*
+  rm $pkgdir/usr/lib/python*/site-packages/gbp/rpm -rf
+  rm $pkgdir/usr/lib/python*/site-packages/gbp/scripts/*rpm*.py* -rf
+}
+
+package_git-buildpackage-rpm() {
+  depends=("git-buildpackage-common=$pkgver-$pkgrel" "rpm")
+  provides=("tizen-gbp-rpm=20140605")
+  cd $srcdir/$pkgbase-$pkgver
+  WITHOUT_NOSETESTS=1 \
+    python2 setup.py install \
+    --root="$pkgdir" \
+    --prefix=/usr \
+    -O1
+  rm $pkgdir/usr/lib/python*/site-packages/*info -rf
+  rm -rf $pkgdir/etc
+  find $pkgdir/usr/bin -mindepth 1 -maxdepth 1 ! -name '*rpm*' -delete
+  find $pkgdir/usr/lib/python*/site-packages/gbp -mindepth 1 -maxdepth 1 -type f -o -type d ! -name rpm -a ! -name scripts  |xargs rm -rf
+  find $pkgdir/usr/lib/python*/site-packages/gbp/scripts -mindepth 1 -maxdepth 1 ! -name '*rpm*.py*' |xargs rm -rf
+}
+
+package_git-buildpackage-doc() {
+  cd $srcdir/$pkgbase-$pkgver
+# Install man pages
+  mandir=/usr/share/man
+  install -d ${pkgdir}/${mandir}/man1 ${pkgdir}/${mandir}/man5
+  install docs/*.1 ${pkgdir}/${mandir}/man1
+  install docs/*.5 ${pkgdir}/${mandir}/man5
+
+# Install html documentation
+  mkdir -p ${pkgdir}/${docdir}/${pkgbase}
+  cp -r docs/manual-html ${pkgdir}/${docdir}/${pkgbase}
+  cp -r docs/apidocs ${pkgdir}/${docdir}/${pkgbase}
+}
+# vim:set ts=2 sw=2 et:
