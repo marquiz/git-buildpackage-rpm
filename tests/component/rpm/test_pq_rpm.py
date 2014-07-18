@@ -88,9 +88,9 @@ class TestPqRpm(RpmRepoTestBase):
 
         # Test export
         eq_(mock_pq(['export']), 0)
-        files = ['.gbp.conf', 'bar.tar.gz', 'foo.txt', 'gbp-test.spec',
-                 '0001-my-gz.patch', '0002-my-bzip2.patch', '0003-my2.patch',
-                 'my.patch']
+        files = ['.gbp.conf', '.gitignore', 'bar.tar.gz', 'foo.txt',
+                 'gbp-test.spec', '0001-my-gz.patch', '0002-my-bzip2.patch',
+                 '0003-my2.patch', 'my.patch']
         self._check_repo_state(repo, 'master', branches, files)
         eq_(repo.status()[' M'], ['gbp-test.spec'])
 
@@ -131,9 +131,10 @@ class TestPqRpm(RpmRepoTestBase):
     def test_rebase(self):
         """Basic test for rebase action"""
         repo = self.init_test_repo('gbp-test')
-        branches = repo.get_local_branches() + ['development/master']
-        # Import and make development branch out-of-sync
-        eq_(mock_pq(['import']), 0)
+        repo.rename_branch('pq/master', 'development/master')
+        repo.set_branch('development/master')
+        branches = repo.get_local_branches()
+        # Make development branch out-of-sync
         GitCommand("rebase")(['--onto', 'upstream^', 'upstream'])
         # Sanity check for our git rebase...
         ok_(repo.get_merge_base('development/master', 'upstream') !=
@@ -176,11 +177,9 @@ class TestPqRpm(RpmRepoTestBase):
     def test_switch_drop(self):
         """Basic test for drop action"""
         repo = self.init_test_repo('gbp-test')
-        init_branches = repo.get_local_branches()
-        # Import
-        eq_(mock_pq(['import']), 0)
-        branches = init_branches + ['development/master']
-        self._check_repo_state(repo, 'development/master', branches)
+        repo.rename_branch('pq/master', 'development/master')
+        repo.set_branch('development/master')
+        branches = repo.get_local_branches()
 
         # Drop pq should fail when on pq branch
         eq_(mock_pq(['drop']), 1)
@@ -193,23 +192,21 @@ class TestPqRpm(RpmRepoTestBase):
 
         # Drop should succeed when on master branch
         eq_(mock_pq(['drop']), 0)
-        self._check_repo_state(repo, 'master', init_branches)
+        branches.remove('development/master')
+        self._check_repo_state(repo, 'master', branches)
 
     def test_force_import(self):
         """Test force import"""
         repo = self.init_test_repo('gbp-test')
         pkg_files = repo.list_files()
-        branches = repo.get_local_branches() + ['development/master']
-        # Import
-        eq_(mock_pq(['import']), 0)
-        pq_files = ['AUTHORS', 'dummy.sh', 'Makefile', 'NEWS', 'README',
-                    'mydir/myfile.txt', '.gbp.conf']
-        branches.append('development/master')
-        self._check_repo_state(repo, 'development/master', branches, pq_files)
+        repo.rename_branch('pq/master', 'development/master')
+        repo.set_branch('development/master')
+        branches = repo.get_local_branches()
+        pq_files = repo.list_files()
 
         # Re-import should fail
         eq_(mock_pq(['import']), 1)
-        self._check_log(-1, "gbp:error: Already on a patch-queue branch")
+        self._check_log(0, "gbp:error: Already on a patch-queue branch")
         self._check_repo_state(repo, 'development/master', branches, pq_files)
 
         # Mangle pq branch and try force import on top of that
@@ -303,12 +300,12 @@ class TestPqRpm(RpmRepoTestBase):
     def test_option_patch_numbers(self):
         """Test the --patch-numbers cmdline option"""
         repo = self.init_test_repo('gbp-test')
-        branches = repo.get_local_branches() + ['development/master']
-        eq_(mock_pq(['import']), 0)
+        repo.rename_branch('pq/master', 'development/master')
+        branches = repo.get_local_branches()
         # Export
         eq_(mock_pq(['export', '--no-patch-numbers']), 0)
-        files = ['.gbp.conf', 'bar.tar.gz', 'foo.txt', 'gbp-test.spec',
-                 'my-gz.patch', 'my-bzip2.patch', 'my2.patch',
+        files = ['.gbp.conf', '.gitignore', 'bar.tar.gz', 'foo.txt',
+                 'gbp-test.spec', 'my-gz.patch', 'my-bzip2.patch', 'my2.patch',
                  'my.patch']
         self._check_repo_state(repo, 'master', branches, files)
 
@@ -366,6 +363,7 @@ class TestPqRpm(RpmRepoTestBase):
     def test_option_pq_branch(self):
         """Test the --pq-branch and --packaging-branch options"""
         repo = self.init_test_repo('gbp-test')
+        branches = repo.get_local_branches()
 
         # Invalid branch name
         eq_(mock_pq(['import', '--pq-branch=foo:']), 1)
@@ -374,7 +372,7 @@ class TestPqRpm(RpmRepoTestBase):
         # Try all possible keys in pq-branch format string
         eq_(mock_pq(['import',
                      '--pq-branch=dev/%(branch)s/%(upstreamversion)s']), 0)
-        branches = ['master', 'upstream', 'dev/master/1.1']
+        branches.append('dev/master/1.1')
         self._check_repo_state(repo, 'dev/master/1.1', branches)
 
         # Switch to non-existent packaging branch should fail
@@ -391,13 +389,14 @@ class TestPqRpm(RpmRepoTestBase):
     def test_option_export_rev(self):
         """Test the --export-rev cmdline option"""
         repo = self.init_test_repo('gbp-test')
-        eq_(mock_pq(['import']), 0)
+        repo.rename_branch('pq/master', 'development/master')
+        branches = repo.get_local_branches()
+        files = repo.list_files()
 
         # Export directly from upstream -> no patches expected
         eq_(mock_pq(['export', '--export-rev=upstream']), 0)
-        files = ['.gbp.conf', 'bar.tar.gz', 'foo.txt', 'gbp-test.spec',
-                 'my.patch']
-        branches = ['master', 'upstream', 'development/master']
+        files = ['.gbp.conf', '.gitignore', 'bar.tar.gz', 'foo.txt',
+                 'gbp-test.spec', 'my.patch']
         self._check_repo_state(repo, 'master', branches, files)
 
         # Export another rev
@@ -422,20 +421,22 @@ class TestPqRpm(RpmRepoTestBase):
     def test_option_patch_compress(self):
         """Test the --patch-export-compress cmdline option"""
         repo = self.init_test_repo('gbp-test')
-        eq_(mock_pq(['import']), 0)
+        repo.rename_branch('pq/master', 'development/master')
+        branches = repo.get_local_branches()
 
         # Export, all generated patches should be compressed
         eq_(mock_pq(['export', '--patch-export-compress=1']), 0)
-        files = ['.gbp.conf', 'bar.tar.gz', 'foo.txt', 'gbp-test.spec',
-                 '0001-my-gz.patch.gz', '0002-my-bzip2.patch.gz',
-                 '0003-my2.patch.gz', 'my.patch']
-        branches = ['master', 'upstream', 'development/master']
+        files = ['.gbp.conf', '.gitignore', 'bar.tar.gz', 'foo.txt',
+                 'gbp-test.spec', '0001-my-gz.patch.gz',
+                 '0002-my-bzip2.patch.gz', '0003-my2.patch.gz', 'my.patch']
         self._check_repo_state(repo, 'master', branches, files)
 
     def test_option_patch_export_squash(self):
         """Test the --patch-export-squash-until cmdline option"""
         repo = self.init_test_repo('gbp-test')
-        eq_(mock_pq(['import']), 0)
+        repo.rename_branch('pq/master', 'development/master')
+        repo.set_branch('development/master')
+        branches = repo.get_local_branches()
 
         # Non-existent squash point should fail
         eq_(mock_pq(['export', '--patch-export-squash-until=foo']), 1)
@@ -451,29 +452,29 @@ class TestPqRpm(RpmRepoTestBase):
         eq_(mock_pq(['export', '--patch-export-squash-until=%s' % squash]), 0)
         squash += ':squash'
         eq_(mock_pq(['export', '--patch-export-squash-until=%s' % squash]), 0)
-        files = ['.gbp.conf', 'bar.tar.gz', 'foo.txt', 'gbp-test.spec',
-                 'my.patch', 'squash.diff', '0002-my2.patch']
-        branches = ['master', 'upstream', 'development/master']
+        files = ['.gbp.conf', '.gitignore', 'bar.tar.gz', 'foo.txt',
+                 'gbp-test.spec', 'my.patch', 'squash.diff', '0002-my2.patch']
         self._check_repo_state(repo, 'master', branches, files)
 
     def test_option_patch_export_ignore(self):
         """Test the --patch-export-ignore-path cmdline option"""
         repo = self.init_test_repo('gbp-test')
-
-        eq_(mock_pq(['import']), 0)
+        repo.rename_branch('pq/master', 'development/master')
+        branches = repo.get_local_branches()
 
         # Export
         eq_(mock_pq(['export', '--patch-export-ignore-path=mydir/.*']), 0)
-        files = ['.gbp.conf', 'bar.tar.gz', 'foo.txt', 'gbp-test.spec',
-                 '0001-my-gz.patch', '0002-my-bzip2.patch', 'my.patch']
-        branches = ['master', 'upstream', 'development/master']
+        files = ['.gbp.conf', '.gitignore', 'bar.tar.gz', 'foo.txt',
+                 'gbp-test.spec', '0001-my-gz.patch', '0002-my-bzip2.patch',
+                 'my.patch']
         self._check_repo_state(repo, 'master', branches, files)
 
     def test_export_with_merges(self):
         """Test exporting pq-branch with merge commits"""
         repo = self.init_test_repo('gbp-test')
-        # Import
-        eq_(mock_pq(['import']), 0)
+        repo.rename_branch('pq/master', 'development/master')
+        repo.set_branch('development/master')
+        branches = repo.get_local_branches()
 
         # Create a merge commit in pq-branch
         patches = repo.format_patches('HEAD^', 'HEAD', '.')
@@ -487,10 +488,9 @@ class TestPqRpm(RpmRepoTestBase):
 
         # Export should create diff up to the merge point and one "normal" patch
         eq_(mock_pq(['export']), 0)
-        files = ['.gbp.conf', 'bar.tar.gz', 'foo.txt', 'gbp-test.spec',
-                 'my.patch', '%s-to-%s.diff' % (upstr_rev, merge_rev),
-                 '0002-my2.patch']
-        branches = ['master', 'upstream', 'development/master']
+        files = ['.gbp.conf', '.gitignore', 'bar.tar.gz', 'foo.txt',
+                 'gbp-test.spec', 'my.patch',
+                  '%s-to-%s.diff' % (upstr_rev, merge_rev), '0002-my2.patch']
         self._check_repo_state(repo, 'master', branches, files)
 
     def test_option_import_files(self):
