@@ -298,7 +298,7 @@ class TestImportOrig(ImportOrigTestBase):
         # Guessing from the original archive should succeed
         eq_(mock_import(['--no-interactive', '--merge', orig],
                         stdin_data=''), 0)
-        files = ['.gbp.conf', 'Makefile', 'README', 'dummy.sh', 'packaging/',
+        files = ['.gbp.conf', 'Makefile', 'README', 'dummy.sh',
                  'packaging/gbp-test-native.spec']
         self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
         eq_(len(repo.get_commits(until='master')), 1)

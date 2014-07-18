@@ -77,7 +77,7 @@ class TestPqRpm(RpmRepoTestBase):
         branches = repo.get_local_branches() + ['development/master']
         # Test import
         eq_(mock_pq(['import']), 0)
-        files = ['AUTHORS', 'dummy.sh', 'Makefile', 'NEWS', 'README', 'mydir/',
+        files = ['AUTHORS', 'dummy.sh', 'Makefile', 'NEWS', 'README',
                  'mydir/myfile.txt', '.gbp.conf']
         branches.append('development/master')
         self._check_repo_state(repo, 'development/master', branches, files)
@@ -106,8 +106,8 @@ class TestPqRpm(RpmRepoTestBase):
         repo.set_branch('master-orphan')
         # Import
         eq_(mock_pq(['import']), 0)
-        files = ['dummy.sh', 'Makefile', 'README', 'mydir/',
-                 'mydir/myfile.txt', '.gbp.conf']
+        files = ['dummy.sh', 'Makefile', 'README', 'mydir/myfile.txt',
+                 '.gbp.conf']
         self._check_repo_state(repo, 'development/master-orphan', branches,
                                files)
 
@@ -203,7 +203,7 @@ class TestPqRpm(RpmRepoTestBase):
         # Import
         eq_(mock_pq(['import']), 0)
         pq_files = ['AUTHORS', 'dummy.sh', 'Makefile', 'NEWS', 'README',
-                    'mydir/', 'mydir/myfile.txt', '.gbp.conf']
+                    'mydir/myfile.txt', '.gbp.conf']
         branches.append('development/master')
         self._check_repo_state(repo, 'development/master', branches, pq_files)
 
@@ -258,13 +258,13 @@ class TestPqRpm(RpmRepoTestBase):
             tmp_patch.file.flush()
             eq_(mock_pq(['apply', tmp_patch.name]), 0)
         self._check_repo_state(repo, 'development/master', branches,
-                               upstr_files + ['mydir/', 'mydir/myfile.txt'])
+                               upstr_files + ['mydir/myfile.txt'])
 
     def test_convert(self):
         """Basic test for convert action"""
         repo = self.init_test_repo('gbp-test2')
         branches = repo.get_local_branches() + ['master-orphan']
-        files = ['packaging/', 'packaging/bar.tar.gz', 'packaging/foo.txt',
+        files = ['packaging/bar.tar.gz', 'packaging/foo.txt',
                  'packaging/gbp-test2.spec', 'packaging/gbp-test2-alt.spec',
                  'packaging/my.patch', 'packaging/0001-My-addition.patch',
                  '.gbp.conf']
@@ -531,9 +531,9 @@ class TestPqRpm(RpmRepoTestBase):
         """Test the --new-packaging-dir cmdline option"""
         repo = self.init_test_repo('gbp-test2')
         branches = repo.get_local_branches() + ['master-orphan']
-        files = ['rpm/', 'rpm/bar.tar.gz', 'rpm/foo.txt',
-                 'rpm/gbp-test2.spec', 'rpm/gbp-test2-alt.spec',
-                 'rpm/my.patch', 'rpm/0001-My-addition.patch']
+        files = ['rpm/bar.tar.gz', 'rpm/foo.txt', 'rpm/gbp-test2.spec',
+                 'rpm/gbp-test2-alt.spec', 'rpm/my.patch',
+                 'rpm/0001-My-addition.patch']
         # Drop already-existing master-orphan branch
         repo.delete_branch('master-orphan')
         # Try convert
@@ -545,7 +545,7 @@ class TestPqRpm(RpmRepoTestBase):
         """Test the --retain-history cmdline option"""
         repo = self.init_test_repo('gbp-test2')
         branches = repo.get_local_branches() + ['master-orphan']
-        files = ['packaging/', 'packaging/bar.tar.gz', 'packaging/foo.txt',
+        files = ['packaging/bar.tar.gz', 'packaging/foo.txt',
                  'packaging/gbp-test2.spec', 'packaging/gbp-test2-alt.spec',
                  'packaging/my.patch', 'packaging/0001-My-addition.patch',
                  '.gbp.conf']

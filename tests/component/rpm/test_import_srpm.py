@@ -55,7 +55,7 @@ class TestImportPacked(ComponentTestBase):
         # Check repository state
         repo = GitRepository('gbp-test')
         files =  set(['Makefile', 'README', 'bar.tar.gz', 'dummy.sh', 'foo.txt',
-                  'gbp-test.spec', 'my.patch', 'mydir/', 'mydir/myfile.txt'])
+                  'gbp-test.spec', 'my.patch', 'mydir/myfile.txt'])
         self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
         # Four commits: upstream, packaging files, one patch and the removal
         # of imported patches
@@ -68,8 +68,8 @@ class TestImportPacked(ComponentTestBase):
         # Check repository state
         repo = GitRepository('gbp-test2')
         files = set(['Makefile', 'README', 'bar.tar.gz', 'dummy.sh', 'foo.txt',
-                 'gbp-test2.spec', 'gbp-test2-alt.spec', 'my.patch', 'mydir/',
-                 'mydir/myfile.txt'])
+                     'gbp-test2.spec', 'gbp-test2-alt.spec', 'my.patch',
+                     'mydir/myfile.txt'])
         self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
 
         # Four commits: upstream, packaging files, one patch and the removal
@@ -97,7 +97,7 @@ class TestImportPacked(ComponentTestBase):
         eq_(mock_import(['--native', srpm]), 0)
         # Check repository state
         files = set(['.gbp.conf', 'Makefile', 'README', 'dummy.sh',
-                     'packaging/', 'packaging/gbp-test-native.spec'])
+                     'packaging/gbp-test-native.spec'])
         repo = GitRepository('gbp-test-native')
         self._check_repo_state(repo, 'master', ['master'], files)
         # Only one commit: the imported source tarball
@@ -121,7 +121,7 @@ class TestImportPacked(ComponentTestBase):
         repo = GitRepository('gbp-test')
         files =  set(['Makefile', 'README', 'AUTHORS', 'NEWS', 'bar.tar.gz',
                     'dummy.sh', 'foo.txt', 'gbp-test.spec', 'my.patch',
-                    'mydir/', 'mydir/myfile.txt'])
+                    'mydir/myfile.txt'])
         self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
         # Four commits: upstream, packaging files, three patches and the removal
         # of imported patches
@@ -147,7 +147,7 @@ class TestImportPacked(ComponentTestBase):
         # Import new version
         eq_(mock_import([srpms[2]]), 0)
         files = set(['Makefile', 'README', 'bar.tar.gz', 'dummy.sh', 'foo.txt',
-                 'gbp-test.spec', 'my.patch', 'mydir/', 'mydir/myfile.txt'])
+                 'gbp-test.spec', 'my.patch', 'mydir/myfile.txt'])
         self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
         eq_(len(repo.get_commits()), 11)
         eq_(len(repo.get_commits(until='upstream')), 2)
@@ -195,7 +195,7 @@ class TestImportPacked(ComponentTestBase):
         # Check repository state
         repo = GitRepository('gbp-test')
         files = set(['Makefile', 'dummy.sh', 'bar.tar.gz', 'foo.txt',
-                 'gbp-test.spec', 'my.patch', 'mydir/', 'mydir/myfile.txt'])
+                 'gbp-test.spec', 'my.patch', 'mydir/myfile.txt'])
         self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
 
     def test_misc_options(self):
@@ -213,11 +213,10 @@ class TestImportPacked(ComponentTestBase):
                     srpm]), 0)
         # Check repository state
         repo = GitRepository('gbp-test2')
-        files = set(['Makefile', 'README', 'dummy.sh', 'packaging/',
-                 'packaging/bar.tar.gz', 'packaging/foo.txt',
-                 'packaging/gbp-test2.spec', 'packaging/gbp-test2-alt.spec',
-                 'packaging/my.patch', 'packaging/my2.patch',
-                 'packaging/my3.patch'])
+        files = set(['Makefile', 'README', 'dummy.sh', 'packaging/bar.tar.gz',
+                     'packaging/foo.txt', 'packaging/gbp-test2.spec',
+                     'packaging/gbp-test2-alt.spec', 'packaging/my.patch',
+                     'packaging/my2.patch', 'packaging/my3.patch'])
         self._check_repo_state(repo, 'pack', ['pack', 'orig'], files)
         eq_(len(repo.get_commits()), 2)
         # Check packaging dir
