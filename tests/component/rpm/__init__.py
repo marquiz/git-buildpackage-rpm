@@ -46,10 +46,9 @@ class RepoManifest(object):
     def projects_iter(self):
         """Return an iterator over projects"""
         for prj_e in self._doc.getElementsByTagName('project'):
-            branches = {}
+            branches = []
             for br_e in prj_e.getElementsByTagName('branch'):
-                rev = br_e.getAttribute('revision')
-                branches[br_e.getAttribute('name')] = rev
+                branches.append(dict(br_e.attributes.items()))
             yield prj_e.getAttribute('name'), branches
 
 
@@ -67,7 +66,7 @@ class RpmRepoTestBase(ComponentTestBase):
     """Baseclass for tests run in a Git repository with packaging data"""
 
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls, mangle_branch_names=True):
         """Initializations only made once per test run"""
         super(RpmRepoTestBase, cls).setup_class()
         cls.manifest = RepoManifest(os.path.join(RPM_TEST_DATA_DIR,
@@ -93,9 +92,17 @@ class RpmRepoTestBase(ComponentTestBase):
             # Fetch all remote refs of the orig repo, too
             repo.fetch('origin', tags=True,
                        refspec='refs/remotes/*:refs/upstream/*')
-            for branch, rev in brs.iteritems():
-                repo.create_branch(branch, rev)
-            repo.force_head('master', hard=True)
+            master_branch = 'master'
+            for branch in brs:
+                if mangle_branch_names:
+                    branch_name = branch['name']
+                else:
+                    branch_name = branch['orig_name']
+                    if branch['name'] == 'master':
+                        master_branch = branch_name
+                repo.create_branch(branch_name, branch['revision'])
+            repo.set_branch(master_branch)
+            repo.force_head('HEAD', hard=True)
             cls.orig_repos[prj] = repo
 
     @classmethod
