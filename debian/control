@@ -66,6 +66,7 @@ Depends: ${python:Depends},
  python-rpm,
  rpm2cpio,
  git-buildpackage-common (= ${binary:Version})
+Recommends: rpm
 Description: Suite to help with rpm packages in Git repositories
  This package contains the following tools:
   * git-import-srpm: import existing rpm source packages into a git
