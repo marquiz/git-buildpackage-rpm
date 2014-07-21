@@ -45,6 +45,7 @@ from gbp.scripts.common.pq import is_pq_branch, pq_branch_name, pq_branch_base
 
 
 class GbpAutoGenerateError(GbpError):
+    """Error for tarball and patch-generation failures"""
     pass
 
 
@@ -111,6 +112,7 @@ def prepare_upstream_tarball(repo, spec, options, output_dir):
 
 
 def makedir(dir):
+    """Create directory"""
     output_dir = os.path.abspath(dir)
 
     try:
@@ -297,6 +299,7 @@ def export_patches(repo, spec, export_treeish, options):
 
 
 def is_native(repo, options):
+    """Determine whether a package is native or non-native"""
     if repo.has_branch(options.upstream_branch):
         return False
     return True
@@ -378,6 +381,7 @@ def disable_hooks(options):
 
 
 def parse_args(argv, prefix, git_treeish=None):
+    """Parse config and command line arguments"""
     args = [ arg for arg in argv[1:] if arg.find('--%s' % prefix) == 0 ]
     builder_args = [ arg for arg in argv[1:] if arg.find('--%s' % prefix) == -1 ]
 
@@ -512,6 +516,7 @@ def parse_args(argv, prefix, git_treeish=None):
 
 
 def main(argv):
+    """Entry point for git-buildpackage-rpm"""
     retval = 0
     prefix = "git-"
     spec = None
