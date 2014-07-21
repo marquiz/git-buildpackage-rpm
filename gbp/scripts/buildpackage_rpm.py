@@ -25,14 +25,11 @@ import sys
 import shutil
 import re
 from datetime import datetime
-import gzip
 
 import gbp.tmpfile as tempfile
 import gbp.rpm as rpm
 from gbp.rpm.policy import RpmPkgPolicy
-from gbp.command_wrappers import (Command,
-                                  RunAtCommand, CommandExecFailed,
-                                  RemoveTree)
+from gbp.command_wrappers import Command, RunAtCommand, CommandExecFailed
 from gbp.config import (GbpOptionParserRpm, GbpOptionGroup)
 from gbp.rpm.git import (GitRepositoryError, RpmGitRepository)
 from gbp.errors import GbpError
@@ -42,7 +39,7 @@ from gbp.scripts.common.buildpackage import (index_name, wc_names,
                                              git_archive_submodules,
                                              git_archive_single, dump_tree,
                                              write_wc, drop_index)
-from gbp.pkg import (compressor_opts, compressor_aliases)
+from gbp.pkg import compressor_opts
 from gbp.scripts.pq_rpm import update_patch_series, parse_spec
 from gbp.scripts.common.pq import is_pq_branch, pq_branch_name, pq_branch_base
 
