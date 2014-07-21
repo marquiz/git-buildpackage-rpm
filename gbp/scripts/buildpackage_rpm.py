@@ -113,8 +113,6 @@ def prepare_upstream_tarball(repo, spec, options, output_dir):
 
 def makedir(dir):
     """Create directory"""
-    output_dir = os.path.abspath(dir)
-
     try:
         os.mkdir(dir)
     except OSError, (e, msg):
@@ -329,7 +327,7 @@ def update_tag_str_fields(fields, tag_format_str, repo, commit_info):
 
     fields['authortime'] = datetime.fromtimestamp(int(commit_info['author'].date.split()[0])).strftime(RpmPkgPolicy.tag_timestamp_format)
     fields['committime'] = datetime.fromtimestamp(int(commit_info['committer'].date.split()[0])).strftime(RpmPkgPolicy.tag_timestamp_format)
-    fields['version'] = version=RpmPkgPolicy.compose_full_version(fields)
+    fields['version'] = RpmPkgPolicy.compose_full_version(fields)
 
     # Parse tags with incremental numbering
     re_fields = dict(fields,
@@ -530,8 +528,6 @@ def main(argv):
     except GitRepositoryError:
         gbp.log.err("%s is not a git repository" % (os.path.abspath('.')))
         return 1
-    else:
-        repo_dir = os.path.abspath(os.path.curdir)
 
     # Determine tree-ish to be exported
     try:
