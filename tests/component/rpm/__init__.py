@@ -20,6 +20,10 @@ import os
 
 from tests.component import ComponentTestGitRepository
 
+# Disable "Instance of 'Document' has no 'firstChild' member"
+#   pylint: disable=E1103
+
+
 RPM_TEST_DATA_SUBMODULE = os.path.join('tests', 'component', 'rpm', 'data')
 RPM_TEST_DATA_DIR = os.path.abspath(RPM_TEST_DATA_SUBMODULE)
 
