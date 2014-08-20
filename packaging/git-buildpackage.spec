@@ -135,7 +135,7 @@ Debian and the RPM tool set.
 
 
 %build
-WITHOUT_NOSETESTS=1 python ./setup.py build
+WITHOUT_NOSETESTS=1 %{__python} ./setup.py build
 
 %if %{with docs}
 # Prepare apidocs
@@ -152,13 +152,13 @@ HAVE_SGML2X=0 make -C docs/
 GIT_CEILING_DIRECTORIES=%{_builddir} \
     GIT_AUTHOR_EMAIL=rpmbuild@example.com GIT_AUTHOR_NAME=rpmbuild \
     GIT_COMMITTER_NAME=$GIT_AUTHOR_NAME GIT_COMMITTER_EMAIL=$GIT_AUTHOR_EMAIL \
-    python setup.py nosetests
+    %{__python} setup.py nosetests
 %endif
 
 
 %install
 rm -rf %{buildroot}
-WITHOUT_NOSETESTS=1 python ./setup.py install --root=%{buildroot} --prefix=/usr
+WITHOUT_NOSETESTS=1 %{__python} ./setup.py install --root=%{buildroot} --prefix=/usr
 rm -rf %{buildroot}%{python_sitelib}/*info
 
 %if %{with docs}
