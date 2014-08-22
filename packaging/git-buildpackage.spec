@@ -119,6 +119,21 @@ Provides:   tizen-gbp-rpm = 20140828
 Set of tools from Debian that integrate the package build system with Git.
 This package contains the tools for building RPM packages.
 
+
+%package bb
+Summary:    Build with BitBake from git
+Group:      Development/Tools/Building
+Requires:   %{name}-common = %{version}-%{release}
+Requires:   %{name}-rpm = %{version}-%{release}
+%if 0%{?suse_version} || 0%{?tizen_version:1}
+Recommends: bitbake
+%endif
+
+%description bb
+Set of tools from Debian that integrate the package build system with Git.
+This package contains the tools for building with the BitBake tool.
+
+
 %if %{with docs}
 %package doc
 Summary:    Documentation for the git-buildpackage suite
@@ -253,6 +268,13 @@ done
 %{_mandir}/man1/gbp-rpm-ch.1*
 %{_mandir}/man1/gbp-import-orig-rpm.1*
 %endif
+
+
+%files bb
+%defattr(-,root,root,-)
+%dir %{python_sitelib}/gbp/bb
+%{python_sitelib}/gbp/scripts/*bb*.py*
+%{python_sitelib}/gbp/bb/*py*
 
 
 %if %{with docs}

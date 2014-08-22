@@ -810,4 +810,18 @@ class GbpOptionParserRpm(GbpOptionParser):
                 "Meta tags for the bts commands, default is '%(meta-bts)s'",
                  })
 
+class GbpOptionParserBB(GbpOptionParserRpm):
+    """Commandline and config file option parser for the -bb commands"""
+    defaults = dict(GbpOptionParserRpm.defaults)
+    defaults.update( {
+                       'meta-dir'               : '',
+                     } )
+
+    help = dict(GbpOptionParserRpm.help)
+    help.update( {
+                   'meta-dir':
+                        "Subdir where bitbake meta files are stored, default "
+                        "is '%(meta-dir)s'",
+                 } )
+
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:

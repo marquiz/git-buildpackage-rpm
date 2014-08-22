@@ -83,3 +83,16 @@ Description: Suite to help with RPM packages in Git repositories
  .
  These tools are currently in an experimental state. Branch names and
  repository layouts might change without lots of prior warning.
+
+Package: git-buildpackage-bb
+Architecture: all
+Depends: ${python:Depends},
+ ${misc:Depends},
+ git-buildpackage-common (= ${binary:Version}),
+ git-buildpackage-rpm (= ${binary:Version}),
+Recommends: bitbake
+Description: Suite to help with BitBake builds from Git repositories
+ This package contains the following tools:
+  * gbp import-bb: import sources from distribution repository
+  * gbp buildpackage-bb: build a package out of a Git repository
+  * gbp pq-bb: manage separate development and packaging branches
