@@ -330,7 +330,7 @@ def update_changelog(changelog, entries, repo, spec, options):
         # Get fake information for the to-be-created git commit
         commit_info = {'author': GitModifier(date=now),
                        'committer': GitModifier(date=now)}
-        tag = packaging_tag_name(repo, spec, commit_info, options)
+        tag = packaging_tag_name(repo, spec.version, commit_info, options)
     else:
         commit_info = {'author': None, 'committer': None}
         tag = repo.describe('HEAD', longfmt=True, always=True)
