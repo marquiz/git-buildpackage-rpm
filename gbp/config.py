@@ -814,7 +814,11 @@ class GbpOptionParserBB(GbpOptionParserRpm):
     """Commandline and config file option parser for the -bb commands"""
     defaults = dict(GbpOptionParserRpm.defaults)
     defaults.update( {
+                       'builder'                : 'bitbake',
+                       'export-dir'             : '',
                        'meta-dir'               : '',
+                       'bb-file'                : '',
+                       'bb-vcs-info'            : '',
                      } )
 
     help = dict(GbpOptionParserRpm.help)
@@ -822,6 +826,11 @@ class GbpOptionParserBB(GbpOptionParserRpm):
                    'meta-dir':
                         "Subdir where bitbake meta files are stored, default "
                         "is '%(meta-dir)s'",
+                   'bb-file':
+                        "Bitbake recipe file to build",
+                   'bb-vcs-info':
+                        "Format string for the VCS information automatically "
+                        "set in the recipe file, default is '%(bb-vcs-info)s'",
                  } )
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
