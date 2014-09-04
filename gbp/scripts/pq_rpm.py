@@ -384,7 +384,7 @@ def import_spec_patches(repo, options):
     # Create pq-branch
     if repo.has_branch(pq_branch) and not options.force:
         raise GbpError("Patch-queue branch '%s' already exists. "
-                       "Try 'rebase' instead." % pq_branch)
+                       "Try 'switch' instead." % pq_branch)
     try:
         if repo.get_branch() == pq_branch:
             repo.force_head(upstream_commit, hard=True)
