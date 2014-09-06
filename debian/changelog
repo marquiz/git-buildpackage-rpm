@@ -54,6 +54,15 @@ git-buildpackage (0.6.15-tizen20140828) unstable; urgency=low
   * rpm packaging: use macro for python binary
 
  -- Markus Lehtonen <markus.lehtonen@linux.intel.com>  Thu, 28 Aug 2014 11:40:05 +0300
+git-buildpackage (0.6.18) unstable; urgency=medium
+
+  * Upload to unstable
+  * [6edd836] Don't delete *_source.changes on source only builds
+    (Closes: #758726)
+  * [a37832e] Mention --no-merge (Closes: #760091)
+
+ -- Guido Günther <agx@sigxcpu.org>  Sat, 06 Sep 2014 13:41:05 +0200
+
 git-buildpackage (0.6.17) experimental; urgency=medium
 
   [ Guido Günther ]
