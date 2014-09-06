@@ -162,6 +162,7 @@ class GbpOptionParser(OptionParser):
                  'purge': 'True',
                  'tmp-dir' : '/var/tmp/gbp/',
                  'drop': 'False',
+                 'commit': 'False',
              }
     help = {
              'debian-branch':
@@ -315,6 +316,8 @@ class GbpOptionParser(OptionParser):
               'drop':
                   ("In case of 'export' drop the patch-queue branch "
                    "after export. Default is '%(drop)s'"),
+              'commit':
+                  "commit changes after export, Default is '%(commit)s'",
            }
 
     def_config_files = [ '/etc/git-buildpackage/gbp.conf',
