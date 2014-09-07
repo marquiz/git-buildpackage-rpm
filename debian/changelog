@@ -54,6 +54,12 @@ git-buildpackage (0.6.15-tizen20140828) unstable; urgency=low
   * rpm packaging: use macro for python binary
 
  -- Markus Lehtonen <markus.lehtonen@linux.intel.com>  Thu, 28 Aug 2014 11:40:05 +0300
+git-buildpackage (0.6.19) unstable; urgency=medium
+
+  * [5d4cb92] Update to git-pbuilder 1.33
+
+ -- Guido Günther <agx@sigxcpu.org>  Sun, 07 Sep 2014 09:25:48 +0200
+
 git-buildpackage (0.6.18) unstable; urgency=medium
 
   * Upload to unstable
