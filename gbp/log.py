@@ -96,31 +96,35 @@ class GbpStreamHandler(logging.StreamHandler):
 class GbpLogger(logging.Logger):
     """Logger class for git-buildpackage"""
 
-    def __init__(self, name, color='auto', *args, **kwargs):
+    def __init__(self, name, *args, **kwargs):
         logging.Logger.__init__(self, name, *args, **kwargs)
-        self._default_handlers = [GbpStreamHandler(sys.stdout, color),
-                                  GbpStreamHandler(sys.stderr, color)]
-        self._default_handlers[0].addFilter(GbpFilter([DEBUG, INFO]))
-        self._default_handlers[1].addFilter(GbpFilter([WARNING, ERROR,
-                                                       CRITICAL]))
-        for hdlr in self._default_handlers:
+        self.default_handlers = []
+
+    def init_default_handlers(self, color='auto'):
+        """Initialize and set default handlers to logger"""
+        self.default_handlers = [GbpStreamHandler(sys.stdout, color),
+                                 GbpStreamHandler(sys.stderr, color)]
+        self.default_handlers[0].addFilter(GbpFilter([DEBUG, INFO]))
+        self.default_handlers[1].addFilter(GbpFilter([WARNING, ERROR,
+                                                      CRITICAL]))
+        for hdlr in self.default_handlers:
             self.addHandler(hdlr)
         # We don't want to propagate as we add our own handlers
         self.propagate = False
 
     def set_color(self, color):
         """Set/unset colorized output of the default handlers"""
-        for hdlr in self._default_handlers:
+        for hdlr in self.default_handlers:
             hdlr.set_color(color)
 
     def set_color_scheme(self, color_scheme={}):
         """Set the color scheme of the default handlers"""
-        for hdlr in self._default_handlers:
+        for hdlr in self.default_handlers:
             hdlr.set_color_scheme(color_scheme)
 
     def set_format(self, fmt):
         """Set the format of the default handlers"""
-        for hdlr in self._default_handlers:
+        for hdlr in self.default_handlers:
             hdlr.set_format(fmt)
 
 
@@ -170,7 +174,11 @@ def getLogger(*args, **kwargs):
     """Gbp-specific function"""
     if not issubclass(logging.getLoggerClass(), GbpLogger):
         logging.setLoggerClass(GbpLogger)
-    return logging.getLogger(*args, **kwargs)
+    color = kwargs.pop('color') if 'color' in kwargs else 'auto'
+    logger = logging.getLogger(*args, **kwargs)
+    if hasattr(logger, 'default_handlers') and not logger.default_handlers:
+        logger.init_default_handlers(color)
+    return logger
 
 def setup(color, verbose, color_scheme=""):
     """Basic logger setup"""
