@@ -252,7 +252,12 @@ class GitRepository(object):
             ready = select.select(out_fds, in_fds, [])
             # Write in chunks of 512 bytes
             if ready[1]:
-                popen.stdin.write(stdin[w_ind:w_ind+512])
+                try:
+                    popen.stdin.write(stdin[w_ind:w_ind+512])
+                except IOError:
+                    # Ignore, we want to read buffers to e.g. get error message
+                    # Git should give an error code so that we catch an error
+                    pass
                 w_ind += 512
                 if w_ind > len(stdin):
                     rm_polled_fd(popen.stdin, in_fds)
