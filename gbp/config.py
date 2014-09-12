@@ -161,6 +161,7 @@ class GbpOptionParser(OptionParser):
                  'symlink-orig': 'True',
                  'purge': 'True',
                  'tmp-dir' : '/var/tmp/gbp/',
+                 'drop': 'False',
              }
     help = {
              'debian-branch':
@@ -309,6 +310,9 @@ class GbpOptionParser(OptionParser):
              'tmp-dir':
                   ("Base directory under which temporary directories are "
                    "created, default is '%(tmp-dir)s'"),
+              'drop':
+                  ("In case of 'export' drop the patch-queue branch "
+                   "after export. Default is '%(drop)s'"),
            }
 
     def_config_files = [ '/etc/git-buildpackage/gbp.conf',
