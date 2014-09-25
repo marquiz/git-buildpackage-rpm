@@ -105,6 +105,8 @@ class GbpLogger(logging.Logger):
                                                        CRITICAL]))
         for hdlr in self._default_handlers:
             self.addHandler(hdlr)
+        # We don't want to propagate as we add our own handlers
+        self.propagate = False
 
     def set_color(self, color):
         """Set/unset colorized output of the default handlers"""
