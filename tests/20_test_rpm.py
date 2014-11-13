@@ -58,6 +58,34 @@ class RpmTestBase(object):
         """Test case teardown"""
         shutil.rmtree(self.tmpdir)
 
+class TestSrcRpmFile(RpmTestBase):
+    """Test L{gbp.rpm.SrcRpmFile}"""
+
+    def test_srpm(self):
+        """Test parsing of a source rpm"""
+        srpm = SrcRpmFile(os.path.join(SRPM_DIR, 'gbp-test-1.0-1.src.rpm'))
+        assert srpm.version ==  {'release': '1', 'upstreamversion': '1.0'}
+        assert srpm.name == 'gbp-test'
+        assert srpm.upstreamversion == '1.0'
+        assert srpm.packager is None
+
+    def test_srpm_2(self):
+        """Test parsing of another source rpm"""
+        srpm = SrcRpmFile(os.path.join(SRPM_DIR, 'gbp-test2-3.0-0.src.rpm'))
+        assert srpm.version == {'release': '0', 'upstreamversion': '3.0',
+                                'epoch': '2'}
+        assert srpm.packager == 'Markus Lehtonen '\
+                                '<markus.lehtonen@linux.intel.com>'
+
+    def test_unpack_srpm(self):
+        """Test unpacking of a source rpm"""
+        srpm = SrcRpmFile(os.path.join(SRPM_DIR, 'gbp-test-1.0-1.src.rpm'))
+        srpm.unpack(self.tmpdir)
+        for fn in ['gbp-test-1.0.tar.bz2', 'foo.txt', 'bar.tar.gz', 'my.patch',
+                   'my2.patch', 'my3.patch']:
+            assert os.path.exists(os.path.join(self.tmpdir, fn)), \
+                    "%s not found" % fn
+
 class TestSpecFile(RpmTestBase):
     """Test L{gbp.rpm.SpecFile}"""
 
