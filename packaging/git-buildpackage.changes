@@ -1,3 +1,57 @@
+* Fri Feb 06 2015 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.22-20150206
+- Rebase on top of upstream version 0.6.22
+- Experimental support for BitBake
+  * Introduce import-bb tool.
+    This is the first tool in an effort of enabling gbp in the BitBake build
+    environment. Gbp-import-bb is a tool for importing packages from a
+    BitBake-based "combined" distro repository into individual per-package
+    Git repositories.
+  * Introduce pq-bb tool.
+    This is a tool for managing patch-queues for packages maintained in the
+    BitBake packaging format (.bb recipes).
+  * Introduce buildpackage-bb tool.
+    Initial version of the tool for building BitBake packages from Git.
+    NOTE: The buildpackage-bb tool itself is able to operate even without an
+    initialized BitBake build environment although the build likely fails in
+    this case. However, this makes it possible to export the packaging meta
+    data, for example.
+  * Introcude clone-bb tool.
+    This is a new tool for helping to clone remote per-package Git
+    repositories when working in BitBake-based "full distro" build
+    environment. This is useful in the case that individual packages are
+    actually maintained in per-package Git repositories (like Tizen). That
+    is, the full distro repository that the developer operates in is
+    composed of the packaging meta data from the individual per-package
+    repositories. When willing to contribute to a package the developer
+    would use clone-bb to clone the correct per-package repository and make
+    his changes there.
+    NOTE: clone-bb uses GBP_PACKAGING_REPO variable to determine the remote
+    repository URI. This variable should be defined in the package recipes
+    in order to make clone-bb usable.
+  * Introduce submit-bb tool.
+    This is a Tizen-specific tool for creating and pushing special submit
+    tags.
+- pq-rpm: better error message
+- buildpackage-rpm: look for remote upstream branches.
+  Consider remote branches, too, while looking for the upstream branch
+  when trying to guess if a package is native or not.
+- rpm packaging changes
+  * enable CentOS 7.
+  * include python egg-info in -common.
+- rpm: suppress stderr when unpacking src.rpm
+- UpstreamSource: suppress stderr from tar in _determine_prefix()
+- patchseries: strip numbering when guessing subject from filename
+- Changes in logging
+  * don't propagate to ancestor loggers
+  * don't initialize handlers in GbpLogger init.
+    Better compatibility with 3rd party modules that have their own logging
+    initializations.
+- Features/fixes in GitRepository
+  * GitRepository/__git_inout: correctly handle input error
+  * GitRepository.create_tag: add 'annotate' argument.
+    For forcing the creation of annotated tags. Causes the an editor to be
+    spawned if no message is given.
+
 * Thu Aug 28 2014 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.15-20140828
 - Rebase on top of upstream version 0.6.15
 - Changes in buildpackage-rpm
