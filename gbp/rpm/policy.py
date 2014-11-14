@@ -25,7 +25,7 @@ class RpmPkgPolicy(PkgPolicy):
     """Packaging policy for RPM"""
 
     # Special rpmlib python module for GBP (only)
-    python_rpmlib_module_name = "rpm"
+    python_rpmlib_module_name = "rpm_tizen"
 
     alnum = 'a-zA-Z0-9'
     # Valid characters for RPM pkg name
