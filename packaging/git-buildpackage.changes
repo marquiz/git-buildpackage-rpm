@@ -1,3 +1,6 @@
+* Fri Nov 14 2014 Markus Lehtonen <markus.lehtonen@linux.intel.com> debian/0.6.22-195-g97ce593
+- Rebase on top of upstream version 0.6.22
+
 * Thu Aug 28 2014 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.15-20140828
 - Rebase on top of upstream version 0.6.15
 - Changes in buildpackage-rpm

@@ -1,3 +1,9 @@
+git-buildpackage (0.6.22-tizen20141114) UNRELEASED; urgency=low
+
+  * Rebase on top of upstream version 0.6.22
+
+ -- Markus Lehtonen <markus.lehtonen@linux.intel.com>  Fri, 14 Nov 2014 14:10:18 +0200
+
 git-buildpackage (0.6.22) unstable; urgency=medium
 
   * [3d8939d] git.vfs: fix close method. Preventing a infinite recursion

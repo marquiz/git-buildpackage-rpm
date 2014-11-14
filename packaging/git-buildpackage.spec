@@ -3,7 +3,7 @@
 
 Name:       git-buildpackage
 Summary:    Build packages from git
-Version:    0.6.15
+Version:    0.6.22
 Release:    0
 Group:      Development/Tools/Building
 License:    GPLv2
@@ -111,7 +111,7 @@ Recommends: rpm-build
 %else
 Requires:   rpm-build
 %endif
-Provides:   tizen-gbp-rpm = 20140828
+Provides:   tizen-gbp-rpm = 20141114
 
 %description rpm
 Set of tools from Debian that integrate the package build system with Git.
