@@ -288,7 +288,17 @@ def export_patches(repo, spec, export_treeish, options):
 def is_native(repo, options):
     """Determine whether a package is native or non-native"""
     if options.native.is_auto():
-        return not repo.has_branch(options.upstream_branch)
+        if repo.has_branch(options.upstream_branch):
+            return False
+        # Check remotes, too
+        for remote_branch in repo.get_remote_branches():
+            remote, branch = remote_branch.split('/', 1)
+            if branch == options.upstream_branch:
+                gbp.log.debug("Found upstream branch '%s' from remote '%s'" %
+                               (remote, branch))
+                return False
+        return True
+
     return options.native.is_on()
 
 
