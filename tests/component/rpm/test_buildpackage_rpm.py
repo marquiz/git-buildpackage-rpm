@@ -139,9 +139,15 @@ class TestGbpRpm(RpmRepoTestBase):
 
     def test_non_native_build(self):
         """Basic test of non-native pkg"""
-        self.init_test_repo('gbp-test')
+        repo = self.init_test_repo('gbp-test')
         eq_(mock_gbp([]), 0)
         self.check_rpms('../rpmbuild/RPMS/*')
+
+        # Test nativity guessing from remote branches by creating a dummy
+        # remote branch
+        repo.update_ref('refs/remotes/fooremote/foobranch',
+                        'srcdata/gbp-test/upstream')
+        eq_(mock_gbp(['--git-upstream-branch=foobranch']), 0)
 
     def test_option_native(self):
         """Test the --git-native option"""
