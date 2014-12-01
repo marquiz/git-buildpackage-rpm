@@ -116,6 +116,18 @@ class TestPqRpm(RpmRepoTestBase):
         self._check_repo_state(repo, 'master-orphan', branches)
         eq_(repo.status()[' M'], ['packaging/gbp-test2.spec'])
 
+    def test_import_in_subdir(self):
+        """Test running gbp-rpm-pq from a subdir in the git tree"""
+        repo = self.init_test_repo('gbp-test2')
+        repo.set_branch('master-orphan')
+        branches = repo.get_local_branches() + ['patch-queue/master-orphan']
+        os.chdir('packaging')
+
+        # Running from subdir should be ok
+        eq_(mock_pq(['import']), 0)
+        self._check_repo_state(repo, 'patch-queue/master-orphan', branches)
+
+
     def test_rebase(self):
         """Basic test for rebase action"""
         repo = self.init_test_repo('gbp-test')
