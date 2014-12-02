@@ -945,6 +945,19 @@ class GitRepository(object):
         """
         self._git_command("checkout", ["--quiet", treeish])
 
+    def checkout_files(self, treeish, paths):
+        """
+        Checkout files from a treeish. Branch will not be changed.
+
+        @param treeish: the treeish from which to check out files
+        @type treeish: C{str}
+        @param paths: list of files to checkout
+        @type paths: C{list} of C{str}
+        """
+        args = GitArgs("--quiet", treeish)
+        args.add_true(paths, '--', paths)
+        self._git_command("checkout", args.args)
+
     def has_treeish(self, treeish):
         """
         Check if the repository has the treeish object I{treeish}.
