@@ -359,7 +359,7 @@ class UpstreamSource(object):
                     files.append((typ, info.filename))
             elif self._archive_fmt == 'tar':
                 popen = subprocess.Popen(['tar', '-t', '-v', '-f', self.path],
-                                         stdout=subprocess.PIPE)
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out, _err = popen.communicate()
                 if popen.returncode:
                     raise GbpError("Listing tar archive content failed")
