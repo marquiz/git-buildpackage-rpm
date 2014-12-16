@@ -32,7 +32,7 @@ from gbp.config import (GbpOptionParserBB, GbpOptionGroup,
 from gbp.errors import GbpError
 from gbp.pkg import parse_archive_filename
 from gbp.scripts.import_srpm import move_tag_stamp, force_to_branch_head
-from gbp.bb import bb, init_tinfoil, pkg_version
+from gbp.bb import bb, init_tinfoil, pkg_version, guess_pkg
 
 #   pylint: disable=bad-continuation
 
@@ -123,44 +123,6 @@ def parse_args(argv):
     gbp.log.setup(options.color, options.verbose, options.color_scheme)
     return options, args
 
-
-def guess_bb(pkg_dir, tinfoil):
-    """Guess a bb from a directory"""
-    abspath = os.path.abspath(pkg_dir)
-    layer_dirs = tinfoil.config_data.getVar('BBLAYERS').split()
-    gbp.log.debug("Checking if %s is in %s" % (abspath, layer_dirs))
-    layer_dir = ''
-    for path in layer_dirs:
-        if abspath.startswith(path):
-            layer_dir = path
-    if not layer_dir:
-        raise GbpError("%s not under configured layers" % abspath)
-
-    bb_files = [path for path in tinfoil.cooker_data.pkg_fn
-                    if os.path.dirname(path) == abspath]
-    if len(bb_files):
-        bb_file = bb_files[-1]
-        gbp.log.debug("Found %d recipes in %s, choosing %s" %
-                      (len(bb_files), pkg_dir, os.path.basename(bb_file)))
-    else:
-        raise GbpError("No recipes found in %s" % pkg_dir)
-    return bb_file
-
-def guess_pkg(pkg, tinfoil):
-    """Determine the package to import"""
-    if pkg in tinfoil.cooker_data.pkg_pn:
-        pkg_bb = tinfoil.cooker_data.pkg_pn[pkg][0]
-    elif not os.path.isdir(pkg):
-        abspath = os.path.abspath(pkg)
-        if abspath in tinfoil.cooker_data.pkg_fn:
-            pkg_bb = abspath
-        else:
-            raise GbpError("Package %s not found in any configured layer" % pkg)
-    elif os.path.exists(pkg):
-        pkg_bb = guess_bb(pkg, tinfoil)
-    else:
-        raise GbpError("Unable to find %s" % pkg)
-    return pkg_bb
 
 def init_repo(path):
     """Check and initialize Git repository"""
@@ -347,7 +309,7 @@ def main(argv):
         dirs['tmp_base'] = tempfile.mkdtemp(dir=options.tmp_dir,
                                             prefix='import-bb')
         tinfoil = init_tinfoil()
-        pkg_bb = guess_pkg(args[0], tinfoil)
+        pkg_bb = guess_pkg(tinfoil, args[0])
         dirs['src'] = os.path.abspath(os.path.dirname(pkg_bb))
         gbp.log.info("Importing '%s' from '%s'" %
                      (os.path.basename(pkg_bb), dirs['src']))
