@@ -711,6 +711,8 @@ class GbpOptionParserBB(GbpOptionParserRpm):
                        'meta-dir'               : '',
                        'bb-file'                : '',
                        'bb-vcs-info'            : '',
+                       'submit-tag'             : 'submit/%(target)s/%(nowtime)s',
+                       'target'                 : 'tizen',
                      } )
 
     help = dict(GbpOptionParserRpm.help)
@@ -723,6 +725,11 @@ class GbpOptionParserBB(GbpOptionParserRpm):
                    'bb-vcs-info':
                         "Format string for the VCS information automatically "
                         "set in the recipe file, default is '%(bb-vcs-info)s'",
+                   'submit-tag':
+                        "Submit tag format, default is '%(submit-tag)s'",
+                   'target':
+                        "Submit target used in submit tag, default is "
+                        "'%(target)s'",
                  } )
 
 # vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·:
