@@ -458,5 +458,44 @@ def parse_bb(cfg_data, options, repo, treeish=None, bbappend=False):
     return pkg_data
 
 
+def guess_pkg_from_dir(pkg_dir, tinfoil):
+    """Guess a package from a directory in configured bitbake environment"""
+    abspath = os.path.abspath(pkg_dir)
+    layer_dirs = tinfoil.config_data.getVar('BBLAYERS').split()
+    gbp.log.debug("Checking if %s is in %s" % (abspath, layer_dirs))
+    layer_dir = ''
+    for path in layer_dirs:
+        if abspath.startswith(path):
+            layer_dir = path
+    if not layer_dir:
+        raise GbpError("%s not under configured layers" % abspath)
+
+    bb_files = [path for path in tinfoil.cooker_data.pkg_fn
+                    if os.path.dirname(path) == abspath]
+    if len(bb_files):
+        bb_file = bb_files[-1]
+        gbp.log.debug("Found %d recipes in %s, choosing %s" %
+                      (len(bb_files), pkg_dir, os.path.basename(bb_file)))
+    else:
+        raise GbpError("No recipes found in %s" % pkg_dir)
+    return bb_file
+
+def guess_pkg(tinfoil, pkg):
+    """Guess package (recipe) from configured bitbake environment"""
+    if pkg in tinfoil.cooker_data.pkg_pn:
+        pkg_bb = tinfoil.cooker_data.pkg_pn[pkg][0]
+    elif not os.path.isdir(pkg):
+        abspath = os.path.abspath(pkg)
+        if abspath in tinfoil.cooker_data.pkg_fn:
+            pkg_bb = abspath
+        else:
+            raise GbpError("Package %s not found in any configured layer" % pkg)
+    elif os.path.exists(pkg):
+        pkg_bb = guess_pkg_from_dir(pkg, tinfoil)
+    else:
+        raise GbpError("Unable to find %s" % pkg)
+    return pkg_bb
+
+
 # Initialize module
 bb = import_bb()
