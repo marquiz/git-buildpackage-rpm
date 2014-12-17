@@ -700,7 +700,8 @@ class GitRepository(object):
 
 #{ Tags
 
-    def create_tag(self, name, msg=None, commit=None, sign=False, keyid=None):
+    def create_tag(self, name, msg=None, commit=None, sign=False, keyid=None,
+                   annotate=False):
         """
         Create a new tag.
 
@@ -715,15 +716,18 @@ class GitRepository(object):
         @type sign: C{bool}
         @param keyid: the GPG keyid used to sign the tag
         @type keyid: C{str}
+        @param annotate: Create an annotated tag
+        @type annotate: C{bool}
         """
         args = GitArgs()
         args.add_true(msg, ['-m', msg])
         if sign:
             args.add('-s')
             args.add_true(keyid, ['-u', keyid])
+        args.add_true(annotate, '-a')
         args.add(name)
         args.add_true(commit, commit)
-        self._git_command("tag", args.args)
+        self._git_command("tag", args.args, interactive=True)
 
     def delete_tag(self, tag):
         """
