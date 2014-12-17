@@ -716,14 +716,14 @@ class GitRepository(object):
         @param keyid: the GPG keyid used to sign the tag
         @type keyid: C{str}
         """
-        args = []
-        args += [ '-m', msg ] if msg else []
+        args = GitArgs()
+        args.add_true(msg, ['-m', msg])
         if sign:
-            args += [ '-s' ]
-            args += [ '-u', keyid ] if keyid else []
-        args += [ name ]
-        args += [ commit ] if commit else []
-        self._git_command("tag", args)
+            args.add('-s')
+            args.add_true(keyid, ['-u', keyid])
+        args.add(name)
+        args.add_true(commit, commit)
+        self._git_command("tag", args.args)
 
     def delete_tag(self, tag):
         """
