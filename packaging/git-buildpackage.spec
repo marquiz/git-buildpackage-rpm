@@ -163,7 +163,6 @@ GIT_CEILING_DIRECTORIES=%{_builddir} \
 %install
 rm -rf %{buildroot}
 WITHOUT_NOSETESTS=1 %{__python} ./setup.py install --root=%{buildroot} --prefix=/usr
-rm -rf %{buildroot}%{python_sitelib}/*info
 
 %if %{with docs}
 # Install man pages
@@ -231,6 +230,7 @@ done
 %dir %{python_sitelib}/gbp/pkg
 %dir %{python_sitelib}/gbp/scripts
 %dir %{python_sitelib}/gbp/scripts/common
+%{python_sitelib}/gbp-*
 %{python_sitelib}/gbp/*.py*
 %{python_sitelib}/gbp/scripts/__init__.py*
 %{python_sitelib}/gbp/scripts/clone.py*
