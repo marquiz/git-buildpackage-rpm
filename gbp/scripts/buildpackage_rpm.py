@@ -316,7 +316,7 @@ def build_parser(name, prefix=None, git_treeish=None):
     """Construct config/option parser"""
     try:
         parser = GbpOptionParserRpm(command=os.path.basename(name),
-                                    prefix=prefix)
+                                    prefix=prefix, git_treeish=git_treeish)
     except configparser.ParsingError as err:
         gbp.log.err(err)
         return None

@@ -446,9 +446,10 @@ def md(a, b):
     return c
 
 
-def build_parser(name, prefix=None):
+def build_parser(name, prefix=None, git_treeish=None):
     try:
-        parser = GbpOptionParserDebian(command=os.path.basename(name), prefix=prefix)
+        parser = GbpOptionParserDebian(command=os.path.basename(name),
+                                       prefix=prefix, git_treeish=git_treeish)
     except configparser.ParsingError as err:
         gbp.log.err(err)
         return None
@@ -532,7 +533,8 @@ def build_parser(name, prefix=None):
     return parser
 
 
-def parse_args(argv, prefix):
+def parse_args(argv, prefix, git_treeish=None):
+    """Parse config and command line arguments"""
     args = [ arg for arg in argv[1:] if arg.find('--%s' % prefix) == 0 ]
     dpkg_args = [ arg for arg in argv[1:] if arg.find('--%s' % prefix) == -1 ]
 
@@ -541,7 +543,7 @@ def parse_args(argv, prefix):
         if arg in dpkg_args:
             args.append(arg)
 
-    parser = build_parser(argv[0], prefix=prefix)
+    parser = build_parser(argv[0], prefix=prefix, git_treeish=git_treeish)
     if not parser:
         return None, None, None
     options, args = parser.parse_args(args)
@@ -595,6 +597,16 @@ def main(argv):
     else:
         repo_dir = os.path.abspath(os.path.curdir)
 
+    # Determine tree-ish to be exported
+    try:
+        tree = write_tree(repo, options)
+    except GbpError as err:
+        gbp.log.err(err)
+        return 1
+    # Re-parse config options with using the per-tree config file(s) from the
+    # exported tree-ish
+    options, gbp_args, builder_args = parse_args(argv, prefix, tree)
+
     try:
         Command(options.cleaner, shell=True)()
         if not options.ignore_new:
@@ -618,7 +630,6 @@ def main(argv):
                 raise GbpError("Use --git-ignore-branch to ignore or --git-debian-branch to set the branch name.")
 
         head = repo.head
-        tree = write_tree(repo, options)
         source = source_vfs(repo, options, tree)
 
         check_tag(options, repo, source)
