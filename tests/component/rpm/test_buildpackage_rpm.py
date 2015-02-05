@@ -202,13 +202,13 @@ class TestGbpRpm(RpmRepoTestBase):
 
         self.init_test_repo('gbp-test-native')
 
-        eq_(mock_gbp(['--git-tmp-dir=../gbptmp', '--git-builder=true']), 0)
+        eq_(mock_gbp(['--git-tmp-dir=../gbptmp', '--git-no-build']), 0)
         ok_(os.path.isdir('../gbptmp'))
 
         # Check tmpdir access/creation error
         os.chmod('../gbptmp', 0)
         try:
-            eq_(mock_gbp(['--git-tmp-dir=../gbptmp/foo', '--git-builder=true']), 1)
+            eq_(mock_gbp(['--git-tmp-dir=../gbptmp/foo', '--git-no-build']), 1)
         finally:
             os.chmod('../gbptmp', stat.S_IREAD | stat.S_IWRITE | stat.S_IEXEC)
 
@@ -370,8 +370,8 @@ class TestGbpRpm(RpmRepoTestBase):
 
         # Test building when not on any branch
         repo.set_branch(repo.rev_parse('HEAD'))
-        eq_(mock_gbp(['--git-builder=true']), 1)
-        eq_(mock_gbp(['--git-ignore-branch', '--git-builder=true']), 0)
+        eq_(mock_gbp(['--git-no-build']), 1)
+        eq_(mock_gbp(['--git-ignore-branch', '--git-no-build']), 0)
 
     def test_option_submodules(self):
         """Test the --git-submodules option"""
@@ -493,6 +493,11 @@ class TestGbpRpm(RpmRepoTestBase):
         eq_(mock_gbp(args + ['--git-tag-only', '--git-packaging-tag=tag1']), 0)
         self.check_and_rm_file('../hooks', 'cleanerposttag')
 
+        # Prebuild is not run when only exporting
+        eq_(mock_gbp(args + ['--git-no-build']), 0)
+        self.check_and_rm_file('../hooks', 'cleanerpostexport')
+        shutil.rmtree('../rpmbuild')
+
         # Export and build scripts are run when not tagging
         eq_(mock_gbp(args), 0)
         self.check_and_rm_file('../hooks', 'cleanerpostexportprebuildpostbuild')
@@ -530,12 +535,12 @@ class TestGbpRpm(RpmRepoTestBase):
         s_rwx = stat.S_IREAD | stat.S_IWRITE | stat.S_IEXEC
 
         # Pre-create all files
-        eq_(mock_gbp(['--git-builder=true']), 0)
+        eq_(mock_gbp(['--git-no-build']), 0)
 
         # Error in exporting packaging files
         os.chmod('../rpmbuild/SOURCES', 0)
         try:
-            eq_(mock_gbp(['--git-builder=true']), 1)
+            eq_(mock_gbp(['--git-no-build']), 1)
         finally:
             os.chmod('../rpmbuild/SOURCES', s_rwx)
         self._check_log(-1, ".*Error exporting packaging files")
@@ -543,7 +548,7 @@ class TestGbpRpm(RpmRepoTestBase):
         # Error in creating archive
         os.chmod('../rpmbuild/SOURCES/gbp-test-native-1.0.zip', 0)
         try:
-            eq_(mock_gbp(['--git-builder=true']), 1)
+            eq_(mock_gbp(['--git-no-build']), 1)
         finally:
             os.chmod('../rpmbuild/SOURCES/gbp-test-native-1.0.zip', s_rwx)
         self._check_log(-1, ".*Error creating ../rpmbuild/SOURCES/.*.zip")
@@ -569,7 +574,7 @@ class TestGbpRpm(RpmRepoTestBase):
         with open('ignored.tmp', 'w') as fobj:
             fobj.write('ignored')
 
-        base_args = ['--git-ignore-new', '--git-builder=true']
+        base_args = ['--git-ignore-new', '--git-no-build']
         # Test exporting of git index
         foo_txt_index = repo.show('HEAD:foo.txt') + 'staged'
         eq_(mock_gbp(base_args + ['--git-export=INDEX']), 0)
