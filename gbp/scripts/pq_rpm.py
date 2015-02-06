@@ -199,14 +199,14 @@ def find_upstream_commit(repo, spec, upstream_tag):
 def export_patches(repo, options):
     """Export patches from the pq branch into a packaging branch"""
     current = repo.get_branch()
-    if is_pq_branch(current):
-        base = pq_branch_base(current)
+    if is_pq_branch(current, options):
+        base = pq_branch_base(current, options)
         gbp.log.info("On branch '%s', switching to '%s'" % (current, base))
         repo.set_branch(base)
         pq_branch = current
     else:
         base = current
-        pq_branch = pq_branch_name(current)
+        pq_branch = pq_branch_name(current, options)
     spec = parse_spec(options, repo)
     upstream_commit = find_upstream_commit(repo, spec, options.upstream_tag)
     export_treeish = pq_branch
@@ -216,7 +216,7 @@ def export_patches(repo, options):
     GitCommand('status')(['--', spec.specdir])
 
     if options.drop:
-        drop_pq(repo, base)
+        drop_pq(repo, base, options)
 
 
 def safe_patches(queue):
@@ -301,8 +301,8 @@ def import_spec_patches(repo, options):
     """
     current = repo.get_branch()
     # Get spec and related information
-    if is_pq_branch(current):
-        base = pq_branch_base(current)
+    if is_pq_branch(current, options):
+        base = pq_branch_base(current, options)
         if options.force:
             spec = parse_spec(options, repo, base)
             spec_treeish = base
@@ -315,7 +315,7 @@ def import_spec_patches(repo, options):
         base = current
     upstream_commit = find_upstream_commit(repo, spec, options.upstream_tag)
     packager = get_packager(spec)
-    pq_branch = pq_branch_name(base)
+    pq_branch = pq_branch_name(base, options)
 
     # Create pq-branch
     if repo.has_branch(pq_branch) and not options.force:
@@ -364,15 +364,15 @@ def import_spec_patches(repo, options):
 def rebase_pq(repo, options):
     """Rebase pq branch on the correct upstream version (from spec file)."""
     current = repo.get_branch()
-    if is_pq_branch(current):
-        base = pq_branch_base(current)
+    if is_pq_branch(current, options):
+        base = pq_branch_base(current, options)
         spec = parse_spec(options, repo, base)
     else:
         base = current
         spec = parse_spec(options, repo)
     upstream_commit = find_upstream_commit(repo, spec, options.upstream_tag)
 
-    switch_to_pq_branch(repo, base)
+    switch_to_pq_branch(repo, base, options)
     GitCommand("rebase")([upstream_commit])
 
 
@@ -480,14 +480,14 @@ def main(argv):
         elif action == "import":
             import_spec_patches(repo, options)
         elif action == "drop":
-            drop_pq(repo, current)
+            drop_pq(repo, current, options)
         elif action == "rebase":
             rebase_pq(repo, options)
         elif action == "apply":
             patch = Patch(patchfile)
-            apply_single_patch(repo, current, patch, fallback_author=None)
+            apply_single_patch(repo, current, patch, None, options)
         elif action == "switch":
-            switch_pq(repo, current)
+            switch_pq(repo, current, options)
     except CommandExecFailed:
         retval = 1
     except GitRepositoryError as err:

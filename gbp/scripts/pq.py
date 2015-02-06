@@ -173,13 +173,13 @@ def commit_patches(repo, branch, patches, options):
 
 def export_patches(repo, branch, options):
     """Export patches from the pq branch into a patch series"""
-    if is_pq_branch(branch):
-        base = pq_branch_base(branch)
+    if is_pq_branch(branch, options):
+        base = pq_branch_base(branch, options)
         gbp.log.info("On '%s', switching to '%s'" % (branch, base))
         branch = base
         repo.set_branch(branch)
 
-    pq_branch = pq_branch_name(branch)
+    pq_branch = pq_branch_name(branch, options)
     try:
         shutil.rmtree(PATCH_DIR)
     except OSError as e:
@@ -208,7 +208,7 @@ def export_patches(repo, branch, options):
         gbp.log.info("No patches on '%s' - nothing to do." % pq_branch)
 
     if options.drop:
-        drop_pq(repo, branch)
+        drop_pq(repo, branch, options)
 
 
 def safe_patches(series):
@@ -234,7 +234,7 @@ def safe_patches(series):
     return (tmpdir, series)
 
 
-def import_quilt_patches(repo, branch, series, tries, force):
+def import_quilt_patches(repo, branch, series, tries, options):
     """
     apply a series of quilt patches in the series file 'series' to branch
     the patch-queue branch for 'branch'
@@ -244,24 +244,24 @@ def import_quilt_patches(repo, branch, series, tries, force):
     @param series; series file to read patches from
     @param tries: try that many times to apply the patches going back one
                   commit in the branches history after each failure.
-    @param force: import the patch series even if the branch already exists
+    @param options: gbp-pq command options
     """
     tmpdir = None
 
-    if is_pq_branch(branch):
-        if force:
-            branch = pq_branch_base(branch)
-            pq_branch = pq_branch_name(branch)
+    if is_pq_branch(branch, options):
+        if options.force:
+            branch = pq_branch_base(branch, options)
+            pq_branch = pq_branch_name(branch, options)
             repo.checkout(branch)
         else:
             gbp.log.err("Already on a patch-queue branch '%s' - doing nothing." % branch)
             raise GbpError
     else:
-        pq_branch = pq_branch_name(branch)
+        pq_branch = pq_branch_name(branch, options)
 
     if repo.has_branch(pq_branch):
-        if force:
-            drop_pq(repo, branch)
+        if options.force:
+            drop_pq(repo, branch, options)
         else:
             raise GbpError("Patch queue branch '%s'. already exists. Try 'rebase' instead."
                            % pq_branch)
@@ -309,11 +309,11 @@ def import_quilt_patches(repo, branch, series, tries, force):
         shutil.rmtree(tmpdir)
 
 
-def rebase_pq(repo, branch):
-    if is_pq_branch(branch):
-        base = pq_branch_base(branch)
+def rebase_pq(repo, branch, options):
+    if is_pq_branch(branch, options):
+        base = pq_branch_base(branch, options)
     else:
-        switch_to_pq_branch(repo, branch)
+        switch_to_pq_branch(repo, branch, options)
         base = branch
     GitCommand("rebase")([base])
 
@@ -409,20 +409,20 @@ def main(argv):
         elif action == "import":
             series = SERIES_FILE
             tries = options.time_machine if (options.time_machine > 0) else 1
-            import_quilt_patches(repo, current, series, tries, options.force)
+            import_quilt_patches(repo, current, series, tries, options)
             current = repo.get_branch()
             gbp.log.info("Patches listed in '%s' imported on '%s'" %
                           (series, current))
         elif action == "drop":
-            drop_pq(repo, current)
+            drop_pq(repo, current, options)
         elif action == "rebase":
-            rebase_pq(repo, current)
+            rebase_pq(repo, current, options)
         elif action == "apply":
             patch = Patch(patchfile)
             maintainer = get_maintainer_from_control(repo)
-            apply_single_patch(repo, current, patch, maintainer, options.topic)
+            apply_single_patch(repo, current, patch, maintainer, options)
         elif action == "switch":
-            switch_pq(repo, current)
+            switch_pq(repo, current, options)
     except CommandExecFailed:
         retval = 1
     except (GbpError, GitRepositoryError) as err:
