@@ -16,8 +16,20 @@
 """Test the L{gbp} config command"""
 
 import os
+import pkg_resources
 import unittest
+
 import gbp.scripts.config
+
+
+# Reload the module so that the sys.path modified by nosetests is effective
+# and pkg_resources is able to find endpoints from the local directory
+reload(pkg_resources)
+
+# Check that some endpoints are available
+assert [ent for ent in pkg_resources.iter_entry_points(group='gbp_commands')], \
+        "No gbp command entry points found, run e.g. 'python setup.py " \
+        "egg_info' to make them available in your local directory"
 
 
 class TestGbpConfigCommand(unittest.TestCase):
@@ -82,10 +94,10 @@ class TestGbpConfigCommand(unittest.TestCase):
         for cmd in [ 'buildpackage',
                      'clone',
                      'config',
-                     'create_remote_repo',
+                     'create-remote-repo',
                      'dch',
-                     'import_dsc',
-                     'import_orig',
+                     'import-dsc',
+                     'import-orig',
                      'pq',
                      'pull' ]:
             printstub = self.AllValuesPrintStub(cmd)

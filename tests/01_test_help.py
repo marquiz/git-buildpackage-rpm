@@ -10,15 +10,15 @@ class TestHelp(unittest.TestCase):
     """Test help output of gbp commands"""
 
     def testHelp(self):
-        for script in ['buildpackage',
-                      'clone',
-                      'config',
-                      'create_remote_repo',
-                      'dch',
-                      'import_orig',
-                      'import_dsc',
-                      'pull',
-                      'pq']:
+        for script in ['deb.buildpackage',
+                       'clone',
+                       'config',
+                       'create_remote_repo',
+                       'deb.dch',
+                       'import_orig',
+                       'deb.import_dsc',
+                       'pull',
+                       'deb.pq']:
             module = 'gbp.scripts.%s' % script
             m = __import__(module, globals(), locals(), ['main'], 0)
             self.assertRaises(SystemExit,
@@ -28,7 +28,7 @@ class TestHelp(unittest.TestCase):
     """Test help output of RPM-specific commands"""
     def testHelpRpm(self):
         for script in ['import_srpm']:
-            module = 'gbp.scripts.%s' % script
+            module = 'gbp.scripts.rpm.%s' % script
             m = __import__(module, globals(), locals(), ['main'], 0)
             self.assertRaises(SystemExit,
                               m.main,

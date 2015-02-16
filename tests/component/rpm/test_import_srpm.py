@@ -23,7 +23,7 @@ from nose.plugins.skip import SkipTest
 from nose.tools import assert_raises, eq_, ok_  # pylint: disable=E0611
 from mock import Mock
 
-import gbp.scripts.import_srpm as import_srpm
+import  gbp.scripts.rpm.import_srpm as import_srpm
 from gbp.git import GitRepository
 from gbp.rpm import SrcRpmFile
 

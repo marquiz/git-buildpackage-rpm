@@ -20,7 +20,7 @@ import os
 import tempfile
 from nose.tools import assert_raises, eq_, ok_ # pylint: disable=E0611
 
-from gbp.scripts.pq_rpm import main as pq
+from gbp.scripts.rpm.pq_rpm import main as pq
 from gbp.git import GitRepository
 from gbp.command_wrappers import GitCommand
 

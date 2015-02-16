@@ -5,7 +5,7 @@
 from . import context
 from . import testutils
 
-from gbp.scripts import dch
+from gbp.scripts.deb import dch
 
 class TestGuessDocumentedCommit(testutils.DebianGitTestRepo):
     def setUp(self):

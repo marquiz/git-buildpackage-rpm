@@ -6,7 +6,7 @@ from . import context
 from . import testutils
 
 import gbp.errors
-import gbp.scripts.buildpackage as buildpackage
+import gbp.scripts.deb.buildpackage as buildpackage
 
 class MockOptions(object):
     def __init__(self,

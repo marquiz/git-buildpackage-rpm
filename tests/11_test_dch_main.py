@@ -6,7 +6,7 @@ from . import context
 from .testutils import (DebianGitTestRepo, OsReleaseFile,
                         get_dch_default_urgency, capture_stderr)
 
-from gbp.scripts import dch
+from gbp.scripts.deb import dch
 
 import unittest
 import os

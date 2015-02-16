@@ -21,19 +21,11 @@ from __future__ import print_function
 
 import glob
 import os
+import pkg_resources
 import re
 import sys
 
-# Command is this module and common/ is shared code
-# so we don't allow these to be imported:
-invalid_modules = [ 'common', 'supercommand' ]
-
-def sanitize(cmd):
-    """
-    '-' is not allowed in module names
-    so turn it into an underscore.
-    """
-    return cmd.replace('-', '_')
+from gbp.errors import GbpError
 
 def usage():
     print("""
@@ -62,45 +54,29 @@ def import_command(cmd):
     """
     Import the module that implements the given command
     """
-    modulename = sanitize(cmd)
-    if (not re.match(r'[a-z][a-z0-9_]', modulename) or
-        modulename in invalid_modules):
-        raise ImportError('Illegal module name %s' % modulename)
-
-    return __import__('gbp.scripts.%s' % modulename, fromlist='main', level=0)
+    for entrypoint in pkg_resources.iter_entry_points(group='gbp_commands'):
+        if entrypoint.name == cmd:
+            return entrypoint.load()
+    raise GbpError("'%s' is not a valid command." % cmd)
 
 
-def pymod_to_cmd(mod):
-    """
-    >>> pymod_to_cmd('/x/y/z/a_cmd.py')
-    'a-cmd'
-    """
-    return os.path.basename(mod.rsplit('.', 1)[0]).replace('_','-')
-
-
-def get_available_commands(path):
-    cmds = []
-    for f in glob.glob(os.path.join(path, '*.py')):
-        if os.path.basename(f) in ['__init__.py', 'supercommand.py']:
-            continue
-        cmds.append((pymod_to_cmd(f), f))
-    return cmds
+def get_available_commands():
+    return [entrypoint.name for entrypoint in
+            pkg_resources.iter_entry_points(group='gbp_commands')]
 
 
 def list_available_commands():
-    mod = __import__('gbp.scripts', fromlist='main', level=0)
-    path = os.path.dirname(mod.__file__)
     maxlen = 0
 
-    print("Available commands in %s\n" % path)
-    cmds = sorted(get_available_commands(path))
+    print("Available commands:\n")
+    cmds = sorted(get_available_commands())
     for cmd in cmds:
-        if len(cmd[0]) > maxlen:
-            maxlen = len(cmd[0])
+        if len(cmd) > maxlen:
+            maxlen = len(cmd)
     for cmd in cmds:
-        mod = import_command(cmd[0])
+        mod = import_command(cmd)
         doc = mod.__doc__
-        print("    %s - %s" % (cmd[0].rjust(maxlen), doc))
+        print("    %s - %s" % (cmd.rjust(maxlen), doc))
     print('')
 
 
@@ -134,11 +110,9 @@ def supercommand(argv=None):
 
     try:
         module = import_command(cmd)
-    except ImportError as e:
-        print("'%s' is not a valid command." % cmd, file=sys.stderr)
+    except GbpError as err:
+        print(err, file=sys.stderr)
         usage()
-        if '--verbose' in args:
-            print(e, file=sys.stderr)
         return 2
 
     return module.main(args)

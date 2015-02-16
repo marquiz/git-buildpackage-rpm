@@ -25,7 +25,7 @@ from gbp.deb import DpkgCompareVersions
 from gbp.deb.dscfile import DscFile
 from gbp.errors import GbpError
 from gbp.git import GitRepository, GitRepositoryError
-from gbp.scripts import import_dsc
+from gbp.scripts.deb import import_dsc
 from gbp.config import GbpOptionParser
 import gbp.log
 

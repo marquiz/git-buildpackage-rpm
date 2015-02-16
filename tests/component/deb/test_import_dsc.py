@@ -25,7 +25,7 @@ from tests.component.deb import DEB_TEST_DATA_DIR
 
 from nose.tools import ok_, eq_
 
-from gbp.scripts.import_dsc import main as import_dsc
+from gbp.scripts.deb.import_dsc import main as import_dsc
 from gbp.deb.pristinetar import DebianPristineTar
 from gbp.deb.dscfile import DscFile
 

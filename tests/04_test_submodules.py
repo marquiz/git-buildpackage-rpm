@@ -13,7 +13,7 @@ import gbp.log
 import gbp.git
 import gbp.command_wrappers
 
-from gbp.scripts import buildpackage
+from gbp.scripts.deb import buildpackage
 from gbp.scripts.common.buildpackage import (git_archive_submodules,
                                              git_archive_single)
 from tests.testutils import ls_zip

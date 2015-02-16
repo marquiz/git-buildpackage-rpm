@@ -38,7 +38,7 @@ from gbp.scripts.common.buildpackage import (index_name, wc_name,
                                              git_archive_submodules,
                                              git_archive_single, dump_tree,
                                              write_wc, drop_index)
-from gbp.scripts.pq_rpm import parse_spec
+from gbp.scripts.rpm.pq_rpm import parse_spec
 
 
 class GbpAutoGenerateError(GbpError):

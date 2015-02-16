@@ -5,7 +5,7 @@
 from . import context
 from . import testutils
 
-from gbp.scripts import dch
+from gbp.scripts.deb import dch
 
 class TestGuessVersionFromUpstream(testutils.DebianGitTestRepo):
     """Test guess_version_from_upstream"""

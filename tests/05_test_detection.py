@@ -6,7 +6,7 @@ from . import context
 
 import unittest
 
-from gbp.scripts import buildpackage
+from gbp.scripts.deb import buildpackage
 from gbp.deb import (DebianPkgPolicy, orig_file)
 from gbp.errors import GbpError
 

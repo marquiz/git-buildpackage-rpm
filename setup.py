@@ -47,8 +47,10 @@ def readme():
     with open('README') as file:
         return file.read()
 
+VERSION = fetch_version()
+
 setup(name = "gbp",
-      version = fetch_version(),
+      version = VERSION,
       author = u'Guido Günther',
       author_email = 'agx@sigxcpu.org',
       url = 'https://honk.sigxcpu.org/piki/projects/git-buildpackage/',
@@ -63,12 +65,39 @@ setup(name = "gbp",
       ],
       scripts = ['bin/git-pbuilder',
                  'bin/gbp-builder-mock'],
-      packages = find_packages(exclude=['tests', 'tests.*']),
+      packages = find_packages(exclude=['*.rpm', 'tests', 'tests.*']),
       data_files = [("/etc/git-buildpackage/", ["gbp.conf"]),],
       requires = ["six"],
       setup_requires=['nose>=0.11.1', 'coverage>=2.85', 'nosexcover>=1.0.7'] if \
                         os.getenv('WITHOUT_NOSETESTS') is None else [],
       entry_points = {
           'console_scripts': [ 'gbp = gbp.scripts.supercommand:supercommand' ],
+          'gbp_commands': [
+                    'buildpackage = gbp.scripts.deb.buildpackage',
+                    'clone = gbp.scripts.clone',
+                    'config = gbp.scripts.config',
+                    'create-remote-repo = gbp.scripts.create_remote_repo',
+                    'dch = gbp.scripts.deb.dch',
+                    'import-dsc = gbp.scripts.deb.import_dsc',
+                    'import-dscs = gbp.scripts.deb.import_dscs',
+                    'import-orig = gbp.scripts.import_orig',
+                    'pq = gbp.scripts.deb.pq',
+                    'pull = gbp.scripts.pull']
+      },
+)
+
+setup(name = "gbp-rpm",
+      version = VERSION,
+      author = u'Guido Günther',
+      author_email = 'agx@sigxcpu.org',
+      url = 'https://honk.sigxcpu.org/piki/projects/git-buildpackage/',
+      description = 'The RPM tools of git-buildpackage suite',
+      license = 'GPLv2+',
+      packages = ['gbp.rpm', 'gbp.scripts.rpm'],
+      namespace_packages = ['gbp'],
+      entry_points = {
+          'gbp_commands': [
+                    'import-srpm = gbp.scripts.rpm.import_srpm',
+                    'pq-rpm = gbp.scripts.rpm.pq_rpm']
       },
 )

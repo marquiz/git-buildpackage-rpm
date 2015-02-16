@@ -29,7 +29,7 @@ from nose import SkipTest
 from nose.tools import assert_raises, eq_, ok_ # pylint: disable=E0611
 
 from gbp.git import GitRepository
-from gbp.scripts.buildpackage_rpm import main as gbp_rpm
+from gbp.scripts.rpm.buildpackage_rpm import main as gbp_rpm
 from tests.component.rpm import RpmRepoTestBase, RPM_TEST_DATA_DIR
 from tests.testutils import ls_tar, ls_zip
 

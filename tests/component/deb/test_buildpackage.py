@@ -24,8 +24,8 @@ from tests.component.deb import DEB_TEST_DATA_DIR
 
 from nose.tools import ok_, eq_
 
-from gbp.scripts.import_dsc import main as import_dsc
-from gbp.scripts.buildpackage import main as buildpackage
+from gbp.scripts.deb.import_dsc import main as import_dsc
+from gbp.scripts.deb.buildpackage import main as buildpackage
 
 
 class TestBuildpackage(ComponentTestBase):

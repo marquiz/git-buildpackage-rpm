@@ -15,21 +15,33 @@
 #    <http://www.gnu.org/licenses/>
 """Test L{gbp} command wrapper"""
 
+import pkg_resources
 import sys
 import unittest
+
 import gbp.scripts.supercommand
+from gbp.errors import GbpError
+
+# Reload the module so that the sys.path modified by nosetests is effective
+reload(pkg_resources)
+
+# Check that some endpoints are available
+assert [ent for ent in pkg_resources.iter_entry_points(group='gbp_commands')], \
+        "No gbp command entry points found, run e.g. 'python setup.py " \
+        "egg_info' to make them available in your local directory"
+
 
 class TestSuperCommand(unittest.TestCase):
 
     def test_import(self):
         """Test the importer itself"""
-        self.assertRaises(ImportError,
+        self.assertRaises(GbpError,
                           gbp.scripts.supercommand.import_command,
                           'not.allowed')
-        self.assertRaises(ImportError,
+        self.assertRaises(GbpError,
                           gbp.scripts.supercommand.import_command,
                           'not/allowed')
-        self.assertRaises(ImportError,
+        self.assertRaises(GbpError,
                           gbp.scripts.supercommand.import_command,
                           '0notallowed')
         self.assertIsNotNone(gbp.scripts.supercommand.import_command('pq'))

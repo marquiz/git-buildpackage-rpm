@@ -21,6 +21,7 @@ from six.moves import configparser
 import sys
 import os, os.path
 from gbp.config import GbpOptionParser
+from gbp.errors import GbpError
 from gbp.scripts.supercommand import import_command
 import gbp.log
 
@@ -57,7 +58,7 @@ def build_cmd_parser(section):
         # valid options
         module = import_command(section)
         parser = module.build_parser(section)
-    except (AttributeError, ImportError):
+    except (AttributeError, GbpError):
         # Use the default parser for section that don't
         # map to a command
         parser = GbpOptionParser(section)
