@@ -38,9 +38,8 @@ The most commonly used commands are:
     import-orig  - import a new upstream tarball
     import-dsc   - import a single Debian source package
     import-dscs  - import multiple Debian source packages
-
-Use '--list-cmds' to list all available commands.
 """)
+    list_available_commands()
 
 def version(prog):
     try:
@@ -68,7 +67,7 @@ def get_available_commands():
 def list_available_commands():
     maxlen = 0
 
-    print("Available commands:\n")
+    print("All available commands:\n")
     cmds = sorted(get_available_commands())
     for cmd in cmds:
         if len(cmd) > maxlen:
@@ -103,9 +102,6 @@ def supercommand(argv=None):
         return 0
     elif cmd in [ '--version', 'version' ]:
         version(argv[0])
-        return 0
-    elif cmd in [ '--list-cmds', 'list-cmds' ]:
-        list_available_commands()
         return 0
 
     try:
