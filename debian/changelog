@@ -1,3 +1,9 @@
+git-buildpackage (0.6.22-tizen20150217) unstable; urgency=low
+
+  * log: don't crash getLogger if getting the root logger
+
+ -- Markus Lehtonen <markus.lehtonen@linux.intel.com>  Tue, 17 Feb 2015 12:54:14 +0200
+
 git-buildpackage (0.6.22-tizen20150206) unstable; urgency=low
 
   * Rebase on top of upstream version 0.6.22

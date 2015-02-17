@@ -1,3 +1,6 @@
+* Tue Feb 17 2015 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.22-20150217
+- log: don't crash getLogger if getting the root logger
+
 * Fri Feb 06 2015 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.22-20150206
 - Rebase on top of upstream version 0.6.22
 - Experimental support for BitBake
