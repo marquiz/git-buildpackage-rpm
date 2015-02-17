@@ -176,7 +176,7 @@ def getLogger(*args, **kwargs):
         logging.setLoggerClass(GbpLogger)
     color = kwargs.pop('color') if 'color' in kwargs else 'auto'
     logger = logging.getLogger(*args, **kwargs)
-    if not logger.default_handlers:
+    if hasattr(logger, 'default_handlers') and not logger.default_handlers:
         logger.init_default_handlers(color)
     return logger
 
