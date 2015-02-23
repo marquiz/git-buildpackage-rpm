@@ -35,27 +35,6 @@ try:
 except ImportError:
     pass
 
-def orig_needs_repack(upstream_source, options):
-    """
-    Determine if the upstream sources needs to be repacked
-
-    We repack if
-     1. we want to filter out files and use pristine tar since we want
-        to make a filtered tarball available to pristine-tar
-     2. when we don't have a suitable upstream tarball (e.g. zip archive or unpacked dir)
-        and want to use filters
-     3. when we don't have a suitable upstream tarball (e.g. zip archive or unpacked dir)
-        and want to use pristine-tar
-    """
-    if ((options.pristine_tar and options.filter_pristine_tar and len(options.filters) > 0)):
-        return True
-    elif not upstream_source.is_tarball():
-        if len(options.filters):
-            return True
-        elif options.pristine_tar:
-            return True
-    return False
-
 
 def cleanup_tmp_tree(tree):
     """remove a tree of temporary files"""
@@ -63,14 +42,6 @@ def cleanup_tmp_tree(tree):
         gbpc.RemoveTree(tree)()
     except gbpc.CommandExecFailed:
         gbp.log.err("Removal of tmptree %s failed." % tree)
-
-
-def is_link_target(target, link):
-    """does symlink link already point to target?"""
-    if os.path.exists(link):
-            if os.path.samefile(target, link):
-                return True
-    return False
 
 
 def ask_package_name(default, name_validator_func, err_msg):
@@ -109,16 +80,6 @@ def ask_package_version(default, ver_validator_func, err_msg):
         # newline before the error to make the output a
         # bit clearer.
         gbp.log.warn("\nNot a valid upstream version: '%s'.\n%s" % (version, err_msg))
-
-
-def repack_source(source, new_name, unpack_dir, filters, new_prefix=None):
-    """Repack the source tree"""
-    repacked = source.pack(new_name, filters, new_prefix)
-    if source.is_tarball(): # the tarball was filtered on unpack
-        repacked.unpacked = source.unpacked
-    else: # otherwise unpack the generated tarball get a filtered tree
-        repacked.unpack(unpack_dir)
-    return repacked
 
 
 def download_orig(url):
