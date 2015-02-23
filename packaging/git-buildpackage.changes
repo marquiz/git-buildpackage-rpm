@@ -1,3 +1,6 @@
+* Thu May 19 2016 Markus Lehtonen <markus.lehtonen@linux.intel.com> debian/0.7.4-148-g8ea8934
+- Rebase on top of upstream
+
 * Tue Feb 17 2015 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.22-20150217
 - log: don't crash getLogger if getting the root logger
 
