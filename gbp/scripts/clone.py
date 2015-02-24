@@ -22,7 +22,7 @@
 from six.moves import configparser
 import sys
 import os, os.path
-from gbp.config import (GbpOptionParser, GbpOptionGroup)
+from gbp.config import GbpConfArgParser
 from gbp.deb.git import DebianGitRepository
 from gbp.git import (GitRepository, GitRepositoryError)
 from gbp.errors import GbpError
@@ -31,57 +31,54 @@ import gbp.log
 
 def build_parser(name):
     try:
-        parser = GbpOptionParser(command=os.path.basename(name), prefix='',
-                                 usage='%prog [options] repository - clone a remote repository')
+        parser = GbpConfArgParser.create_parser(prog=name,
+                                description='clone a remote repository')
     except configparser.ParsingError as err:
         gbp.log.err(err)
         return None
 
-    branch_group = GbpOptionGroup(parser, "branch options", "branch tracking and layout options")
-    parser.add_option_group(branch_group)
+    branch_group = parser.add_argument_group("branch options", "branch tracking and layout options")
 
-    branch_group.add_option("--all", action="store_true", dest="all", default=False,
-                            help="track all branches, not only debian and upstream")
-    branch_group.add_config_file_option(option_name="upstream-branch", dest="upstream_branch")
-    branch_group.add_config_file_option(option_name="debian-branch", dest="debian_branch")
-    branch_group.add_boolean_config_file_option(option_name="pristine-tar", dest="pristine_tar")
-    branch_group.add_option("--depth", action="store", dest="depth", default=0,
-                            help="git history depth (for creating shallow clones)")
-    branch_group.add_option("--reference", action="store", dest="reference", default=None,
-                            help="git reference repository (use local copies where possible)")
+    branch_group.add_arg("--all", action="store_true",
+                    help="track all branches, not only debian and upstream")
+    branch_group.add_conf_file_arg("--upstream-branch")
+    branch_group.add_conf_file_arg("--debian-branch")
+    branch_group.add_bool_conf_file_arg("--pristine-tar")
+    branch_group.add_arg("--depth", action="store", default=0,
+                    help="git history depth (for creating shallow clones)")
+    branch_group.add_arg("--reference", action="store", dest="reference", default=None,
+                    help="git reference repository (use local copies where possible)")
 
-    parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False,
-                      help="verbose command execution")
-    parser.add_config_file_option(option_name="color", dest="color", type='tristate')
-    parser.add_config_file_option(option_name="color-scheme",
-                                  dest="color_scheme")
+    parser.add_arg("-v", "--verbose", action="store_true",
+                    help="verbose command execution")
+    parser.add_conf_file_arg("--color", type='tristate')
+    parser.add_conf_file_arg("--color-scheme")
+    parser.add_argument("repository", metavar="REPOSITORY",
+                    help="repository to clone")
+    parser.add_argument("directory", metavar="DIRECTORY", nargs="?",
+                    help="local directory to clone into")
     return parser
 
 
 def parse_args (argv):
-    parser = build_parser(argv[0])
+    parser = build_parser(os.path.basename(argv[0]))
     if not parser:
-        return None, None
+        return None
 
-    (options, args) = parser.parse_args(argv)
+    options = parser.parse_args(argv[1:])
     gbp.log.setup(options.color, options.verbose, options.color_scheme)
-    return (options, args)
+    return options
 
 
 def main(argv):
     retval = 0
 
-    (options, args) = parse_args(argv)
+    options = parse_args(argv)
     if not options:
         return 1
 
-    if len(args) < 2:
-        gbp.log.err("Need a repository to clone.")
-        return 1
-    else:
-        source = args[1]
-
-    clone_to, auto_name = (os.path.curdir, True) if len(args) < 3 else (args[2], False)
+    clone_to, auto_name = (os.path.curdir, True) if not options.directory \
+                     else (options.directory, False)
     try:
         GitRepository(clone_to)
         gbp.log.err("Can't run inside a git repository.")
@@ -90,13 +87,14 @@ def main(argv):
         pass
 
     try:
-        repo = DebianGitRepository.clone(clone_to, source, options.depth,
-                                         auto_name=auto_name,reference=options.reference)
+        repo = DebianGitRepository.clone(clone_to, options.repository,
+                                         options.depth, auto_name=auto_name,
+                                         reference=options.reference)
         os.chdir(repo.path)
 
         # Reparse the config files of the cloned repository so we pick up the
         # branch information from there:
-        (options, args) = parse_args(argv)
+        options = parse_args(argv)
 
         # Track all branches:
         if options.all:

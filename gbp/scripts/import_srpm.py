@@ -34,8 +34,7 @@ from gbp.rpm import (parse_srpm, guess_spec, SpecFile, NoSpecError,
                      RpmUpstreamSource, compose_version_str)
 from gbp.rpm.git import (RpmGitRepository, GitRepositoryError)
 from gbp.git.modifier import GitModifier
-from gbp.config import (GbpOptionParserRpm, GbpOptionGroup,
-                       no_upstream_branch_msg)
+from gbp.config import GbpConfArgParserRpm, no_upstream_branch_msg
 from gbp.errors import GbpError
 import gbp.log
 from gbp.pkg import parse_archive_filename
@@ -119,82 +118,59 @@ def force_to_branch_head(repo, branch):
 def build_parser(name):
     """Construct command line parser"""
     try:
-        parser = GbpOptionParserRpm(command=os.path.basename(name),
-                                    prefix='',
-                                    usage='%prog [options] /path/to/package'
-                                          '.src.rpm')
+        parser = GbpConfArgParserRpm.create_parser(prog=name)
     except configparser.ParsingError as err:
         gbp.log.err(err)
         return None
 
-    import_group = GbpOptionGroup(parser, "import options",
+    import_group = parser.add_argument_group("import options",
                       "pristine-tar and filtering")
-    tag_group = GbpOptionGroup(parser, "tag options",
+    tag_group = parser.add_argument_group("tag options",
                       "options related to git tag creation")
-    branch_group = GbpOptionGroup(parser, "version and branch naming options",
+    branch_group = parser.add_argument_group("version and branch naming options",
                       "version number and branch layout options")
 
-    for group in [import_group, branch_group, tag_group ]:
-        parser.add_option_group(group)
+    parser.add_arg("-v", "--verbose", action="store_true",
+                    help="verbose command execution")
+    parser.add_conf_file_arg("--color", type='tristate')
+    parser.add_conf_file_arg("--color-scheme")
+    parser.add_conf_file_arg("--tmp-dir")
+    parser.add_conf_file_arg("--vendor")
+    parser.add_arg("--download", action="store_true",
+                    help="download source package")
+    branch_group.add_conf_file_arg("--packaging-branch")
+    branch_group.add_conf_file_arg("--upstream-branch")
+    branch_group.add_bool_conf_file_arg("--create-missing-branches")
+    branch_group.add_arg("--orphan-packaging", action="store_true",
+                    help="The packaging branch doesn't base on upstream")
+    branch_group.add_arg("--native", action="store_true",
+                    help="This is a dist native package, no separate upstream "
+                         "branch")
 
-    parser.add_option("-v", "--verbose", action="store_true", dest="verbose",
-                      default=False, help="verbose command execution")
-    parser.add_config_file_option(option_name="color", dest="color",
-                      type='tristate')
-    parser.add_config_file_option(option_name="color-scheme",
-                                  dest="color_scheme")
-    parser.add_config_file_option(option_name="tmp-dir", dest="tmp_dir")
-    parser.add_config_file_option(option_name="vendor", action="store",
-                    dest="vendor")
-    parser.add_option("--download", action="store_true", dest="download",
-                      default=False, help="download source package")
-    branch_group.add_config_file_option(option_name="packaging-branch",
-                      dest="packaging_branch")
-    branch_group.add_config_file_option(option_name="upstream-branch",
-                      dest="upstream_branch")
-    branch_group.add_boolean_config_file_option(
-                      option_name="create-missing-branches",
-                      dest="create_missing_branches")
-    branch_group.add_option("--orphan-packaging", action="store_true",
-                      dest="orphan_packaging", default=False,
-                      help="The packaging branch doesn't base on upstream")
-    branch_group.add_option("--native", action="store_true",
-                      dest="native", default=False,
-                      help="This is a dist native package, no separate "
-                           "upstream branch")
+    tag_group.add_bool_conf_file_arg("--sign-tags")
+    tag_group.add_conf_file_arg("--keyid")
+    tag_group.add_conf_file_arg("--packaging-tag")
+    tag_group.add_conf_file_arg("--upstream-tag")
 
-    tag_group.add_boolean_config_file_option(option_name="sign-tags",
-                      dest="sign_tags")
-    tag_group.add_config_file_option(option_name="keyid",
-                      dest="keyid")
-    tag_group.add_config_file_option(option_name="packaging-tag",
-                      dest="packaging_tag")
-    tag_group.add_config_file_option(option_name="upstream-tag",
-                      dest="upstream_tag")
-
-    import_group.add_config_file_option(option_name="filter",
-                      dest="filters", action="append")
-    import_group.add_boolean_config_file_option(option_name="pristine-tar",
-                      dest="pristine_tar")
-    import_group.add_option("--allow-same-version", action="store_true",
-                      dest="allow_same_version", default=False,
+    import_group.add_conf_file_arg("--filter", dest="filters", action="append")
+    import_group.add_bool_conf_file_arg("--pristine-tar")
+    import_group.add_arg("--allow-same-version", action="store_true",
                       help="allow to import already imported version")
-    import_group.add_boolean_config_file_option(
-                      option_name="author-is-committer",
-                      dest="author_is_committer")
-    import_group.add_config_file_option(option_name="packaging-dir",
-                      dest="packaging_dir")
+    import_group.add_bool_conf_file_arg("--author-is-committer")
+    import_group.add_conf_file_arg("--packaging-dir")
+
+    parser.add_argument("package", metavar="PACKAGE", help="package to import")
     return parser
 
 def parse_args(argv):
     """Parse commandline arguments"""
-    parser = build_parser(argv[0])
+    parser = build_parser(os.path.basename(argv[0]))
     if not parser:
-        return None, None
+        return None
 
-    (options, args) = parser.parse_args(argv[1:])
+    options = parser.parse_args(argv[1:])
     gbp.log.setup(options.color, options.verbose, options.color_scheme)
-    return options, args
+    return options
 
 
 def main(argv):
@@ -204,18 +180,15 @@ def main(argv):
     ret = 0
     skipped = False
 
-    options, args = parse_args(argv)
+    options = parse_args(argv)
 
-    if len(args) != 1:
-        gbp.log.err("Need to give exactly one package to import. Try --help.")
-        return 1
     try:
         dirs['tmp_base'] = init_tmpdir(options.tmp_dir, 'import-srpm_')
     except GbpError as err:
         gbp.log.err(err)
         return 1
     try:
-        srpm = args[0]
+        srpm = options.package
         if options.download:
             srpm = download_source(srpm)
 

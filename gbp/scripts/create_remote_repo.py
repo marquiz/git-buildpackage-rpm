@@ -32,7 +32,7 @@ import six
 
 from gbp.deb.changelog import ChangeLog, NoChangeLogError
 from gbp.command_wrappers import (CommandExecFailed, GitCommand)
-from gbp.config import (GbpOptionParserDebian, GbpOptionGroup)
+from gbp.config import GbpConfArgParserDebian, GbpConfig
 from gbp.errors import GbpError
 from gbp.git import GitRepositoryError
 from gbp.deb.git import DebianGitRepository
@@ -233,46 +233,28 @@ def push_branches(remote, branches):
 
 def build_parser(name, sections=[]):
     try:
-        parser = GbpOptionParserDebian(command=os.path.basename(name), prefix='',
-                                       usage='%prog [options] - '
-                                       'create a remote repository',
-                                       sections=sections)
+        config = GbpConfig(name, extra_sections=sections)
     except configparser.ParsingError as err:
         gbp.log.err(err)
         return None
+    parser = GbpConfArgParserDebian.create_parser(prog=name,
+                description='create a remote repository', config=config)
 
-    branch_group = GbpOptionGroup(parser,
-                                  "branch options",
-                                  "branch layout and tracking options")
-    branch_group.add_config_file_option(option_name="remote-url-pattern",
-                                        dest="remote_url")
-    parser.add_option_group(branch_group)
-    branch_group.add_config_file_option(option_name="upstream-branch",
-                                        dest="upstream_branch")
-    branch_group.add_config_file_option(option_name="debian-branch",
-                                        dest="debian_branch")
-    branch_group.add_boolean_config_file_option(option_name="pristine-tar",
-                                                dest="pristine_tar")
-    branch_group.add_boolean_config_file_option(option_name="track",
-                                                dest='track')
-    parser.add_option("-v", "--verbose",
-                      action="store_true",
-                      dest="verbose",
-                      default=False,
-                      help="verbose command execution")
-    parser.add_config_file_option(option_name="color",
-                                  dest="color",
-                                  type='tristate')
-    parser.add_config_file_option(option_name="color-scheme",
-                                  dest="color_scheme")
-    parser.add_option("--remote-name",
-                      dest="name",
-                      default="origin",
-                      help="The name of the remote, default is 'origin'")
-    parser.add_config_file_option(option_name="template-dir",
-                                  dest="template_dir")
-    parser.add_config_file_option(option_name="remote-config",
-                                  dest="remote_config")
+    branch_group = parser.add_argument_group("branch options",
+                            "branch layout and tracking options")
+    branch_group.add_conf_file_arg("--remote-url-pattern", dest="remote_url")
+    branch_group.add_conf_file_arg("--upstream-branch")
+    branch_group.add_conf_file_arg("--debian-branch")
+    branch_group.add_bool_conf_file_arg("--pristine-tar")
+    branch_group.add_bool_conf_file_arg("--track")
+    parser.add_arg("-v", "--verbose", action="store_true",
+                   help="verbose command execution")
+    parser.add_conf_file_arg("--color", type='tristate')
+    parser.add_conf_file_arg("--color-scheme")
+    parser.add_arg("--remote-name", dest="name", default="origin",
+                   help="The name of the remote, default is 'origin'")
+    parser.add_conf_file_arg("--template-dir")
+    parser.add_conf_file_arg("--remote-config")
     return parser
 
 
@@ -296,11 +278,11 @@ def parse_args(argv, sections=[]):
     else:
         sections = []
 
-    parser = build_parser(argv[0], sections)
+    parser = build_parser(os.path.basename(argv[0]), sections)
     if not parser:
-        return None, None
+        return None
 
-    return parser.parse_args(argv)
+    return parser.parse_args(argv[1:])
 
 
 def main(argv):
@@ -309,7 +291,7 @@ def main(argv):
     cmd = []
 
     try:
-        options, args = parse_args(argv)
+        options = parse_args(argv)
     except Exception as e:
         print("%s" % e, file=sys.stderr)
         return 1

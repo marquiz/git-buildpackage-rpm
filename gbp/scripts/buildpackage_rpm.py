@@ -27,7 +27,7 @@ import gbp.log
 import gbp.notifications
 import gbp.rpm as rpm
 from gbp.command_wrappers import Command, RunAtCommand, CommandExecFailed
-from gbp.config import GbpOptionParserRpm, GbpOptionGroup
+from gbp.config import GbpConfArgParserRpm
 from gbp.errors import GbpError
 from gbp.format import format_str
 from gbp.pkg import compressor_opts
@@ -315,131 +315,87 @@ def disable_hooks(options):
 def build_parser(name, prefix=None, git_treeish=None):
     """Construct config/option parser"""
     try:
-        parser = GbpOptionParserRpm(command=os.path.basename(name),
-                                    prefix=prefix)
+        parser = GbpConfArgParserRpm.create_parser(prefix=prefix, prog=name)
     except configparser.ParsingError as err:
         gbp.log.err(err)
         return None
 
-    tag_group = GbpOptionGroup(parser, "tag options",
+    tag_group = parser.add_argument_group("tag options",
                     "options related to git tag creation")
-    branch_group = GbpOptionGroup(parser, "branch options",
+    branch_group = parser.add_argument_group("branch options",
                     "branch layout options")
-    cmd_group = GbpOptionGroup(parser, "external command options",
+    cmd_group = parser.add_argument_group("external command options",
                     "how and when to invoke external commands and hooks")
-    orig_group = GbpOptionGroup(parser, "orig tarball options",
+    orig_group = parser.add_argument_group("orig tarball options",
                     "options related to the creation of the orig tarball")
-    export_group = GbpOptionGroup(parser, "export build-tree options",
+    export_group = parser.add_argument_group("export build-tree options",
                     "alternative build tree related options")
-    parser.add_option_group(tag_group)
-    parser.add_option_group(orig_group)
-    parser.add_option_group(branch_group)
-    parser.add_option_group(cmd_group)
-    parser.add_option_group(export_group)
 
-    parser.add_boolean_config_file_option(option_name="ignore-new",
-                    dest="ignore_new")
-    parser.add_option("--git-verbose", action="store_true", dest="verbose",
-                    default=False, help="verbose command execution")
-    parser.add_config_file_option(option_name="tmp-dir", dest="tmp_dir")
-    parser.add_config_file_option(option_name="color", dest="color",
-                    type='tristate')
-    parser.add_config_file_option(option_name="color-scheme",
-                    dest="color_scheme")
-    parser.add_config_file_option(option_name="notify", dest="notify",
-                    type='tristate')
-    parser.add_config_file_option(option_name="vendor", action="store",
-                    dest="vendor")
-    parser.add_config_file_option(option_name="native", dest="native",
-                    type='tristate')
-    tag_group.add_option("--git-tag", action="store_true", dest="tag",
-                    default=False,
+    parser.add_bool_conf_file_arg("--ignore-new")
+    parser.add_arg("--verbose", action="store_true",
+                    help="verbose command execution")
+    parser.add_conf_file_arg("--tmp-dir")
+    parser.add_conf_file_arg("--color", type='tristate')
+    parser.add_conf_file_arg("--color-scheme")
+    parser.add_conf_file_arg("--notify", type='tristate')
+    parser.add_conf_file_arg("--vendor")
+    parser.add_conf_file_arg("--native", type='tristate')
+    tag_group.add_arg("--tag", action="store_true",
                     help="create a tag after a successful build")
-    tag_group.add_option("--git-tag-only", action="store_true", dest="tag_only",
-                    default=False,
+    tag_group.add_arg("--tag-only", action="store_true",
                     help="don't build, only tag and run the posttag hook")
-    tag_group.add_option("--git-retag", action="store_true", dest="retag",
-                    default=False, help="don't fail if the tag already exists")
-    tag_group.add_boolean_config_file_option(option_name="sign-tags",
-                    dest="sign_tags")
-    tag_group.add_config_file_option(option_name="keyid", dest="keyid")
-    tag_group.add_config_file_option(option_name="packaging-tag",
-                    dest="packaging_tag")
-    tag_group.add_config_file_option(option_name="packaging-tag-msg",
-                    dest="packaging_tag_msg")
-    tag_group.add_config_file_option(option_name="upstream-tag",
-                    dest="upstream_tag")
-    orig_group.add_config_file_option(option_name="upstream-tree",
-                    dest="upstream_tree")
-    orig_group.add_boolean_config_file_option(option_name="pristine-tar",
-                    dest="pristine_tar")
-    orig_group.add_boolean_config_file_option(option_name="pristine-tar-commit",
-                    dest="pristine_tar_commit")
-    orig_group.add_config_file_option(option_name="force-create",
-                    dest="force_create", action="store_true",
+    tag_group.add_arg("--retag", action="store_true",
+                    help="don't fail if the tag already exists")
+    tag_group.add_bool_conf_file_arg("--sign-tags")
+    tag_group.add_conf_file_arg("--keyid")
+    tag_group.add_conf_file_arg("--packaging-tag")
+    tag_group.add_conf_file_arg("--packaging-tag-msg")
+    tag_group.add_conf_file_arg("--upstream-tag")
+    orig_group.add_conf_file_arg("--upstream-tree")
+    orig_group.add_bool_conf_file_arg("--pristine-tar")
+    orig_group.add_bool_conf_file_arg("--pristine-tar-commit")
+    orig_group.add_conf_file_arg("--force-create", action="store_true",
                     help="force creation of upstream source tarball")
-    orig_group.add_config_file_option(option_name="no-create-orig",
-                    dest="no_create_orig", action="store_true",
+    orig_group.add_conf_file_arg("--no-create-orig", action="store_true",
                     help="don't create upstream source tarball")
-    orig_group.add_config_file_option(option_name="tarball-dir",
-                    dest="tarball_dir", type="path",
+    orig_group.add_conf_file_arg("--tarball-dir", type="path",
                     help="location to look for external tarballs")
-    orig_group.add_config_file_option(option_name="compression-level",
+    orig_group.add_conf_file_arg("--compression-level",
                     dest="comp_level",
-                    help="Compression level, default is "
-                         "'%(compression-level)s'")
-    branch_group.add_config_file_option(option_name="upstream-branch",
-                    dest="upstream_branch")
-    branch_group.add_config_file_option(option_name="packaging-branch",
-                    dest="packaging_branch")
-    branch_group.add_boolean_config_file_option(option_name = "ignore-branch",
-                    dest="ignore_branch")
-    branch_group.add_boolean_config_file_option(option_name = "submodules",
-                    dest="with_submodules")
-    cmd_group.add_config_file_option(option_name="builder", dest="builder",
-                    help="command to build the package, default is "
-                         "'%(builder)s'")
-    cmd_group.add_config_file_option(option_name="cleaner", dest="cleaner",
-                    help="command to clean the working copy, default is "
-                         "'%(cleaner)s'")
-    cmd_group.add_config_file_option(option_name="prebuild", dest="prebuild",
-                    help="command to run before a build, default is "
-                         "'%(prebuild)s'")
-    cmd_group.add_config_file_option(option_name="postexport",
-                    dest="postexport",
-                    help="command to run after exporting the source tree, "
-                         "default is '%(postexport)s'")
-    cmd_group.add_config_file_option(option_name="postbuild", dest="postbuild",
-                    help="hook run after a successful build, default is "
-                         "'%(postbuild)s'")
-    cmd_group.add_config_file_option(option_name="posttag", dest="posttag",
-                    help="hook run after a successful tag operation, default "
-                         "is '%(posttag)s'")
-    cmd_group.add_boolean_config_file_option(option_name="mock", dest="use_mock")
-    cmd_group.add_config_file_option(option_name="dist", dest="mock_dist")
-    cmd_group.add_config_file_option(option_name="arch", dest="mock_arch")
-    cmd_group.add_config_file_option(option_name="mock-root", dest="mock_root")
-    cmd_group.add_config_file_option(option_name="mock-options", dest="mock_options")
-    cmd_group.add_boolean_config_file_option(option_name="hooks", dest="hooks")
-    export_group.add_option("--git-no-build", action="store_true",
-                    dest="no_build",
+                    help="Compression level")
+    branch_group.add_conf_file_arg("--upstream-branch")
+    branch_group.add_conf_file_arg("--packaging-branch")
+    branch_group.add_bool_conf_file_arg("--ignore-branch")
+    branch_group.add_bool_conf_file_arg("--submodules", dest="with_submodules")
+    cmd_group.add_conf_file_arg("--builder",
+                    help="command to build the package")
+    cmd_group.add_conf_file_arg("--cleaner",
+                    help="command to clean the working copy")
+    cmd_group.add_conf_file_arg("--prebuild",
+                    help="command to run before a build")
+    cmd_group.add_conf_file_arg("--postexport",
+                    help="command to run after exporting the source tree")
+    cmd_group.add_conf_file_arg("--postbuild",
+                    help="hook run after a successful build")
+    cmd_group.add_conf_file_arg("--posttag",
+                    help="hook run after a successful tag operation")
+    cmd_group.add_bool_conf_file_arg("--mock", dest="use_mock")
+    cmd_group.add_conf_file_arg("--dist", dest="mock_dist")
+    cmd_group.add_conf_file_arg("--arch", dest="mock_arch")
+    cmd_group.add_conf_file_arg("--mock-root", dest="mock_root")
+    cmd_group.add_conf_file_arg("--mock-options", dest="mock_options")
+    cmd_group.add_bool_conf_file_arg("--hooks")
+    export_group.add_arg("--no-build", action="store_true",
                     help="Don't run builder or the associated hooks")
-    export_group.add_config_file_option(option_name="export-dir",
-                    dest="export_dir", type="path",
+    export_group.add_conf_file_arg("--export-dir", type="path",
                     help="Build topdir, also export the sources under "
-                         "EXPORT_DIR, default is '%(export-dir)s'")
-    export_group.add_config_file_option(option_name="export-specdir",
-                    dest="export_specdir", type="path")
-    export_group.add_config_file_option(option_name="export-sourcedir",
-                    dest="export_sourcedir", type="path")
-    export_group.add_config_file_option("export", dest="export",
-                    metavar="TREEISH",
-                    help="export treeish object TREEISH, default is "
-                         "'%(export)s'")
-    export_group.add_config_file_option(option_name="packaging-dir",
-                    dest="packaging_dir")
-    export_group.add_config_file_option(option_name="spec-file",
-                    dest="spec_file")
+                         "EXPORT_DIR")
+    export_group.add_conf_file_arg("--export-specdir", type="path")
+    export_group.add_conf_file_arg("--export-sourcedir", type="path")
+    export_group.add_conf_file_arg("--export", metavar="TREEISH",
+                    help="export treeish object TREEISH")
+    export_group.add_conf_file_arg("--packaging-dir")
+    export_group.add_conf_file_arg("--spec-file")
     return parser
 
 
@@ -453,10 +409,11 @@ def parse_args(argv, prefix, git_treeish=None):
         if arg in builder_args:
             args.append(arg)
 
-    parser = build_parser(argv[0], prefix=prefix, git_treeish=git_treeish)
+    parser = build_parser(os.path.basename(argv[0]), prefix=prefix,
+                          git_treeish=git_treeish)
     if not parser:
-        return None, None, None
-    options, args = parser.parse_args(args)
+        return None, None
+    options = parser.parse_args(args)
 
     gbp.log.setup(options.color, options.verbose, options.color_scheme)
     if not options.hooks:
@@ -465,9 +422,9 @@ def parse_args(argv, prefix, git_treeish=None):
         if not options.tag and not options.tag_only:
             gbp.log.err("'--%sretag' needs either '--%stag' or '--%stag-only'" %
                         (prefix, prefix, prefix))
-            return None, None, None
+            return None, None
 
-    return options, args, builder_args
+    return options, builder_args
 
 
 def main(argv):
@@ -476,7 +433,7 @@ def main(argv):
     prefix = "git-"
     spec = None
 
-    options, gbp_args, builder_args = parse_args(argv, prefix)
+    options, builder_args = parse_args(argv, prefix)
 
     if not options:
         return 1
@@ -495,7 +452,7 @@ def main(argv):
         return 1
     # Re-parse config options with using the per-tree config file(s) from the
     # exported tree-ish
-    options, gbp_args, builder_args = parse_args(argv, prefix, tree)
+    options, builder_args = parse_args(argv, prefix, tree)
 
     branch = get_current_branch(repo)
 

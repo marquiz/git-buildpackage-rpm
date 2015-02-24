@@ -24,7 +24,7 @@ import sys
 import os
 import os.path
 from gbp.command_wrappers import (Command, CommandExecFailed)
-from gbp.config import (GbpOptionParser, GbpOptionGroup)
+from gbp.config import GbpConfArgParserDebian
 from gbp.errors import GbpError
 from gbp.git import GitRepositoryError
 from gbp.deb.git import DebianGitRepository
@@ -72,45 +72,47 @@ def fast_forward_branch(branch, repo, options):
 
 
 def build_parser(name):
+    usage = 'safely update a repository from remote'
     try:
-        parser = GbpOptionParser(command=os.path.basename(name), prefix='',
-                                 usage='%prog [options] - safely update a repository from remote')
+        parser = GbpConfArgParserDebian.create_parser(prog=name,
+                                                      description=usage)
     except configparser.ParsingError as err:
         gbp.log.err(err)
         return None
 
-    branch_group = GbpOptionGroup(parser, "branch options", "branch update and layout options")
-    parser.add_option_group(branch_group)
-    branch_group.add_boolean_config_file_option(option_name="ignore-branch", dest="ignore_branch")
-    branch_group.add_option("--force", action="store_true", dest="force", default=False,
-                            help="force a branch update even if it can't be fast forwarded")
-    branch_group.add_option("--redo-pq", action="store_true", dest="redo_pq", default=False,
-                            help="redo the patch queue branch after a pull. Warning: this drops the old patch-queue branch")
-    branch_group.add_config_file_option(option_name="upstream-branch", dest="upstream_branch")
-    branch_group.add_config_file_option(option_name="debian-branch", dest="debian_branch")
-    branch_group.add_boolean_config_file_option(option_name="pristine-tar", dest="pristine_tar")
-    branch_group.add_option("--depth", action="store", dest="depth", default=0,
-                            help="git history depth (for deepening shallow clones)")
-    parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False,
+    branch_group = parser.add_argument_group("branch options", "branch update and layout options")
+
+    branch_group.add_bool_conf_file_arg("--ignore-branch")
+    branch_group.add_arg("--force", action="store_true",
+                      help="force a branch update even if it can't be fast "
+                           "forwarded")
+    branch_group.add_arg("--redo-pq", action="store_true",
+                      help="redo the patch queue branch after a pull. Warning: "
+                           "this drops the old patch-queue branch")
+    branch_group.add_conf_file_arg("--upstream-branch")
+    branch_group.add_conf_file_arg("--debian-branch")
+    branch_group.add_bool_conf_file_arg("--pristine-tar")
+    branch_group.add_arg("--depth", action="store", default=0,
+                      help="git history depth (for deepening shallow clones)")
+    parser.add_arg("-v", "--verbose", action="store_true",
                       help="verbose command execution")
-    parser.add_config_file_option(option_name="color", dest="color", type='tristate')
-    parser.add_config_file_option(option_name="color-scheme",
-                                  dest="color_scheme")
+    parser.add_conf_file_arg("--color", type='tristate')
+    parser.add_conf_file_arg("--color-scheme")
     return parser
 
 
 def parse_args(argv):
-    parser = build_parser(argv[0])
+    parser = build_parser(os.path.basename(argv[0]))
     if not parser:
-        return None, None
-    return parser.parse_args(argv)
+        return None
+    return parser.parse_args(argv[1:])
 
 
 def main(argv):
     retval = 0
     current = None
 
-    (options, args) = parse_args(argv)
+    options = parse_args(argv)
     if not options:
         return 1
 
