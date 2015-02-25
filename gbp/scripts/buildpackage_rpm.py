@@ -41,6 +41,7 @@ from gbp.scripts.common.buildpackage import (index_name, wc_names,
                                              git_archive_single, dump_tree,
                                              write_wc, drop_index)
 from gbp.scripts.pq_rpm import parse_spec, update_patch_series
+from gbp.scripts.common.pq import is_pq_branch, pq_branch_name, pq_branch_base
 
 
 class GbpAutoGenerateError(GbpError):
@@ -205,6 +206,45 @@ def get_vcs_info(repo, treeish):
     return info
 
 
+def guess_export_params(repo, options):
+    """Get commit and tree from where to export packaging and patches"""
+    tree = None
+    branch = None
+    if options.export in wc_names.keys() + [index_name, 'HEAD']:
+        branch = get_current_branch(repo)
+    elif options.export in repo.get_local_branches():
+        branch = options.export
+    if branch:
+        if is_pq_branch(branch, options):
+            packaging_branch = pq_branch_base(branch, options)
+            if repo.has_branch(packaging_branch):
+                gbp.log.info("It seems you're building a development/patch-"
+                             "queue branch. Export target changed to '%s' and "
+                             "patch-export enabled!" % packaging_branch)
+                options.patch_export = True
+                if not options.patch_export_rev:
+                    options.patch_export_rev = options.export
+                options.export = packaging_branch
+            else:
+                gbp.log.warn("It seems you're building a development/patch-"
+                             "queue branch. No corresponding packaging branch "
+                             "found. Build may fail!")
+        elif options.patch_export and not options.patch_export_rev:
+            tree = get_tree(repo, options.export)
+            spec = parse_spec(options, repo, treeish=tree)
+            pq_branch = pq_branch_name(branch, options, spec.version)
+            if repo.has_branch(pq_branch):
+                gbp.log.info("Exporting patches from development/patch-queue "
+                             "branch '%s'" % pq_branch)
+                options.patch_export_rev = pq_branch
+    if tree is None:
+        tree = get_tree(repo, options.export)
+        spec = parse_spec(options, repo, treeish=tree)
+
+    # Return tree-ish object and relative spec path for for exporting packaging
+    return tree, spec
+
+
 def git_archive_build_orig(repo, spec, output_dir, options):
     """
     Build orig tarball using git-archive
@@ -240,14 +280,6 @@ def git_archive_build_orig(repo, spec, output_dir, options):
 
 def export_patches(repo, spec, export_treeish, options):
     """Generate patches and update spec file"""
-    # Fail if we have local patch files not marked for manual maintenance.
-    # Ignore patches listed in spec but not found in packaging dir
-    for patch in spec.patchseries():
-        if os.path.exists(patch.path):
-            raise GbpAutoGenerateError(
-                    'Patches not marked for manual maintenance found, '
-                    'refusing to overwrite! Fix by applying them to packaging '
-                    'branch and removing the files.')
     try:
         upstream_tree = get_upstream_tree(repo, spec.upstreamversion, options)
         update_patch_series(repo, spec, upstream_tree, export_treeish, options)
@@ -463,6 +495,8 @@ def build_parser(name, prefix=None, git_treeish=None):
                     dest="upstream_branch")
     branch_group.add_config_file_option(option_name="packaging-branch",
                     dest="packaging_branch")
+    branch_group.add_config_file_option(option_name="pq-branch",
+                    dest="pq_branch")
     branch_group.add_boolean_config_file_option(option_name = "ignore-branch",
                     dest="ignore_branch")
     branch_group.add_boolean_config_file_option(option_name = "submodules",
@@ -587,8 +621,7 @@ def main(argv):
     try:
         init_tmpdir(options.tmp_dir, prefix='buildpackage-rpm_')
 
-        tree = get_tree(repo, options.export)
-        spec = parse_spec(options, repo, treeish=tree)
+        tree, spec = guess_export_params(repo, options)
 
         Command(options.cleaner, shell=True)()
         if not options.ignore_new:

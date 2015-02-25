@@ -30,6 +30,7 @@
       <arg><option>--git-native</option>=<replaceable>[auto|on|off]</replaceable></arg>
       <arg><option>--git-upstream-branch=</option><replaceable>TREEISH</replaceable></arg>
       <arg><option>--git-packaging-branch=</option><replaceable>BRANCH_NAME</replaceable></arg>
+      <arg><option>--git-pq-branch=</option><replaceable>BRANCH_NAME</replaceable></arg>
       <arg><option>--git-ignore-branch</option></arg>
       <arg><option>--git-[no-]submodules</option></arg>
       <arg><option>--git-builder=</option><replaceable>BUILD_CMD</replaceable></arg>
@@ -281,6 +282,28 @@
           to make sure you don't accidentally release from a topic branch.  Not
           being on this branch will be ignored when using
           <option>--git-ignore-new</option>.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--git-pq-branch</option>=<replaceable>BRANCH_NAME</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Name (format string) of the patch-queue/development branch. This
+          makes building easier when working with separate packaging and
+          development branches.
+          </para>
+          <para>
+          If <option>--git-patch-export</option> is enabled and
+          &gbp-buildpackage-rpm; detects that the current branch has a
+          patch-queue/development branch it exports the patches from there
+          instead of the tip of the current branch (unless
+          <option>--git-patch-export-rev</option> is defined, of course).
+          Similarly, if the current branch is a patch-queue/development branch
+          &gbp-buildpackage-rpm; will automatically enable patch-export and
+          export packaging files from the packaging branch instead of the
+          current branch (unless <option>--git-export</option>) is defined.
           </para>
         </listitem>
       </varlistentry>
