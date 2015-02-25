@@ -36,14 +36,6 @@ except ImportError:
     pass
 
 
-def cleanup_tmp_tree(tree):
-    """remove a tree of temporary files"""
-    try:
-        gbpc.RemoveTree(tree)()
-    except gbpc.CommandExecFailed:
-        gbp.log.err("Removal of tmptree %s failed." % tree)
-
-
 def ask_package_name(default, name_validator_func, err_msg):
     """
     Ask the user for the source package name.

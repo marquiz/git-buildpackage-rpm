@@ -22,7 +22,6 @@ import errno
 import os
 import shutil
 import sys
-import tempfile
 import re
 from gbp.config import GbpOptionParserDebian
 from gbp.git import (GitRepositoryError, GitRepository)
@@ -36,6 +35,7 @@ from gbp.scripts.common.pq import (is_pq_branch, pq_branch_name, pq_branch_base,
                                  apply_and_commit_patch, switch_pq,
                                  drop_pq, get_maintainer_from_control)
 from gbp.dch import extract_bts_cmds
+from gbp.tmpfile import init_tmpdir, del_tmpdir, tempfile
 
 PATCH_DIR = "debian/patches/"
 SERIES_FILE = os.path.join(PATCH_DIR,"series")
@@ -402,6 +402,7 @@ def main(argv):
         os.chdir(repo.path)
 
     try:
+        init_tmpdir(options.tmp_dir, prefix='pq_')
         current = repo.get_branch()
         if action == "export":
             export_patches(repo, current, options)
@@ -428,6 +429,8 @@ def main(argv):
         if str(err):
             gbp.log.err(err)
         retval = 1
+    finally:
+        del_tmpdir()
 
     return retval
 

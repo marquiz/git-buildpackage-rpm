@@ -21,7 +21,6 @@ import sys
 import re
 import os
 import shutil
-import tempfile
 import glob
 import pipes
 import time
@@ -35,6 +34,7 @@ from gbp.git.modifier import GitModifier
 from gbp.config import (GbpOptionParserDebian, GbpOptionGroup,
                         no_upstream_branch_msg)
 from gbp.errors import GbpError
+from gbp.tmpfile import init_tmpdir, del_tmpdir, tempfile
 import gbp.log
 
 class SkipImport(Exception):
@@ -240,6 +240,7 @@ def build_parser(name):
     parser.add_config_file_option(option_name="color", dest="color", type='tristate')
     parser.add_config_file_option(option_name="color-scheme",
                                   dest="color_scheme")
+    parser.add_config_file_option(option_name="tmp-dir", dest="tmp_dir")
     parser.add_option("--download", action="store_true", dest="download", default=False,
                       help="download source package")
     branch_group.add_config_file_option(option_name="debian-branch",
@@ -301,6 +302,8 @@ def main(argv):
         return 1
 
     try:
+        init_tmpdir(options.tmp_dir, prefix='import-dsc_')
+
         if len(args) != 1:
             gbp.log.err("Need to give exactly one package to import. Try --help.")
             raise GbpError
@@ -344,7 +347,7 @@ def main(argv):
             if repo.bare:
                 disable_pristine_tar(options, "Bare repository")
 
-            dirs['tmp'] = os.path.abspath(tempfile.mkdtemp(dir='..'))
+            dirs['tmp'] = os.path.abspath(tempfile.mkdtemp())
             upstream = DebianUpstreamSource(src.tgz)
             upstream = upstream.unpack(dirs['tmp'], options.filters)
             for tarball in src.additional_tarballs.values():
@@ -431,6 +434,7 @@ def main(argv):
         skipped = True
     finally:
         os.chdir(dirs['top'])
+        del_tmpdir()
 
     for d in [ 'tmp', 'download' ]:
         if d in dirs:

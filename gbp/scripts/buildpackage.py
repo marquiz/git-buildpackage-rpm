@@ -42,6 +42,7 @@ from gbp.scripts.common.buildpackage import (index_name, wc_names,
                                              git_archive_single, dump_tree,
                                              write_wc, drop_index)
 from gbp.pkg import compressor_opts, compressor_aliases, parse_archive_filename
+from gbp.tmpfile import init_tmpdir, del_tmpdir
 
 def git_archive(repo, cp, output_dir, treeish, comp_type, comp_level, with_submodules):
     "create a compressed orig tarball in output_dir using git_archive"
@@ -484,6 +485,7 @@ def build_parser(name, prefix=None, git_treeish=None):
     parser.add_config_file_option(option_name="color-scheme",
                                   dest="color_scheme")
     parser.add_config_file_option(option_name="notify", dest="notify", type='tristate')
+    parser.add_config_file_option(option_name="tmp-dir", dest="tmp_dir")
     tag_group.add_option("--git-tag", action="store_true", dest="tag", default=False,
                       help="create a tag after a successful build")
     tag_group.add_option("--git-tag-only", action="store_true", dest="tag_only", default=False,
@@ -624,6 +626,8 @@ def main(argv):
     options, gbp_args, builder_args = parse_args(argv, prefix, tree)
 
     try:
+        init_tmpdir(options.tmp_dir, prefix='buildpackage_')
+
         Command(options.cleaner, shell=True)()
         if not options.ignore_new:
             (ret, out) = repo.is_clean(options.ignore_untracked)
@@ -755,6 +759,7 @@ def main(argv):
         retval = 1
     finally:
         drop_index(repo)
+        del_tmpdir()
 
     if not options.tag_only:
         if options.export_dir and options.purge and not retval:

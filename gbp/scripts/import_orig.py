@@ -20,7 +20,6 @@
 from six.moves import configparser
 import os
 import sys
-import tempfile
 import gbp.command_wrappers as gbpc
 from gbp.deb import (DebianPkgPolicy, parse_changelog_repo)
 from gbp.deb.upstreamsource import DebianUpstreamSource
@@ -32,9 +31,10 @@ from gbp.errors import GbpError
 from gbp.format import format_str
 import gbp.log
 from gbp.pkg import compressor_opts
-from gbp.scripts.common.import_orig import (cleanup_tmp_tree, ask_package_name,
+from gbp.scripts.common.import_orig import (ask_package_name,
                                             ask_package_version, download_orig,
                                             prepare_sources)
+from gbp.tmpfile import init_tmpdir, del_tmpdir, tempfile
 
 
 def upstream_import_commit_msg(options, version):
@@ -255,6 +255,7 @@ def build_parser(name):
     parser.add_config_file_option(option_name="color", dest="color", type='tristate')
     parser.add_config_file_option(option_name="color-scheme",
                                   dest="color_scheme")
+    parser.add_config_file_option(option_name="tmp-dir", dest="tmp_dir")
 
     # Accepted for compatibility
     parser.add_option("--no-dch", dest='no_dch', action="store_true",
@@ -303,7 +304,6 @@ def parse_args(argv):
 
 def main(argv):
     ret = 0
-    tmpdir = tempfile.mkdtemp(dir='../')
 
     gbp.log.initialize()
 
@@ -312,6 +312,9 @@ def main(argv):
         return 1
 
     try:
+        init_tmpdir(options.tmp_dir, prefix='import-orig_')
+        tmpdir = tempfile.mkdtemp()
+
         try:
             repo = DebianGitRepository('.')
         except GitRepositoryError:
@@ -428,9 +431,8 @@ def main(argv):
         if str(err):
             gbp.log.err(err)
         ret = 1
-
-    if tmpdir:
-        cleanup_tmp_tree(tmpdir)
+    finally:
+        del_tmpdir()
 
     if not ret:
         gbp.log.info("Successfully imported version %s of %s" % (version, source.path))

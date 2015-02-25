@@ -178,6 +178,7 @@ class GbpOptionParser(OptionParser):
                  'drop': 'False',
                  'commit': 'False',
                  'upstream-vcs-tag': '',
+                 'tmp-dir': '/var/tmp/gbp/',
              }
     help = {
              'debian-branch':
@@ -341,6 +342,9 @@ class GbpOptionParser(OptionParser):
                    "after export. Default is '%(drop)s'"),
               'commit':
                   "commit changes after export, Default is '%(commit)s'",
+              'tmp-dir':
+                  ("Base directory under which temporary directories are "
+                   "created, default is '%(tmp-dir)s'"),
            }
 
     def_config_files = {'/etc/git-buildpackage/gbp.conf': 'system',
@@ -673,7 +677,6 @@ class GbpOptionParserRpm(GbpOptionParser):
     """
     defaults = dict(GbpOptionParser.defaults)
     defaults.update({
-            'tmp-dir'                   : '/var/tmp/gbp/',
             'vendor'                    : 'Downstream',
             'packaging-branch'          : 'master',
             'packaging-dir'             : '',
@@ -698,9 +701,6 @@ class GbpOptionParserRpm(GbpOptionParser):
 
     help = dict(GbpOptionParser.help)
     help.update({
-            'tmp-dir':
-                "Base directory under which temporary directories are "
-                "created, default is '%(tmp-dir)s'",
             'vendor':
                 "Distribution vendor name, default is '%(vendor)s'",
             'packaging-branch':
