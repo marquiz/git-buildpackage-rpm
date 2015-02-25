@@ -31,7 +31,7 @@ from nose.tools import assert_raises, eq_, ok_ # pylint: disable=E0611
 from gbp.git import GitRepository
 from gbp.scripts.buildpackage_rpm import main as gbp_rpm
 from tests.component.rpm import RpmRepoTestBase, RPM_TEST_DATA_DIR
-from tests.testutils import ls_tar, ls_zip, capture
+from tests.testutils import ls_dir, ls_tar, ls_zip, capture
 
 # Disable "Method could be a function warning"
 #   pylint: disable=R0201
@@ -306,6 +306,20 @@ class TestGbpRpm(RpmRepoTestBase):
         eq_(mock_gbp(['--git-upstream-tree=invalid-tree']), 2)
         self._check_log(-1, ".*Invalid treeish object")
 
+    def test_option_orig_prefix(self):
+        """Test the --git-orig-prefix option"""
+        repo = self.init_test_repo('gbp-test')
+
+        # Building with invalid prefix should fail
+        eq_(mock_gbp(['--git-orig-prefix=foo']), 1)
+        ref_files = ['foo/' + path for path in repo.ls_tree('upstream')]
+        tar_files = ls_tar('../rpmbuild/SOURCES/gbp-test-1.1.tar.bz2', False)
+        self.check_files(tar_files, ref_files)
+
+        # Test invalid keys
+        eq_(mock_gbp(['--git-orig-prefix=%(foo)s', '--git-no-build']), 1)
+        self._check_log(-1, ".*Missing value 'foo' in")
+
     def test_pristine_tar(self):
         """Test pristine-tar"""
         repo = self.init_test_repo('gbp-test')
@@ -464,6 +478,7 @@ class TestGbpRpm(RpmRepoTestBase):
         with open('../rpmbuild/builder_args.txt') as fobj:
             args = fobj.read()
         eq_(args, '--arg1 --arg2 gbp-test-native.spec')
+
 
     def test_option_cleaner(self):
         """Test --git-cleaner option"""
@@ -659,4 +674,64 @@ class TestGbpRpm(RpmRepoTestBase):
         # Test invalid key
         eq_(mock_gbp(['--git-spec-vcs-tag=%(invalid-key)s']), 1)
         self._check_log(-1, r".*Failed to format %\(invalid-key\)s")
+
+    def test_patch_export_options(self):
+        """Test patch export options"""
+        repo = self.init_test_repo('gbp-test2')
+
+        # Test no-patch-export
+        base_args = ['--git-no-build', '--git-export-specdir=',
+                     '--git-export-sourcedir=']
+        eq_(mock_gbp(base_args + ['--git-no-patch-export']), 0)
+        ref_files = repo.ls_tree('HEAD:packaging')
+        ref_files.add('gbp-test2-2.0.tar.gz')
+        self.check_files(ref_files, ls_dir('../rpmbuild', False))
+        shutil.rmtree('../rpmbuild')
+
+        # No patches should be generated if patch-export-rev is upstream version
+
+        # Test patch compression and numbering
+        eq_(mock_gbp(base_args + ['--git-no-patch-numbers',
+                                  '--git-patch-compress=1']), 0)
+        new_files = ls_dir('../rpmbuild', False) - ref_files
+        ok_(len(new_files) > 0)
+        for fname in new_files:
+            # Patches should start with an alphabet and be compressed with gz
+            ok_(re.match(r'^[a-zA-Z]\S*.patch.gz$', fname), fname)
+
+    def test_devel_branch_support(self):
+        """Test patch-generation from q/development branch"""
+        repo = self.init_test_repo('gbp-test')
+        pq_br_fmt = 'pq/%(branch)s'
+
+        # Patch export with no apparent pq branch should fail
+        eq_(mock_gbp(['--git-patch-export']), 2)
+        self._check_log(-1, r".*Start commit \S+ not an ancestor of end commit")
+
+        # With valid pq branch patch export should succeeded
+        eq_(mock_gbp(['--git-patch-export', '--git-pq-branch=%s' % pq_br_fmt]),
+                     0)
+        self.check_rpms('../rpmbuild/RPMS/*')
+        shutil.rmtree('../rpmbuild')
+        eq_(mock_gbp(['--git-patch-export', '--git-pq-branch=%s' % pq_br_fmt,
+                      '--git-export=master']), 0)
+        self.check_rpms('../rpmbuild/RPMS/*')
+        shutil.rmtree('../rpmbuild')
+
+        # With pq branch but with wrong patch-export rev build should fail
+        eq_(mock_gbp(['--git-patch-export', '--git-pq-branch=%s' % pq_br_fmt,
+                      '--git-patch-export-rev=HEAD']), 2)
+        self._check_log(-1, r".*Start commit \S+ not an ancestor of end commit")
+
+        # Patch-export should be auto-enabled when on pq branch
+        pq_br = pq_br_fmt % {'branch': repo.get_branch()}
+        repo.set_branch(pq_br)
+        eq_(mock_gbp(['--git-pq-branch=%s' % pq_br_fmt, '--git-ignore-branch']),
+                     0)
+        self.check_rpms('../rpmbuild/RPMS/*')
+        shutil.rmtree('../rpmbuild')
+
+        # Fail when (apparently) on pq branch but no packaging branch found
+        eq_(mock_gbp(['--git-pq-branch=%s' % pq_br, '--git-ignore-branch',
+                      '--git-packaging-branch=foo']), 1)
 
