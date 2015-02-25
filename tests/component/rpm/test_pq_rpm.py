@@ -385,6 +385,31 @@ class TestPqRpm(RpmRepoTestBase):
                  '0002-my-bzip2.patch.gz', '0003-my2.patch.gz', 'my.patch']
         self._check_repo_state(repo, 'master', branches, files)
 
+    def test_option_patch_squash(self):
+        """Test the --patch-squash cmdline option"""
+        repo = self.init_test_repo('gbp-test')
+        repo.rename_branch('pq/master', 'development/master')
+        repo.set_branch('development/master')
+        branches = repo.get_local_branches()
+
+        # Non-existent squash point should fail
+        eq_(mock_pq(['export', '--patch-squash=foo']), 1)
+        self._check_log(-1, r"gbp:error: Git command failed: revision 'foo\^0'")
+
+        # Invalid squash point should fail
+        eq_(mock_pq(['export', '--patch-squash=master']), 1)
+        self._check_log(-1, "gbp:error: Given squash point 'master' not in the "
+                            "history of end commit 'development/master'")
+
+        # Squashing up to the second latest patch -> 1 "normal" patch
+        squash = 'development/master~1'
+        eq_(mock_pq(['export', '--patch-squash=%s' % squash]), 0)
+        squash += ':squash'
+        eq_(mock_pq(['export', '--patch-squash=%s' % squash]), 0)
+        files = ['.gbp.conf', '.gitignore', 'bar.tar.gz', 'foo.txt',
+                 'gbp-test.spec', 'my.patch', 'squash.diff', '0002-my2.patch']
+        self._check_repo_state(repo, 'master', branches, files)
+
     def test_export_with_merges(self):
         """Test exporting pq-branch with merge commits"""
         repo = self.init_test_repo('gbp-test')

@@ -703,6 +703,7 @@ class GbpOptionParserRpm(GbpOptionParser):
             'spec-vcs-tag'              : '',
             'patch-export'              : 'False',
             'patch-compress'            : '0',
+            'patch-squash'              : '',
             'patch-import'              : 'True',
             'import-files'              : ['.gbp.conf',
                                            'debian/gbp.conf'],
@@ -768,6 +769,10 @@ class GbpOptionParserRpm(GbpOptionParser):
                 "Compress (auto-generated) patches larger than given number of "
                 "bytes, 0 never compresses, default is "
                 "'%(patch-compress)s'",
+            'patch-squash':
+                "Squash commits (from upstream) until given tree-ish into one "
+                "big diff, format is '<commit_ish>[:<filename_base>]'. "
+                "Default is '%(patch-squash)s'",
             'patch-import':
                 "Import patches to the packaging branch, default is "
                 "'%(patch-import)s'",

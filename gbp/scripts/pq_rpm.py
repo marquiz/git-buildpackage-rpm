@@ -31,7 +31,7 @@ import gbp.log
 from gbp.tmpfile import init_tmpdir, del_tmpdir, tempfile
 from gbp.config import GbpOptionParserRpm, optparse_split_cb
 from gbp.rpm.git import GitRepositoryError, RpmGitRepository
-from gbp.git.modifier import GitModifier
+from gbp.git.modifier import GitModifier, GitTz
 from gbp.command_wrappers import GitCommand, CommandExecFailed
 from gbp.errors import GbpError
 from gbp.patch_series import PatchSeries, Patch
@@ -72,7 +72,7 @@ def compress_patches(patches, compress_size=0):
     return ret_patches
 
 
-def generate_patches(repo, start, end, outdir, options):
+def generate_patches(repo, start, squash, end, outdir, options):
     """
     Generate patch files from git
     """
@@ -97,6 +97,26 @@ def generate_patches(repo, start, end, outdir, options):
     if not is_ancestor(repo, start_sha1, end_commit_sha1):
         raise GbpError("Start commit '%s' not an ancestor of end commit "
                        "'%s'" % (start, end_commit))
+    # Squash commits, if requested
+    if squash[0]:
+        if squash[0] == 'HEAD':
+            squash[0] = end_commit
+        squash_sha1 = repo.rev_parse("%s^0" % squash[0])
+        if start_sha1 != squash_sha1:
+            if not squash_sha1 in repo.get_commits(start, end_commit):
+                raise GbpError("Given squash point '%s' not in the history "
+                               "of end commit '%s'" % (squash[0], end_commit))
+            # Shorten SHA1s
+            squash_sha1 = repo.rev_parse(squash_sha1, short=7)
+            start_sha1 = repo.rev_parse(start_sha1, short=7)
+            gbp.log.info("Squashing commits %s..%s into one monolithic diff" %
+                         (start_sha1, squash_sha1))
+            patch_fn = format_diff(outdir, squash[1], repo,
+                                   start_sha1, squash_sha1)
+            if patch_fn:
+                patches.append(patch_fn)
+                start = squash_sha1
+
     # Check for merge commits, squash if merges found
     merges = repo.get_commits(start, end_commit, options=['--merges'])
     if merges:
@@ -167,10 +187,16 @@ def update_patch_series(repo, spec, start, end, options):
     """
     Export patches to packaging directory and update spec file accordingly.
     """
+    squash = options.patch_squash.split(':', 1)
+    if len(squash) == 1:
+        squash.append(None)
+    else:
+        squash[1] += '.diff'
+
     # Unlink old patch files and generate new patches
     rm_patch_files(spec)
 
-    patches, commands = generate_patches(repo, start, end,
+    patches, commands = generate_patches(repo, start, squash, end,
                                          spec.specdir, options)
     spec.update_patches(patches, commands)
     spec.write_spec_file()
@@ -501,6 +527,7 @@ switch         Switch to patch-queue branch and vice versa.""")
             callback=optparse_split_cb)
     parser.add_config_file_option("patch-compress",
                                   dest="patch_compress")
+    parser.add_config_file_option("patch-squash", dest="patch_squash")
 
     return parser
 

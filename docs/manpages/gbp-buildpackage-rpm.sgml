@@ -69,6 +69,7 @@
       <arg><option>--git-patch-export-rev=</option><replaceable>TREEISH</replaceable></arg>
       <arg><option>--git-[no-]patch-numbers</option></arg>
       <arg><option>--git-patch-compress=</option><replaceable>THRESHOLD</replaceable></arg>
+      <arg><option>--git-patch-squash=</option><replaceable>COMMITISH</replaceable></arg>
       <arg><option>--git-spec-vcs-tag</option>=<replaceable>TAG_FORMAT</replaceable></arg>
     </cmdsynopsis>
   </refsynopsisdiv>
@@ -684,6 +685,25 @@
           Compress (auto-generated) patches larger than given
           <replaceable>THRESHOLD</replaceable> bytes. Special value 0 disabled
           patch compression.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--git-patch-squash=</option><replaceable>COMMITISH</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Squash commits up to the given <replaceable>COMMITISH</replaceable>
+          into one monolitic diff. Could be used if one wants to squash commits
+          from an upstream release up to a stable update into a single diff
+          (commits on top of the stable would generate one patch per commit as
+          usual). The format is '&lt;commit_ish&gt;[:&lt;filename_base&gt;]',
+          i.e. commitish optionally followed by a colon and the desired
+          filename base for the diff (suffix '.diff' is automatically added by
+          &gbp-buildpackage-rpm;). Magic word 'HEAD' translates to the
+          patch-export-treeish when given as the squash-point. This allows one
+          to configure gbp to always squash all commits into one monolithic
+          diff.
           </para>
         </listitem>
       </varlistentry>

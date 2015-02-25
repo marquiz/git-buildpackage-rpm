@@ -512,6 +512,7 @@ def build_parser(name, prefix=None, git_treeish=None):
     export_group.add_boolean_config_file_option(option_name="patch-numbers",
                     dest="patch_numbers")
     export_group.add_config_file_option("patch-compress", dest="patch_compress")
+    export_group.add_config_file_option("patch-squash", dest="patch_squash")
     return parser
 
 
