@@ -306,18 +306,27 @@ def main(argv):
         else:
             sources = None
 
-        src_tag_format = options.packaging_tag if options.native \
-                                               else options.upstream_tag
-        tag_str_fields = dict(spec.version, vendor=options.vendor.lower())
-        src_tag = repo.version_to_tag(src_tag_format, tag_str_fields)
-        ver_str = compose_version_str(spec.version)
+        packaging_tag_str_fields = dict(
+                spec.version,
+                version=compose_version_str(spec.version),
+                vendor=options.vendor.lower())
+        if options.native:
+            src_tag_format = options.packaging_tag
+            src_tag_str_fields = packaging_tag_str_fields
+        else:
+            src_tag_format = options.upstream_tag
+            src_tag_str_fields = {'version': spec.upstreamversion,
+                                  'upstreamversion': spec.upstreamversion}
+        src_tag = repo.version_to_tag(src_tag_format, src_tag_str_fields)
 
-        if repo.find_version(options.packaging_tag, tag_str_fields):
-            gbp.log.warn("Version %s already imported." % ver_str)
+        if repo.find_version(options.packaging_tag, packaging_tag_str_fields):
+            gbp.log.warn("Version %s already imported." %
+                         packaging_tag_str_fields['version'])
             if options.allow_same_version:
                 gbp.log.info("Moving tag of version '%s' since import forced" %
-                             ver_str)
-                move_tag_stamp(repo, options.packaging_tag, tag_str_fields)
+                             packaging_tag_str_fields['version'])
+                move_tag_stamp(repo, options.packaging_tag,
+                               packaging_tag_str_fields)
             else:
                 raise SkipImport
 
@@ -339,7 +348,7 @@ def main(argv):
 
         # Import sources
         if sources:
-            src_commit = repo.find_version(src_tag_format, tag_str_fields)
+            src_commit = repo.find_version(src_tag_format, src_tag_str_fields)
             if not src_commit:
                 gbp.log.info("Tag %s not found, importing sources" % src_tag)
 
@@ -394,8 +403,10 @@ def main(argv):
                                 "option.")
                     raise GbpError
 
-            tag = repo.version_to_tag(options.packaging_tag, tag_str_fields)
-            msg = "%s release %s" % (options.vendor, ver_str)
+            tag = repo.version_to_tag(options.packaging_tag,
+                                      packaging_tag_str_fields)
+            msg = "%s release %s" % (options.vendor,
+                                     packaging_tag_str_fields['version'])
 
             if options.orphan_packaging or not sources:
                 commit = repo.commit_dir(dirs['packaging_base'],
@@ -458,7 +469,8 @@ def main(argv):
         del_tmpdir()
 
     if not ret and not skipped:
-        gbp.log.info("Version '%s' imported under '%s'" % (ver_str, spec.name))
+        gbp.log.info("Version '%s' imported under '%s'" %
+                     (packaging_tag_str_fields['version'], spec.name))
     return ret
 
 if __name__ == '__main__':
