@@ -23,7 +23,6 @@ from __future__ import print_function
 from six.moves import configparser
 import sys
 import os, os.path
-from six.moves import urllib
 import subprocess
 import tty, termios
 import re
@@ -108,7 +107,14 @@ def parse_url(remote_url, name, pkg, template_dir=None):
         ...
     GbpError: URL contains invalid ~username expansion.
     """
-    frags = urllib.parse.urlparse(remote_url)
+    # Fix for old distros like Debian 7, Ubuntu 12.04 and openSUSE 12.3 with old
+    # python-six that doesn't have urllib
+    try:
+        from six.moves import urllib
+        frags = urllib.parse.urlparse(remote_url)
+    except ImportError:
+        import urlparse
+        frags = urlparse.urlparse(remote_url)
     if frags.scheme in ['ssh', 'git+ssh', '']:
         scheme = frags.scheme
     else:
