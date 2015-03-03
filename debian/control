@@ -17,6 +17,7 @@ Build-Depends:
  python-setuptools,
  sgml2x,
 # For rpm (epydoc)
+ rpm-common,
  python-rpm
 Standards-Version: 3.9.4
 Vcs-Git: git://honk.sigxcpu.org/git/git-buildpackage.git
@@ -64,6 +65,7 @@ Depends: ${python:Depends},
  ${shlibs:Depends},
  ${misc:Depends},
  python-rpm,
+ rpm-common,
  rpm2cpio,
  git-buildpackage-common (= ${binary:Version})
 Recommends: rpm
