@@ -1,3 +1,7 @@
+* Tue Mar 03 2015 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.15-20150303
+- Revert "buildpackage-rpm: always create tarball for native packages"
+  (Fixes: DEVT-215)
+
 * Thu Aug 28 2014 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.15-20140828
 - Rebase on top of upstream version 0.6.15
 - Changes in buildpackage-rpm

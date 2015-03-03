@@ -1,3 +1,13 @@
+git-buildpackage (0.6.15-tizen20150303) unstable; urgency=low
+
+  * Revert "buildpackage-rpm: always create tarball for native packages"
+    Fixes: DEVT-215
+  * debian packaging: fix rpm build deps for Ubuntu 14.10.
+    Dependencies of python-rpm got broken in Ubuntu 14.10 at the update to
+    rpm v4.11.2-3ubuntu0.1. This change is a work around for that.
+
+ -- Markus Lehtonen <markus.lehtonen@linux.intel.com>  Tue, 03 Mar 2015 17:30:37 +0200
+
 git-buildpackage (0.6.15-tizen20140828) unstable; urgency=low
 
   [ Markus Lehtonen ]

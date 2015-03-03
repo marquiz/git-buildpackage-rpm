@@ -111,7 +111,7 @@ Recommends: rpm-build
 %else
 Requires:   rpm-build
 %endif
-Provides:   tizen-gbp-rpm = 20140828
+Provides:   tizen-gbp-rpm = 0.6.15-20150303
 
 %description rpm
 Set of tools from Debian that integrate the package build system with Git.
