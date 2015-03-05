@@ -111,8 +111,9 @@ class TestPqRpm(RpmRepoTestBase):
         self._check_repo_state(repo, 'patch-queue/master-orphan', branches,
                                files)
 
-        # Test export
-        eq_(mock_pq(['export']), 0)
+        # Test export with --drop
+        branches.remove('patch-queue/master-orphan')
+        eq_(mock_pq(['export', '--drop']), 0)
         self._check_repo_state(repo, 'master-orphan', branches)
         eq_(repo.status()[' M'], ['packaging/gbp-test2.spec'])
 
