@@ -1,3 +1,6 @@
+* Thu Aug 04 2015 Rong Jinhui <jinhui.rong@samsung.com> tizen/0.6.25-20150804
+- Upgrade version to 0.6.25
+
 * Thu Aug 28 2014 Markus Lehtonen <markus.lehtonen@linux.intel.com> tizen/0.6.15-20140828
 - Rebase on top of upstream version 0.6.15
 - Changes in buildpackage-rpm

@@ -1,3 +1,9 @@
+git-buildpackage (0.6.25-tizen20150804) unstable; urgency=low
+
+  * Upgrade version to 0.6.25
+
+ -- Rong Jinhui <jinhui.rong@samsung.com>  Thu, 04 Aug 2015 08:53:30 +0800
+
 git-buildpackage (0.6.15-tizen20140828) unstable; urgency=low
 
   [ Markus Lehtonen ]
