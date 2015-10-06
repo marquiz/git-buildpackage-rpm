@@ -16,6 +16,7 @@ MAN1S = \
         gbp-import-srpm \
         gbp-pq-rpm \
         gbp-rpm-ch        \
+        gbp-import-orig-rpm \
         $(NULL)
 
 MAN5S = gbp.conf

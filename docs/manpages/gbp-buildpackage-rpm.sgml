@@ -787,6 +787,7 @@
     <xref linkend="man.gbp.import.srpm"/>,
     <xref linkend="man.gbp.pq.rpm"/>,
     <xref linkend="man.gbp.rpm.ch">,
+    <xref linkend="man.gbp.import.orig.rpm">,
     <citerefentry>
       <refentrytitle>rpmbuild</refentrytitle>
       <manvolnum>8</manvolnum>

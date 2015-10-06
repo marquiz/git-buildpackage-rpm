@@ -16,6 +16,7 @@
     &man.gbp.import.srpm;
     &man.gbp.pq.rpm;
     &man.gbp.rpm.ch;
+    &man.gbp.import.orig.rpm;
   </appendix>
   <appendix id="gbp.rpm.copyleft">
     <title>Copyright</title>

@@ -248,6 +248,7 @@
       <xref linkend="man.gbp.buildpackage.rpm"/>,
       <xref linkend="man.gbp.pq.rpm"/>,
       <xref linkend="man.gbp.rpm.ch">,
+      <xref linkend="man.gbp.import.orig.rpm">,
       <xref linkend="man.gbp.conf"/>,
       &man.seealso.common;
     </para>
