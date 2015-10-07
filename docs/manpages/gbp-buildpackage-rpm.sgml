@@ -64,6 +64,9 @@
       <arg><option>--git-arch</option>=<replaceable>ARCHITECTURE</replaceable></arg>
       <arg><option>--git-mock-options</option>=<replaceable>OPTIONS</replaceable></arg>
       <arg><option>--git-mock-root</option>=<replaceable>ROOT</replaceable></arg>
+      <arg><option>--git-[no-]patch-export</option></arg>
+      <arg><option>--git-patch-export-rev=</option><replaceable>TREEISH</replaceable></arg>
+      <arg><option>--git-[no-]patch-numbers</option></arg>
       <arg><option>--git-spec-vcs-tag</option>=<replaceable>TAG_FORMAT</replaceable></arg>
     </cmdsynopsis>
   </refsynopsisdiv>
@@ -622,6 +625,41 @@
           <para>
 	    Additional options to pass to mock. Default is to pass no
 	    additional options.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--git-[no-]patch-export</option>
+        </term>
+        <listitem>
+          <para>
+          Create patches from the commits between the upstream version and
+          export-treeish.  That is, after exporting packaging files (from the
+          pacakging directory) &gbp-buildpackage-rpm; creates one patch per
+          commit (similar to git-format-patch) and updates the spec file in the
+          export dir. You use <option>--git-patch-export-rev</option> to
+          specify the tip commit of the patch series.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--git-patch-export-rev=</option><replaceable>TREEISH</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Use <replaceable>TREEISH</replaceable> as the tip commit of the patch
+          series instead of the default - i.e. treeish from which the packaging
+          files are exported (which is defined with
+          <option>--git-export</option>.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--git-[no-]patch-numbers</option>
+        </term>
+        <listitem>
+          <para>
+          Whether the patch files should start with a number or not.
           </para>
         </listitem>
       </varlistentry>

@@ -701,6 +701,7 @@ class GbpOptionParserRpm(GbpOptionParser):
             'mock-options'              : '',
             'native'                    : 'auto',
             'spec-vcs-tag'              : '',
+            'patch-export'              : 'False',
             'patch-import'              : 'True',
             'import-files'              : ['.gbp.conf',
                                            'debian/gbp.conf'],
@@ -758,6 +759,9 @@ class GbpOptionParserRpm(GbpOptionParser):
             'spec-vcs-tag':
                 "Set/update the 'VCS:' tag in the spec file, empty value "
                 "removes the tag entirely, default is '%(spec-vcs-tag)s'",
+            'patch-export':
+                "Create patches between upstream and export-treeish, default "
+                "is '%(patch-export)s'",
             'patch-import':
                 "Import patches to the packaging branch, default is "
                 "'%(patch-import)s'",

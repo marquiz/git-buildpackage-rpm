@@ -40,7 +40,7 @@ from gbp.scripts.common.buildpackage import (index_name, wc_names,
                                              git_archive_submodules,
                                              git_archive_single, dump_tree,
                                              write_wc, drop_index)
-from gbp.scripts.pq_rpm import parse_spec
+from gbp.scripts.pq_rpm import parse_spec, update_patch_series
 
 
 class GbpAutoGenerateError(GbpError):
@@ -237,6 +237,15 @@ def git_archive_build_orig(repo, spec, output_dir, options):
     except (GitRepositoryError, GbpError) as err:
         raise GbpAutoGenerateError(str(err))
     return upstream_tree
+
+
+def export_patches(repo, spec, export_treeish, options):
+    """Generate patches and update spec file"""
+    try:
+        upstream_tree = get_upstream_tree(repo, spec.upstreamversion, options)
+        update_patch_series(repo, spec, upstream_tree, export_treeish, options)
+    except (GitRepositoryError, GbpError) as err:
+        raise GbpAutoGenerateError(str(err))
 
 
 def is_native(repo, options):
@@ -494,6 +503,13 @@ def build_parser(name, prefix=None, git_treeish=None):
     export_group.add_config_file_option(option_name="spec-file",
                     dest="spec_file")
     export_group.add_config_file_option("spec-vcs-tag", dest="spec_vcs_tag")
+    export_group.add_boolean_config_file_option("patch-export",
+                    dest="patch_export")
+    export_group.add_option("--git-patch-export-rev", dest="patch_export_rev",
+                    metavar="TREEISH",
+                    help="Export patches from TREEISH")
+    export_group.add_boolean_config_file_option(option_name="patch-numbers",
+                    dest="patch_numbers")
     return parser
 
 
@@ -589,6 +605,14 @@ def main(argv):
             setup_builder(options, builder_args)
             if options.use_mock:
                 setup_mock(options)
+
+            # Generate patches, if requested
+            if options.patch_export and not is_native(repo, options):
+                if options.patch_export_rev:
+                    patch_tree = get_tree(repo, options.patch_export_rev)
+                else:
+                    patch_tree = tree
+                export_patches(repo, spec, patch_tree, options)
 
             # Prepare final export dirs
             export_dir = makedir(options.export_dir)
