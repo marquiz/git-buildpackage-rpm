@@ -26,6 +26,7 @@
       <arg><option>--force</option></arg>
       <arg><option>--[no-]patch-numbers</option></arg>
       <arg><option>--import-files=</option><replaceable>FILES</replaceable></arg>
+      <arg><option>--export-rev=</option><replaceable>TREEISH</replaceable></arg>
       <group choice="plain">
         <arg><option>drop</option></arg>
         <arg><option>export</option></arg>
@@ -177,6 +178,16 @@
           (patch-queue) branch. By default, the local gbp conf files are
           imported in order to try to ensure that gbp sees the same settings on
           the development (pq) branch as on the packaging branch.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--export-rev=</option><replaceable>TREEISH</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Export patches from <replaceable>TREEISH</replaceable> instead of the
+          default which is HEAD of the development (patch-queue) branch.
           </para>
         </listitem>
       </varlistentry>

@@ -136,6 +136,7 @@ class TestPqRpm(RpmRepoTestBase):
         repo.set_branch('patch-queue/master')
         branches = repo.get_local_branches()
         # Make development branch out-of-sync
+
         GitCommand("rebase")(['--onto', 'upstream^', 'upstream'])
         # Sanity check for our git rebase...
         ok_(repo.get_merge_base('patch-queue/master', 'upstream') !=
@@ -314,6 +315,37 @@ class TestPqRpm(RpmRepoTestBase):
         # Test with export, --spec-file option should override packaging dir
         eq_(mock_pq(['export', '--packaging-dir=foo',
                      '--spec-file=gbp-test.spec']), 0)
+
+    def test_option_export_rev(self):
+        """Test the --export-rev cmdline option"""
+        repo = self.init_test_repo('gbp-test')
+        repo.rename_branch('pq/master', 'development/master')
+        branches = repo.get_local_branches()
+
+        # Export directly from upstream -> no patches expected
+        eq_(mock_pq(['export', '--export-rev=upstream']), 0)
+        files = ['.gbp.conf', '.gitignore', 'bar.tar.gz', 'foo.txt',
+                 'gbp-test.spec', 'my.patch']
+        self._check_repo_state(repo, 'master', branches, files)
+
+        # Export another rev
+        eq_(mock_pq(['export', '--export-rev=development/master~2']), 0)
+        self._check_repo_state(repo, 'master', branches,
+                               files + ['0001-my-gz.patch'])
+
+        # Export from upstream..master should fail
+        eq_(mock_pq(['export', '--export-rev=master']), 1)
+        self._check_log(-1, "gbp:error: Start commit .* not an ancestor of end")
+        # Export invalid rev should fail
+        eq_(mock_pq(['export', '--export-rev=foobar']), 1)
+        self._check_log(-1, "gbp:error: Invalid treeish object foobar")
+
+        # Export plain treeish. Doesn't work in pq (at least) -
+        # just for testing exception handling here
+        content = repo.list_tree('development/master')
+        tree = repo.make_tree(content)
+        eq_(mock_pq(['export', '--export-rev=%s' % tree]), 1)
+        self._check_log(-1, "gbp:error: Start commit .* not an ancestor of end")
 
     def test_export_with_merges(self):
         """Test exporting pq-branch with merge commits"""

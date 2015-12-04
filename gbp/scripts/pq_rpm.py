@@ -66,12 +66,12 @@ def generate_patches(repo, start, end, outdir, options):
             raise GbpError('Invalid treeish object %s' % treeish)
 
     start_sha1 = repo.rev_parse("%s^0" % start)
-    try:
-        end_commit = end
-    except GitRepositoryError:
-        # In case of plain tree-ish objects, assume current branch head is the
-        # last commit
+    # In case of plain tree-ish objects, assume current branch head is the
+    # last commit
+    if repo.get_obj_type(end) == 'tree':
         end_commit = "HEAD"
+    else:
+        end_commit = end
     end_commit_sha1 = repo.rev_parse("%s^0" % end_commit)
 
     start_sha1 = repo.rev_parse("%s^0" % start)
@@ -209,7 +209,10 @@ def export_patches(repo, options):
         pq_branch = pq_branch_name(current, options)
     spec = parse_spec(options, repo)
     upstream_commit = find_upstream_commit(repo, spec, options.upstream_tag)
-    export_treeish = pq_branch
+
+    export_treeish = options.export_rev if options.export_rev else pq_branch
+    if not repo.has_treeish(export_treeish):
+        raise GbpError('Invalid treeish object %s' % export_treeish)
 
     update_patch_series(repo, spec, upstream_commit, export_treeish, options)
 
@@ -416,6 +419,10 @@ switch         Switch to patch-queue branch and vice versa.""")
     parser.add_config_file_option(option_name="spec-file", dest="spec_file")
     parser.add_config_file_option(option_name="packaging-dir",
             dest="packaging_dir")
+    parser.add_option("--export-rev", dest="export_rev",
+            metavar="TREEISH",
+            help="Export patches from treeish object TREEISH instead of head "
+                 "of patch-queue branch")
     parser.add_config_file_option(option_name="import-files",
             dest="import_files", type="string", action="callback",
             callback=optparse_split_cb)
