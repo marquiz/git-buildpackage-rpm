@@ -372,6 +372,17 @@
           </para>
         </listitem>
       </varlistentry>
+      <varlistentry>
+        <term><option>--customizations=</option><replaceable>customization-file</replaceable>
+        </term>
+        <listitem>
+          <para>
+          Load Python code from <replaceable>customization-file</replaceable>.
+          At the moment, the only useful thing the code can do is define a
+          custom format_changelog_entry() function.
+          </para>
+        </listitem>
+      </varlistentry>
     </variablelist>
   </refsect1>
   <refsect1>

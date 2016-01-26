@@ -277,6 +277,21 @@
       </varlistentry>
       <varlistentry>
         <term><option>--git-upstream-branch</option>=<replaceable>BRANCH_NAME</replaceable>
+        <term><option>--git-color-scheme</option>=<replaceable>COLOR_SCHEME</replaceable></term>
+        <listitem>
+          <para>
+          Colors to use in output (when color is enabled). The format for
+          COLOR_SCHEME is
+          '&lt;debug&gt;:&lt;info&gt;:&lt;warning&gt;:&lt;error&gt;'.
+          Numerical values and color names are accepted, empty fields imply
+          the default color. For example --git-color-scheme='cyan:34::' would
+          show debug messages in cyan, info messages in blue and other messages
+          in default (i.e. warning and error messages in red).
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--git-upstream-branch</option>=<replaceable>branch_name</replaceable>
         </term>
         <listitem>
           <para>
@@ -321,6 +336,15 @@
       </varlistentry>
       <varlistentry>
         <term><option>--git-[no-]submodules</option>
+        </term>
+        <listitem>
+          <para>
+          Include git submodules in the orig tarball.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--git-keyid=</option><replaceable>gpg-keyid</replaceable>
         </term>
         <listitem>
           <para>
@@ -633,20 +657,20 @@
   <refsect1>
     <title>SEE ALSO</title>
     <para>
-    <xref linkend="man.gbp.import.dsc">,
-    <xref linkend="man.gbp.import.dscs">,
-    <xref linkend="man.gbp.import.orig">,
-    <xref linkend="man.gbp.dch">,
-    <citerefentry>
-      <refentrytitle>git-pbuilder</refentrytitle>
-      <manvolnum>1</manvolnum>
-    </citerefentry>,
-    <citerefentry>
-      <refentrytitle>cowbuilder</refentrytitle>
-      <manvolnum>8</manvolnum>
-    </citerefentry>,
-    <xref linkend="man.gbp.conf">,
-    &man.seealso.common;
+      <xref linkend="man.gbp.import.dsc">,
+      <xref linkend="man.gbp.import.dscs">,
+      <xref linkend="man.gbp.import.orig">,
+      <xref linkend="man.gbp.dch">,
+      <citerefentry>
+        <refentrytitle>git-pbuilder</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>cowbuilder</refentrytitle>
+        <manvolnum>8</manvolnum>
+      </citerefentry>,
+      <xref linkend="man.gbp.conf">,
+      &man.seealso.common;
     </para>
   </refsect1>
   <refsect1>
