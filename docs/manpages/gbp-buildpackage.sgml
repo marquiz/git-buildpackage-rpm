@@ -291,7 +291,7 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><option>--git-upstream-branch</option>=<replaceable>branch_name</replaceable>
+        <term><option>--git-upstream-branch</option>=<replaceable>BRANCH_NAME</replaceable>
         </term>
         <listitem>
           <para>
@@ -344,11 +344,11 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><option>--git-keyid=</option><replaceable>gpg-keyid</replaceable>
+        <term><option>--git-keyid=</option><replaceable>GPG-KEYID</replaceable>
         </term>
         <listitem>
           <para>
-          Include git submodules in the orig tarball.
+          use this keyid for gpg signing tags
           </para>
         </listitem>
       </varlistentry>
@@ -358,6 +358,18 @@
         <listitem>
           <para>
           use this keyid for gpg signing tags
+        <term><option>--git-posttag=</option><replaceable>COMMAND</replaceable>
+        </term>
+        <listitem>
+          <para>
+          excecute <replaceable>COMMAND</replaceable> after tagging a new
+          version.
+          </para>
+          <para>
+          Exported environment variables are: <envar>GBP_TAG</envar> (the name
+          of the generated tag), <envar>GBP_BRANCH</envar> (the branch the
+          package was build from) and <envar>GBP_SHA1</envar> (the sha1 of the
+          commit the tag was created at).
           </para>
         </listitem>
       </varlistentry>
@@ -393,6 +405,10 @@
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term><option>--git-postexport=</option><replaceable>COMMAND</replaceable>
+        </term>
+        <listitem>
+          <para>
         <term><option>--git-postexport=</option><replaceable>COMMAND</replaceable>
         </term>
         <listitem>
@@ -657,20 +673,20 @@
   <refsect1>
     <title>SEE ALSO</title>
     <para>
-      <xref linkend="man.gbp.import.dsc">,
-      <xref linkend="man.gbp.import.dscs">,
-      <xref linkend="man.gbp.import.orig">,
-      <xref linkend="man.gbp.dch">,
-      <citerefentry>
-        <refentrytitle>git-pbuilder</refentrytitle>
-        <manvolnum>1</manvolnum>
-      </citerefentry>,
-      <citerefentry>
-        <refentrytitle>cowbuilder</refentrytitle>
-        <manvolnum>8</manvolnum>
-      </citerefentry>,
-      <xref linkend="man.gbp.conf">,
-      &man.seealso.common;
+    <xref linkend="man.gbp.import.dsc">,
+    <xref linkend="man.gbp.import.dscs">,
+    <xref linkend="man.gbp.import.orig">,
+    <xref linkend="man.gbp.dch">,
+    <citerefentry>
+      <refentrytitle>git-pbuilder</refentrytitle>
+      <manvolnum>1</manvolnum>
+    </citerefentry>,
+    <citerefentry>
+      <refentrytitle>cowbuilder</refentrytitle>
+      <manvolnum>8</manvolnum>
+    </citerefentry>,
+    <xref linkend="man.gbp.conf">,
+    &man.seealso.common;
     </para>
   </refsect1>
   <refsect1>
