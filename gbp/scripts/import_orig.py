@@ -31,9 +31,49 @@ from gbp.config import GbpOptionParserDebian, GbpOptionGroup, no_upstream_branch
 from gbp.errors import GbpError
 import gbp.log
 from gbp.pkg import compressor_opts
-from gbp.scripts.common.import_orig import (cleanup_tmp_tree, ask_package_name,
-                                            ask_package_version,
-                                            prepare_sources)
+from gbp.scripts.common.import_orig import (orig_needs_repack, cleanup_tmp_tree,
+                                            ask_package_name, ask_package_version,
+                                            repack_source, is_link_target)
+
+
+def prepare_pristine_tar(archive, pkg, version):
+    """
+    Prepare the upstream source for pristine tar import.
+
+    This checks if the upstream source is actually a tarball
+    and creates a symlink from I{archive}
+    to I{<pkg>_<version>.orig.tar.<ext>} so pristine-tar will
+    see the correct basename.
+
+    @param archive: the upstream source's name
+    @type archive: C{str}
+    @param pkg: the source package's name
+    @type pkg: C{str}
+    @param version: the upstream version number
+    @type version: C{str}
+    @rtype: C{str}
+    """
+    linked = False
+    if os.path.isdir(archive):
+        return None
+
+    ext = os.path.splitext(archive)[1]
+    if ext in ['.tgz', '.tbz2', '.tlz', '.txz' ]:
+        ext = ".%s" % ext[2:]
+
+    link = "../%s_%s.orig.tar%s" % (pkg, version, ext)
+
+    if os.path.basename(archive) != os.path.basename(link):
+        try:
+            if not is_link_target(archive, link):
+                os.symlink(os.path.abspath(archive), link)
+                linked = True
+        except OSError as err:
+                raise GbpError("Cannot symlink '%s' to '%s': %s" % (archive, link, err[1]))
+        return (link, linked)
+    else:
+        return (archive, linked)
+>>>>>>> dbfc6276c4aa50b79f1cf27cfc24badc0b18da8f
 
 
 def upstream_import_commit_msg(options, version):
@@ -269,6 +309,18 @@ def main(argv):
         unpacked_orig, pristine_orig = prepare_sources(
                 source, pkg_name, version, prepare_pristine, options.filters,
                 options.filter_pristine_tar, None, tmpdir)
+        if not source.is_dir():
+            tmpdir = tempfile.mkdtemp(dir='../')
+            source.unpack(tmpdir, options.filters)
+            gbp.log.debug("Unpacked '%s' to '%s'" % (source.path, source.unpacked))
+
+        if orig_needs_repack(source, options):
+            gbp.log.debug("Filter pristine-tar: repacking '%s' from '%s'" % (source.path, source.unpacked))
+            (source, tmpdir)  = repack_source(source, sourcepackage, version, tmpdir, options.filters)
+
+        (pristine_orig, linked) = prepare_pristine_tar(source.path,
+                                                       sourcepackage,
+                                                       version)
 
         # Don't mess up our repo with git metadata from an upstream tarball
         try:

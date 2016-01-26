@@ -33,6 +33,28 @@ except ImportError:
     pass
 
 
+def orig_needs_repack(upstream_source, options):
+    """
+    Determine if the upstream sources needs to be repacked
+
+    We repack if
+     1. we want to filter out files and use pristine tar since we want
+        to make a filtered tarball available to pristine-tar
+     2. when we don't have a suitable upstream tarball (e.g. zip archive or unpacked dir)
+        and want to use filters
+     3. when we don't have a suitable upstream tarball (e.g. zip archive or unpacked dir)
+        and want to use pristine-tar
+    """
+    if ((options.pristine_tar and options.filter_pristine_tar and len(options.filters) > 0)):
+        return True
+    elif not upstream_source.is_orig():
+        if len(options.filters):
+            return True
+        elif options.pristine_tar:
+            return True
+    return False
+
+
 def cleanup_tmp_tree(tree):
     """remove a tree of temporary files"""
     try:
