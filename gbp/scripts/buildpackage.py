@@ -38,7 +38,8 @@ from gbp.scripts.common.buildpackage import (index_name, wc_names,
                                              git_archive_submodules,
                                              git_archive_single, dump_tree,
                                              write_wc, drop_index)
-from gbp.pkg import compressor_opts, compressor_aliases, parse_archive_filename
+from gbp.pkg import (UpstreamSource, compressor_opts, compressor_aliases,
+                     parse_archive_filename)
 
 def git_archive(repo, cp, output_dir, tmpdir_base, treeish, comp_type,
                 comp_level, with_submodules):
