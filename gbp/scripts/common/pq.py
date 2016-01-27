@@ -88,10 +88,6 @@ def is_pq_branch(branch, options):
         return True
     return False
 
-    pq_re = re.compile(r'^%s$' % (pq_format_str % dict(branch="(?P<base>\S+)")))
-    if pq_re.match(branch):
-        return True
-    return False
 
 def pq_branch_name(branch, options, extra_keys=None):
     """
@@ -120,8 +116,6 @@ def pq_branch_name(branch, options, extra_keys=None):
     if not is_pq_branch(branch, options):
         return pq_format_str % format_fields
 
-    if not is_pq_branch(branch, options):
-        return pq_format_str % format_fields
 
 def pq_branch_base(pq_branch, options):
     """

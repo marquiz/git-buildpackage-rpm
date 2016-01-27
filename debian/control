@@ -12,12 +12,9 @@ Build-Depends:
  pychecker,
  python (>> 2.6.6-3~),
  python-epydoc,
- python-mock,
  python-nose,
  python-pkg-resources,
- python-rpm,
  python-setuptools,
- rpm,
  sgml2x,
 # For rpm (epydoc)
  python-rpm

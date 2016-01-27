@@ -197,8 +197,6 @@ def parse_args(argv):
     parser.add_config_file_option(option_name="color-scheme",
                                   dest="color_scheme")
     parser.add_config_file_option(option_name="tmp-dir", dest="tmp_dir")
-    parser.add_config_file_option(option_name="vendor", action="store",
-                    dest="vendor")
     parser.add_option("--download", action="store_true", dest="download",
                       default=False, help="download source package")
     parser.add_config_file_option(option_name="vendor", action="store",

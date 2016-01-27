@@ -690,9 +690,6 @@ def main(argv):
             dest="patch_export_squash_until")
     parser.add_config_file_option("patch-export-ignore-path",
             dest="patch_export_ignore_path")
-    parser.add_option("--export-rev", action="store", dest="export_rev", default="",
-                      help="Export patches from treeish object TREEISH instead "
-                           "of head of patch-queue branch", metavar="TREEISH")
 
     (options, args) = parser.parse_args(argv)
     gbp.log.setup(options.color, options.verbose, options.color_scheme)
