@@ -231,7 +231,7 @@ done
 %dir %{python_sitelib}/gbp/pkg
 %dir %{python_sitelib}/gbp/scripts
 %dir %{python_sitelib}/gbp/scripts/common
-%{python_sitelib}/gbp-*
+#%{python_sitelib}/gbp-*
 %{python_sitelib}/gbp/*.py*
 %{python_sitelib}/gbp/scripts/__init__.py*
 %{python_sitelib}/gbp/scripts/clone.py*
