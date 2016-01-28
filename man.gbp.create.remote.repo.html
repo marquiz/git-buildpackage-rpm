@@ -70,8 +70,8 @@ ACCESSKEY="p"
 HREF="man.gbp.pq.html"
 ><IMG
 SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Prev"></A
 ></TD
@@ -81,8 +81,8 @@ ACCESSKEY="u"
 HREF="man.reference.html"
 ><IMG
 SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Up"></A
 ></TD
@@ -92,23 +92,23 @@ ACCESSKEY="h"
 HREF="index.html"
 ><IMG
 SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Home"></A
 ></TD
 ><TH
 WIDTH="100%"
 align="center"
->Building Packages with git-buildpackage suite: Version: 0.6.15</TH
+>Building Packages with git-buildpackage suite: Version: 0.7.0-tizen20151027</TH
 ><TD
 ><A
 ACCESSKEY="n"
 HREF="man.gbp.conf.html"
 ><IMG
 SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Next"></A
 ></TD
@@ -122,7 +122,7 @@ NAME="MAN.GBP.CREATE.REMOTE.REPO"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN3119"
+NAME="AEN3407"
 ></A
 ><H2
 >Name</H2
@@ -130,14 +130,14 @@ NAME="AEN3119"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN3122"
+NAME="AEN3410"
 ></A
 ><H2
 >Synopsis</H2
 ><P
 ><B
 CLASS="COMMAND"
->gbp create-remote-repo</B
+>gbp&nbsp;create-remote-repo</B
 >  [<CODE
 CLASS="OPTION"
 >--version</CODE
@@ -222,27 +222,27 @@ CLASS="OPTION"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3159"
+NAME="AEN3447"
 ></A
 ><H2
 >DESCRIPTION</H2
 ><P
 >    <B
 CLASS="COMMAND"
->gbp create-remote-repo</B
+>gbp&nbsp;create-remote-repo</B
 > creates a repository at a remote location via ssh
     and pushes the local repository into it. It then sets up remote branch
     tracking so you can use <B
 CLASS="COMMAND"
->gbp pull</B
+>gbp&nbsp;pull</B
 > to update your repository from there.
     </P
 ><P
->      Before performing any action on the remote location it will print the 
+>      Before performing any action on the remote location, it will print the
       remote URL and ask for confirmation.
     </P
 ><P
->    Note: By default the remote repositories are created in the <SPAN
+>    Note: By default, the remote repositories are created in the <SPAN
 CLASS="SYSTEMITEM"
 >collab-maint</SPAN
 > repository on <SPAN
@@ -254,7 +254,7 @@ CLASS="SYSTEMITEM"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3168"
+NAME="AEN3456"
 ></A
 ><H2
 >OPTIONS</H2
@@ -271,7 +271,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3171"><SPAN
+NAME="AEN3459"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -292,7 +292,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3176"><SPAN
+NAME="AEN3464"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -318,7 +318,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3183"><SPAN
+NAME="AEN3471"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -344,7 +344,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3190"><SPAN
+NAME="AEN3478"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -369,7 +369,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3196"><SPAN
+NAME="AEN3484"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -389,7 +389,14 @@ VALIGN="TOP"
           COLOR_SCHEME is
           '&lt;debug&gt;:&lt;info&gt;:&lt;warning&gt;:&lt;error&gt;'.
           Numerical values and color names are accepted, empty fields imply
-          the default color. For example --git-color-scheme='cyan:34::' would
+          the default color. For example,
+          <CODE
+CLASS="OPTION"
+>--git-color-scheme=</CODE
+><TT
+CLASS="LITERAL"
+>'cyan:34::'</TT
+> would
           show debug messages in cyan, info messages in blue and other messages
           in default (i.e. warning and error messages in red).
           </P
@@ -400,7 +407,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3202"><SPAN
+NAME="AEN3492"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -431,7 +438,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3209"><SPAN
+NAME="AEN3499"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -447,7 +454,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->What name git will use when refering to that repository, e.g.
+>What name git will use when referring to that repository, e.g.
 	  'origin'.</P
 ></TD
 ></TR
@@ -456,7 +463,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3215"><SPAN
+NAME="AEN3505"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -485,7 +492,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3222"><SPAN
+NAME="AEN3512"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -505,10 +512,10 @@ VALIGN="TOP"
 CLASS="FILENAME"
 >gbp.conf</TT
 >
-          that specifies the above paramters. See <A
+          that specifies the above parameters. See <A
 HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
->
+>&#62;
           manpage for details.
 	  </P
 ></TD
@@ -518,7 +525,7 @@ HREF="man.gbp.conf.html"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3230"><SPAN
+NAME="AEN3520"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -534,7 +541,13 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->The branch in the Git repository the Debian package is being
+>The branch in the <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> repository the <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> package is being
 	  developed on, default is <TT
 CLASS="REPLACEABLE"
 ><I
@@ -548,7 +561,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3237"><SPAN
+NAME="AEN3529"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -581,7 +594,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3245"><SPAN
+NAME="AEN3537"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -600,7 +613,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3250"><SPAN
+NAME="AEN3542"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -621,7 +634,7 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3255"
+NAME="AEN3547"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -630,16 +643,16 @@ NAME="AEN3255"
 CLASS="FILENAME"
 >gbp.conf</TT
 > files are parsed 
-    to set defaults for the above commandline arguments. See the
+    to set defaults for the above command-line arguments. See the
     <A
 HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
-> manpage for details.</P
+>&#62; manpage for details.</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3260"
+NAME="AEN3552"
 ></A
 ><H2
 >SEE ALSO</H2
@@ -647,21 +660,21 @@ NAME="AEN3260"
 >      <A
 HREF="man.gbp.buildpackage.html"
 >gbp-buildpackage(1)</A
->,
+>&#62;,
       <A
 HREF="man.gbp.pull.html"
 >gbp-pull(1)</A
->,
+>&#62;,
       <A
 HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
->
+>&#62;
     </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3266"
+NAME="AEN3558"
 ></A
 ><H2
 >AUTHOR</H2

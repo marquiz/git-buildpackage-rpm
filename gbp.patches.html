@@ -1,0 +1,634 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Working with patches</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Building Debian Packages with git-buildpackage"
+HREF="gbp.html"><LINK
+REL="PREVIOUS"
+TITLE="Building packages from the Git repository"
+HREF="gbp.building.html"><LINK
+REL="NEXT"
+TITLE="Releases and Snapshots"
+HREF="gbp.releases.html"><STYLE
+TYPE="text/css"
+>.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE
+></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><TABLE
+WIDTH="100%"
+CLASS="navigation"
+SUMMARY="Navigation header"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+><A
+ACCESSKEY="p"
+HREF="gbp.building.html"
+><IMG
+SRC="left.png"
+WIDTH="16"
+HEIGHT="16"
+BORDER="0"
+ALT="Prev"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
+HREF="gbp.html"
+><IMG
+SRC="home.png"
+WIDTH="16"
+HEIGHT="16"
+BORDER="0"
+ALT="Home"></A
+></TD
+><TH
+WIDTH="100%"
+align="center"
+>Building Debian Packages with git-buildpackage: Version: 0.7.0-tizen20151027</TH
+><TD
+><A
+ACCESSKEY="n"
+HREF="gbp.releases.html"
+><IMG
+SRC="right.png"
+WIDTH="16"
+HEIGHT="16"
+BORDER="0"
+ALT="Next"></A
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="GBP.PATCHES"
+></A
+>Working with patches</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="gbp.patches.html#GBP.PATCHES.WORKFLOW"
+>Workflow</A
+></DT
+><DT
+><A
+HREF="gbp.patches.html#GBP.PATCHES.TEAM"
+>Team maintenance</A
+></DT
+><DT
+><A
+HREF="gbp.patches.html#GBP.PATCHES.30QUILT"
+>Working with 3.0 (quilt) packges</A
+></DT
+></DL
+></DIV
+><P
+><B
+CLASS="COMMAND"
+>gbp&nbsp;pq</B
+> can be used to manage patches inside
+      <TT
+CLASS="FILENAME"
+>debian/patches/</TT
+>.</P
+><P
+>The basic idea is that patches are imported to a local
+patch-queue branch with one commit on the patch-queue branch
+representing exactly one patch
+in <TT
+CLASS="FILENAME"
+>debian/patches/</TT
+>. The patch-queue branch will
+be named like the branch that has
+the <TT
+CLASS="FILENAME"
+>debian/patches</TT
+> dir you imported from
+with <TT
+CLASS="FILENAME"
+>patch-queue/</TT
+> prepended. So if you have your
+<SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> packaging on master the patch-queue branch will be
+called <TT
+CLASS="FILENAME"
+>patch-queue/master</TT
+>.</P
+><P
+>There, the
+maintainer will work on them using usual <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> commands (rebase, commit
+--amend, etc). When done, <B
+CLASS="COMMAND"
+>gbp&nbsp;pq</B
+> will be used to export the patches to
+<TT
+CLASS="FILENAME"
+>debian/patches/</TT
+>. This workflow facilitates the
+cherry-picking of patches for stable releases, and the forward-porting of
+patches to new upstream versions by using git rebase on the
+patch-queue branch (patches already applied
+upstream are detected automatically).  The generated patches
+in <TT
+CLASS="FILENAME"
+>debian/patches/</TT
+> have all the necessary
+information to forward them upstream given they are auto generated via
+<B
+CLASS="COMMAND"
+>git-format-patch(1)</B
+>.</P
+><P
+>The main drawback of this workflow is the lack of history on the
+<TT
+CLASS="FILENAME"
+>patch-queue/master</TT
+> branch (but there is full history on
+the <TT
+CLASS="FILENAME"
+>master</TT
+> branch, of course).</P
+><BR
+CLEAR="all"><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="GBP.PATCHES.WORKFLOW"
+>Workflow</A
+></H1
+><P
+>Assuming the <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> source package has its patches in
+<TT
+CLASS="FILENAME"
+>debian/patches</TT
+> and these are parseable by
+<B
+CLASS="COMMAND"
+>git-quiltimport(1)</B
+>:</P
+><P
+>Create patch-queue branch and
+import <TT
+CLASS="FILENAME"
+>debian/patches</TT
+> onto it using <B
+CLASS="COMMAND"
+>gbp&nbsp;pq</B
+>
+
+<PRE
+CLASS="PROGRAMLISTING"
+>  <B
+CLASS="COMMAND"
+>cd <TT
+CLASS="REPLACEABLE"
+><I
+>REPO</I
+></TT
+></B
+>
+  <B
+CLASS="COMMAND"
+>gbp&nbsp;pq</B
+> import</PRE
+>
+
+<P
+>This will switch you to the patch-queue branch
+automatically.</P
+>
+
+<P
+>Now you can work on the patch-queue branch (add, remove, rebase, test) to
+get your patches into shape:
+<P
+></P
+><UL
+><LI
+><P
+>To add what will later become a patch in <TT
+CLASS="FILENAME"
+>debian/patches/</TT
+> simply make a
+commit. The first line of the commit message will become the patch name later.
+The following lines include the details of what the patch does.</P
+></LI
+><LI
+><P
+>To remove or edit commits use git rebase -i master. The git documentation
+explains how to work with git-rebase.</P
+></LI
+></UL
+></P
+>
+
+<P
+>Regenerate the patches in <TT
+CLASS="FILENAME"
+>debian/patches/</TT
+> using
+<B
+CLASS="COMMAND"
+>gbp&nbsp;pq</B
+>. This will switch you back to master and regenerate the patches using
+a method similar to <B
+CLASS="COMMAND"
+>git-format-patch(1)</B
+>:</P
+>
+
+<PRE
+CLASS="PROGRAMLISTING"
+>  <B
+CLASS="COMMAND"
+>gbp&nbsp;pq</B
+> export</PRE
+>
+
+<P
+>Commit the result either by passing <CODE
+CLASS="OPTION"
+>--commit</CODE
+> to
+the above export or by using git commands:</P
+>
+<PRE
+CLASS="PROGRAMLISTING"
+>  <B
+CLASS="COMMAND"
+>git</B
+> add debian/patches
+  <B
+CLASS="COMMAND"
+>git</B
+> commit</PRE
+>
+
+<P
+>Update <TT
+CLASS="FILENAME"
+>debian/changelog</TT
+> (e.g. by running "<B
+CLASS="COMMAND"
+>gbp&nbsp;dch</B
+> <CODE
+CLASS="OPTION"
+>-S</CODE
+> <CODE
+CLASS="OPTION"
+>-a</CODE
+>")</P
+>
+<P
+>You can now build the package as usual.</P
+>
+
+<P
+>After importing a new upstream version you can use the following commands
+to refresh <TT
+CLASS="FILENAME"
+>debian/patches/</TT
+>:</P
+>
+<PRE
+CLASS="PROGRAMLISTING"
+>  <B
+CLASS="COMMAND"
+>gbp&nbsp;pq</B
+> rebase
+  <B
+CLASS="COMMAND"
+>gbp&nbsp;pq</B
+> export</PRE
+>
+
+<P
+>Should the rebase fail you can resort to
+<B
+CLASS="COMMAND"
+>git</B
+> <CODE
+CLASS="OPTION"
+>rebase</CODE
+>.</P
+>
+
+<P
+>If you forgot to create a patch-queue before importing the new
+upstream version you can make <B
+CLASS="COMMAND"
+>gbp&nbsp;pq</B
+> figure out where to apply the
+patches by using the <CODE
+CLASS="OPTION"
+>--time-machine=</CODE
+>.
+
+<P
+>If a package doesn't have any patches yet, these are the steps to add
+your first patch:</P
+>
+<P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>Launch an import, this will switch to the proper branch
+<PRE
+CLASS="PROGRAMLISTING"
+>  <B
+CLASS="COMMAND"
+>gbp&nbsp;pq</B
+> import</PRE
+>
+<LI
+><P
+>Create your first patch: edit files, test, commit your changes using <B
+CLASS="COMMAND"
+>git commit</B
+></P
+></LI
+>
+
+<LI
+><P
+>To generate the new Quilt patch set use
+<PRE
+CLASS="PROGRAMLISTING"
+>  <B
+CLASS="COMMAND"
+>gbp&nbsp;pq</B
+> export --commit</PRE
+>This will switch you back to the <TT
+CLASS="FILENAME"
+>master</TT
+>
+branch generate the patches and commit them right away to
+your <TT
+CLASS="FILENAME"
+>master</TT
+> branch.
+
+Skip the <CODE
+CLASS="OPTION"
+>--commit</CODE
+> if you don't want to commit
+right away. If you want to pick the changelog message from the patch
+see
+<TT
+CLASS="FILENAME"
+>/usr/share/doc/git-buildpackage/examples/gbp-add-patch</TT
+>.</P
+></LI
+></P
+></LI
+></OL
+>
+
+<P
+>In order to avoid a patched (unclean) source tree after the build, you
+can use <SPAN
+CLASS="PRODUCTNAME"
+>Dpkg-source</SPAN
+>'s <CODE
+CLASS="OPTION"
+>unapply-patches</CODE
+> option and
+tell <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> to ignore the <TT
+CLASS="FILENAME"
+>.pc</TT
+> directory.
+<TT
+CLASS="FILENAME"
+>/usr/share/doc/git-buildpackage/examples/gbp-configure-unpatched-source</TT
+>
+sets up these two files for you.</P
+></P
+></P
+></DIV
+><BR
+CLEAR="all"><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="GBP.PATCHES.TEAM"
+>Team maintenance</A
+></H1
+><P
+>The easiest way is to not push out any patch-queue/* branches at all.
+They can be recreated by any team member easily by using</P
+><PRE
+CLASS="PROGRAMLISTING"
+>  <B
+CLASS="COMMAND"
+>git</B
+> branch -d patch-queue/master
+  <B
+CLASS="COMMAND"
+>gbp&nbsp;pq</B
+> import</PRE
+><P
+>The patch-queue branch can also be re-created when pulling (this
+will additionally drop your current patch-queue branch and recreate it
+from <TT
+CLASS="FILENAME"
+>debian/patches</TT
+>):</P
+><PRE
+CLASS="PROGRAMLISTING"
+>  <B
+CLASS="COMMAND"
+>gbp&nbsp;pull</B
+> --redo-pq</PRE
+><P
+>Note that you can you can push out patch-queue branches. Other team
+members must just be aware that that branches in the patch-queue/
+namespace are being rebased frequently and therefore cause
+non fast-forward updates.</P
+></DIV
+><BR
+CLEAR="all"><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="GBP.PATCHES.30QUILT"
+>Working with 3.0 (quilt) packges</A
+></H1
+><P
+>The 3.0 (quilt) format applies the patches
+in <TT
+CLASS="FILENAME"
+>debian/patches</TT
+> automatically when building a
+source package. If you want your debian branch to contain the
+unpatched source there are several ways to handle this:</P
+><P
+></P
+><UL
+><LI
+><P
+>Using <TT
+CLASS="FILENAME"
+>debian/source/local-options</TT
+>:
+You can use <CODE
+CLASS="OPTION"
+>unapply-patches</CODE
+> in
+<TT
+CLASS="FILENAME"
+>debian/source/local-options</TT
+> to unapply the patches after
+the build.
+<TT
+CLASS="FILENAME"
+>/usr/share/doc/git-buildpackage/examples/gbp-configure-unpatched-source</TT
+>
+will this set up for you when run from inside a git repository of a Debian
+package.</P
+></LI
+><LI
+><P
+>Using <CODE
+CLASS="OPTION"
+>--git-export-dir</CODE
+>:
+If you are using option <CODE
+CLASS="OPTION"
+>--git-export-dir</CODE
+> already there is no
+problem since the unpatched source tree gets exported before being built (and
+patched by dpkg-source). Since this implies an extra copy of the whole source
+tree (which might be slow for big projects) and it is not really necessary when
+using pbuilder the next method might be more appropriate.</P
+></LI
+><LI
+><P
+>Working from a patch-queue branch.
+Instead of building from master build from patch-queue/master prepared by
+<B
+CLASS="COMMAND"
+>gbp&nbsp;pq</B
+> as describe above. This branch has the patches already applied as
+dpkg-source expects it:</P
+><PRE
+CLASS="PROGRAMLISTING"
+>  <B
+CLASS="COMMAND"
+>gbp&nbsp;pq</B
+> import
+  <B
+CLASS="COMMAND"
+>gbp&nbsp;buildpackage</B
+> --git-debian-branch=patch-queue/master
+  #Build and test...
+  <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> checkout master
+  <B
+CLASS="COMMAND"
+>gbp&nbsp;pq</B
+> export</PRE
+></LI
+></UL
+></DIV
+></DIV
+><TABLE
+CLASS="navigation"
+WIDTH="100%"
+SUMMARY="Navigation footer"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+ALIGN="left"
+><A
+ACCESSKEY="p"
+HREF="gbp.building.html"
+><B
+>&lt;&lt;&lt;&nbsp;Building packages from the <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> repository</B
+></A
+></TD
+><TD
+ALIGN="right"
+><A
+ACCESSKEY="n"
+HREF="gbp.releases.html"
+><B
+>Releases and Snapshots&nbsp;&gt;&gt;&gt;</B
+></A
+></TD
+></TR
+></TABLE
+></BODY
+></HTML
+>

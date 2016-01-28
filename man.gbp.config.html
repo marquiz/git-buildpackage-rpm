@@ -70,8 +70,8 @@ ACCESSKEY="p"
 HREF="man.gbp.clone.html"
 ><IMG
 SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Prev"></A
 ></TD
@@ -81,8 +81,8 @@ ACCESSKEY="u"
 HREF="man.reference.html"
 ><IMG
 SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Up"></A
 ></TD
@@ -92,23 +92,23 @@ ACCESSKEY="h"
 HREF="index.html"
 ><IMG
 SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Home"></A
 ></TD
 ><TH
 WIDTH="100%"
 align="center"
->Building Packages with git-buildpackage suite: Version: 0.6.15</TH
+>Building Packages with git-buildpackage suite: Version: 0.7.0-tizen20151027</TH
 ><TD
 ><A
 ACCESSKEY="n"
 HREF="man.gbp.pull.html"
 ><IMG
 SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Next"></A
 ></TD
@@ -122,7 +122,7 @@ NAME="MAN.GBP.CONFIG"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN2615"
+NAME="AEN2833"
 ></A
 ><H2
 >Name</H2
@@ -130,14 +130,14 @@ NAME="AEN2615"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN2618"
+NAME="AEN2836"
 ></A
 ><H2
 >Synopsis</H2
 ><P
 ><B
 CLASS="COMMAND"
->gbp config</B
+>gbp&nbsp;config</B
 >  [<CODE
 CLASS="OPTION"
 >--version</CODE
@@ -178,14 +178,14 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2638"
+NAME="AEN2856"
 ></A
 ><H2
 >DESCRIPTION</H2
 ><P
 >    <B
 CLASS="COMMAND"
->gbp config</B
+>gbp&nbsp;config</B
 > prints values from the configuration files. It interpolates the
     value for <TT
 CLASS="REPLACEABLE"
@@ -204,7 +204,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2644"
+NAME="AEN2862"
 ></A
 ><H2
 >OPTIONS</H2
@@ -221,7 +221,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2647"><SPAN
+NAME="AEN2865"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -242,7 +242,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2652"><SPAN
+NAME="AEN2870"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -268,7 +268,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2659"><SPAN
+NAME="AEN2877"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -294,7 +294,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2666"><SPAN
+NAME="AEN2884"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -319,7 +319,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2672"><SPAN
+NAME="AEN2890"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -339,7 +339,14 @@ VALIGN="TOP"
           COLOR_SCHEME is
           '&lt;debug&gt;:&lt;info&gt;:&lt;warning&gt;:&lt;error&gt;'.
           Numerical values and color names are accepted, empty fields imply
-          the default color. For example --git-color-scheme='cyan:34::' would
+          the default color. For example,
+          <CODE
+CLASS="OPTION"
+>--git-color-scheme=</CODE
+><TT
+CLASS="LITERAL"
+>'cyan:34::'</TT
+> would
           show debug messages in cyan, info messages in blue and other messages
           in default (i.e. warning and error messages in red).
           </P
@@ -351,15 +358,15 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2678"
+NAME="AEN2898"
 ></A
 ><H2
 >EXIT CODES</H2
 ><P
 >    When <B
 CLASS="COMMAND"
->gbp config</B
-> finishes it indicates success or failure with its exit code:
+>gbp&nbsp;config</B
+> finishes, it indicates success or failure with its exit code:
     </P
 ><P
 ></P
@@ -374,7 +381,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2683"><SPAN
+NAME="AEN2903"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -393,7 +400,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2688"><SPAN
+NAME="AEN2908"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -412,7 +419,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2693"><SPAN
+NAME="AEN2913"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -432,7 +439,7 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2698"
+NAME="AEN2918"
 ></A
 ><H2
 >EXAMPLES</H2
@@ -442,7 +449,7 @@ CLASS="OPTION"
 >upstream-branch</CODE
 > that <B
 CLASS="COMMAND"
->gbp buildpackage</B
+>gbp&nbsp;buildpackage</B
 >
     would use:</P
 ><PRE
@@ -453,8 +460,8 @@ CLASS="SCREEN"
 ><P
 >Print the values of all of <B
 CLASS="COMMAND"
->gbp buildpackage</B
->s options</P
+>gbp&nbsp;buildpackage</B
+> options</P
 ><PRE
 CLASS="SCREEN"
 >    $ gbp config buildpackage
@@ -466,7 +473,7 @@ CLASS="SCREEN"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2707"
+NAME="AEN2927"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -475,16 +482,16 @@ NAME="AEN2707"
 CLASS="FILENAME"
 >gbp.conf</TT
 > files are parsed 
-    to set defaults for the above commandline arguments. See the
+    to set defaults for the above command-line arguments. See the
     <A
 HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
-> manpage for details.</P
+>&#62; manpage for details.</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2712"
+NAME="AEN2932"
 ></A
 ><H2
 >SEE ALSO</H2
@@ -492,13 +499,13 @@ NAME="AEN2712"
 >      <A
 HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
->
+>&#62;
     </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2716"
+NAME="AEN2936"
 ></A
 ><H2
 >AUTHOR</H2

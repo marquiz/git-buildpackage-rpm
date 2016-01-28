@@ -70,8 +70,8 @@ ACCESSKEY="p"
 HREF="man.gbp.import.orig.html"
 ><IMG
 SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Prev"></A
 ></TD
@@ -81,8 +81,8 @@ ACCESSKEY="u"
 HREF="man.reference.html"
 ><IMG
 SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Up"></A
 ></TD
@@ -92,23 +92,23 @@ ACCESSKEY="h"
 HREF="index.html"
 ><IMG
 SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Home"></A
 ></TD
 ><TH
 WIDTH="100%"
 align="center"
->Building Packages with git-buildpackage suite: Version: 0.6.15</TH
+>Building Packages with git-buildpackage suite: Version: 0.7.0-tizen20151027</TH
 ><TD
 ><A
 ACCESSKEY="n"
 HREF="man.gbp.clone.html"
 ><IMG
 SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Next"></A
 ></TD
@@ -122,22 +122,25 @@ NAME="MAN.GBP.DCH"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN2050"
+NAME="AEN2219"
 ></A
 ><H2
 >Name</H2
->git-dch;, gbp-dch;&nbsp;--&nbsp;Generate the Debian changelog from git commit messages</DIV
+>gbp-dch&nbsp;--&nbsp;Generate the <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> changelog from git commit messages</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN2054"
+NAME="AEN2223"
 ></A
 ><H2
 >Synopsis</H2
 ><P
 ><B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 >  [<CODE
 CLASS="OPTION"
 >--version</CODE
@@ -178,6 +181,14 @@ CLASS="OPTION"
 CLASS="REPLACEABLE"
 ><I
 >tag-format</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--upstream-branch=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>branch_name</I
 ></TT
 >] [<CODE
 CLASS="OPTION"
@@ -257,6 +268,9 @@ CLASS="OPTION"
 >--meta-closes=bug-close-tags</CODE
 >] [<CODE
 CLASS="OPTION"
+>--meta-closes-bugnum=bug-number-format</CODE
+>] [<CODE
+CLASS="OPTION"
 >--snapshot-number=</CODE
 ><TT
 CLASS="REPLACEABLE"
@@ -320,18 +334,21 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2144"
+NAME="AEN2318"
 ></A
 ><H2
 >DESCRIPTION</H2
 ><P
 >    <B
 CLASS="COMMAND"
->gbp dch</B
-> reads git commit messages and generates the Debian changelog from
-    it. If no arguments are given <B
+>gbp&nbsp;dch</B
+> reads git commit messages and generates the <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> changelog from
+    it. If no arguments are given, <B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 > starts from the last tagged Debian
     package version up to the current tip of the current branch. If the
     distribution of the topmost section in
@@ -344,8 +361,8 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >UNRELEASED</I
 ></SPAN
->
-    the changelog entries will be inserted into this section. Otherwise a new
+>,
+    the changelog entries will be inserted into this section. Otherwise, a new
     section will be created.
     </P
 ><P
@@ -354,18 +371,18 @@ CLASS="OPTION"
 >--auto</CODE
 > is given <B
 CLASS="COMMAND"
->gbp dch</B
-> tries to guess the
+>gbp&nbsp;dch</B
+>, tries to guess the
     last <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
 > commit documented in the changelog - this only works in snapshot
-    mode. Otherwise <CODE
+    mode. Otherwise, <CODE
 CLASS="OPTION"
 >--since</CODE
 > can be used to tell <B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 >
     at which point it should start in the <SPAN
 CLASS="PRODUCTNAME"
@@ -376,7 +393,7 @@ CLASS="PRODUCTNAME"
 >    The additional path arguments can be used to restrict the repository paths
     <B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 > looks at. Setting <TT
 CLASS="REPLACEABLE"
 ><I
@@ -400,11 +417,11 @@ CLASS="REPLACEABLE"
 >debian/</I
 ></TT
 > subdir. In more sophisticated cases
-    (like backports) you can use <CODE
+    (like backports), you can use <CODE
 CLASS="OPTION"
 >--git-log</CODE
 > to restrict the
-    generated changelog entries further. E.g. by using
+    generated changelog entries further, e.g. by using
     <CODE
 CLASS="OPTION"
 >--git-log=</CODE
@@ -419,7 +436,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2167"
+NAME="AEN2342"
 ></A
 ><H2
 >OPTIONS</H2
@@ -436,7 +453,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2170"><SPAN
+NAME="AEN2345"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -457,7 +474,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2175"><SPAN
+NAME="AEN2350"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -483,7 +500,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2182"><SPAN
+NAME="AEN2357"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -509,7 +526,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2189"><SPAN
+NAME="AEN2364"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -534,7 +551,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2195"><SPAN
+NAME="AEN2370"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -554,7 +571,14 @@ VALIGN="TOP"
           COLOR_SCHEME is
           '&lt;debug&gt;:&lt;info&gt;:&lt;warning&gt;:&lt;error&gt;'.
           Numerical values and color names are accepted, empty fields imply
-          the default color. For example --git-color-scheme='cyan:34::' would
+          the default color. For example,
+          <CODE
+CLASS="OPTION"
+>--git-color-scheme=</CODE
+><TT
+CLASS="LITERAL"
+>'cyan:34::'</TT
+> would
           show debug messages in cyan, info messages in blue and other messages
           in default (i.e. warning and error messages in red).
           </P
@@ -565,7 +589,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2201"><SPAN
+NAME="AEN2378"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -596,7 +620,69 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2208"><SPAN
+NAME="AEN2385"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--upstream-branch</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>branch_name</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Branch to determine the upstream version from.
+          Default is <TT
+CLASS="REPLACEABLE"
+><I
+>upstream</I
+></TT
+>.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2392"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-upstream-tag=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>TAG-FORMAT</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>            use this tag format when looking for tags of upstream versions,
+            default is <TT
+CLASS="REPLACEABLE"
+><I
+>upstream/%(version)s</I
+></TT
+>.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2399"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -622,7 +708,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2214"><SPAN
+NAME="AEN2405"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -653,7 +739,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2221"><SPAN
+NAME="AEN2412"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -684,7 +770,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2228"><SPAN
+NAME="AEN2419"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -709,7 +795,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2234"><SPAN
+NAME="AEN2425"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -729,7 +815,7 @@ CLASS="OPTION"
 >Thanks:</CODE
 > and <CODE
 CLASS="OPTION"
->Git-Dch:</CODE
+>Gbp-Dch:</CODE
 >. See META TAGS
           below.
           </P
@@ -740,7 +826,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2242"><SPAN
+NAME="AEN2433"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -757,7 +843,10 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >          What meta tags to look for to generate bug-closing changelog entries.
-          The default is 'Closes|LP' to support Debian and Launchpad.
+          The default is <TT
+CLASS="LITERAL"
+>'Closes|LP'</TT
+> to support Debian and Launchpad.
           </P
 ></TD
 ></TR
@@ -766,7 +855,62 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2248"><SPAN
+NAME="AEN2440"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--meta-closes-bugnum=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>bug-number-format</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          What regular expression should be used to parse out the bug number.
+          The default is <TT
+CLASS="LITERAL"
+>'(?:bug|issue)?\#?\s?\d+'</TT
+>. Note: the regex should
+          suppress all portions of the bug number that are not wanted using
+          <TT
+CLASS="LITERAL"
+>"(?:)"</TT
+>, see Python regex manual for details.
+          </P
+><P
+>          Example:
+              <CODE
+CLASS="OPTION"
+>--meta-closes-bugnum=</CODE
+><TT
+CLASS="LITERAL"
+>"(?:bug)?\s*ex-\d+"</TT
+>
+
+              would match all of the following:
+          <PRE
+CLASS="SCREEN"
+>                 Possible Txt  Match?    Result
+                 ------------  ------    ------
+                 bug EX-12345    Y       EX-12345
+                 ex-01273        Y       ex-01273
+                 bug ex-1ab      Y       ex-1
+                 EX--12345       N</PRE
+>
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2452"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -786,7 +930,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2253"><SPAN
+NAME="AEN2457"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -813,7 +957,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2259"><SPAN
+NAME="AEN2463"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -838,7 +982,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2265"><SPAN
+NAME="AEN2469"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -859,7 +1003,7 @@ CLASS="REPLACEABLE"
 ><I
 >unstable</I
 ></TT
-> and
+>, and
           open the changelog for final tweaking.
           </P
 ></TD
@@ -869,7 +1013,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2272"><SPAN
+NAME="AEN2476"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -904,7 +1048,7 @@ CLASS="REPLACEABLE"
           <CODE
 CLASS="OPTION"
 >--snapshot</CODE
-> the snapshot number will be appended to
+>, the snapshot number will be appended to
           <TT
 CLASS="REPLACEABLE"
 ><I
@@ -919,7 +1063,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2283"><SPAN
+NAME="AEN2487"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -939,7 +1083,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2288"><SPAN
+NAME="AEN2492"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -960,7 +1104,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2293"><SPAN
+NAME="AEN2497"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -980,7 +1124,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2298"><SPAN
+NAME="AEN2502"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1001,7 +1145,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2303"><SPAN
+NAME="AEN2507"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1031,7 +1175,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2310"><SPAN
+NAME="AEN2514"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1055,7 +1199,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2316"><SPAN
+NAME="AEN2520"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1085,7 +1229,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2323"><SPAN
+NAME="AEN2527"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1110,7 +1254,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2329"><SPAN
+NAME="AEN2533"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1141,7 +1285,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2336"><SPAN
+NAME="AEN2540"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1172,7 +1316,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2343"><SPAN
+NAME="AEN2547"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1196,7 +1340,7 @@ CLASS="APPLICATION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2349"><SPAN
+NAME="AEN2553"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1216,7 +1360,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2354"><SPAN
+NAME="AEN2558"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1242,7 +1386,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2360"><SPAN
+NAME="AEN2564"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1278,7 +1422,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2368"><SPAN
+NAME="AEN2572"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1298,7 +1442,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2373"><SPAN
+NAME="AEN2577"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1331,7 +1475,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2380"
+NAME="AEN2584"
 ></A
 ><H2
 >Snapshot mode</H2
@@ -1346,9 +1490,9 @@ CLASS="OPTION"
 > or <CODE
 CLASS="OPTION"
 >-S</CODE
-> <B
+>, <B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 >
     uses a pseudo header in the Debian changelog to remember the last git
     commit it added a changelog entry for. It also sets a version number
@@ -1362,14 +1506,14 @@ CLASS="REPLACEABLE"
     It automatically increments the snapshot number on subsequent invocations
     of <B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 > <CODE
 CLASS="OPTION"
 >-S</CODE
 > so that later snapshots automatically
-    have a higher version number. To leave snapshot mode invoke <B
+    have a higher version number. To leave snapshot mode, invoke <B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 >
     with the <CODE
 CLASS="OPTION"
@@ -1382,12 +1526,12 @@ CLASS="OPTION"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2392"
+NAME="AEN2596"
 ></A
 ><H2
 >META TAGS</H2
 ><P
->    Additional to the above options the formatting of the commit message
+>    Additional to the above options, the formatting of the commit message
     in <TT
 CLASS="FILENAME"
 >debian/changelog</TT
@@ -1423,11 +1567,11 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2400"><SPAN
+NAME="AEN2604"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->Git-Dch</CODE
+>Gbp-Dch</CODE
 >: <TT
 CLASS="REPLACEABLE"
 ><I
@@ -1439,39 +1583,50 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          Supported actions are: <TT
+>            Supported actions are: <TT
 CLASS="REPLACEABLE"
 ><I
 >Ignore</I
 ></TT
-> which will
-          ignore this commit when generating
-          <TT
+>
+            which will ignore this commit when
+            generating <TT
 CLASS="FILENAME"
 >debian/changelog</TT
 >,
-          <TT
+            <TT
 CLASS="REPLACEABLE"
 ><I
 >Short</I
 ></TT
-> which will only use the description
-          (the first line) of the commit message when generating the changelog
-          entry (useful when <CODE
+> which will only use the
+            description (the first line) of the commit message when
+            generating the changelog entry (useful
+            when <CODE
 CLASS="OPTION"
 >--full</CODE
-> is given) and
-          <TT
+> is given), and
+            <TT
 CLASS="REPLACEABLE"
 ><I
 >Full</I
 ></TT
-> which will use the full commit
-          message when generating the changelog entry (useful when
-          <CODE
+> which will use the full
+            commit message when generating the changelog entry (useful
+            when <CODE
 CLASS="OPTION"
 >--full</CODE
 > is not given).
+	  </P
+><P
+>	    In addition to <CODE
+CLASS="OPTION"
+>Gbp-Dch</CODE
+>, the
+	    deprecated <CODE
+CLASS="OPTION"
+>Git-Dch</CODE
+> is still supported.
           </P
 ></TD
 ></TR
@@ -1480,7 +1635,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2412"><SPAN
+NAME="AEN2619"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1505,7 +1660,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2418"><SPAN
+NAME="AEN2625"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1544,7 +1699,7 @@ CLASS="SCREEN"
 
       so one doesn't have to consult the manual
 
-      Git-Dch: Short
+      Gbp-Dch: Short
       Closes: #636088
       Thanks: Raphaël Hertzog for the suggestion
     </PRE
@@ -1563,7 +1718,7 @@ CLASS="SCREEN"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2431"
+NAME="AEN2638"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -1572,16 +1727,16 @@ NAME="AEN2431"
 CLASS="FILENAME"
 >gbp.conf</TT
 > files are parsed 
-    to set defaults for the above commandline arguments. See the
+    to set defaults for the above command-line arguments. See the
     <A
 HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
-> manpage for details.</P
+>&#62; manpage for details.</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2436"
+NAME="AEN2643"
 ></A
 ><H2
 >SEE ALSO</H2
@@ -1589,23 +1744,23 @@ NAME="AEN2436"
 >      <A
 HREF="man.gbp.buildpackage.html"
 >gbp-buildpackage(1)</A
->,
+>&#62;,
       <A
 HREF="man.gbp.import.dsc.html"
 >gbp-import-dsc(1)</A
->,
+>&#62;,
       <A
 HREF="man.gbp.import.dscs.html"
 >gbp-import-dscs(1)</A
->,
+>&#62;,
       <A
 HREF="man.gbp.import.orig.html"
 >gbp-import-orig(1)</A
->,
+>&#62;,
       <A
 HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
->,
+>&#62;,
             <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
@@ -1649,7 +1804,7 @@ CLASS="CITETITLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2457"
+NAME="AEN2664"
 ></A
 ><H2
 >AUTHOR</H2

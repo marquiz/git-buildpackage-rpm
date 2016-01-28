@@ -16,8 +16,8 @@ REL="PREVIOUS"
 TITLE="Command Reference"
 HREF="man.rpm.reference.html"><LINK
 REL="NEXT"
-TITLE="gbp-import-orig-rpm"
-HREF="man.gbp.import.orig.rpm.html"><STYLE
+TITLE="gbp-import-srpm"
+HREF="man.gbp.import.srpm.html"><STYLE
 TYPE="text/css"
 >.synopsis, .classsynopsis {
     background: #eeeeee;
@@ -70,8 +70,8 @@ ACCESSKEY="p"
 HREF="man.rpm.reference.html"
 ><IMG
 SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Prev"></A
 ></TD
@@ -81,8 +81,8 @@ ACCESSKEY="u"
 HREF="man.rpm.reference.html"
 ><IMG
 SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Up"></A
 ></TD
@@ -92,23 +92,23 @@ ACCESSKEY="h"
 HREF="index.html"
 ><IMG
 SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Home"></A
 ></TD
 ><TH
 WIDTH="100%"
 align="center"
->Building Packages with git-buildpackage suite: Version: 0.6.15</TH
+>Building Packages with git-buildpackage suite: Version: 0.7.0-tizen20151027</TH
 ><TD
 ><A
 ACCESSKEY="n"
-HREF="man.gbp.import.orig.rpm.html"
+HREF="man.gbp.import.srpm.html"
 ><IMG
 SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Next"></A
 ></TD
@@ -122,22 +122,22 @@ NAME="MAN.GBP.BUILDPACKAGE.RPM"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN3638"
+NAME="AEN3947"
 ></A
 ><H2
 >Name</H2
->git-buildpackage-rpm, gbp-buildpackage-rpm&nbsp;--&nbsp;Build RPM packages from a Git repository</DIV
+>gbp-buildpackage-rpm&nbsp;--&nbsp;Build RPM packages from a Git repository</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN3642"
+NAME="AEN3950"
 ></A
 ><H2
 >Synopsis</H2
 ><P
 ><B
 CLASS="COMMAND"
->gbp buildpackage-rpm</B
+>gbp&nbsp;buildpackage-rpm</B
 >  [<CODE
 CLASS="OPTION"
 >--git-[no-]ignore-new</CODE
@@ -189,6 +189,14 @@ CLASS="OPTION"
 CLASS="REPLACEABLE"
 ><I
 >VENDOR</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-native</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>[auto|on|off]</I
 ></TT
 >] [<CODE
 CLASS="OPTION"
@@ -333,64 +341,8 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
->--git-orig-prefix=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->PREFIX</I
-></TT
->] [<CODE
-CLASS="OPTION"
 >--git-export-dir=</CODE
 ><TT
-CLASS="REPLACEABLE"
-><I
->DIRECTORY</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--git-rpmbuild-builddir</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->DIRECTORY</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--git-rpmbuild-buidrootdir</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->DIRECTORY</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--git-rpmbuild-rpmdir</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->DIRECTORY</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--git-rpmbuild-sourcedir</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->DIRECTORY</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--git-rpmbuild-specdir</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->DIRECTORY</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--git-rpmbuild-srpmdir</CODE
->=<TT
 CLASS="REPLACEABLE"
 ><I
 >DIRECTORY</I
@@ -403,9 +355,6 @@ CLASS="REPLACEABLE"
 ><I
 >TREEISH</I
 ></TT
->] [<CODE
-CLASS="OPTION"
->--git-export-only</CODE
 >] [<CODE
 CLASS="OPTION"
 >--git-packaging-dir=</CODE
@@ -424,6 +373,30 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
+>--git-orig-prefix=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>PREFIX</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-export-sourcedir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-export-specdir</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>DIRECTORY</I
+></TT
+>] [<CODE
+CLASS="OPTION"
 >--git-[no-]pristine-tar</CODE
 >] [<CODE
 CLASS="OPTION"
@@ -434,6 +407,41 @@ CLASS="OPTION"
 >] [<CODE
 CLASS="OPTION"
 >--git-retag</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-mock</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-dist</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>DISTRIBUTION</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-arch</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>ARCHITECTURE</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-mock-options</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>OPTIONS</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-mock-root</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>ROOT</I
+></TT
 >] [<CODE
 CLASS="OPTION"
 >--git-[no-]patch-export</CODE
@@ -447,7 +455,10 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
->--git-patch-export-compress=</CODE
+>--git-[no-]patch-numbers</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-patch-compress=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
@@ -455,7 +466,7 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
->--git-patch-export-ignore-path=</CODE
+>--git-patch-ignore-path=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
@@ -463,15 +474,12 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
->--git-patch-export-squash-until=</CODE
+>--git-patch-squash=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
 >COMMITISH</I
 ></TT
->] [<CODE
-CLASS="OPTION"
->--git-[no-]patch-numbers</CODE
 >] [<CODE
 CLASS="OPTION"
 >--git-spec-vcs-tag</CODE
@@ -485,28 +493,28 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3789"
+NAME="AEN4100"
 ></A
 ><H2
 >DESCRIPTION</H2
 ><P
 >    <B
 CLASS="COMMAND"
->gbp buildpackage-rpm</B
+>gbp&nbsp;buildpackage-rpm</B
 > is used to build RPM packages from a <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
 >
     repository. It is an RPM counterpart for the <B
 CLASS="COMMAND"
->gbp buildpackage</B
+>gbp&nbsp;buildpackage</B
 > tool that
     is designed for building Debian packages.
     </P
 ><P
 >    <B
 CLASS="COMMAND"
->gbp buildpackage-rpm</B
+>gbp&nbsp;buildpackage-rpm</B
 > will, in order:
     </P
 ><P
@@ -576,7 +584,7 @@ CLASS="PRODUCTNAME"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3819"
+NAME="AEN4130"
 ></A
 ><H2
 >OPTIONS</H2
@@ -593,7 +601,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3822"><SPAN
+NAME="AEN4133"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -620,7 +628,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3828"><SPAN
+NAME="AEN4139"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -640,7 +648,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3833"><SPAN
+NAME="AEN4144"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -660,7 +668,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3838"><SPAN
+NAME="AEN4149"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -694,7 +702,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3846"><SPAN
+NAME="AEN4157"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -724,7 +732,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3853"><SPAN
+NAME="AEN4164"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -744,7 +752,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3858"><SPAN
+NAME="AEN4169"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -769,7 +777,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3864"><SPAN
+NAME="AEN4175"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -800,7 +808,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3870"><SPAN
+NAME="AEN4181"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -825,7 +833,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3876"><SPAN
+NAME="AEN4187"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -850,7 +858,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3882"><SPAN
+NAME="AEN4193"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -875,7 +883,42 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3888"><SPAN
+NAME="AEN4199"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-native=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>[auto|on|off]</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Define the 'nativity' of a package. The default value
+          <TT
+CLASS="REPLACEABLE"
+><I
+>auto</I
+></TT
+> makes <B
+CLASS="COMMAND"
+>gbp&nbsp;buildpackage-rpm</B
+> to
+          guess. Guessing is based on the existence of upstream branch.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4207"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -916,7 +959,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3897"><SPAN
+NAME="AEN4216"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -934,7 +977,7 @@ VALIGN="TOP"
 ><P
 >          If you're not on this branch when invoking <B
 CLASS="COMMAND"
->gbp buildpackage-rpm</B
+>gbp&nbsp;buildpackage-rpm</B
 > it
           will fail. Default is <TT
 CLASS="REPLACEABLE"
@@ -956,7 +999,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3906"><SPAN
+NAME="AEN4225"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -983,7 +1026,7 @@ CLASS="OPTION"
 > is enabled and
           <B
 CLASS="COMMAND"
->gbp buildpackage-rpm</B
+>gbp&nbsp;buildpackage-rpm</B
 > detects that the current branch has a
           patch-queue/development branch it exports the patches from there
           instead of the tip of the current branch (unless
@@ -994,7 +1037,7 @@ CLASS="OPTION"
           Similarly, if the current branch is a patch-queue/development branch
           <B
 CLASS="COMMAND"
->gbp buildpackage-rpm</B
+>gbp&nbsp;buildpackage-rpm</B
 > will automatically enable patch-export and
           export packaging files from the packaging branch instead of the
           current branch (unless <CODE
@@ -1009,7 +1052,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3918"><SPAN
+NAME="AEN4237"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1035,7 +1078,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3924"><SPAN
+NAME="AEN4243"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1055,7 +1098,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3929"><SPAN
+NAME="AEN4248"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1075,7 +1118,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3934"><SPAN
+NAME="AEN4253"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1100,7 +1143,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3940"><SPAN
+NAME="AEN4259"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1146,7 +1189,7 @@ CLASS="ENVAR"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3951"><SPAN
+NAME="AEN4270"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1188,7 +1231,7 @@ CLASS="ENVAR"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3961"><SPAN
+NAME="AEN4280"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1231,7 +1274,7 @@ CLASS="ENVAR"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3971"><SPAN
+NAME="AEN4290"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1280,7 +1323,7 @@ CLASS="ENVAR"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3983"><SPAN
+NAME="AEN4302"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1304,7 +1347,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3989"><SPAN
+NAME="AEN4308"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1329,7 +1372,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3995"><SPAN
+NAME="AEN4314"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1354,7 +1397,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4001"><SPAN
+NAME="AEN4320"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1385,7 +1428,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4008"><SPAN
+NAME="AEN4327"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1406,7 +1449,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4013"><SPAN
+NAME="AEN4332"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1426,7 +1469,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4018"><SPAN
+NAME="AEN4337"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1461,11 +1504,11 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4026"><SPAN
+NAME="AEN4345"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--git-rpmbuild-builddir</CODE
+>--git-export-sourcedir</CODE
 >=<TT
 CLASS="REPLACEABLE"
 ><I
@@ -1476,51 +1519,7 @@ CLASS="REPLACEABLE"
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--git-rpmbuild-buildrootdir</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->DIRECTORY</I
-></TT
-></SPAN
->, <SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--git-rpmbuild-rpmdir</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->DIRECTORY</I
-></TT
-></SPAN
->, <SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--git-rpmbuild-sourcedir</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->DIRECTORY</I
-></TT
-></SPAN
->, <SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--git-rpmbuild-specdir</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->DIRECTORY</I
-></TT
-></SPAN
->, <SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--git-rpmbuild-srpmdir</CODE
+>--git-export-specdir</CODE
 >=<TT
 CLASS="REPLACEABLE"
 ><I
@@ -1532,20 +1531,9 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          Build subdirectory options for rpmbuild builder. Of these
-          <CODE
-CLASS="OPTION"
->--git-rpmbuild-sourcedir</CODE
-> and
-          <CODE
-CLASS="OPTION"
->--git-rpmbuild-specdir</CODE
-> also affects where
-          <B
-CLASS="COMMAND"
->gbp buildpackage-rpm</B
-> exports the packaging files under the export
-          directory.
+>          Subdirectories under export directory where packaging files are
+          exported. The default build options of rpmbuild builder are also
+          adjusted accordingly.
           </P
 ></TD
 ></TR
@@ -1554,7 +1542,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4050"><SPAN
+NAME="AEN4354"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1617,27 +1605,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4062"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--git-export-only</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Only export packaging files without running builder.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4067"><SPAN
+NAME="AEN4366"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1662,7 +1630,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4073"><SPAN
+NAME="AEN4372"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1686,7 +1654,7 @@ CLASS="REPLACEABLE"
 ></TT
 > causes <B
 CLASS="COMMAND"
->gbp buildpackage-rpm</B
+>gbp&nbsp;buildpackage-rpm</B
 > to
           search and guess.  Other values cause the
           <CODE
@@ -1702,7 +1670,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4082"><SPAN
+NAME="AEN4381"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1752,7 +1720,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4093"><SPAN
+NAME="AEN4392"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1783,7 +1751,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4100"><SPAN
+NAME="AEN4399"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1809,7 +1777,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4106"><SPAN
+NAME="AEN4405"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1833,7 +1801,7 @@ CLASS="REPLACEABLE"
 ></TT
 > causes <B
 CLASS="COMMAND"
->gbp buildpackage-rpm</B
+>gbp&nbsp;buildpackage-rpm</B
 > to
           guess the prefix.
           </P
@@ -1844,7 +1812,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4114"><SPAN
+NAME="AEN4413"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1864,7 +1832,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4119"><SPAN
+NAME="AEN4418"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1885,7 +1853,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4124"><SPAN
+NAME="AEN4423"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1906,7 +1874,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4129"><SPAN
+NAME="AEN4428"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1927,7 +1895,130 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4134"><SPAN
+NAME="AEN4433"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-mock</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>	    Use <SPAN
+CLASS="PRODUCTNAME"
+>mock</SPAN
+> to build the rpms by invoking <B
+CLASS="COMMAND"
+>gbp-builder-mock</B
+>.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4440"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-dist</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>	    Build for this distribution when using <SPAN
+CLASS="PRODUCTNAME"
+>mock</SPAN
+> (e.g.: epel-6).
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4446"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-arch</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>	    Build for this architecture when using mock, default is to build
+	    for the current host architecture.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4451"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-mock-root</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>	    The mock root to use. Defaults
+	    to <TT
+CLASS="REPLACEABLE"
+><I
+>DIST</I
+></TT
+>-<TT
+CLASS="REPLACEABLE"
+><I
+>ARCH</I
+></TT
+>
+	    from above.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4458"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-mock-options</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>	    Additional options to pass to mock. Default is to pass no
+	    additional options.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4463"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1942,7 +2033,7 @@ VALIGN="TOP"
           export-treeish.  That is, after exporting packaging files (from the
           pacakging directory) <B
 CLASS="COMMAND"
->gbp buildpackage-rpm</B
+>gbp&nbsp;buildpackage-rpm</B
 > creates one patch per
           commit (similar to git-format-patch) and updates the spec file in the
           export dir. You use <CODE
@@ -1958,7 +2049,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4141"><SPAN
+NAME="AEN4470"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1994,11 +2085,31 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4149"><SPAN
+NAME="AEN4478"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--git-patch-export-compress=</CODE
+>--git-[no-]patch-numbers</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Whether the patch files should start with a number or not.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN4483"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-patch-compress=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
@@ -2026,11 +2137,11 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4156"><SPAN
+NAME="AEN4490"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--git-patch-export-ignore-path=</CODE
+>--git-patch-ignore-path=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
@@ -2057,11 +2168,11 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4163"><SPAN
+NAME="AEN4497"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--git-patch-export-squash-until=</CODE
+>--git-patch-squash=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
@@ -2087,7 +2198,7 @@ CLASS="REPLACEABLE"
           filename base for the diff (suffix '.diff' is automatically added by
           <B
 CLASS="COMMAND"
->gbp buildpackage-rpm</B
+>gbp&nbsp;buildpackage-rpm</B
 >). Magic word 'HEAD' translates to the
           patch-export-treeish when given as the squash-point. This allows one
           to configure gbp to always squash all commits into one monolithic
@@ -2100,27 +2211,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4171"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--git-[no-]patch-numbers</CODE
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Whether the patch files should start with a number or not.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4176"><SPAN
+NAME="AEN4505"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -2138,7 +2229,7 @@ VALIGN="TOP"
 ><P
 >          <B
 CLASS="COMMAND"
->gbp buildpackage-rpm</B
+>gbp&nbsp;buildpackage-rpm</B
 > always automatically sets/updates the 'VCS:'
           tag in the spec file after exporting.  This option defines the format
           string for the 'VCS:' tag. An empty value causes no 'VCS:' tag to be
@@ -2156,7 +2247,7 @@ CLASS="COMMAND"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN4183"
+NAME="AEN4512"
 ></A
 ><H2
 >EXAMPLES</H2
@@ -2170,7 +2261,7 @@ CLASS="COMMAND"
 CLASS="SCREEN"
 >      <B
 CLASS="COMMAND"
->gbp buildpackage-rpm</B
+>gbp&nbsp;buildpackage-rpm</B
 > -bs
     </PRE
 ><P
@@ -2184,14 +2275,14 @@ CLASS="COMMAND"
 CLASS="SCREEN"
 >      <B
 CLASS="COMMAND"
->gbp buildpackage-rpm</B
+>gbp&nbsp;buildpackage-rpm</B
 > --git-ignore-branch --git-export=WC.UNTRACKED
     </PRE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN4193"
+NAME="AEN4522"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -2200,11 +2291,11 @@ NAME="AEN4193"
 CLASS="FILENAME"
 >gbp.conf</TT
 > files are parsed 
-    to set defaults for the above commandline arguments. See the
+    to set defaults for the above command-line arguments. See the
     <A
 HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
-> manpage for details.</P
+>&#62; manpage for details.</P
 ><P
 >      All options in the config files are specified without the 'git-' prefix.
       </P
@@ -2212,7 +2303,7 @@ HREF="man.gbp.conf.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN4199"
+NAME="AEN4528"
 ></A
 ><H2
 >SEE ALSO</H2
@@ -2220,18 +2311,18 @@ NAME="AEN4199"
 >    <A
 HREF="man.gbp.import.srpm.html"
 >gbp-import-srpm(1)</A
->,
+>&#62;,
     <A
-HREF="man.gbp.import.orig.rpm.html"
->gbp-import-orig-rpm(1)</A
->,
+HREF="man.gbp.pq.rpm.html"
+>gbp-pq-rpm(1)</A
+>&#62;,
     <A
 HREF="man.gbp.rpm.ch.html"
 >gbp-rpm-ch(1)</A
 >,
     <A
-HREF="man.gbp.pq.rpm.html"
->gbp-pq-rpm(1)</A
+HREF="man.gbp.import.orig.rpm.html"
+>gbp-import-orig-rpm(1)</A
 >,
     <SPAN
 CLASS="CITEREFENTRY"
@@ -2240,10 +2331,17 @@ CLASS="REFENTRYTITLE"
 >rpmbuild</SPAN
 >(8)</SPAN
 >,
+    <SPAN
+CLASS="CITEREFENTRY"
+><SPAN
+CLASS="REFENTRYTITLE"
+>mock</SPAN
+>(1)</SPAN
+>,
     <A
 HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
->,
+>&#62;,
           <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
@@ -2279,7 +2377,7 @@ CLASS="CITETITLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN4221"
+NAME="AEN4553"
 ></A
 ><H2
 >AUTHOR</H2
@@ -2314,9 +2412,9 @@ HREF="man.rpm.reference.html"
 ALIGN="right"
 ><A
 ACCESSKEY="n"
-HREF="man.gbp.import.orig.rpm.html"
+HREF="man.gbp.import.srpm.html"
 ><B
->gbp-import-orig-rpm&nbsp;&gt;&gt;&gt;</B
+>gbp-import-srpm&nbsp;&gt;&gt;&gt;</B
 ></A
 ></TD
 ></TR

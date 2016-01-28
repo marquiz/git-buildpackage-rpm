@@ -70,8 +70,8 @@ ACCESSKEY="p"
 HREF="man.gbp.pull.html"
 ><IMG
 SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Prev"></A
 ></TD
@@ -81,8 +81,8 @@ ACCESSKEY="u"
 HREF="man.reference.html"
 ><IMG
 SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Up"></A
 ></TD
@@ -92,23 +92,23 @@ ACCESSKEY="h"
 HREF="index.html"
 ><IMG
 SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Home"></A
 ></TD
 ><TH
 WIDTH="100%"
 align="center"
->Building Packages with git-buildpackage suite: Version: 0.6.15</TH
+>Building Packages with git-buildpackage suite: Version: 0.7.0-tizen20151027</TH
 ><TD
 ><A
 ACCESSKEY="n"
 HREF="man.gbp.create.remote.repo.html"
 ><IMG
 SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Next"></A
 ></TD
@@ -122,7 +122,7 @@ NAME="MAN.GBP.PQ"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN2922"
+NAME="AEN3144"
 ></A
 ><H2
 >Name</H2
@@ -130,14 +130,14 @@ NAME="AEN2922"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN2925"
+NAME="AEN3147"
 ></A
 ><H2
 >Synopsis</H2
 ><P
 ><B
 CLASS="COMMAND"
->gbp pq</B
+>gbp&nbsp;pq</B
 >  [<CODE
 CLASS="OPTION"
 >--version</CODE
@@ -168,6 +168,17 @@ CLASS="OPTION"
 >--[no-]patch-numbers</CODE
 >] [<CODE
 CLASS="OPTION"
+>--patch-num-format=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>format</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--[no-]renumber</CODE
+>] [<CODE
+CLASS="OPTION"
 >--topic=</CODE
 ><TT
 CLASS="REPLACEABLE"
@@ -184,7 +195,16 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
+>--[no-]drop</CODE
+>] [<CODE
+CLASS="OPTION"
 >--force</CODE
+>] [<CODE
+CLASS="OPTION"
+>--meta-closes=bug-close-tags</CODE
+>] [<CODE
+CLASS="OPTION"
+>--meta-closes-bugnum=bug-number-format</CODE
 >]  <CODE
 CLASS="OPTION"
 >drop</CODE
@@ -205,31 +225,37 @@ CLASS="OPTION"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2961"
+NAME="AEN3194"
 ></A
 ><H2
 >DESCRIPTION</H2
 ><P
 >    <B
 CLASS="COMMAND"
->gbp pq</B
-> helps one to manage quilt patches in Debian packages that are
+>gbp&nbsp;pq</B
+> helps one to manage quilt patches in <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> packages that are
     maintained with <B
 CLASS="COMMAND"
 >gbp</B
 >. This is especially useful with packages using the
     3.0 (quilt) source format. With <B
 CLASS="COMMAND"
->gbp pq</B
-> you can maintain the quilt patches
+>gbp&nbsp;pq</B
+>, you can maintain the quilt patches
     that should be applied to a package on a separate branch called patch-queue
-    branch. So if your Debian package lives on
+    branch. So if your <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> package lives on
     <TT
 CLASS="REPLACEABLE"
 ><I
 >master</I
 ></TT
-> the associated patch-queue branch will be
+>, the associated patch-queue branch will be
     called <TT
 CLASS="REPLACEABLE"
 ><I
@@ -249,7 +275,7 @@ TARGET="_top"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN2971"
+NAME="AEN3206"
 ></A
 ><H2
 >ACTIONS</H2
@@ -266,7 +292,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2974"><SPAN
+NAME="AEN3209"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -288,7 +314,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2979"><SPAN
+NAME="AEN3214"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -310,7 +336,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2984"><SPAN
+NAME="AEN3219"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -331,7 +357,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2989"><SPAN
+NAME="AEN3224"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -348,7 +374,7 @@ CLASS="REPLACEABLE"
 ><I
 >foo</I
 ></TT
-> this would drop
+>, this would drop
           branch <TT
 CLASS="REPLACEABLE"
 ><I
@@ -363,7 +389,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN2996"><SPAN
+NAME="AEN3231"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -387,7 +413,10 @@ CLASS="OPTION"
 CLASS="OPTION"
 >export</CODE
 >. This can be used to separate upstream
-          pathes from debian specific patches.
+          patches from <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> specific patches.
           </P
 ></TD
 ></TR
@@ -396,7 +425,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3004"><SPAN
+NAME="AEN3240"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -418,7 +447,7 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3009"
+NAME="AEN3245"
 ></A
 ><H2
 >OPTIONS</H2
@@ -435,7 +464,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3012"><SPAN
+NAME="AEN3248"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -456,7 +485,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3017"><SPAN
+NAME="AEN3253"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -482,7 +511,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3024"><SPAN
+NAME="AEN3260"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -508,7 +537,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3031"><SPAN
+NAME="AEN3267"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -533,7 +562,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3037"><SPAN
+NAME="AEN3273"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -553,7 +582,14 @@ VALIGN="TOP"
           COLOR_SCHEME is
           '&lt;debug&gt;:&lt;info&gt;:&lt;warning&gt;:&lt;error&gt;'.
           Numerical values and color names are accepted, empty fields imply
-          the default color. For example --git-color-scheme='cyan:34::' would
+          the default color. For example,
+          <CODE
+CLASS="OPTION"
+>--git-color-scheme=</CODE
+><TT
+CLASS="LITERAL"
+>'cyan:34::'</TT
+> would
           show debug messages in cyan, info messages in blue and other messages
           in default (i.e. warning and error messages in red).
           </P
@@ -564,7 +600,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3043"><SPAN
+NAME="AEN3281"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -575,7 +611,19 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          Whether the patch files should start with a number or not.
+>          Whether or not the patch files should be prefixed with a number.
+          The default is to export patches with patch numbers. Note,
+          however, that this normally affects patches whose names are
+          automatically generated, and has no effect on exporting patches
+          which have a <CODE
+CLASS="OPTION"
+>Gbp[-Pq]: Name</CODE
+> tag, since the
+          name specified is preserved unless the <CODE
+CLASS="OPTION"
+>--renumber</CODE
+>
+          option is used.
           </P
 ></TD
 ></TR
@@ -584,7 +632,67 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3048"><SPAN
+NAME="AEN3288"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--patch-num-format=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>format</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          The format specifier for patch number prefixes. The default format is '%04d-'.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN3294"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--[no-]renumber</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Whether or not to renumber patches exported from the patch queue,
+          instead of preserving numbers specified in
+          <CODE
+CLASS="OPTION"
+>Gbp-Pq: Name</CODE
+> tags. The default is not to renumber
+          patches. Useful when patches need to be renamed for the sake of
+          uniformity. For example, using <CODE
+CLASS="OPTION"
+>--renumber</CODE
+> with
+          <CODE
+CLASS="OPTION"
+>--no-patch-num</CODE
+> will strip all numeric prefixes from
+          exported patches.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN3302"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -609,7 +717,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3054"><SPAN
+NAME="AEN3308"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -625,7 +733,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          When importing a patch queue fails, go back commit by commit on the
+>          When importing a patch queue fails, go back commit-by-commit on the
           current branch to check if the patch-queue applies there. Do this at
           most <TT
 CLASS="REPLACEABLE"
@@ -643,7 +751,27 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3061"><SPAN
+NAME="AEN3315"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--[no-]drop</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Whether to drop (delete) the patch queue branch after
+          a successful export</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN3320"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -654,8 +782,88 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->In case of import even import if the branch already
+>In case of <CODE
+CLASS="OPTION"
+>import</CODE
+>, import even if the branch already
             exists</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN3326"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--meta-closes=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>bug-close-tags</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          What meta tags to look for to generate a commit message when
+          using <CODE
+CLASS="OPTION"
+>export</CODE
+> <CODE
+CLASS="OPTION"
+>--commit</CODE
+>.
+          The default is <TT
+CLASS="LITERAL"
+>'Closes|LP'</TT
+> to support Debian and Launchpad.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN3335"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--meta-closes-bugnum=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>bug-number-format</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>            What regular expression should be used to parse out the
+            bug number when using
+	    <CODE
+CLASS="OPTION"
+>export</CODE
+> <CODE
+CLASS="OPTION"
+>--commit</CODE
+>.  The
+            default is <TT
+CLASS="LITERAL"
+>'(?:bug|issue)?\#?\s?\d+'</TT
+>.
+            See <A
+HREF="man.gbp.dch.html"
+>gbp-dch(1)</A
+>&#62; for details.
+          </P
 ></TD
 ></TR
 ></TBODY
@@ -664,14 +872,14 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3066"
+NAME="AEN3345"
 ></A
 ><H2
 >TAGS</H2
 ><P
->    When exporting patches from a patch-queue branch <B
+>    When exporting patches from a patch-queue branch, <B
 CLASS="COMMAND"
->gbp pq</B
+>gbp&nbsp;pq</B
 > will look at the
     patch header for special tags it recognizes. All tags need to start at the
     first column and require at least one whitespace after the colon.
@@ -689,7 +897,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3071"><SPAN
+NAME="AEN3350"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -709,7 +917,44 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3076"><SPAN
+NAME="AEN3355"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>Gbp[-Pq]: Name</CODE
+> <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>	    The name to use for the patch when running
+	    <PRE
+CLASS="SCREEN"
+><B
+CLASS="COMMAND"
+>gbp&nbsp;pq</B
+> export</PRE
+>
+	    If unset, it will be formatted like
+	    <B
+CLASS="COMMAND"
+>git am</B
+> would format it.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN3364"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -735,7 +980,7 @@ CLASS="REPLACEABLE"
 CLASS="SCREEN"
 ><B
 CLASS="COMMAND"
->gbp pq</B
+>gbp&nbsp;pq</B
 > export</PRE
 > This allows for some
           structure below <TT
@@ -750,7 +995,7 @@ CLASS="FILENAME"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3086"><SPAN
+NAME="AEN3374"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -785,7 +1030,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3094"
+NAME="AEN3382"
 ></A
 ><H2
 >SEE ALSO</H2
@@ -793,7 +1038,7 @@ NAME="AEN3094"
 >      <A
 HREF="man.gbp.buildpackage.html"
 >gbp-buildpackage(1)</A
->,
+>&#62;,
       <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
@@ -811,13 +1056,13 @@ CLASS="REFENTRYTITLE"
       <A
 HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
->
+>&#62;
     </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3105"
+NAME="AEN3393"
 ></A
 ><H2
 >AUTHOR</H2

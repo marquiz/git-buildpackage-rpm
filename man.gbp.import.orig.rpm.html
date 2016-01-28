@@ -13,11 +13,11 @@ REL="UP"
 TITLE="Command Reference"
 HREF="man.rpm.reference.html"><LINK
 REL="PREVIOUS"
-TITLE="gbp-buildpackage-rpm"
-HREF="man.gbp.buildpackage.rpm.html"><LINK
+TITLE="gbp-rpm-ch"
+HREF="man.gbp.rpm.ch.html"><LINK
 REL="NEXT"
-TITLE="gbp-import-srpm"
-HREF="man.gbp.import.srpm.html"><STYLE
+TITLE="Copyright"
+HREF="gbp.rpm.copyleft.html"><STYLE
 TYPE="text/css"
 >.synopsis, .classsynopsis {
     background: #eeeeee;
@@ -67,11 +67,11 @@ VALIGN="middle"
 ><TD
 ><A
 ACCESSKEY="p"
-HREF="man.gbp.buildpackage.rpm.html"
+HREF="man.gbp.rpm.ch.html"
 ><IMG
 SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Prev"></A
 ></TD
@@ -81,8 +81,8 @@ ACCESSKEY="u"
 HREF="man.rpm.reference.html"
 ><IMG
 SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Up"></A
 ></TD
@@ -92,23 +92,23 @@ ACCESSKEY="h"
 HREF="index.html"
 ><IMG
 SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Home"></A
 ></TD
 ><TH
 WIDTH="100%"
 align="center"
->Building Packages with git-buildpackage suite: Version: 0.6.15</TH
+>Building Packages with git-buildpackage suite: Version: 0.7.0-tizen20151027</TH
 ><TD
 ><A
 ACCESSKEY="n"
-HREF="man.gbp.import.srpm.html"
+HREF="gbp.rpm.copyleft.html"
 ><IMG
 SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Next"></A
 ></TD
@@ -122,7 +122,7 @@ NAME="MAN.GBP.IMPORT.ORIG.RPM"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN4235"
+NAME="AEN5498"
 ></A
 ><H2
 >Name</H2
@@ -130,14 +130,14 @@ NAME="AEN4235"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN4239"
+NAME="AEN5502"
 ></A
 ><H2
 >Synopsis</H2
 ><P
 ><B
 CLASS="COMMAND"
->gbp import-orig-rpm</B
+>gbp&nbsp;import-orig-rpm</B
 >  [<CODE
 CLASS="OPTION"
 >--version</CODE
@@ -287,17 +287,17 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN4305"
+NAME="AEN5568"
 ></A
 ><H2
 >DESCRIPTION</H2
 ><P
 >    <B
 CLASS="COMMAND"
->gbp import-orig-rpm</B
+>gbp&nbsp;import-orig-rpm</B
 > is an basically identical to the <B
 CLASS="COMMAND"
->gbp import-orig</B
+>gbp&nbsp;import-orig</B
 >
     tool, with only some rpm-specific functionality added and some
     Debian-specific functionality removed.
@@ -305,7 +305,7 @@ CLASS="COMMAND"
 ><P
 >    <B
 CLASS="COMMAND"
->gbp import-orig-rpm</B
+>gbp&nbsp;import-orig-rpm</B
 > imports <TT
 CLASS="REPLACEABLE"
 ><I
@@ -336,7 +336,7 @@ CLASS="OPTION"
 >.  If the source
     package name or version can't be determined <B
 CLASS="COMMAND"
->gbp import-orig-rpm</B
+>gbp&nbsp;import-orig-rpm</B
 > will
     prompt for it unless <CODE
 CLASS="OPTION"
@@ -346,7 +346,7 @@ CLASS="OPTION"
 ><P
 >    <B
 CLASS="COMMAND"
->gbp import-orig-rpm</B
+>gbp&nbsp;import-orig-rpm</B
 > tries to download the archive from a remote server if
     a remote URL is given. In addition, if no
     <TT
@@ -356,13 +356,13 @@ CLASS="REPLACEABLE"
 ></TT
 > is given <B
 CLASS="COMMAND"
->gbp import-orig-rpm</B
+>gbp&nbsp;import-orig-rpm</B
 >
     takes the archive URI from the spec file - this makes it possible to import
     a new upstream version just by bumping the version number in the spec file
     and running <B
 CLASS="COMMAND"
->gbp import-orig-rpm</B
+>gbp&nbsp;import-orig-rpm</B
 > (assuming that the spec file contains
     a full URL for the archive and its filename automatically follows the
     package version e.g. by using the %{version} macro, of course).
@@ -380,7 +380,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN4326"
+NAME="AEN5589"
 ></A
 ><H2
 >OPTIONS</H2
@@ -397,7 +397,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4329"><SPAN
+NAME="AEN5592"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -418,7 +418,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4334"><SPAN
+NAME="AEN5597"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -444,7 +444,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4341"><SPAN
+NAME="AEN5604"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -470,7 +470,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4348"><SPAN
+NAME="AEN5611"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -495,7 +495,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4354"><SPAN
+NAME="AEN5617"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -515,7 +515,14 @@ VALIGN="TOP"
           COLOR_SCHEME is
           '&lt;debug&gt;:&lt;info&gt;:&lt;warning&gt;:&lt;error&gt;'.
           Numerical values and color names are accepted, empty fields imply
-          the default color. For example --git-color-scheme='cyan:34::' would
+          the default color. For example,
+          <CODE
+CLASS="OPTION"
+>--git-color-scheme=</CODE
+><TT
+CLASS="LITERAL"
+>'cyan:34::'</TT
+> would
           show debug messages in cyan, info messages in blue and other messages
           in default (i.e. warning and error messages in red).
           </P
@@ -526,7 +533,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4360"><SPAN
+NAME="AEN5625"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -551,7 +558,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4366"><SPAN
+NAME="AEN5631"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -587,7 +594,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4375"><SPAN
+NAME="AEN5640"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -607,7 +614,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4380"><SPAN
+NAME="AEN5645"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -638,7 +645,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4387"><SPAN
+NAME="AEN5652"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -663,7 +670,7 @@ CLASS="REPLACEABLE"
 >. After importing the new
           sources on the upstream branch, <B
 CLASS="COMMAND"
->gbp import-orig-rpm</B
+>gbp&nbsp;import-orig-rpm</B
 > will try to
           merge the new version onto this branch.
           </P
@@ -674,7 +681,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4395"><SPAN
+NAME="AEN5660"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -693,7 +700,7 @@ VALIGN="TOP"
 >          Subdirectory that contains the RPM packaging files.
           <B
 CLASS="COMMAND"
->gbp import-orig-rpm</B
+>gbp&nbsp;import-orig-rpm</B
 > uses this to try to find a spec file which, in
           turn, is used to get the upstream source archive URI if one is not
           specified on the command line.
@@ -705,7 +712,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4402"><SPAN
+NAME="AEN5667"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -725,7 +732,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4407"><SPAN
+NAME="AEN5672"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -757,7 +764,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4414"><SPAN
+NAME="AEN5679"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -777,7 +784,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4419"><SPAN
+NAME="AEN5684"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -802,7 +809,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4425"><SPAN
+NAME="AEN5690"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -833,7 +840,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4432"><SPAN
+NAME="AEN5697"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -865,7 +872,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4439"><SPAN
+NAME="AEN5704"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -890,7 +897,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4445"><SPAN
+NAME="AEN5710"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -913,7 +920,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4451"><SPAN
+NAME="AEN5716"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -937,7 +944,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4457"><SPAN
+NAME="AEN5722"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -964,7 +971,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4463"><SPAN
+NAME="AEN5728"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -992,7 +999,7 @@ CLASS="REPLACEABLE"
 ></TT
 > causes <B
 CLASS="COMMAND"
->gbp import-orig-rpm</B
+>gbp&nbsp;import-orig-rpm</B
 > to guess
           the prefix when importing unpacked sources, or, not to change the
           prefix when importing source archives.
@@ -1017,7 +1024,7 @@ CLASS="NOTE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4474"><SPAN
+NAME="AEN5739"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1047,7 +1054,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4481"><SPAN
+NAME="AEN5746"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1069,7 +1076,7 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN4486"
+NAME="AEN5751"
 ></A
 ><H2
 >EXAMPLES</H2
@@ -1081,7 +1088,7 @@ NAME="AEN4486"
 CLASS="SCREEN"
 >      <B
 CLASS="COMMAND"
->gbp import-orig-rpm</B
+>gbp&nbsp;import-orig-rpm</B
 >
     </PRE
 ><P
@@ -1091,7 +1098,7 @@ CLASS="COMMAND"
 CLASS="SCREEN"
 >      <B
 CLASS="COMMAND"
->gbp import-orig-rpm</B
+>gbp&nbsp;import-orig-rpm</B
 > ../upstream-tarball-0.1.tar.gz
     </PRE
 ><P
@@ -1101,14 +1108,14 @@ CLASS="COMMAND"
 CLASS="SCREEN"
 >      <B
 CLASS="COMMAND"
->gbp import-orig-rpm</B
+>gbp&nbsp;import-orig-rpm</B
 > --orig-prefix=upstream-0.1 ../upstream/
     </PRE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN4497"
+NAME="AEN5762"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -1117,16 +1124,16 @@ NAME="AEN4497"
 CLASS="FILENAME"
 >gbp.conf</TT
 > files are parsed 
-    to set defaults for the above commandline arguments. See the
+    to set defaults for the above command-line arguments. See the
     <A
 HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
-> manpage for details.</P
+>&#62; manpage for details.</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN4502"
+NAME="AEN5767"
 ></A
 ><H2
 >SEE ALSO</H2
@@ -1182,7 +1189,7 @@ CLASS="CITETITLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN4520"
+NAME="AEN5785"
 ></A
 ><H2
 >AUTHOR</H2
@@ -1208,18 +1215,18 @@ VALIGN="middle"
 ALIGN="left"
 ><A
 ACCESSKEY="p"
-HREF="man.gbp.buildpackage.rpm.html"
+HREF="man.gbp.rpm.ch.html"
 ><B
->&lt;&lt;&lt;&nbsp;gbp-buildpackage-rpm</B
+>&lt;&lt;&lt;&nbsp;gbp-rpm-ch</B
 ></A
 ></TD
 ><TD
 ALIGN="right"
 ><A
 ACCESSKEY="n"
-HREF="man.gbp.import.srpm.html"
+HREF="gbp.rpm.copyleft.html"
 ><B
->gbp-import-srpm&nbsp;&gt;&gt;&gt;</B
+>Copyright&nbsp;&gt;&gt;&gt;</B
 ></A
 ></TD
 ></TR

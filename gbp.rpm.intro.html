@@ -70,8 +70,8 @@ ACCESSKEY="p"
 HREF="gbp-rpm.html"
 ><IMG
 SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Prev"></A
 ></TD
@@ -81,8 +81,8 @@ ACCESSKEY="u"
 HREF="gbp-rpm.html"
 ><IMG
 SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Up"></A
 ></TD
@@ -92,23 +92,23 @@ ACCESSKEY="h"
 HREF="index.html"
 ><IMG
 SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Home"></A
 ></TD
 ><TH
 WIDTH="100%"
 align="center"
->Building Packages with git-buildpackage suite: Version: 0.6.15</TH
+>Building Packages with git-buildpackage suite: Version: 0.7.0-tizen20151027</TH
 ><TD
 ><A
 ACCESSKEY="n"
 HREF="gbp.rpm.development.html"
 ><IMG
 SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Next"></A
 ></TD
@@ -165,11 +165,11 @@ TARGET="_top"
     information (version number, name etc). Another clear difference is
     that <B
 CLASS="COMMAND"
->gbp buildpackage-rpm</B
+>gbp&nbsp;buildpackage-rpm</B
 > will always build in a separate build
     directory whereas <B
 CLASS="COMMAND"
->gbp buildpackage</B
+>gbp&nbsp;buildpackage</B
 > (the Debian) tool builds in the
     git working dir, by default.
     Third, conceptual, difference (for non-native packages) is that you may
@@ -185,74 +185,74 @@ CLASS="COMMAND"
 ><P
 ><B
 CLASS="COMMAND"
->gbp buildpackage</B
+>gbp&nbsp;buildpackage</B
 > -&#62; RPM: <B
 CLASS="COMMAND"
->gbp buildpackage-rpm</B
+>gbp&nbsp;buildpackage-rpm</B
 ></P
 ></LI
 ><LI
 ><P
 ><B
 CLASS="COMMAND"
->gbp import-dsc</B
+>gbp&nbsp;import-dsc</B
 > -&#62; RPM: <B
 CLASS="COMMAND"
->gbp import-srpm</B
+>gbp&nbsp;import-srpm</B
 ></P
 ></LI
 ><LI
 ><P
 ><B
 CLASS="COMMAND"
->gbp import-orig</B
+>gbp&nbsp;import-orig</B
 > -&#62; RPM: <B
 CLASS="COMMAND"
->gbp import-orig-rpm</B
+>gbp&nbsp;import-orig-rpm</B
 ></P
 ></LI
 ><LI
 ><P
 ><B
 CLASS="COMMAND"
->gbp pq</B
+>gbp&nbsp;pq</B
 > -&#62; RPM: <B
 CLASS="COMMAND"
->gbp pq-rpm</B
+>gbp&nbsp;pq-rpm</B
 ></P
 ></LI
 ><LI
 ><P
 ><B
 CLASS="COMMAND"
->gbp clone</B
+>gbp&nbsp;clone</B
 > -&#62; RPM: <B
 CLASS="COMMAND"
->gbp clone</B
+>gbp&nbsp;clone</B
 > (the same tool)</P
 ></LI
 ><LI
 ><P
 ><B
 CLASS="COMMAND"
->gbp pull</B
+>gbp&nbsp;pull</B
 > -&#62; RPM: <B
 CLASS="COMMAND"
->gbp pull</B
+>gbp&nbsp;pull</B
 > (the same tool)</P
 ></LI
 ><LI
 ><P
 ><B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 > -&#62; RPM: not available</P
 ></LI
 ><LI
 ><P
 ><B
 CLASS="COMMAND"
->gbp import-dscs</B
+>gbp&nbsp;import-dscs</B
 > -&#62; RPM: not available</P
 ></LI
 ></UL
@@ -359,15 +359,15 @@ TYPE="1"
 ><P
 >        Import a package via <B
 CLASS="COMMAND"
->gbp import-srpm</B
+>gbp&nbsp;import-srpm</B
 > OR clone from the
         distro git with <B
 CLASS="COMMAND"
->gbp clone</B
+>gbp&nbsp;clone</B
 > if the package is already maintained with
         <B
 CLASS="COMMAND"
->gbp buildpackage-rpm</B
+>gbp&nbsp;buildpackage-rpm</B
 >.
         </P
 ></LI
@@ -380,7 +380,7 @@ CLASS="COMMAND"
 >Once satisfied you can build the final package with
         <B
 CLASS="COMMAND"
->gbp buildpackage-rpm</B
+>gbp&nbsp;buildpackage-rpm</B
 > (optionally with --git-tag to create a tag in
         git) and push it to git server.
         </P

@@ -70,8 +70,8 @@ ACCESSKEY="p"
 HREF="gbp.building.html"
 ><IMG
 SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Prev"></A
 ></TD
@@ -81,8 +81,8 @@ ACCESSKEY="u"
 HREF="gbp.html"
 ><IMG
 SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Up"></A
 ></TD
@@ -92,23 +92,23 @@ ACCESSKEY="h"
 HREF="index.html"
 ><IMG
 SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Home"></A
 ></TD
 ><TH
 WIDTH="100%"
 align="center"
->Building Packages with git-buildpackage suite: Version: 0.6.15</TH
+>Building Packages with git-buildpackage suite: Version: 0.7.0-tizen20151027</TH
 ><TD
 ><A
 ACCESSKEY="n"
 HREF="gbp.cfgfile.html"
 ><IMG
 SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Next"></A
 ></TD
@@ -141,12 +141,15 @@ HREF="gbp.releases.html#GBP.RELEASE.COMMIT"
 ></DL
 ></DIV
 ><P
->When branching and merging frequently, the different Debian changelog
+>When branching and merging frequently, the different <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> changelog
     entries on the different branches tend to get into the way of the automatic
-    merge and the the merge fails - leaving the (pathological) merge to the
-    committer. In order to avoid this <B
+    merge and the the merge fails&mdash;leaving the (pathological) merge to the
+    committer. In order to avoid this, <B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 > offers a way for creating
     changelog entries from <SPAN
 CLASS="PRODUCTNAME"
@@ -171,13 +174,13 @@ CLASS="EMPHASIS"
 CLASS="SCREEN"
 ><B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 > <CODE
 CLASS="OPTION"
 >--release</CODE
 ></PRE
 ><P
-> This will look up the latest released version in the changelog,
+>This will look up the latest released version in the changelog,
     increment the version in the <SPAN
 CLASS="PRODUCTNAME"
 >Debian</SPAN
@@ -185,7 +188,7 @@ CLASS="PRODUCTNAME"
     messages from the corresponding <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
-> commit id up to the branch head and
+> commit id up to the branch head, and
     finally spawns an editor for final changelog file editing by invoking <SPAN
 CLASS="PRODUCTNAME"
 >dch</SPAN
@@ -201,14 +204,14 @@ CLASS="OPTION"
 CLASS="SCREEN"
 ><B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 > <CODE
 CLASS="OPTION"
 >--snapshot</CODE
 ></PRE
 ><P
 >will generate a snapshot release with a specially crafted version number
-   and a warning in the changelog that this is a snapshort release:
+   and a warning in the changelog that this is a snapshot release:
    </P
 ><PRE
 CLASS="PROGRAMLISTING"
@@ -221,18 +224,18 @@ CLASS="PROGRAMLISTING"
 >During subsequent calls with <CODE
 CLASS="OPTION"
 >--snapshot</CODE
-> this version
+>, this version
    number will continue to increase. Since the snapshot banners contains the
    commit id of the current branch head, <B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 > can figure out what to
    append to the changelog by itself:
 <PRE
 CLASS="SCREEN"
 ><B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 > <CODE
 CLASS="OPTION"
 >--snapshot</CODE
@@ -242,13 +245,13 @@ CLASS="OPTION"
 ></PRE
 >
    will fetch the commit id and add changelog entries from that point to the
-   current HEAD - again auto incrementing the version number. If you don't want
+   current HEAD&mdash;again auto incrementing the version number. If you don't want
    to start at that commit id, you can specify any id or tag with:</P
 ><PRE
 CLASS="SCREEN"
 ><B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 > <CODE
 CLASS="OPTION"
 >--since</CODE
@@ -262,16 +265,16 @@ CLASS="OPTION"
 >--snapshot</CODE
 ></PRE
 ><P
->   After testing you can remove the snapshot header by a final <B
+>   After testing, you can remove the snapshot header by a final <B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 > call:
    </P
 ><PRE
 CLASS="SCREEN"
 ><B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 > <CODE
 CLASS="OPTION"
 >--since</CODE
@@ -286,12 +289,12 @@ CLASS="OPTION"
 ></PRE
 ><P
 >   This will add no further entries but simply remove the specially crafted
-   version number and the snapshort header. Again you can use any commit id
+   version number and the snapshot header. Again you can use any commit id
    or tag instead of <CODE
 CLASS="OPTION"
 >HEAD</CODE
 > if you want to add further changelog
-   entries - or you can (of course) use <CODE
+   entries&mdash;or you can (of course) use <CODE
 CLASS="OPTION"
 >--auto</CODE
 > again.
@@ -306,14 +309,14 @@ NAME="GBP.RELEASE.NUMBERS"
 >Customizing snapshot numbers</A
 ></H1
 ><P
->If the auto incrementing of the snapshot number doesn't suite you needs you
-    can give any python expression that evaluates to a positive integer to
+>If the auto incrementing of the snapshot number doesn't suite your needs, you
+    can give any Python expression that evaluates to a positive integer to
     calculate the new snapshot number:</P
 ><PRE
 CLASS="SCREEN"
 ><B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 > <CODE
 CLASS="OPTION"
 >-S</CODE
@@ -331,7 +334,7 @@ CLASS="REPLACEABLE"
 >
 <B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 > <CODE
 CLASS="OPTION"
 >-S</CODE
@@ -349,7 +352,7 @@ CLASS="REPLACEABLE"
 >
 <B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 > <CODE
 CLASS="OPTION"
 >-S</CODE
@@ -367,7 +370,7 @@ CLASS="REPLACEABLE"
 >
 <B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 > <CODE
 CLASS="OPTION"
 >-S</CODE
@@ -407,13 +410,13 @@ NAME="GBP.RELEASE.COMMIT"
 CLASS="OPTION"
 >--full</CODE
 > to include the full commit
-    message in the changelog, note that you will lose the formatting though,
+    message in the changelog; note that you will lose the formatting though,
     since <SPAN
 CLASS="PRODUCTNAME"
 >dch</SPAN
 > wraps lines by itself.</P
 ><P
->Additionally there are tags <CODE
+>Additionally, there are tags <CODE
 CLASS="OPTION"
 >Closes:</CODE
 > and
@@ -421,7 +424,7 @@ CLASS="OPTION"
 CLASS="OPTION"
 >Thanks:</CODE
 > available to customize the commit message. Each tag
-has to start at the beginning of a single line. For example the git commit message
+has to start at the beginning of a single line. For example, the git commit message
 <PRE
 CLASS="SCREEN"
 >New upstream version
@@ -442,51 +445,54 @@ CLASS="OPTION"
 >There are several tags to further customize what (and how) commit messages get
 included into the changelog:</P
 ><P
->To exclude a commit from the generated changelog use:</P
+>To exclude a commit from the generated changelog, use:</P
 ><P
 ><PRE
 CLASS="SCREEN"
->Git-Dch: Ignore</PRE
+>Gbp-Dch: Ignore</PRE
 >
 This is e.g. useful if you're just fixing up a previous commit and couldn't
-ammend it or for other janitorial commits that really don't need to end up in
+amend it, or for other janitorial commits that really don't need to end up in
 the changelog. For example, the following git commit message
 <PRE
 CLASS="SCREEN"
 >Set correct branchnames in debian/gbp.conf
 
-Git-Dch: Ignore</PRE
+Gbp-Dch: Ignore</PRE
 >
 will not show up in the generated changelog in any way.</P
 ><P
->To include the full commit message in the changelog use:
+>To include the full commit message in the changelog, use:
 <PRE
 CLASS="SCREEN"
->Git-Dch: Full</PRE
+>Gbp-Dch: Full</PRE
 ></P
 ><P
->To only include the short description in the changelog and skip the body use:
+>To only include the short description in the changelog and skip the body, use:
 <PRE
 CLASS="SCREEN"
->Git-Dch: Short</PRE
+>Gbp-Dch: Short</PRE
 >
 The latter only takes effect when running <B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 > with the
 <CODE
 CLASS="OPTION"
 >--full</CODE
-> option, since including only the short
+> option since including only the short
 description is the default.</P
 ><P
->Usually changelog entries should correspond to a single <SPAN
+>Usually, changelog entries should correspond to a single <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
-> commit. In this case it's
+> commit. In this case, it's
 convenient to include the commit id in the changelog entry. 
 This has the advantage that it's easy for people to identify changes without
-having to write very extensive changelog messages - the link back to Git can be
+having to write very extensive changelog messages&mdash;the link back to <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> can be
 automated via the <CODE
 CLASS="OPTION"
 >Vcs-Browser</CODE
@@ -506,7 +512,7 @@ TARGET="_top"
 >The inclusion of the commit id can be done automatically
 via <B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 >'s <CODE
 CLASS="OPTION"
 >--id-length</CODE

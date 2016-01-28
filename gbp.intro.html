@@ -70,8 +70,8 @@ ACCESSKEY="p"
 HREF="gbp.html"
 ><IMG
 SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Prev"></A
 ></TD
@@ -81,8 +81,8 @@ ACCESSKEY="u"
 HREF="gbp.html"
 ><IMG
 SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Up"></A
 ></TD
@@ -92,23 +92,23 @@ ACCESSKEY="h"
 HREF="index.html"
 ><IMG
 SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Home"></A
 ></TD
 ><TH
 WIDTH="100%"
 align="center"
->Building Packages with git-buildpackage suite: Version: 0.6.15</TH
+>Building Packages with git-buildpackage suite: Version: 0.7.0-tizen20151027</TH
 ><TD
 ><A
 ACCESSKEY="n"
 HREF="gbp.import.html"
 ><IMG
 SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Next"></A
 ></TD
@@ -232,10 +232,13 @@ NAME="GBP.REPOSITORY"
 >Repository Layout and Terminology</A
 ></H1
 ><P
->It is recommended to have the Debian packaging on a seprate
+>It is recommended to have the <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> packaging on a separate
 	branch than the upstream source <A
-NAME="AEN50"
-HREF="#FTN.AEN50"
+NAME="AEN51"
+HREF="#FTN.AEN51"
 ><SPAN
 CLASS="footnote"
 >[1]</SPAN
@@ -244,12 +247,12 @@ CLASS="footnote"
 	This is necessary to be able to import
 	and merge in new upstream versions via <B
 CLASS="COMMAND"
->gbp import-orig</B
+>gbp&nbsp;import-orig</B
 >.
-	To distinguish these two branches the following terminology
+	To distinguish these two branches, the following terminology
 	<A
-NAME="AEN53"
-HREF="#FTN.AEN53"
+NAME="AEN55"
+HREF="#FTN.AEN55"
 ><SPAN
 CLASS="footnote"
 >[2]</SPAN
@@ -320,7 +323,7 @@ CLASS="EMPHASIS"
 	<CODE
 CLASS="OPTION"
 >upstream-branch</CODE
->. In order to use this feature you need
+>. In order to use this feature, you need
 	to install the <SPAN
 CLASS="PRODUCTNAME"
 >pristine-tar</SPAN
@@ -346,7 +349,7 @@ CLASS="emphasis"
 CLASS="EMPHASIS"
 >master</I
 ></SPAN
-> the corresponding patch-queue branch is
+>, the corresponding patch-queue branch is
 	called <SPAN
 CLASS="emphasis"
 ><I
@@ -354,7 +357,10 @@ CLASS="EMPHASIS"
 >patch-queue/master</I
 ></SPAN
 >. The patch-queue branch is 
-	the debian branch plus the contents of
+	the <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> branch plus the contents of
 	<SPAN
 CLASS="emphasis"
 ><I
@@ -364,20 +370,20 @@ CLASS="EMPHASIS"
 > applied. These branches are managed
 	with <B
 CLASS="COMMAND"
->gbp pq</B
+>gbp&nbsp;pq</B
 >.
 	</P
 ></LI
 ></UL
 ><P
 >You're completely
-	free to pick any repository layout and the branch names above are only
+	free to pick any repository layout; the branch names above are only
 	<B
 CLASS="COMMAND"
 >gbp</B
->'s defaults. They can be changed at any point in time
+>'s defaults. They can be changed at any point in time,
 	and you can work with an arbitrary number of branches.
-	For example branches like  <SPAN
+	For example, branches like <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -397,10 +403,10 @@ CLASS="EMPHASIS"
 >stable</I
 ></SPAN
 > might
-	(temporarily or permanent) become your <CODE
+	(temporarily or permanently) become your <CODE
 CLASS="OPTION"
 >debian-branch</CODE
->
+>,
 	and branches like <SPAN
 CLASS="emphasis"
 ><I
@@ -418,10 +424,10 @@ CLASS="EMPHASIS"
 	<CODE
 CLASS="OPTION"
 >upstream-branch</CODE
-> - it doesn't matter if these branches
+>&mdash;it doesn't matter if these branches
 	are maintained with <B
 CLASS="COMMAND"
->gbp import-orig</B
+>gbp&nbsp;import-orig</B
 > or not.</P
 ><P
 >        A recommended branch layout is described in <A
@@ -431,16 +437,16 @@ HREF="gbp.import.html#GBP.BRANCH.NAMING"
 > in the Chapter called <I
 >Importing Sources</I
 ></A
->.
+>&#62;.
         </P
 ><P
 >Since <B
 CLASS="COMMAND"
->gbp buildpackage</B
+>gbp&nbsp;buildpackage</B
 > only works with local <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
->-repositories
+>-repositories,
 	you have to use <B
 CLASS="COMMAND"
 >git push</B
@@ -449,10 +455,10 @@ CLASS="COMMAND"
 HREF="http://git.debian.org/"
 TARGET="_top"
 >git.debian.org</A
->, this can also be
-	automized with <B
+>; this can also be
+	automatized with <B
 CLASS="COMMAND"
->gbp buildpackage</B
+>gbp&nbsp;buildpackage</B
 >'s <CODE
 CLASS="OPTION"
 >post-tag</CODE
@@ -477,9 +483,12 @@ NAME="GBP.WORKFLOW"
 TYPE="1"
 ><LI
 ><P
->Import a new Debian package via <B
+>Import a new <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> package via <B
 CLASS="COMMAND"
->gbp import-dsc</B
+>gbp&nbsp;import-dsc</B
 >. This
 	imports the <SPAN
 CLASS="PRODUCTNAME"
@@ -495,12 +504,12 @@ CLASS="OPTION"
 ></LI
 ><LI
 ><P
->Develop, test, commit changes. During this time you can
+>Develop, test, commit changes. During this time, you can
 	always build the package with <B
 CLASS="COMMAND"
->gbp buildpackage</B
+>gbp&nbsp;buildpackage</B
 >. In case you have
-	uncommitted changes in your source tree you can use the
+	uncommitted changes in your source tree, you can use the
 	<CODE
 CLASS="OPTION"
 >--git-ignore-new</CODE
@@ -508,10 +517,13 @@ CLASS="OPTION"
 ></LI
 ><LI
 ><P
->Optionally you can create the Debian changelog entries
+>Optionally you can create the <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> changelog entries
 	using <B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 > and create snapshot releases for testing using its
 	<CODE
 CLASS="OPTION"
@@ -520,10 +532,10 @@ CLASS="OPTION"
 ></LI
 ><LI
 ><P
->Once satisfied you can build the final package with
+>Once satisfied, you can build the final package with
 	<B
 CLASS="COMMAND"
->gbp buildpackage</B
+>gbp&nbsp;buildpackage</B
 > <CODE
 CLASS="OPTION"
 >--git-tag</CODE
@@ -532,7 +544,7 @@ CLASS="OPTION"
 CLASS="PRODUCTNAME"
 >Git</SPAN
 > so you can switch back to that version later
-	at any time. The format of the tags can be specified, tags can
+	at any time. The format of the tags can be specified; tags can
 	be <SPAN
 CLASS="PRODUCTNAME"
 >GPG</SPAN
@@ -544,16 +556,16 @@ CLASS="PRODUCTNAME"
 	isn't using <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
-> you can import the new version via <B
+>, you can import the new version via <B
 CLASS="COMMAND"
->gbp import-orig</B
+>gbp&nbsp;import-orig</B
 >
 	onto the <CODE
 CLASS="OPTION"
 >upstream-branch</CODE
 >.  <B
 CLASS="COMMAND"
->gbp import-orig</B
+>gbp&nbsp;import-orig</B
 > will
 	by default try to merge the new upstream version onto the
 	<CODE
@@ -563,12 +575,12 @@ CLASS="OPTION"
 	<CODE
 CLASS="OPTION"
 >--no-merge</CODE
->.  After resolving any potential conflicts
-	go back to the second step.  </P
+>.  After resolving any potential conflicts,
+	go back to the second step.</P
 ></LI
 ></OL
 ><P
->These steps will be explaind in more details in the following sections.</P
+>These steps will be explained in more details in the following sections.</P
 ></DIV
 ></DIV
 ><H3
@@ -584,8 +596,8 @@ ALIGN="LEFT"
 VALIGN="TOP"
 WIDTH="5%"
 ><A
-NAME="FTN.AEN50"
-HREF="gbp.intro.html#AEN50"
+NAME="FTN.AEN51"
+HREF="gbp.intro.html#AEN51"
 ><SPAN
 CLASS="footnote"
 >[1]</SPAN
@@ -597,7 +609,10 @@ VALIGN="TOP"
 WIDTH="95%"
 ><P
 >this, of course, has
-	no meaning for Debian native packages</P
+	no meaning for <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> native packages</P
 ></TD
 ></TR
 ><TR
@@ -606,8 +621,8 @@ ALIGN="LEFT"
 VALIGN="TOP"
 WIDTH="5%"
 ><A
-NAME="FTN.AEN53"
-HREF="gbp.intro.html#AEN53"
+NAME="FTN.AEN55"
+HREF="gbp.intro.html#AEN55"
 ><SPAN
 CLASS="footnote"
 >[2]</SPAN

@@ -70,8 +70,8 @@ ACCESSKEY="p"
 HREF="gbp.intro.html"
 ><IMG
 SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Prev"></A
 ></TD
@@ -81,8 +81,8 @@ ACCESSKEY="u"
 HREF="gbp.html"
 ><IMG
 SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Up"></A
 ></TD
@@ -92,23 +92,23 @@ ACCESSKEY="h"
 HREF="index.html"
 ><IMG
 SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Home"></A
 ></TD
 ><TH
 WIDTH="100%"
 align="center"
->Building Packages with git-buildpackage suite: Version: 0.6.15</TH
+>Building Packages with git-buildpackage suite: Version: 0.7.0-tizen20151027</TH
 ><TD
 ><A
 ACCESSKEY="n"
 HREF="gbp.building.html"
 ><IMG
 SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Next"></A
 ></TD
@@ -152,12 +152,15 @@ CLASS="PRODUCTNAME"
 ><DT
 ><A
 HREF="gbp.import.html#GBP.IMPORT.FROMSCRATCH"
->Starting a Debian package from scratch</A
+>Starting a <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> package from scratch</A
 ></DT
 ><DT
 ><A
 HREF="gbp.import.html#GBP.IMPORT.UPSTREAM-GIT"
->When upstream uses GIT</A
+>When upstream uses Git</A
 ></DT
 ><DT
 ><A
@@ -179,25 +182,40 @@ CLASS="PRODUCTNAME"
 > packages</A
 ></H1
 ><P
->Importing an already exsting debian package into a git repository is as easy as:
+>Importing an already existing <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> package into a <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> repository is as easy as:
     <PRE
 CLASS="SCREEN"
 ><B
 CLASS="COMMAND"
->gbp import-dsc</B
+>gbp&nbsp;import-dsc</B
 > package_0.1-1.dsc
     </PRE
 >
-    This will create a new git repository named after the imported package, put
+    This will create a new <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> repository named after the imported package, put
     the upstream sources onto the <CODE
 CLASS="OPTION"
 >upstream-branch</CODE
 > and the
-    debian patch on the <CODE
+    <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> patch on the <CODE
 CLASS="OPTION"
 >debian-branch</CODE
->. In case of a debian
-    native package only the <CODE
+>. In case of a <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+>
+    native package, only the <CODE
 CLASS="OPTION"
 >debian-branch</CODE
 > is being used.
@@ -209,7 +227,7 @@ CLASS="OPTION"
 CLASS="OPTION"
 >--debian-branch</CODE
 >
-    options or via the <CODE
+    options, or via the <CODE
 CLASS="OPTION"
 >upstream-branch</CODE
 > and
@@ -223,14 +241,14 @@ CLASS="OPTION"
     (orig.tar.gz) from <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
-> you should also specify the
+>, you should also specify the
     <CODE
 CLASS="OPTION"
 >--pristine-tar</CODE
 > option.  This is recommended.
     </P
 ><P
->    If you want to import further versions you can change into your shiny new
+>    If you want to import further versions, you can change into your shiny new
     <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
@@ -240,15 +258,15 @@ CLASS="SCREEN"
 >cd package/
 <B
 CLASS="COMMAND"
->gbp import-dsc</B
+>gbp&nbsp;import-dsc</B
 > package_0.1-2.dsc
 <B
 CLASS="COMMAND"
->gbp import-dsc</B
+>gbp&nbsp;import-dsc</B
 > package_0.1-3.dsc
 <B
 CLASS="COMMAND"
->gbp import-dsc</B
+>gbp&nbsp;import-dsc</B
 > package_0.2-1.dsc
     </PRE
 >
@@ -256,13 +274,13 @@ CLASS="COMMAND"
 ><P
 >Or you can import all versions at once using <B
 CLASS="COMMAND"
->gbp import-dscs</B
+>gbp&nbsp;import-dscs</B
 >:
     <PRE
 CLASS="SCREEN"
 ><B
 CLASS="COMMAND"
->gbp import-dscs</B
+>gbp&nbsp;import-dscs</B
 > /path/to/history/package_*.dsc
     </PRE
 >
@@ -271,6 +289,29 @@ CLASS="PRODUCTNAME"
 >Git</SPAN
 > repository if necessary and import all versions sorted
 by version number.
+    </P
+><P
+>You can also import all versions of a package known from the
+    <A
+HREF="http://snapshot.debian.org/"
+TARGET="_top"
+>snapshot.debian.org</A
+> service
+    using the <CODE
+CLASS="OPTION"
+>--debsnap</CODE
+> option of <B
+CLASS="COMMAND"
+>gbp&nbsp;import-dscs</B
+>:
+    <PRE
+CLASS="SCREEN"
+><B
+CLASS="COMMAND"
+>gbp&nbsp;import-dscs</B
+> --debsnap package
+    </PRE
+>
     </P
 ></DIV
 ><BR
@@ -283,34 +324,37 @@ NAME="GBP.IMPORT.NEW.UPSTREAM"
 >Importing a new upstream version</A
 ></H1
 ><P
->Change into your git repository (which can be empty), make sure it
-    has all local modifications committed and run either of:
+>Change into your <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> repository (which can be empty), make sure it
+    has all local modifications committed, and run either of:
     <PRE
 CLASS="SCREEN"
 ><B
 CLASS="COMMAND"
->gbp import-orig</B
+>gbp&nbsp;import-orig</B
 > <TT
 CLASS="FILENAME"
 >/path/to/package_0.2.orig.tar.gz</TT
 >
 <B
 CLASS="COMMAND"
->gbp import-orig</B
+>gbp&nbsp;import-orig</B
 > <TT
 CLASS="FILENAME"
 >/path/to/package_0.2.tar.bz2</TT
 >
 <B
 CLASS="COMMAND"
->gbp import-orig</B
+>gbp&nbsp;import-orig</B
 > <TT
 CLASS="FILENAME"
 >/path/to/package-0.2/</TT
 >
     </PRE
 >
-    This puts the upstream souces onto the <CODE
+    This puts the upstream sources onto the <CODE
 CLASS="OPTION"
 >upstream-branch</CODE
 > and
@@ -324,7 +368,7 @@ CLASS="REPLACEABLE"
     The result is then merged onto the <CODE
 CLASS="OPTION"
 >debian-branch</CODE
->
+>,
     and a new <SPAN
 CLASS="PRODUCTNAME"
 >Debian</SPAN
@@ -336,13 +380,33 @@ CLASS="OPTION"
     <CODE
 CLASS="OPTION"
 >--debian-branch</CODE
-> options. You can also filter out content
+> options.
+    </P
+><P
+>If you are using <TT
+CLASS="FILENAME"
+>debian/watch</TT
+> to keep track of how to retrieve upstream sources, you can also simply use the <CODE
+CLASS="OPTION"
+>--uscan</CODE
+> option:
+    <PRE
+CLASS="SCREEN"
+><B
+CLASS="COMMAND"
+>gbp&nbsp;import-orig</B
+> --uscan
+    </PRE
+>
+    </P
+><P
+>You can also filter out content
     you don't want imported:
     <PRE
 CLASS="SCREEN"
 ><B
 CLASS="COMMAND"
->gbp import-orig</B
+>gbp&nbsp;import-orig</B
 > <CODE
 CLASS="OPTION"
 >--filter</CODE
@@ -364,14 +428,14 @@ CLASS="OPTION"
     complex filtering.
     </P
 ><P
->    If you expect a merge conflict you can delay the merge to the
+>    If you expect a merge conflict, you can delay the merge to the
     <CODE
 CLASS="OPTION"
 >debian-branch</CODE
 > via the <CODE
 CLASS="OPTION"
 >--no-merge</CODE
-> and pull in
+> option and pull in
     the changes from the <CODE
 CLASS="OPTION"
 >upstream-branch</CODE
@@ -382,7 +446,7 @@ CLASS="OPTION"
     (orig.tar.gz) from <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
-> you should also specify the
+>, you should also specify the
     <CODE
 CLASS="OPTION"
 >--pristine-tar</CODE
@@ -391,13 +455,13 @@ CLASS="OPTION"
 ><P
 >To customize the commit message used by <B
 CLASS="COMMAND"
->gbp import-orig</B
-> use
+>gbp&nbsp;import-orig</B
+>, use
     the <CODE
 CLASS="OPTION"
 >--import-msg</CODE
 > option. This string is a standard
-    python format string, into which the
+    Python format string, into which the
     <TT
 CLASS="REPLACEABLE"
 ><I
@@ -431,11 +495,11 @@ CLASS="PRODUCTNAME"
 >Git</SPAN
 > repository wasn't created with <B
 CLASS="COMMAND"
->gbp import-dsc</B
-> you have to tell
-    <B
+>gbp&nbsp;import-dsc</B
+>, you have to
+    tell <B
 CLASS="COMMAND"
->gbp buildpackage</B
+>gbp&nbsp;buildpackage</B
 > and friends where to find the upstream sources.
     </P
 ><BR
@@ -444,11 +508,11 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN204"
+NAME="AEN227"
 >Upstream sources on a branch</A
 ></H2
 ><P
->    If the upstream sources are already on a separate branch things are pretty
+>    If the upstream sources are already on a separate branch, things are pretty
     simple. You can either rename that branch to the default
     <CODE
 CLASS="OPTION"
@@ -477,7 +541,7 @@ CLASS="OPTION"
 >
     or you can tell <B
 CLASS="COMMAND"
->gbp buildpackage</B
+>gbp&nbsp;buildpackage</B
 > the name of the branch to use as
     <CODE
 CLASS="OPTION"
@@ -500,7 +564,7 @@ EOF
 >
     If you then use <B
 CLASS="COMMAND"
->gbp import-orig</B
+>gbp&nbsp;import-orig</B
 > to import new upstream sources, they will
     from now on end up on <SPAN
 CLASS="emphasis"
@@ -521,12 +585,15 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="AEN221"
+NAME="AEN244"
 >Upstream sources not on a branch</A
 ></H2
 ><P
 >    If you don't have an upstream branch but started your repository with only
-    the upstream sources (not the debian patch) you can simply branch from that
+    the upstream sources (not the <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> patch), you can simply branch from that
     point. So use <B
 CLASS="COMMAND"
 >gitk</B
@@ -557,7 +624,10 @@ CLASS="EMPHASIS"
 >only</I
 ></SPAN
 > the
-    upstream sources and not the debian modifications. The above example
+    upstream sources and not the <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> modifications. The above example
     assumes that this was the first commit to that repository.
     </P
 ><DIV
@@ -592,7 +662,7 @@ CLASS="OPTION"
 > if you never had the upstream sources
     as a single commit. Using <B
 CLASS="COMMAND"
->gbp import-orig</B
+>gbp&nbsp;import-orig</B
 > on such repositories might lead
     to unexpected merge results.</P
 ></TD
@@ -611,7 +681,7 @@ TARGET="_top"
 >. Afterwards you
     can simply create a branch as explained above and <B
 CLASS="COMMAND"
->gbp import-orig</B
+>gbp&nbsp;import-orig</B
 > will
     work as expected.</P
 ><P
@@ -743,14 +813,17 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="GBP.IMPORT.FROMSCRATCH"
->Starting a Debian package from scratch</A
-></H1
-><P
->    So far we assumed you already have a <SPAN
+>Starting a <SPAN
 CLASS="PRODUCTNAME"
 >Debian</SPAN
-> package to start with but
-    what if you want to start a new package? First create an empty repository:
+> package from scratch</A
+></H1
+><P
+>    So far, we assumed you already have a <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> package to start with, but
+    what if you want to start a new package? First, create an empty repository:
     </P
 ><PRE
 CLASS="SCREEN"
@@ -768,16 +841,19 @@ CLASS="COMMAND"
 >
     </PRE
 ><P
->Then you import the upstream sources, branch off the
+>Then, you import the upstream sources, branch off the
     <CODE
 CLASS="OPTION"
 >upstream-branch</CODE
-> branch and add the debian files (e.g. via dh_make):
+> branch and add the <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> files (e.g. via dh_make):
     <PRE
 CLASS="SCREEN"
 ><B
 CLASS="COMMAND"
->gbp import-orig</B
+>gbp&nbsp;import-orig</B
 > <CODE
 CLASS="OPTION"
 >-u</CODE
@@ -796,9 +872,9 @@ CLASS="COMMAND"
 >
     </PRE
 >
-    That's it, you're done. If you want to publish you're new repository you can use <B
+    That's it, you're done. If you want to publish your new repository, you can use <B
 CLASS="COMMAND"
->gbp create-remote-repo</B
+>gbp&nbsp;create-remote-repo</B
 >.
     </P
 ></DIV
@@ -809,10 +885,10 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="GBP.IMPORT.UPSTREAM-GIT"
->When upstream uses GIT</A
+>When upstream uses Git</A
 ></H1
 ><P
->      If upstream already uses git for packaging there are several ways to handle packaging. Two of them will
+>      If upstream already uses git for packaging, there are several ways to handle packaging. Two of them will
       be described in a bit detail here:
     </P
 ><BR
@@ -825,18 +901,18 @@ NAME="GBP.IMPORT.UPSTREAM.GIT.NOTARBALL"
 >No upstream tarballs</A
 ></H2
 ><P
->If upstream doesn't build upstream tarballs or you don't care about them the simplest
-	  way is to clone upstreams repository and create a separate packaging branch in there.
+>If upstream doesn't build upstream tarballs, or you don't care about them, the simplest
+	  way is to clone upstream's repository and create a separate packaging branch in there.
 	</P
 ><P
 >	  In order to help <B
 CLASS="COMMAND"
->gbp buildpackage</B
-> to find upstream tags you need to specify the format
+>gbp&nbsp;buildpackage</B
+> to find upstream tags, you need to specify the format
 	  using the <CODE
 CLASS="OPTION"
 >--git-upstream-tag</CODE
-> comand line option or the the <CODE
+> command line option or the the <CODE
 CLASS="OPTION"
 >upstream-tag</CODE
 >
@@ -849,7 +925,7 @@ CLASS="REPLACEABLE"
 >v</I
 ></TT
 > in front of the version number.
-	  In this case the configuration option would look like:
+	  In this case, the configuration option would look like:
 	</P
 ><PRE
 CLASS="SCREEN"
@@ -872,15 +948,18 @@ CLASS="FILENAME"
 >If you're using <SPAN
 CLASS="PRODUCTNAME"
 >pristine-tar</SPAN
-> you can make <B
+>, you can make <B
 CLASS="COMMAND"
->gbp buildpackage</B
+>gbp&nbsp;buildpackage</B
 > commit the generated tarball back to the
 	  pristine-tar branch by using the <CODE
 CLASS="OPTION"
 >--git-pristine-tar-commit</CODE
 > option. This will make sure
-	  others building your package can regenerate the tarball you generated for building the Debian pacakge.
+	  others building your package can regenerate the tarball you generated for building the <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> package.
 	</P
 ><BR
 CLEAR="all"><DIV
@@ -888,26 +967,29 @@ CLASS="SECT3"
 ><H3
 CLASS="SECT3"
 ><A
-NAME="AEN307"
+NAME="AEN335"
 >Step by step</A
 ></H3
 ><P
 >To not make any assumptions about <B
 CLASS="COMMAND"
 >gbp</B
->'s configuration the following steps have all options given
-	  in its long versions on the command line . You can add these
+>'s configuration, the following steps have all options given
+	  in its long versions on the command line. You can add these
 	  to <TT
 CLASS="FILENAME"
 >gbp.conf</TT
 > to save lots of typing.
 	</P
 ><P
->First we clone the upstream repository. To avoid any dis ambiguities between the Debian packaging repository
-	  and the upstream repository we name the upstream repository <TT
+>First, we clone the upstream repository. To avoid any ambiguities between the <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> packaging repository
+	  and the upstream repository, we name the upstream repository <TT
 CLASS="REPLACEABLE"
 ><I
->ustream</I
+>upstream</I
 ></TT
 > instead of the
 	  default <TT
@@ -928,14 +1010,20 @@ CLASS="REPLACEABLE"
 ><I
 >debian/sid</I
 ></TT
-> for the Debian packaging. We didn't create
+> for the <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> packaging. We didn't create
 	  any <TT
 CLASS="REPLACEABLE"
 ><I
 >upstream/*</I
 ></TT
-> branches, they're not needed for the packaging and only need to be
-	  kept up to date. After adding the Debian packaging we build the package. This assumes you're using <SPAN
+> branches; they're not needed for the packaging and only need to be
+	  kept up to date. After adding the <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> packaging, we build the package. This assumes you're using <SPAN
 CLASS="PRODUCTNAME"
 >pristine-tar</SPAN
 >
@@ -945,7 +1033,7 @@ CLASS="SCREEN"
 >	    gbp buildpackage --git-pristine-tar --git-pristine-tar-commit --git-upstream-tag='v%(version)s' --git-debian-branch=debian/sid
 	  </PRE
 >
-	  When updating to a new upstream version we simply fetch from upstream and merge in the new tag. Afterwards we
+	  When updating to a new upstream version, we simply fetch from upstream and merge in the new tag. Afterwards, we
 	  update the changelog and build the package:
 	  <PRE
 CLASS="SCREEN"
@@ -957,20 +1045,20 @@ CLASS="SCREEN"
 >
 	  Note that the above <B
 CLASS="COMMAND"
->gbp dch</B
+>gbp&nbsp;dch</B
 > call makes sure we only pickup changes in the <TT
 CLASS="FILENAME"
 >debian/</TT
 >
-	  directory. Since we told it to build a snapshot changelog entry and we didn't commit the changelog yet
+	  directory. Since we told it to build a snapshot changelog entry and we hadn't commit the changelog yet,
 	  we need to tell <B
 CLASS="COMMAND"
->gbp buildpackage</B
+>gbp&nbsp;buildpackage</B
 > that the working directory is unclean via the <CODE
 CLASS="OPTION"
 >--git-ignore-new</CODE
->.
-	  Once everything looks good commit the changelog and build a release version:
+> option.
+	  Once everything looks good, commit the changelog and build a release version:
 	  <PRE
 CLASS="SCREEN"
 >	    gbp dch --release --auto --git-debian-branch=debian/sid
@@ -978,12 +1066,12 @@ CLASS="SCREEN"
 	    gbp buildpackage --git-upstream-tag='v%(version)s' --git-debian-branch=debian/sid
 	  </PRE
 >
-	  If you want to share you're repository with others you can use <B
+	  If you want to share your repository with others, you can use <B
 CLASS="COMMAND"
->gbp create-remote-repo</B
+>gbp&nbsp;create-remote-repo</B
 > and <B
 CLASS="COMMAND"
->gbp pull</B
+>gbp&nbsp;pull</B
 > as usual.
 	</P
 ></DIV
@@ -998,30 +1086,33 @@ NAME="GBP.IMPORT.UPSTREAM.GIT.TARBALL"
 >Upstream tarballs</A
 ></H2
 ><P
->If you want to track upstream's git but continue to import the upstream tarballs,
+>If you want to track upstream's <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> but continue to import the upstream tarballs,
 	  e.g. to make sure the tarball uploaded
 	  to <SPAN
 CLASS="PRODUCTNAME"
 >Debian</SPAN
-> has the same checksum as upstream's you can use the <CODE
+> has the same checksum as upstream's, you can use the <CODE
 CLASS="OPTION"
 >--upstream-vcs-tag</CODE
 > option
 	  when importing new tarballs with <B
 CLASS="COMMAND"
->gbp import-orig</B
+>gbp&nbsp;import-orig</B
 >. Assuming you have the upstream source in your
 	  repository with a tag <TT
 CLASS="REPLACEABLE"
 ><I
 >v0.0.1</I
 ></TT
-> you can use:
+>, you can use:
 	  <PRE
 CLASS="SCREEN"
 >	    <B
 CLASS="COMMAND"
->gbp import-orig</B
+>gbp&nbsp;import-orig</B
 > --upstream-vcs-tag=v0.0.1 foo_0.0.1.orig.tar.gz
 	  </PRE
 >
@@ -1044,10 +1135,13 @@ NAME="GBP.BRANCH.NAMING"
 >Branch layout</A
 ></H1
 ><P
->	By default <B
+>	By default, <B
 CLASS="COMMAND"
 >gbp</B
-> uses one branch to keep the Debian packaging called <SPAN
+> uses one branch to keep the <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> packaging called <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -1063,7 +1157,7 @@ CLASS="EMPHASIS"
 >.
       </P
 ><P
->	This layout is simple to get started but fails short if one needs to maintain several versions of
+>	This layout is simple to get started but falls short if one needs to maintain several versions of
 	the package at the same time. Therefore the following layout is recommended:
       </P
 ><P
@@ -1079,7 +1173,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN346"><SPAN
+NAME="AEN379"><SPAN
 STYLE="white-space: nowrap"
 >debian/&lt;release&gt;</SPAN
 ></TD
@@ -1087,7 +1181,10 @@ STYLE="white-space: nowrap"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->	      the Debian packaging for a release <SPAN
+>	      the <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> packaging for a release <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"
@@ -1121,7 +1218,7 @@ CLASS="EMPHASIS"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN354"><SPAN
+NAME="AEN388"><SPAN
 STYLE="white-space: nowrap"
 >upstream/&lt;release&gt;</SPAN
 ></TD
@@ -1138,7 +1235,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN358"><SPAN
+NAME="AEN392"><SPAN
 STYLE="white-space: nowrap"
 >security/&lt;release&gt;</SPAN
 ></TD
@@ -1155,7 +1252,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN362"><SPAN
+NAME="AEN396"><SPAN
 STYLE="white-space: nowrap"
 >backports/&lt;release&gt;</SPAN
 ></TD
@@ -1172,7 +1269,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN366"><SPAN
+NAME="AEN400"><SPAN
 STYLE="white-space: nowrap"
 >dfsg/&lt;release&gt;</SPAN
 ></TD
@@ -1180,7 +1277,7 @@ STYLE="white-space: nowrap"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->	      the dfsg clean upstream sources in case the cleanup is done via a <SPAN
+>	      the DFSG-clean upstream sources in case the cleanup is done via a <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
 >
@@ -1194,7 +1291,7 @@ CLASS="PRODUCTNAME"
 >	In case <SPAN
 CLASS="PRODUCTNAME"
 >pristine-tar</SPAN
-> is being used there will be a single <SPAN
+> is being used, there will be a single <SPAN
 CLASS="emphasis"
 ><I
 CLASS="EMPHASIS"

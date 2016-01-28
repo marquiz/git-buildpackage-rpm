@@ -70,8 +70,8 @@ ACCESSKEY="p"
 HREF="man.gbp.html"
 ><IMG
 SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Prev"></A
 ></TD
@@ -81,8 +81,8 @@ ACCESSKEY="u"
 HREF="man.reference.html"
 ><IMG
 SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Up"></A
 ></TD
@@ -92,23 +92,23 @@ ACCESSKEY="h"
 HREF="index.html"
 ><IMG
 SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Home"></A
 ></TD
 ><TH
 WIDTH="100%"
 align="center"
->Building Packages with git-buildpackage suite: Version: 0.6.15</TH
+>Building Packages with git-buildpackage suite: Version: 0.7.0-tizen20151027</TH
 ><TD
 ><A
 ACCESSKEY="n"
 HREF="man.gbp.import.dsc.html"
 ><IMG
 SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Next"></A
 ></TD
@@ -122,25 +122,34 @@ NAME="MAN.GBP.BUILDPACKAGE"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN951"
+NAME="AEN1030"
 ></A
 ><H2
 >Name</H2
->git-buildpackage, gbp-buildpackage&nbsp;--&nbsp;Build Debian packages from a Git repository</DIV
+>gbp-buildpackage&nbsp;--&nbsp;Build <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> packages from a <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> repository</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN955"
+NAME="AEN1035"
 ></A
 ><H2
 >Synopsis</H2
 ><P
 ><B
 CLASS="COMMAND"
->gbp buildpackage</B
+>gbp&nbsp;buildpackage</B
 >  [<CODE
 CLASS="OPTION"
 >--git-[no-]ignore-new</CODE
+>] [<CODE
+CLASS="OPTION"
+>--git-[no-]ignore-untracked</CODE
 >] [<CODE
 CLASS="OPTION"
 >--git-tag</CODE
@@ -237,6 +246,11 @@ CLASS="OPTION"
 >] [<CODE
 CLASS="OPTION"
 >--git-pbuilder-options</CODE
+>=<TT
+CLASS="REPLACEABLE"
+><I
+>PBUILDER_OPTIONS</I
+></TT
 >] [<CODE
 CLASS="OPTION"
 >--git-[no-]sign-tags</CODE
@@ -292,7 +306,7 @@ CLASS="OPTION"
 ><TT
 CLASS="REPLACEABLE"
 ><I
->TAG-FORMAT</I
+>tag-format</I
 ></TT
 >] [<CODE
 CLASS="OPTION"
@@ -300,7 +314,15 @@ CLASS="OPTION"
 ><TT
 CLASS="REPLACEABLE"
 ><I
->TAG-FORMAT</I
+>tag-format</I
+></TT
+>] [<CODE
+CLASS="OPTION"
+>--git-debian-tag-msg=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>tag-msg-format</I
 ></TT
 >] [<CODE
 CLASS="OPTION"
@@ -379,15 +401,18 @@ CLASS="OPTION"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1064"
+NAME="AEN1150"
 ></A
 ><H2
 >DESCRIPTION</H2
 ><P
 >    <B
 CLASS="COMMAND"
->gbp buildpackage</B
-> is used to build Debian source and .deb packages from
+>gbp&nbsp;buildpackage</B
+> is used to build <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> source and .deb packages from
     a <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
@@ -396,7 +421,7 @@ CLASS="PRODUCTNAME"
 ><P
 >    <B
 CLASS="COMMAND"
->gbp buildpackage</B
+>gbp&nbsp;buildpackage</B
 > will, in order:
     </P
 ><P
@@ -420,37 +445,58 @@ CLASS="COMMAND"
 ></LI
 ><LI
 ><P
->        (Optionally) export the source tree to a separate build area
+>	  (Optionally) run a clean command specified
+	  with <CODE
+CLASS="OPTION"
+>--git-cleaner</CODE
+>.
         </P
 ></LI
 ><LI
 ><P
->        Build an orig tarball if it doesn't exist.
+>        (Optionally) export the source tree to a separate build area.
         </P
 ></LI
 ><LI
 ><P
->        Call <SPAN
+>        Build an orig tarball if it doesn't exist. Optionally using <SPAN
+CLASS="PRODUCTNAME"
+>pristine-tar</SPAN
+>.
+        </P
+></LI
+><LI
+><P
+>          (Optionally) call a pre build hook.
+        </P
+></LI
+><LI
+><P
+>          Call <SPAN
 CLASS="APPLICATION"
 >debuild</SPAN
->(1) (or the application
-        specified via <CODE
+>(1) or <SPAN
+CLASS="PRODUCTNAME"
+>Cowbuilder</SPAN
+>
+          (via <CODE
+CLASS="OPTION"
+>--git-pbuilder</CODE
+>) or the application
+          specified via <CODE
 CLASS="OPTION"
 >--git-builder</CODE
->) with arguments
-        instructing it to ignore <SPAN
-CLASS="PRODUCTNAME"
->Git</SPAN
-> meta-data in the diff.gz, passing along
-        all arguments given to <B
+> passing along
+          all arguments given to <B
 CLASS="COMMAND"
->gbp buildpackage</B
-> that don't start with --git-.
+>gbp&nbsp;buildpackage</B
+> on the command
+          line that don't start with --git-.
         </P
 ></LI
 ><LI
 ><P
->        (Optionally) tag the tree after a successful build
+>        (Optionally) tag the tree after a successful build.
         </P
 ></LI
 ><LI
@@ -458,13 +504,13 @@ CLASS="COMMAND"
 >        (Optionally) call a post build hook - e.g. to run <SPAN
 CLASS="PRODUCTNAME"
 >lintian</SPAN
->
+>.
         </P
 ></LI
 ><LI
 ><P
 >        (Optionally) call a post tag hook - e.g. to push the results to a
-        remote repository after creating the tag
+        remote repository after creating the tag.
         </P
 ></LI
 ></UL
@@ -472,7 +518,7 @@ CLASS="PRODUCTNAME"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1095"
+NAME="AEN1189"
 ></A
 ><H2
 >OPTIONS</H2
@@ -489,7 +535,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1098"><SPAN
+NAME="AEN1192"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -516,7 +562,28 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1104"><SPAN
+NAME="AEN1198"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-[no-]ignore-untracked</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Don't abort if there are untracked files in the source tree.
+          Uncommitted changes to tracked files cause an error normally.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1203"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -527,7 +594,11 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          Add a git tag after a successful build.
+>            Add a git tag after a successful build. This is a command line only option
+            that cannot be specified via <TT
+CLASS="FILENAME"
+>gbp.conf</TT
+>.
           </P
 ></TD
 ></TR
@@ -536,7 +607,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1109"><SPAN
+NAME="AEN1209"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -561,7 +632,7 @@ CLASS="REPLACEABLE"
           <B
 CLASS="COMMAND"
 >debuild -i -I</B
->
+>.
           </P
 ></TD
 ></TR
@@ -570,7 +641,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1117"><SPAN
+NAME="AEN1217"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -595,7 +666,7 @@ CLASS="REPLACEABLE"
           <B
 CLASS="COMMAND"
 >debuild clean</B
->
+>.
           </P
 ></TD
 ></TR
@@ -604,7 +675,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1125"><SPAN
+NAME="AEN1225"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -635,7 +706,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1133"><SPAN
+NAME="AEN1233"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -670,7 +741,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1142"><SPAN
+NAME="AEN1242"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -696,7 +767,37 @@ CLASS="REPLACEABLE"
 CLASS="COMMAND"
 >--git-pbuilder</B
 >. If unset build for the unstable
-          distribution.
+          distribution. The special value <CODE
+CLASS="OPTION"
+>DEP14</CODE
+> will set
+	  the distribution to build for from the branch name. I.e. if you're
+	  starting the build from a branch named
+	  <TT
+CLASS="REPLACEABLE"
+><I
+>debian/wheezy-backports</I
+></TT
+> the
+	  distribution is set
+	  to <TT
+CLASS="REPLACEABLE"
+><I
+>wheezy-backports</I
+></TT
+>. If the branch is
+	  named <TT
+CLASS="REPLACEABLE"
+><I
+>downstream/sid</I
+></TT
+> the distribution
+	  would be set to <TT
+CLASS="REPLACEABLE"
+><I
+>downstream_sid</I
+></TT
+>.
           </P
 ></TD
 ></TR
@@ -705,7 +806,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1150"><SPAN
+NAME="AEN1255"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -743,7 +844,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1159"><SPAN
+NAME="AEN1264"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -771,7 +872,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1166"><SPAN
+NAME="AEN1271"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -791,7 +892,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1171"><SPAN
+NAME="AEN1276"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -811,7 +912,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1176"><SPAN
+NAME="AEN1281"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -836,7 +937,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1182"><SPAN
+NAME="AEN1287"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -861,7 +962,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1188"><SPAN
+NAME="AEN1293"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -892,7 +993,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1194"><SPAN
+NAME="AEN1299"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -933,7 +1034,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1203"><SPAN
+NAME="AEN1308"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -951,7 +1052,7 @@ VALIGN="TOP"
 ><P
 >          If you're not on this branch when invoking <B
 CLASS="COMMAND"
->gbp buildpackage</B
+>gbp&nbsp;buildpackage</B
 > it will
           fail. Default is <TT
 CLASS="REPLACEABLE"
@@ -973,7 +1074,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1212"><SPAN
+NAME="AEN1317"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -999,7 +1100,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1218"><SPAN
+NAME="AEN1323"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1010,7 +1111,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          GPG sign all created tags
+>          GPG sign all created tags.
           </P
 ></TD
 ></TR
@@ -1019,7 +1120,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1223"><SPAN
+NAME="AEN1328"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1039,7 +1140,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1228"><SPAN
+NAME="AEN1333"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1055,7 +1156,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          use this keyid for gpg signing tags
+>          Use this keyid for gpg signing tags.
           </P
 ></TD
 ></TR
@@ -1064,7 +1165,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1234"><SPAN
+NAME="AEN1339"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1080,7 +1181,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          excecute <TT
+>          Execute <TT
 CLASS="REPLACEABLE"
 ><I
 >COMMAND</I
@@ -1110,7 +1211,7 @@ CLASS="ENVAR"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1245"><SPAN
+NAME="AEN1350"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1126,7 +1227,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          execute <TT
+>          Execute <TT
 CLASS="REPLACEABLE"
 ><I
 >COMMAND</I
@@ -1152,7 +1253,7 @@ CLASS="ENVAR"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1255"><SPAN
+NAME="AEN1360"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1168,7 +1269,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          execute <TT
+>          Execute <TT
 CLASS="REPLACEABLE"
 ><I
 >COMMAND</I
@@ -1195,7 +1296,7 @@ CLASS="ENVAR"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1265"><SPAN
+NAME="AEN1370"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1211,7 +1312,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          execute <TT
+>          Execute <TT
 CLASS="REPLACEABLE"
 ><I
 >COMMAND</I
@@ -1244,7 +1345,7 @@ CLASS="ENVAR"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1277"><SPAN
+NAME="AEN1382"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1268,7 +1369,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1283"><SPAN
+NAME="AEN1388"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1293,7 +1394,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1289"><SPAN
+NAME="AEN1394"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1309,13 +1410,16 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          use this tag format when tagging Debian versions, default is
+>          Use this tag format when tagging <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> versions, default is
           <TT
 CLASS="REPLACEABLE"
 ><I
 >debian/%(version)s</I
 ></TT
->
+>.
           </P
 ></TD
 ></TR
@@ -1324,7 +1428,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1296"><SPAN
+NAME="AEN1402"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1340,7 +1444,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          use this tag format when looking for tags of upstream versions,
+>          Use this tag format when looking for tags of upstream versions,
           default is <TT
 CLASS="REPLACEABLE"
 ><I
@@ -1355,7 +1459,40 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1303"><SPAN
+NAME="AEN1409"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--git-debian-tag-msg=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>tag-msg-format</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Use this tag message format when signing <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> versions,
+	  default is <TT
+CLASS="REPLACEABLE"
+><I
+>%(pkg)s Debian release %(version)s</I
+></TT
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1417"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1367,7 +1504,7 @@ ALIGN="LEFT"
 VALIGN="TOP"
 ><P
 >          Force creation of an orig tarball (overwriting a pre-existing one if
-          present)
+          present).
           </P
 ></TD
 ></TR
@@ -1376,7 +1513,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1308"><SPAN
+NAME="AEN1422"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1387,7 +1524,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          Don't try to create any orig tarball
+>          Don't try to create any orig tarball.
           </P
 ></TD
 ></TR
@@ -1396,7 +1533,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1313"><SPAN
+NAME="AEN1427"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1407,8 +1544,17 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          Extract orig tarball when using export-dir option (analog to
-          mergeWithUpstream in svn-bp)
+>            Extract orig tarball from <CODE
+CLASS="OPTION"
+>tarball-dir</CODE
+> when
+            using the <CODE
+CLASS="OPTION"
+>export-dir</CODE
+> option (in analogy to
+            mergeWithUpstream in svn-bp). Also remove debian/ if
+            contained in the upstream tarball in case of 2.0 and 3.0
+            source formats.
           </P
 ></TD
 ></TR
@@ -1417,7 +1563,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1318"><SPAN
+NAME="AEN1434"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1452,7 +1598,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1326"><SPAN
+NAME="AEN1442"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1480,14 +1626,33 @@ CLASS="REPLACEABLE"
 ><I
 >INDEX</I
 ></TT
-> exports the current index whereas
-          the special name <TT
+> exports the current index,
+          <TT
+CLASS="REPLACEABLE"
+><I
+>WC.TRACKED</I
+></TT
+> exports all files tracked by
+          Git in the current working copy as is,
+          <TT
+CLASS="REPLACEABLE"
+><I
+>WC.UNTRACKED</I
+></TT
+> exports all untracked files
+          too whereas <TT
 CLASS="REPLACEABLE"
 ><I
 >WC</I
 ></TT
-> exports the current
-          working copy as is.
+> (or
+          <TT
+CLASS="REPLACEABLE"
+><I
+>WC.IGNORED</I
+></TT
+>) exports all files in the
+          current working directory, even ignored files.
           </P
 ></TD
 ></TR
@@ -1496,7 +1661,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1335"><SPAN
+NAME="AEN1454"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1518,7 +1683,7 @@ CLASS="REPLACEABLE"
 ><I
 >TAG</I
 ></TT
-> looks at a tag corresponding to the
+> (the default) looks at a tag corresponding to the
           version in the changelog. <TT
 CLASS="REPLACEABLE"
 ><I
@@ -1546,7 +1711,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1346"><SPAN
+NAME="AEN1465"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1568,7 +1733,7 @@ CLASS="REPLACEABLE"
 >DIRECTORY</I
 ></TT
 >
-          instead of generating them
+          instead of generating them.
           </P
 ></TD
 ></TR
@@ -1577,7 +1742,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1353"><SPAN
+NAME="AEN1472"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1633,7 +1798,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1364"><SPAN
+NAME="AEN1483"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1659,7 +1824,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1370"><SPAN
+NAME="AEN1489"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1670,7 +1835,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          Purge (remove) temporary build directory after build
+>          Purge (remove) temporary build directory after build.
           </P
 ></TD
 ></TR
@@ -1679,7 +1844,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1375"><SPAN
+NAME="AEN1494"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1690,7 +1855,11 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          Deprecated, use --git-no-purge instead.
+>	    Deprecated, use --git-no-purge instead. This is a command line only option
+	    that cannot be specified via <TT
+CLASS="FILENAME"
+>gbp.conf</TT
+>.
           </P
 ></TD
 ></TR
@@ -1699,7 +1868,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1380"><SPAN
+NAME="AEN1500"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1710,7 +1879,12 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          don't build, only tag and run post-tag hooks
+>            Don't build, only tag and run post-tag hooks. This is a
+            command line only option that cannot be specified via
+            <TT
+CLASS="FILENAME"
+>gbp.conf</TT
+>.
           </P
 ></TD
 ></TR
@@ -1719,7 +1893,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1385"><SPAN
+NAME="AEN1506"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1730,8 +1904,12 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          don't fail tag operations if a tag with the same version already
-          exists
+>            Don't fail tag operations if a tag with the same version
+            already exists. This is a command line only option that
+            cannot be specified via <TT
+CLASS="FILENAME"
+>gbp.conf</TT
+>.
           </P
 ></TD
 ></TR
@@ -1740,7 +1918,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1390"><SPAN
+NAME="AEN1512"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1761,7 +1939,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1395"><SPAN
+NAME="AEN1517"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1783,14 +1961,17 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1400"
+NAME="AEN1522"
 ></A
 ><H2
 >EXAMPLES</H2
 ><P
->    Build a Debian package using <B
+>    Build a <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> package using <B
 CLASS="COMMAND"
->git pbuilder</B
+>git-pbuilder</B
 > which in turn invokes
     <B
 CLASS="COMMAND"
@@ -1802,7 +1983,7 @@ CLASS="COMMAND"
 CLASS="SCREEN"
 >      <B
 CLASS="COMMAND"
->gbp buildpackage</B
+>gbp&nbsp;buildpackage</B
 > --git-pbuilder --git-arch=i386 --git-dist=wheezy
     </PRE
 ><P
@@ -1816,14 +1997,14 @@ CLASS="COMMAND"
 CLASS="SCREEN"
 >      DIST=wheezy ARCH=i386 <B
 CLASS="COMMAND"
->git pbuilder</B
+>git-pbuilder</B
 > create
     </PRE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1411"
+NAME="AEN1534"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -1832,11 +2013,11 @@ NAME="AEN1411"
 CLASS="FILENAME"
 >gbp.conf</TT
 > files are parsed 
-    to set defaults for the above commandline arguments. See the
+    to set defaults for the above command-line arguments. See the
     <A
 HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
-> manpage for details.</P
+>&#62; manpage for details.</P
 ><P
 >      All options in the config files are specified without the 'git-' prefix.
       </P
@@ -1844,7 +2025,7 @@ HREF="man.gbp.conf.html"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1417"
+NAME="AEN1540"
 ></A
 ><H2
 >SEE ALSO</H2
@@ -1852,19 +2033,19 @@ NAME="AEN1417"
 >    <A
 HREF="man.gbp.import.dsc.html"
 >gbp-import-dsc(1)</A
->,
+>&#62;,
     <A
 HREF="man.gbp.import.dscs.html"
 >gbp-import-dscs(1)</A
->,
+>&#62;,
     <A
 HREF="man.gbp.import.orig.html"
 >gbp-import-orig(1)</A
->,
+>&#62;,
     <A
 HREF="man.gbp.dch.html"
 >gbp-dch(1)</A
->,
+>&#62;,
     <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
@@ -1882,7 +2063,7 @@ CLASS="REFENTRYTITLE"
     <A
 HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
->,
+>&#62;,
           <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
@@ -1918,7 +2099,7 @@ CLASS="CITETITLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1442"
+NAME="AEN1565"
 ></A
 ><H2
 >AUTHOR</H2

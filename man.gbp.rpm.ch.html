@@ -16,8 +16,8 @@ REL="PREVIOUS"
 TITLE="gbp-pq-rpm"
 HREF="man.gbp.pq.rpm.html"><LINK
 REL="NEXT"
-TITLE="Copyright"
-HREF="gbp.rpm.copyleft.html"><STYLE
+TITLE="gbp-import-orig-rpm"
+HREF="man.gbp.import.orig.rpm.html"><STYLE
 TYPE="text/css"
 >.synopsis, .classsynopsis {
     background: #eeeeee;
@@ -70,8 +70,8 @@ ACCESSKEY="p"
 HREF="man.gbp.pq.rpm.html"
 ><IMG
 SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Prev"></A
 ></TD
@@ -81,8 +81,8 @@ ACCESSKEY="u"
 HREF="man.rpm.reference.html"
 ><IMG
 SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Up"></A
 ></TD
@@ -92,23 +92,23 @@ ACCESSKEY="h"
 HREF="index.html"
 ><IMG
 SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Home"></A
 ></TD
 ><TH
 WIDTH="100%"
 align="center"
->Building Packages with git-buildpackage suite: Version: 0.6.15</TH
+>Building Packages with git-buildpackage suite: Version: 0.7.0-tizen20151027</TH
 ><TD
 ><A
 ACCESSKEY="n"
-HREF="gbp.rpm.copyleft.html"
+HREF="man.gbp.import.orig.rpm.html"
 ><IMG
 SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Next"></A
 ></TD
@@ -122,7 +122,7 @@ NAME="MAN.GBP.RPM.CH"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN5088"
+NAME="AEN5109"
 ></A
 ><H2
 >Name</H2
@@ -130,7 +130,7 @@ NAME="AEN5088"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN5092"
+NAME="AEN5113"
 ></A
 ><H2
 >Synopsis</H2
@@ -235,6 +235,14 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
+>--meta-bts=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>META_TAGS</I
+></TT
+>] [<CODE
+CLASS="OPTION"
 >--no-release</CODE
 >] [<CODE
 CLASS="OPTION"
@@ -284,6 +292,9 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
+>--commit</CODE
+>] [<CODE
+CLASS="OPTION"
 >--tag</CODE
 >] [<CODE
 CLASS="OPTION"
@@ -317,7 +328,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN5171"
+NAME="AEN5197"
 ></A
 ><H2
 >DESCRIPTION</H2
@@ -380,7 +391,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN5188"
+NAME="AEN5214"
 ></A
 ><H2
 >OPTIONS</H2
@@ -397,7 +408,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5191"><SPAN
+NAME="AEN5217"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -418,7 +429,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5196"><SPAN
+NAME="AEN5222"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -444,7 +455,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5203"><SPAN
+NAME="AEN5229"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -470,7 +481,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5210"><SPAN
+NAME="AEN5236"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -495,7 +506,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5216"><SPAN
+NAME="AEN5242"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -515,7 +526,14 @@ VALIGN="TOP"
           COLOR_SCHEME is
           '&lt;debug&gt;:&lt;info&gt;:&lt;warning&gt;:&lt;error&gt;'.
           Numerical values and color names are accepted, empty fields imply
-          the default color. For example --git-color-scheme='cyan:34::' would
+          the default color. For example,
+          <CODE
+CLASS="OPTION"
+>--git-color-scheme=</CODE
+><TT
+CLASS="LITERAL"
+>'cyan:34::'</TT
+> would
           show debug messages in cyan, info messages in blue and other messages
           in default (i.e. warning and error messages in red).
           </P
@@ -526,7 +544,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5222"><SPAN
+NAME="AEN5250"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -551,7 +569,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5228"><SPAN
+NAME="AEN5256"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -582,7 +600,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5235"><SPAN
+NAME="AEN5263"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -608,7 +626,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5241"><SPAN
+NAME="AEN5269"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -639,7 +657,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5248"><SPAN
+NAME="AEN5276"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -664,7 +682,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5254"><SPAN
+NAME="AEN5282"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -713,7 +731,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5264"><SPAN
+NAME="AEN5292"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -752,7 +770,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5273"><SPAN
+NAME="AEN5301"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -776,7 +794,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5279"><SPAN
+NAME="AEN5307"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -807,7 +825,36 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5286"><SPAN
+NAME="AEN5314"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--meta-bts=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>META_TAGS</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Meta tags in the commit messages that are interpreted as bug tracking
+          system related references. The recognized bts references are added in
+          the generated changelog entries. See the META TAGS section below for
+          more information. The bts meta tag tracking feature can be disabled
+          by defining an empty string.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5320"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -828,7 +875,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5291"><SPAN
+NAME="AEN5325"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -848,7 +895,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5296"><SPAN
+NAME="AEN5330"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -873,7 +920,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5302"><SPAN
+NAME="AEN5336"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -904,7 +951,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5309"><SPAN
+NAME="AEN5343"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -959,7 +1006,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5320"><SPAN
+NAME="AEN5354"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -990,7 +1037,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5327"><SPAN
+NAME="AEN5361"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1014,7 +1061,7 @@ CLASS="APPLICATION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5333"><SPAN
+NAME="AEN5367"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1039,7 +1086,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5339"><SPAN
+NAME="AEN5373"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1064,7 +1111,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5345"><SPAN
+NAME="AEN5379"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1097,7 +1144,59 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5353"><SPAN
+NAME="AEN5387"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--commit</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Commit changes to git after modifying changelog. Importantly, in
+          addition to the changelog modifications all other staged changes are
+          committed, too, making it possible to update other files in the same
+          commit.
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5392"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--commit-msg=</CODE
+><TT
+CLASS="REPLACEABLE"
+><I
+>MSG-FORMAT</I
+></TT
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>          Format string for the commit message when committing changes
+          (when <CODE
+CLASS="OPTION"
+>--commit</CODE
+> is given).
+          </P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN5399"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1108,15 +1207,18 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          Commit the changes and create a packaging (release) tag. All
-          changelog modifications (and importantly, all other staged changes)
-          are committed to git before creating the tag. This option makes it
-          possible to create a release and correctly document the the tag name
-          in the rpm changelog (by using %(tagname)s in the
+>          Commit the changes and create a packaging (release) tag. Similarly to
           <CODE
 CLASS="OPTION"
+>--commit</CODE
+>, all staged changes are committed to git
+          before creating the tag. This option makes it possible to create a
+          release and correctly document the the tag name in the rpm changelog
+          (by using %(tagname)s in the <CODE
+CLASS="OPTION"
 >--changelog-revision</CODE
-> string).
+>
+          string).
           </P
 ></TD
 ></TR
@@ -1125,7 +1227,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5359"><SPAN
+NAME="AEN5406"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1146,7 +1248,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5364"><SPAN
+NAME="AEN5411"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1166,7 +1268,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5369"><SPAN
+NAME="AEN5416"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1191,7 +1293,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5375"><SPAN
+NAME="AEN5422"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1224,7 +1326,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN5382"
+NAME="AEN5429"
 ></A
 ><H2
 >META TAGS</H2
@@ -1257,7 +1359,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5388"><SPAN
+NAME="AEN5435"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1310,11 +1412,11 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5399"><SPAN
+NAME="AEN5446"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->[Close|Closes|Fix|Fixes]</CODE
+>[Close|Closes|...]</CODE
 >: <TT
 CLASS="REPLACEABLE"
 ><I
@@ -1326,7 +1428,21 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          Indicate in the changelog that the bug was addressed by this commit.
+>          Indicate in the changelog entry that bug
+          <TT
+CLASS="REPLACEABLE"
+><I
+>BUGNUMBER</I
+></TT
+> was addressed in this commit.
+          The bts meta tags recognized by <B
+CLASS="COMMAND"
+>gbp rpm-ch</B
+> is actually defined by
+          the <CODE
+CLASS="OPTION"
+>--meta-bts</CODE
+> option.
           </P
 ></TD
 ></TR
@@ -1355,7 +1471,7 @@ CLASS="SCREEN"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN5409"
+NAME="AEN5459"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -1364,16 +1480,16 @@ NAME="AEN5409"
 CLASS="FILENAME"
 >gbp.conf</TT
 > files are parsed 
-    to set defaults for the above commandline arguments. See the
+    to set defaults for the above command-line arguments. See the
     <A
 HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
-> manpage for details.</P
+>&#62; manpage for details.</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN5414"
+NAME="AEN5464"
 ></A
 ><H2
 >SEE ALSO</H2
@@ -1437,7 +1553,7 @@ CLASS="CITETITLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN5434"
+NAME="AEN5484"
 ></A
 ><H2
 >AUTHOR</H2
@@ -1472,9 +1588,9 @@ HREF="man.gbp.pq.rpm.html"
 ALIGN="right"
 ><A
 ACCESSKEY="n"
-HREF="gbp.rpm.copyleft.html"
+HREF="man.gbp.import.orig.rpm.html"
 ><B
->Copyright&nbsp;&gt;&gt;&gt;</B
+>gbp-import-orig-rpm&nbsp;&gt;&gt;&gt;</B
 ></A
 ></TD
 ></TR

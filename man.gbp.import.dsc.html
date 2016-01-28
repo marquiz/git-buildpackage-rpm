@@ -70,8 +70,8 @@ ACCESSKEY="p"
 HREF="man.gbp.buildpackage.html"
 ><IMG
 SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Prev"></A
 ></TD
@@ -81,8 +81,8 @@ ACCESSKEY="u"
 HREF="man.reference.html"
 ><IMG
 SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Up"></A
 ></TD
@@ -92,23 +92,23 @@ ACCESSKEY="h"
 HREF="index.html"
 ><IMG
 SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Home"></A
 ></TD
 ><TH
 WIDTH="100%"
 align="center"
->Building Packages with git-buildpackage suite: Version: 0.6.15</TH
+>Building Packages with git-buildpackage suite: Version: 0.7.0-tizen20151027</TH
 ><TD
 ><A
 ACCESSKEY="n"
 HREF="man.gbp.import.dscs.html"
 ><IMG
 SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Next"></A
 ></TD
@@ -122,22 +122,28 @@ NAME="MAN.GBP.IMPORT.DSC"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN1456"
+NAME="AEN1579"
 ></A
 ><H2
 >Name</H2
->git-import-dsc, gbp-import-dsc&nbsp;--&nbsp;Import Debian packages into a Git repository</DIV
+>gbp-import-dsc&nbsp;--&nbsp;Import <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> packages into a <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> repository</DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN1460"
+NAME="AEN1584"
 ></A
 ><H2
 >Synopsis</H2
 ><P
 ><B
 CLASS="COMMAND"
->gbp import-dsc</B
+>gbp&nbsp;import-dsc</B
 >  [<CODE
 CLASS="OPTION"
 >--version</CODE
@@ -244,7 +250,7 @@ CLASS="REPLACEABLE"
 ><P
 ><B
 CLASS="COMMAND"
->gbp import-dsc</B
+>gbp&nbsp;import-dsc</B
 >  [<CODE
 CLASS="OPTION"
 >options</CODE
@@ -269,27 +275,38 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1524"
+NAME="AEN1648"
 ></A
 ><H2
 >DESCRIPTION</H2
 ><P
 >    <B
 CLASS="COMMAND"
->gbp import-dsc</B
-> imports a Debian source package into a <SPAN
+>gbp&nbsp;import-dsc</B
+> imports a <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> source package into a <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
 > repository,
     notes the package version in the commit logs, and commits the change. All
-    information, including package name, version, Debian  diffs, and upstream
-    source is automatically detected from the source package.
+    information, including package name, version, <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+>  diffs, and upstream
+    source, is automatically detected from the source package.
+    </P
+><P
+>    If the command is run from within an existing repository, it will import
+    into this; if not, a new repository named as the Debian source package is
+    created.
     </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1529"
+NAME="AEN1656"
 ></A
 ><H2
 >OPTIONS</H2
@@ -306,7 +323,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1532"><SPAN
+NAME="AEN1659"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -327,7 +344,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1537"><SPAN
+NAME="AEN1664"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -353,7 +370,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1544"><SPAN
+NAME="AEN1671"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -379,7 +396,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1551"><SPAN
+NAME="AEN1678"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -404,7 +421,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1557"><SPAN
+NAME="AEN1684"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -424,7 +441,14 @@ VALIGN="TOP"
           COLOR_SCHEME is
           '&lt;debug&gt;:&lt;info&gt;:&lt;warning&gt;:&lt;error&gt;'.
           Numerical values and color names are accepted, empty fields imply
-          the default color. For example --git-color-scheme='cyan:34::' would
+          the default color. For example,
+          <CODE
+CLASS="OPTION"
+>--git-color-scheme=</CODE
+><TT
+CLASS="LITERAL"
+>'cyan:34::'</TT
+> would
           show debug messages in cyan, info messages in blue and other messages
           in default (i.e. warning and error messages in red).
           </P
@@ -435,7 +459,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1563"><SPAN
+NAME="AEN1692"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -469,7 +493,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1571"><SPAN
+NAME="AEN1700"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -503,7 +527,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1579"><SPAN
+NAME="AEN1708"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -523,7 +547,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1584"><SPAN
+NAME="AEN1713"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -548,7 +572,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1590"><SPAN
+NAME="AEN1719"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -564,7 +588,10 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          use this tag format when tagging Debian versions,
+>          use this tag format when tagging <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> versions,
           default is <TT
 CLASS="REPLACEABLE"
 ><I
@@ -579,7 +606,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1597"><SPAN
+NAME="AEN1727"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -610,7 +637,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1604"><SPAN
+NAME="AEN1734"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -621,7 +648,13 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          Don't create Debian tag after importing the Debian patch. This can be
+>          Don't create <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> tag after importing the <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> patch. This can be
           useful if you already created a package but want to further work on
           it after importing it into git.
           </P
@@ -632,7 +665,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1609"><SPAN
+NAME="AEN1741"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -657,7 +690,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1615"><SPAN
+NAME="AEN1747"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -677,7 +710,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1620"><SPAN
+NAME="AEN1752"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -695,7 +728,7 @@ CLASS="REPLACEABLE"
 ><I
 >source-package</I
 ></TT
-> name or an
+> name or a
           <TT
 CLASS="REPLACEABLE"
 ><I
@@ -717,7 +750,7 @@ CLASS="PRODUCTNAME"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1629"><SPAN
+NAME="AEN1761"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -737,7 +770,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1634"><SPAN
+NAME="AEN1766"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -748,7 +781,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          Allow to import a package with the same debian version.
+>          Allow one to import a package with the same debian version.
           </P
 ></TD
 ></TR
@@ -757,7 +790,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1639"><SPAN
+NAME="AEN1771"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -768,7 +801,10 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          When importing the Debian patch, use the author identity as
+>          When importing the <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> patch, use the author identity as
           committer identity.
           </P
 ></TD
@@ -778,7 +814,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1644"><SPAN
+NAME="AEN1777"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -789,7 +825,10 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->          When importing the Debian patch, use the author date as
+>          When importing the <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> patch, use the author date as
           committer date.
           <DIV
 CLASS="WARNING"
@@ -810,7 +849,10 @@ ALIGN="CENTER"
 ><TD
 ALIGN="LEFT"
 ><P
->            Git will subtly misbehave if the committer date of a commit is not
+>            <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+> will subtly misbehave if the committer date of a commit is not
             later than or equal to all its parents.
             </P
 ></TD
@@ -826,7 +868,7 @@ ALIGN="LEFT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN1651"><SPAN
+NAME="AEN1786"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -847,7 +889,7 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1656"
+NAME="AEN1791"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -856,16 +898,16 @@ NAME="AEN1656"
 CLASS="FILENAME"
 >gbp.conf</TT
 > files are parsed 
-    to set defaults for the above commandline arguments. See the
+    to set defaults for the above command-line arguments. See the
     <A
 HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
-> manpage for details.</P
+>&#62; manpage for details.</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1661"
+NAME="AEN1796"
 ></A
 ><H2
 >SEE ALSO</H2
@@ -873,19 +915,19 @@ NAME="AEN1661"
 >      <A
 HREF="man.gbp.import.dscs.html"
 >gbp-import-dscs(1)</A
->,
+>&#62;,
       <A
 HREF="man.gbp.buildpackage.html"
 >gbp-buildpackage(1)</A
->,
+>&#62;,
       <A
 HREF="man.gbp.import.orig.html"
 >gbp-import-orig(1)</A
->,
+>&#62;,
       <A
 HREF="man.gbp.dch.html"
 >gbp-dch(1)</A
->,
+>&#62;,
       <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
@@ -903,7 +945,7 @@ CLASS="REFENTRYTITLE"
       <A
 HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
->,
+>&#62;,
             <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
@@ -939,7 +981,7 @@ CLASS="CITETITLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1686"
+NAME="AEN1821"
 ></A
 ><H2
 >AUTHOR</H2

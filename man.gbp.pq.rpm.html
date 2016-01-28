@@ -70,8 +70,8 @@ ACCESSKEY="p"
 HREF="man.gbp.import.srpm.html"
 ><IMG
 SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Prev"></A
 ></TD
@@ -81,8 +81,8 @@ ACCESSKEY="u"
 HREF="man.rpm.reference.html"
 ><IMG
 SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Up"></A
 ></TD
@@ -92,23 +92,23 @@ ACCESSKEY="h"
 HREF="index.html"
 ><IMG
 SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Home"></A
 ></TD
 ><TH
 WIDTH="100%"
 align="center"
->Building Packages with git-buildpackage suite: Version: 0.6.15</TH
+>Building Packages with git-buildpackage suite: Version: 0.7.0-tizen20151027</TH
 ><TD
 ><A
 ACCESSKEY="n"
 HREF="man.gbp.rpm.ch.html"
 ><IMG
 SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Next"></A
 ></TD
@@ -122,7 +122,7 @@ NAME="MAN.GBP.PQ.RPM"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN4787"
+NAME="AEN4822"
 ></A
 ><H2
 >Name</H2
@@ -130,14 +130,14 @@ NAME="AEN4787"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN4790"
+NAME="AEN4825"
 ></A
 ><H2
 >Synopsis</H2
 ><P
 ><B
 CLASS="COMMAND"
->gbp pq-rpm</B
+>gbp&nbsp;pq-rpm</B
 >  [<CODE
 CLASS="OPTION"
 >--version</CODE
@@ -162,22 +162,6 @@ CLASS="OPTION"
 CLASS="REPLACEABLE"
 ><I
 >COLOR_SCHEME</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--vendor</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->VENDOR</I
-></TT
->] [<CODE
-CLASS="OPTION"
->--packaging-branch=</CODE
-><TT
-CLASS="REPLACEABLE"
-><I
->BRANCH-NAME</I
 ></TT
 >] [<CODE
 CLASS="OPTION"
@@ -216,6 +200,9 @@ CLASS="OPTION"
 >--force</CODE
 >] [<CODE
 CLASS="OPTION"
+>--[no-]patch-numbers</CODE
+>] [<CODE
+CLASS="OPTION"
 >--import-files=</CODE
 ><TT
 CLASS="REPLACEABLE"
@@ -232,7 +219,7 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
->--patch-export-compress=</CODE
+>--patch-compress=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
@@ -240,7 +227,7 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
->--patch-export-ignore-path=</CODE
+>--patch-ignore-path=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
@@ -248,15 +235,12 @@ CLASS="REPLACEABLE"
 ></TT
 >] [<CODE
 CLASS="OPTION"
->--patch-export-squash-until=</CODE
+>--patch-squash=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
 >COMMITISH</I
 ></TT
->] [<CODE
-CLASS="OPTION"
->--[no-]patch-numbers</CODE
 >] [<CODE
 CLASS="OPTION"
 >--new-packaging-dir=</CODE
@@ -285,20 +269,23 @@ CLASS="OPTION"
 >switch</CODE
 > | <CODE
 CLASS="OPTION"
+>apply</CODE
+> | <CODE
+CLASS="OPTION"
 >convert</CODE
 > </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN4860"
+NAME="AEN4891"
 ></A
 ><H2
 >DESCRIPTION</H2
 ><P
 >    <B
 CLASS="COMMAND"
->gbp pq-rpm</B
+>gbp&nbsp;pq-rpm</B
 > helps in managing patches and development branch(es) for
     packages that are maintained with <B
 CLASS="COMMAND"
@@ -307,14 +294,14 @@ CLASS="COMMAND"
     packages that are maintained using the "orphan-packaging" model.
     <B
 CLASS="COMMAND"
->gbp pq-rpm</B
+>gbp&nbsp;pq-rpm</B
 > has multiple subcommands, or actions, for working with the
     branches and patches.
     </P
 ><P
 >    <B
 CLASS="COMMAND"
->gbp pq-rpm</B
+>gbp&nbsp;pq-rpm</B
 > makes it easy to do source code development on a separate
     development branch (patch-queue branch in Debian git-buildpackage terms).
     For example, if the packaging files would be stored in
@@ -335,7 +322,7 @@ CLASS="REPLACEABLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN4870"
+NAME="AEN4901"
 ></A
 ><H2
 >ACTIONS</H2
@@ -352,7 +339,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4873"><SPAN
+NAME="AEN4904"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -374,7 +361,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4878"><SPAN
+NAME="AEN4909"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -397,7 +384,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4883"><SPAN
+NAME="AEN4914"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -419,7 +406,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4888"><SPAN
+NAME="AEN4919"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -451,7 +438,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4895"><SPAN
+NAME="AEN4926"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -475,7 +462,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4901"><SPAN
+NAME="AEN4932"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -496,7 +483,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4906"><SPAN
+NAME="AEN4937"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -526,7 +513,7 @@ CLASS="OPTION"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN4912"
+NAME="AEN4943"
 ></A
 ><H2
 >OPTIONS</H2
@@ -543,7 +530,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4915"><SPAN
+NAME="AEN4946"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -564,7 +551,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4920"><SPAN
+NAME="AEN4951"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -590,7 +577,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4927"><SPAN
+NAME="AEN4958"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -616,7 +603,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4934"><SPAN
+NAME="AEN4965"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -641,7 +628,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4940"><SPAN
+NAME="AEN4971"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -661,7 +648,14 @@ VALIGN="TOP"
           COLOR_SCHEME is
           '&lt;debug&gt;:&lt;info&gt;:&lt;warning&gt;:&lt;error&gt;'.
           Numerical values and color names are accepted, empty fields imply
-          the default color. For example --git-color-scheme='cyan:34::' would
+          the default color. For example,
+          <CODE
+CLASS="OPTION"
+>--git-color-scheme=</CODE
+><TT
+CLASS="LITERAL"
+>'cyan:34::'</TT
+> would
           show debug messages in cyan, info messages in blue and other messages
           in default (i.e. warning and error messages in red).
           </P
@@ -672,63 +666,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4946"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--vendor</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->VENDOR</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Distribution vendor name.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4952"><SPAN
-STYLE="white-space: nowrap"
-><CODE
-CLASS="OPTION"
->--packaging-branch</CODE
->=<TT
-CLASS="REPLACEABLE"
-><I
->BRANCH-NAME</I
-></TT
-></SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->          Branch the packaging files are being maintained on. Only relevant if
-          a invariable/single development (pq-branch) is defined with
-          <CODE
-CLASS="OPTION"
->--pq-branch</CODE
->, in which case this is used as the
-          "base" branch.
-          </P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN4959"><SPAN
+NAME="AEN4979"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -758,7 +696,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4965"><SPAN
+NAME="AEN4985"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -783,7 +721,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4971"><SPAN
+NAME="AEN4991"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -822,7 +760,7 @@ CLASS="OPTION"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4980"><SPAN
+NAME="AEN5000"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -853,7 +791,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4987"><SPAN
+NAME="AEN5007"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -874,7 +812,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4992"><SPAN
+NAME="AEN5012"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -903,7 +841,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4998"><SPAN
+NAME="AEN5018"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -934,11 +872,11 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5005"><SPAN
+NAME="AEN5025"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--patch-export-compress=</CODE
+>--patch-compress=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
@@ -966,11 +904,11 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5012"><SPAN
+NAME="AEN5032"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--patch-export-ignore-path=</CODE
+>--patch-ignore-path=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
@@ -997,11 +935,11 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5019"><SPAN
+NAME="AEN5039"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
->--patch-export-squash-until=</CODE
+>--patch-squash=</CODE
 ><TT
 CLASS="REPLACEABLE"
 ><I
@@ -1039,7 +977,7 @@ CLASS="COMMAND"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5027"><SPAN
+NAME="AEN5047"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1059,7 +997,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5032"><SPAN
+NAME="AEN5052"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1094,7 +1032,7 @@ CLASS="REPLACEABLE"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5040"><SPAN
+NAME="AEN5060"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1120,14 +1058,14 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN5045"
+NAME="AEN5065"
 ></A
 ><H2
 >META TAGS</H2
 ><P
 >    When exporting patches from a patch-queue branch <B
 CLASS="COMMAND"
->gbp pq-rpm</B
+>gbp&nbsp;pq-rpm</B
 > will look at
     the commit message for special tags it recognizes. All tags need to start
     at the first column and require at least one whitespace after the colon.
@@ -1145,7 +1083,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5050"><SPAN
+NAME="AEN5070"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1165,7 +1103,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5055"><SPAN
+NAME="AEN5075"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1186,7 +1124,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5060"><SPAN
+NAME="AEN5080"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -1229,7 +1167,7 @@ CLASS="SCREEN"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN5069"
+NAME="AEN5089"
 ></A
 ><H2
 >SEE ALSO</H2
@@ -1237,17 +1175,21 @@ NAME="AEN5069"
 >      <A
 HREF="man.gbp.buildpackage.rpm.html"
 >gbp-buildpackage-rpm(1)</A
->,
+>&#62;,
+      <A
+HREF="man.gbp.import.srpm.html"
+>gbp-import-srpm(1)</A
+>&#62;,
       <A
 HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
->
+>&#62;
     </P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN5074"
+NAME="AEN5095"
 ></A
 ><H2
 >AUTHOR</H2

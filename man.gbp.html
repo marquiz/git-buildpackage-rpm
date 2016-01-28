@@ -70,8 +70,8 @@ ACCESSKEY="p"
 HREF="man.reference.html"
 ><IMG
 SRC="left.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Prev"></A
 ></TD
@@ -81,8 +81,8 @@ ACCESSKEY="u"
 HREF="man.reference.html"
 ><IMG
 SRC="up.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Up"></A
 ></TD
@@ -92,23 +92,23 @@ ACCESSKEY="h"
 HREF="index.html"
 ><IMG
 SRC="home.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Home"></A
 ></TD
 ><TH
 WIDTH="100%"
 align="center"
->Building Packages with git-buildpackage suite: Version: 0.6.15</TH
+>Building Packages with git-buildpackage suite: Version: 0.7.0-tizen20151027</TH
 ><TD
 ><A
 ACCESSKEY="n"
 HREF="man.gbp.buildpackage.html"
 ><IMG
 SRC="right.png"
-WIDTH="24"
-HEIGHT="24"
+WIDTH="16"
+HEIGHT="16"
 BORDER="0"
 ALT="Next"></A
 ></TD
@@ -122,18 +122,24 @@ NAME="MAN.GBP"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN818"
+NAME="AEN878"
 ></A
 ><H2
 >Name</H2
 ><B
 CLASS="COMMAND"
 >gbp</B
->&nbsp;--&nbsp;Maintain Debian packages in Git</DIV
+>&nbsp;--&nbsp;Maintain <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> packages in <SPAN
+CLASS="PRODUCTNAME"
+>Git</SPAN
+></DIV
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN822"
+NAME="AEN884"
 ></A
 ><H2
 >Synopsis</H2
@@ -146,6 +152,12 @@ CLASS="OPTION"
 >--help</CODE
 > | <CODE
 CLASS="OPTION"
+>--version</CODE
+> | <CODE
+CLASS="OPTION"
+>--list-cmds</CODE
+> | <CODE
+CLASS="OPTION"
 >command</CODE
 > [<CODE
 CLASS="OPTION"
@@ -155,7 +167,7 @@ CLASS="OPTION"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN832"
+NAME="AEN898"
 ></A
 ><H2
 >DESCRIPTION</H2
@@ -163,7 +175,10 @@ NAME="AEN832"
 >    <B
 CLASS="COMMAND"
 >gbp</B
-> is used to maintain Debian source packages in the <SPAN
+> is used to maintain <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> source packages in the <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
 > version control system.
@@ -172,7 +187,7 @@ CLASS="PRODUCTNAME"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN837"
+NAME="AEN904"
 ></A
 ><H2
 >OPTIONS</H2
@@ -189,7 +204,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN840"><SPAN
+NAME="AEN907"><SPAN
 STYLE="white-space: nowrap"
 ><CODE
 CLASS="OPTION"
@@ -203,18 +218,56 @@ VALIGN="TOP"
 >Print help</P
 ></TD
 ></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN912"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--version</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>Print the programs version</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN917"><SPAN
+STYLE="white-space: nowrap"
+><CODE
+CLASS="OPTION"
+>--list-cmds</CODE
+></SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>List all available commands</P
+></TD
+></TR
 ></TBODY
 ></TABLE
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN845"
+NAME="AEN922"
 ></A
 ><H2
 >GBP COMMANDS</H2
 ><P
->      These are the possible commands. For possible arguments to these commands please
+>      These are the possible commands. For possible arguments to these commands, please
       see the corresponding man pages.
     </P
 ><P
@@ -230,7 +283,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN849"><SPAN
+NAME="AEN926"><SPAN
 STYLE="white-space: nowrap"
 >buildpackage</SPAN
 ></TD
@@ -259,7 +312,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN855"><SPAN
+NAME="AEN932"><SPAN
 STYLE="white-space: nowrap"
 >import-orig</SPAN
 ></TD
@@ -288,7 +341,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN861"><SPAN
+NAME="AEN938"><SPAN
 STYLE="white-space: nowrap"
 >import-dsc</SPAN
 ></TD
@@ -296,7 +349,10 @@ STYLE="white-space: nowrap"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Import a Debian source package into a <SPAN
+>Import a <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> source package into a <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
 > repository</P
@@ -317,7 +373,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN867"><SPAN
+NAME="AEN945"><SPAN
 STYLE="white-space: nowrap"
 >import-dscs</SPAN
 ></TD
@@ -325,7 +381,10 @@ STYLE="white-space: nowrap"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->Import several Debian source packages into a <SPAN
+>Import several <SPAN
+CLASS="PRODUCTNAME"
+>Debian</SPAN
+> source packages into a <SPAN
 CLASS="PRODUCTNAME"
 >Git</SPAN
 > repository, sorted
@@ -347,7 +406,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN873"><SPAN
+NAME="AEN952"><SPAN
 STYLE="white-space: nowrap"
 >dch</SPAN
 ></TD
@@ -379,7 +438,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN880"><SPAN
+NAME="AEN959"><SPAN
 STYLE="white-space: nowrap"
 >pq</SPAN
 ></TD
@@ -414,7 +473,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN888"><SPAN
+NAME="AEN967"><SPAN
 STYLE="white-space: nowrap"
 >pull</SPAN
 ></TD
@@ -443,7 +502,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN894"><SPAN
+NAME="AEN973"><SPAN
 STYLE="white-space: nowrap"
 >clone</SPAN
 ></TD
@@ -472,7 +531,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN900"><SPAN
+NAME="AEN979"><SPAN
 STYLE="white-space: nowrap"
 >create-remote-repo</SPAN
 ></TD
@@ -492,7 +551,7 @@ CLASS="PRODUCTNAME"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN905"
+NAME="AEN984"
 ></A
 ><H2
 >CONFIGURATION FILES</H2
@@ -501,16 +560,16 @@ NAME="AEN905"
 CLASS="FILENAME"
 >gbp.conf</TT
 > files are parsed 
-    to set defaults for the above commandline arguments. See the
+    to set defaults for the above command-line arguments. See the
     <A
 HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
-> manpage for details.</P
+>&#62; manpage for details.</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN910"
+NAME="AEN989"
 ></A
 ><H2
 >SEE ALSO</H2
@@ -518,39 +577,39 @@ NAME="AEN910"
 >      <A
 HREF="man.gbp.buildpackage.html"
 >gbp-buildpackage(1)</A
->,
+>&#62;,
       <A
 HREF="man.gbp.import.dsc.html"
 >gbp-import-dsc(1)</A
->,
+>&#62;,
       <A
 HREF="man.gbp.import.dscs.html"
 >gbp-import-dscs(1)</A
->,
+>&#62;,
       <A
 HREF="man.gbp.import.orig.html"
 >gbp-import-orig(1)</A
->,
+>&#62;,
       <A
 HREF="man.gbp.dch.html"
 >gbp-dch(1)</A
->,
+>&#62;,
       <A
 HREF="man.gbp.pq.html"
 >gbp-pq(1)</A
->,
+>&#62;,
       <A
 HREF="man.gbp.create.remote.repo.html"
 >gbp-create-remote-repo(1)</A
->,
+>&#62;,
       <A
 HREF="man.gbp.pull.html"
 >gbp-pull(1)</A
->,
+>&#62;,
       <A
 HREF="man.gbp.clone.html"
 >gbp-clone(1)</A
->,
+>&#62;,
       <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
@@ -561,7 +620,7 @@ CLASS="REFENTRYTITLE"
       <A
 HREF="man.gbp.conf.html"
 >gbp.conf(5)</A
->,
+>&#62;,
             <SPAN
 CLASS="CITEREFENTRY"
 ><SPAN
@@ -597,7 +656,7 @@ CLASS="CITETITLE"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN937"
+NAME="AEN1016"
 ></A
 ><H2
 >AUTHOR</H2
