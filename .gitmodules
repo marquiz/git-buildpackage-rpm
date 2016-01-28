@@ -1,6 +1,6 @@
 [submodule "tests/component/deb/data"]
 	path = tests/component/deb/data
-	url = ssh://fushuai1985@review.tizen.org:29418/tools/git-buildpackage-deb-testdata
+	url = ssh://jenkins@109.123.100.123:29418/tools/git-buildpackage-deb-testdata
 [submodule "tests/component/rpm/data"]
 	path = tests/component/rpm/data
-	url = ssh://fushuai1985@review.tizen.org:29418/tools/git-buildpackage-rpm-testdata
+	url = ssh://jenkins@r109.123.100.123:29418/tools/git-buildpackage-rpm-testdata
