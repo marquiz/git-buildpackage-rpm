@@ -33,7 +33,7 @@ from gbp.format import format_msg
 import gbp.log
 from gbp.pkg import compressor_opts
 from gbp.scripts.common.import_orig import (cleanup_tmp_tree, ask_package_name,
-						sk_package_version,
+						ask_package_version,
 						prepare_sources)
 
 def prepare_pristine_tar(archive, pkg, version):
