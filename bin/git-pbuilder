@@ -228,8 +228,7 @@ update|create|login)
             sudo "$BUILDER" --"$action" --distribution "$DIST" \
                 --othermirror "$OTHERMIRROR" "${OPTIONS[@]}" "$@"
         else
-            sudo "$BUILDER" --"$action" --distribution "$DIST" \
-                "${OPTIONS[@]}" "$@"
+            sudo "$BUILDER" --"$action" --distribution "$DIST" "${OPTIONS[@]}" "$@"
         fi
     fi
     exit $?

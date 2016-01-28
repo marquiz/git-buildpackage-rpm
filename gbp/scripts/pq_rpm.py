@@ -643,6 +643,10 @@ def main(argv):
     try:
         parser = GbpOptionParserRpm(command=os.path.basename(argv[0]),
                                     prefix='', usage=USAGE_STRING)
+    except ConfigParser.ParsingError as err:
+        gbp.log.err('Invalid config file: %s' % err)
+        return 1
+
     parser.add_boolean_config_file_option(option_name="patch-numbers",
             dest="patch_numbers")
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose",

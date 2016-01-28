@@ -32,10 +32,9 @@ from gbp.errors import GbpError
 from gbp.format import format_msg
 import gbp.log
 from gbp.pkg import compressor_opts
-from gbp.scripts.common.import_orig import (orig_needs_repack, cleanup_tmp_tree,
-                                            ask_package_name, ask_package_version,
-                                            repack_source, is_link_target)
-
+from gbp.scripts.common.import_orig import (cleanup_tmp_tree, ask_package_name,
+						sk_package_version,
+						prepare_sources)
 
 def prepare_pristine_tar(archive, pkg, version):
     """
@@ -309,21 +308,13 @@ def main(argv):
         unpacked_orig, pristine_orig = prepare_sources(
                 source, pkg_name, version, prepare_pristine, options.filters,
                 options.filter_pristine_tar, None, tmpdir)
-        if not source.is_dir():
-            unpack_dir = tempfile.mkdtemp(prefix='unpack', dir=tmpdir)
-            source = source.unpack(unpack_dir, options.filters)
-            gbp.log.debug("Unpacked '%s' to '%s'" % (source.path, source.unpacked))
 
-        if orig_needs_repack(source, options):
-            gbp.log.debug("Filter pristine-tar: repacking '%s' from '%s'" % (source.path, source.unpacked))
-            repack_dir = tempfile.mkdtemp(prefix='repack', dir=tmpdir)
-            repack_name = repacked_tarball_name(source, sourcepackage, version)
-            source = repack_source(source, repack_name, repack_dir, options.filters)
-
-        (pristine_orig, linked) = prepare_pristine_tar(source.path,
-                                                       sourcepackage,
-                                                       version)
-
+	# Prepare sources for importing
+	pristine_name = pristine_tarball_name(source, pkg_name, version)
+	prepare_pristine = pristine_name if options.pristine_tar else None
+	unpacked_orig, pristine_orig = prepare_sources(
+		source, pkg_name, version, prepare_pristine, options.filters,
+		options.filter_pristine_tar, None, tmpdir)
         # Don't mess up our repo with git metadata from an upstream tarball
         try:
             if os.path.isdir(os.path.join(unpacked_orig, '.git/')):
