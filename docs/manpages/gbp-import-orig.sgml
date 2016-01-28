@@ -77,7 +77,7 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><option>--[no-]merge</option></term>
+        <term><option>--merge</option></term>
         <listitem>
           <para>
           Merge the upstream branch to the debian branch after import
@@ -220,15 +220,6 @@
         <listitem>
           <para>
           Use uscan to fetch new upstream version.
-          </para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><option>--[no-]interactive</option></term>
-        <listitem>
-          <para>
-          Run command interactively, i.e. ask package name and version if
-          needed.
           </para>
         </listitem>
       </varlistentry>

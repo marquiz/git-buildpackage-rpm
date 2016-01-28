@@ -36,7 +36,7 @@
       <arg><option>--git-dist=</option><replaceable>DIST</replaceable></arg>
       <arg><option>--git-arch=</option><replaceable>ARCH</replaceable></arg>
       <arg><option>--git-[no-]pbuilder-autoconf</option></arg>
-      <arg><option>--git-pbuilder-options</option>=<replaceable>PBUILDER_OPTIONS</replaceable></arg>
+      <arg><option>--git-pbuilder-options</option></arg>
       <arg><option>--git-[no-]sign-tags</option></arg>
       <arg><option>--git-keyid=</option><replaceable>GPG-KEYID</replaceable></arg>
       <arg><option>--git-posttag=</option><replaceable>COMMAND</replaceable></arg>
@@ -45,9 +45,8 @@
       <arg><option>--git-prebuild=</option><replaceable>COMMAND</replaceable></arg>
       <arg><option>--git-[no-]build</option></arg>
       <arg><option>--git-[no-]hooks</option></arg>
-      <arg><option>--git-debian-tag=</option><replaceable>tag-format</replaceable></arg>
-      <arg><option>--git-upstream-tag=</option><replaceable>tag-format</replaceable></arg>
-      <arg><option>--git-debian-tag-msg=</option><replaceable>tag-msg-format</replaceable></arg>
+      <arg><option>--git-debian-tag=</option><replaceable>TAG-FORMAT</replaceable></arg>
+      <arg><option>--git-upstream-tag=</option><replaceable>TAG-FORMAT</replaceable></arg>
       <arg><option>--git-force-create</option></arg>
       <arg><option>--git-no-create-orig</option></arg>
       <arg><option>--git-upstream-tree=</option><replaceable>[TAG|BRANCH|TREEISH]</replaceable></arg>
@@ -278,21 +277,6 @@
       </varlistentry>
       <varlistentry>
         <term><option>--git-upstream-branch</option>=<replaceable>BRANCH_NAME</replaceable>
-        <term><option>--git-color-scheme</option>=<replaceable>COLOR_SCHEME</replaceable></term>
-        <listitem>
-          <para>
-          Colors to use in output (when color is enabled). The format for
-          COLOR_SCHEME is
-          '&lt;debug&gt;:&lt;info&gt;:&lt;warning&gt;:&lt;error&gt;'.
-          Numerical values and color names are accepted, empty fields imply
-          the default color. For example --git-color-scheme='cyan:34::' would
-          show debug messages in cyan, info messages in blue and other messages
-          in default (i.e. warning and error messages in red).
-          </para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><option>--git-upstream-branch</option>=<replaceable>BRANCH_NAME</replaceable>
         </term>
         <listitem>
           <para>
@@ -354,27 +338,6 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><option>--git-keyid=</option><replaceable>GPG-KEYID</replaceable>
-        </term>
-        <listitem>
-          <para>
-          use this keyid for gpg signing tags
-        <term><option>--git-posttag=</option><replaceable>COMMAND</replaceable>
-        </term>
-        <listitem>
-          <para>
-          excecute <replaceable>COMMAND</replaceable> after tagging a new
-          version.
-          </para>
-          <para>
-          Exported environment variables are: <envar>GBP_TAG</envar> (the name
-          of the generated tag), <envar>GBP_BRANCH</envar> (the branch the
-          package was build from) and <envar>GBP_SHA1</envar> (the sha1 of the
-          commit the tag was created at).
-          </para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
         <term><option>--git-posttag=</option><replaceable>COMMAND</replaceable>
         </term>
         <listitem>
@@ -406,10 +369,6 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term><option>--git-postexport=</option><replaceable>COMMAND</replaceable>
-        </term>
-        <listitem>
-          <para>
         <term><option>--git-postexport=</option><replaceable>COMMAND</replaceable>
         </term>
         <listitem>
@@ -480,14 +439,6 @@
           use this tag format when looking for tags of upstream versions,
           default is <replaceable>upstream/%(version)s</replaceable>.
           </para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><option>--git-debian-tag-msg=</option><replaceable>tag-msg-format</replaceable>
-        </term>
-        <listitem>
-          <para>use this tag message format when signing Debian versions,
-	  default is <replaceable>%(pkg)s Debian release %(version)s</replaceable></para>
         </listitem>
       </varlistentry>
       <varlistentry>
