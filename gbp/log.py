@@ -172,8 +172,8 @@ def _parse_color_scheme(color_scheme=""):
 
 def getLogger(*args, **kwargs):
     """Gbp-specific function"""
-    if not issubclass(logging.getLoggerClass(), GbpLogger):
-        logging.setLoggerClass(GbpLogger)
+#    if not issubclass(logging.getLoggerClass(), GbpLogger):
+    logging.setLoggerClass(GbpLogger)
     color = kwargs.pop('color') if 'color' in kwargs else 'auto'
     logger = logging.getLogger(*args, **kwargs)
     if hasattr(logger, 'default_handlers') and not logger.default_handlers:
