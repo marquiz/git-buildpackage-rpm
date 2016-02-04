@@ -25,6 +25,7 @@ try:
     # Try to load special RPM lib to be used for GBP (only)
     librpm = __import__(RpmPkgPolicy.python_rpmlib_module_name)
 except ImportError:
+    gbp.log.getLogger("gbp")
     gbp.log.warn("Failed to import '%s' as rpm python module, using host's "
                     "default rpm library instead" %
                     RpmPkgPolicy.python_rpmlib_module_name)
