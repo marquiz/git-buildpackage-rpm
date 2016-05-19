@@ -31,7 +31,7 @@ from nose.tools import assert_raises, eq_, ok_ # pylint: disable=E0611
 from gbp.git import GitRepository
 from gbp.scripts.buildpackage_rpm import main as gbp_rpm
 from tests.component.rpm import RpmRepoTestBase, RPM_TEST_DATA_DIR
-from tests.testutils import ls_tar, ls_zip
+from tests.testutils import ls_tar, ls_zip, capture
 
 # Disable "Method could be a function warning"
 #   pylint: disable=R0201
@@ -47,8 +47,9 @@ MOCK_NOTIFICATIONS = []
 
 def mock_gbp(args):
     """Wrapper for gbp-buildpackage-rpm"""
-    return gbp_rpm(['arg0', '--git-notify=off'] + args +
-                   ['-ba', '--clean', '--target=noarch', '--nodeps'])
+    with capture.capture_stderr():
+        return gbp_rpm(['arg0', '--git-notify=off'] + args +
+                       ['-ba', '--clean', '--target=noarch', '--nodeps'])
 
 def mock_notify(summary, message, notify_opt):
     """Mock notification system"""
@@ -166,11 +167,15 @@ class TestGbpRpm(RpmRepoTestBase):
         with open('untracked-file', 'w') as fobj:
             fobj.write('this file is not tracked\n')
 
+        eq_(mock_gbp([]), 1)
+        eq_(mock_gbp(['--git-ignore-untracked']), 0)
+        self.check_rpms('../rpmbuild/RPMS/*')
+
         # Modify tracked file
         with open('README', 'a') as fobj:
             fobj.write('new stuff\n')
 
-        eq_(mock_gbp([]), 1)
+        eq_(mock_gbp(['--git-ignore-untracked']), 1)
         eq_(mock_gbp(['--git-ignore-new']), 0)
 
     @mock.patch('gbp.notifications.notify', mock_notify)
@@ -198,13 +203,13 @@ class TestGbpRpm(RpmRepoTestBase):
 
         self.init_test_repo('gbp-test-native')
 
-        eq_(mock_gbp(['--git-tmp-dir=../gbptmp', '--git-builder=true']), 0)
+        eq_(mock_gbp(['--git-tmp-dir=../gbptmp', '--git-no-build']), 0)
         ok_(os.path.isdir('../gbptmp'))
 
         # Check tmpdir access/creation error
         os.chmod('../gbptmp', 0)
         try:
-            eq_(mock_gbp(['--git-tmp-dir=../gbptmp/foo', '--git-builder=true']), 1)
+            eq_(mock_gbp(['--git-tmp-dir=../gbptmp/foo', '--git-no-build']), 1)
         finally:
             os.chmod('../gbptmp', stat.S_IREAD | stat.S_IWRITE | stat.S_IEXEC)
 
@@ -241,12 +246,16 @@ class TestGbpRpm(RpmRepoTestBase):
         ok_(repo.has_tag('rel-tag2'))
 
         # Valid tag format string keys
-        tag_keys = ['upstreamversion', 'release', 'version', 'vendor']
+        tag_keys = ['upstreamversion', 'release', 'version', 'vendor',
+                    'nowtime', 'authortime', 'committime',
+                    'nowtimenum', 'authortimenum', 'committimenum']
         # Should fail if the fag format has invalid keys (foo here)
         tag_fmt = '_'.join(['%(' + key + ')s' for key in tag_keys + ['foo']])
         eq_(mock_gbp(['--git-tag', '--git-packaging-tag=%(foo)s']), 1)
         # Remove 'foo' and should succeed
         tag_fmt = '_'.join(['%(' + key + ')s' for key in tag_keys])
+        eq_(mock_gbp(['--git-tag-only', '--git-packaging-tag=%s' % tag_fmt]), 0)
+        # New tag with same format should succeed when '*num' keys are present
         eq_(mock_gbp(['--git-tag-only', '--git-packaging-tag=%s' % tag_fmt]), 0)
 
     def test_option_upstream_tree(self):
@@ -366,8 +375,8 @@ class TestGbpRpm(RpmRepoTestBase):
 
         # Test building when not on any branch
         repo.set_branch(repo.rev_parse('HEAD'))
-        eq_(mock_gbp(['--git-builder=true']), 1)
-        eq_(mock_gbp(['--git-ignore-branch', '--git-builder=true']), 0)
+        eq_(mock_gbp(['--git-no-build']), 1)
+        eq_(mock_gbp(['--git-ignore-branch', '--git-no-build']), 0)
 
     def test_option_submodules(self):
         """Test the --git-submodules option"""
@@ -388,14 +397,14 @@ class TestGbpRpm(RpmRepoTestBase):
 
         # Test the "no" option
         eq_(mock_gbp(['--git-no-submodules', '--git-upstream-tree=%s' %
-                      upstr_branch, '--git-ignore-new']), 0)
+                      upstr_branch, '--git-ignore-untracked']), 0)
         tar_files = ls_tar('../rpmbuild/SOURCES/gbp-test-1.1.tar.bz2', False)
         self.check_files(upstr_files, tar_files)
         shutil.rmtree('../rpmbuild')
 
         # Test the "yes" option
         eq_(mock_gbp(['--git-submodules', '--git-upstream-tree=%s' %
-                      upstr_branch, '--git-ignore-new']), 0)
+                      upstr_branch, '--git-ignore-untracked']), 0)
         tar_files = ls_tar('../rpmbuild/SOURCES/gbp-test-1.1.tar.bz2', False)
         ref_files = upstr_files + ['gbp-test/gbp-test-native.repo/' + path for
                                         path in sub_files]
@@ -406,7 +415,7 @@ class TestGbpRpm(RpmRepoTestBase):
         shutil.rmtree('gbp-test-native.repo')
         repo.create('gbp-test-native.repo')
         eq_(mock_gbp(['--git-submodules', '--git-upstream-tree=%s' %
-                      upstr_branch, '--git-ignore-new']), 2)
+                      upstr_branch, '--git-ignore-untracked']), 2)
 
     def test_option_submodules_native(self):
         """Test the --git-submodules option for native packages"""
@@ -432,7 +441,7 @@ class TestGbpRpm(RpmRepoTestBase):
         # Test submodule failure
         shutil.rmtree('gbp-test-native2.repo')
         repo.create('gbp-test-native2.repo')
-        eq_(mock_gbp(['--git-submodules', '--git-ignore-new']), 1)
+        eq_(mock_gbp(['--git-submodules', '--git-ignore-untracked']), 1)
 
     def test_option_builder(self):
         """Test --git-builder option and it's args"""
@@ -489,6 +498,11 @@ class TestGbpRpm(RpmRepoTestBase):
         eq_(mock_gbp(args + ['--git-tag-only', '--git-packaging-tag=tag1']), 0)
         self.check_and_rm_file('../hooks', 'cleanerposttag')
 
+        # Prebuild is not run when only exporting
+        eq_(mock_gbp(args + ['--git-no-build']), 0)
+        self.check_and_rm_file('../hooks', 'cleanerpostexport')
+        shutil.rmtree('../rpmbuild')
+
         # Export and build scripts are run when not tagging
         eq_(mock_gbp(args), 0)
         self.check_and_rm_file('../hooks', 'cleanerpostexportprebuildpostbuild')
@@ -526,12 +540,12 @@ class TestGbpRpm(RpmRepoTestBase):
         s_rwx = stat.S_IREAD | stat.S_IWRITE | stat.S_IEXEC
 
         # Pre-create all files
-        eq_(mock_gbp(['--git-builder=true']), 0)
+        eq_(mock_gbp(['--git-no-build']), 0)
 
         # Error in exporting packaging files
         os.chmod('../rpmbuild/SOURCES', 0)
         try:
-            eq_(mock_gbp(['--git-builder=true']), 1)
+            eq_(mock_gbp(['--git-no-build']), 1)
         finally:
             os.chmod('../rpmbuild/SOURCES', s_rwx)
         self._check_log(-1, ".*Error exporting packaging files")
@@ -539,7 +553,7 @@ class TestGbpRpm(RpmRepoTestBase):
         # Error in creating archive
         os.chmod('../rpmbuild/SOURCES/gbp-test-native-1.0.zip', 0)
         try:
-            eq_(mock_gbp(['--git-builder=true']), 1)
+            eq_(mock_gbp(['--git-no-build']), 1)
         finally:
             os.chmod('../rpmbuild/SOURCES/gbp-test-native-1.0.zip', s_rwx)
         self._check_log(-1, ".*Error creating ../rpmbuild/SOURCES/.*.zip")
@@ -565,7 +579,7 @@ class TestGbpRpm(RpmRepoTestBase):
         with open('ignored.tmp', 'w') as fobj:
             fobj.write('ignored')
 
-        base_args = ['--git-ignore-new', '--git-builder=true']
+        base_args = ['--git-ignore-new', '--git-no-build']
         # Test exporting of git index
         foo_txt_index = repo.show('HEAD:foo.txt') + 'staged'
         eq_(mock_gbp(base_args + ['--git-export=INDEX']), 0)
@@ -574,9 +588,23 @@ class TestGbpRpm(RpmRepoTestBase):
         ok_(not os.path.exists('../rpmbuild/SOURCES/ignored.tmp'))
         shutil.rmtree('../rpmbuild')
 
+        # Test exporting of working copy (tracked files only)
+        eq_(mock_gbp(base_args + ['--git-export=WC.TRACKED']), 0)
+        foo_txt_wc = repo.show('HEAD:foo.txt') + 'staged' + 'unstaged'
+        self.check_and_rm_file('../rpmbuild/SOURCES/foo.txt', foo_txt_wc)
+        ok_(not os.path.exists('../rpmbuild/SOURCES/untracked'))
+        ok_(not os.path.exists('../rpmbuild/SOURCES/ignored.tmp'))
+        shutil.rmtree('../rpmbuild')
+
+        # Test exporting of working copy (include untracked files)
+        eq_(mock_gbp(base_args + ['--git-export=WC.UNTRACKED']), 0)
+        self.check_and_rm_file('../rpmbuild/SOURCES/foo.txt', foo_txt_wc)
+        self.check_and_rm_file('../rpmbuild/SOURCES/untracked', 'untracked')
+        ok_(not os.path.exists('../rpmbuild/SOURCES/ignored.tmp'))
+        shutil.rmtree('../rpmbuild')
+
         # Test exporting of working copy (include all files)
         eq_(mock_gbp(base_args + ['--git-export=WC']), 0)
-        foo_txt_wc = repo.show('HEAD:foo.txt') + 'staged' + 'unstaged'
         self.check_and_rm_file('../rpmbuild/SOURCES/foo.txt', foo_txt_wc)
         self.check_and_rm_file('../rpmbuild/SOURCES/untracked', 'untracked')
         self.check_and_rm_file('../rpmbuild/SOURCES/ignored.tmp', 'ignored')
@@ -613,4 +641,22 @@ class TestGbpRpm(RpmRepoTestBase):
         # Packaging dir should be taken from spec file if it is defined
         eq_(mock_gbp(['--git-packaging-dir=foo',
                       '--git-spec-file=packaging/gbp-test-native.spec']), 0)
+
+    def test_option_spec_vcs_tag(self):
+        """Test the --git-spec-vcs-tag cmdline option"""
+        repo = self.init_test_repo('gbp-test-native')
+
+        eq_(mock_gbp(['--git-spec-vcs-tag=foobar-%(commit)s']), 0)
+        sha1 = repo.rev_parse('HEAD')
+        num_tags = 0
+        with open('../rpmbuild/SPECS/gbp-test-native.spec') as fobj:
+            for line in fobj.readlines():
+                if line.startswith('VCS: '):
+                    ok_(re.match(r'VCS:\s+foobar-%s\n$' % sha1, line))
+                    num_tags += 1
+        eq_(num_tags, 1)
+
+        # Test invalid key
+        eq_(mock_gbp(['--git-spec-vcs-tag=%(invalid-key)s']), 1)
+        self._check_log(-1, r".*Failed to format %\(invalid-key\)s")
 

@@ -1352,7 +1352,7 @@ class GitRepository(object):
 
 #{ Files
 
-    def add_files(self, paths, force=False, index_file=None, work_tree=None):
+    def add_files(self, paths, force=False, untracked=True, index_file=None, work_tree=None):
         """
         Add files to a the repository
 
@@ -1360,15 +1360,17 @@ class GitRepository(object):
         @type paths: list or C{str}
         @param force: add files even if they would be ignored by .gitignore
         @type force: C{bool}
+        @param untracked: add also previously untracked files
+        @type untracked: C{bool}
         @param index_file: alternative index file to use
         @param work_tree: alternative working tree to use
         """
         extra_env = {}
 
-        if isinstance(paths, six.string_types):
-            paths = [ paths ]
-
-        args = [ '-f' ] if force else []
+        args = GitArgs()
+        args.add_true(force, '-f')
+        args.add_cond(untracked, '-A', '-u')
+        args.add(paths)
 
         if index_file:
             extra_env['GIT_INDEX_FILE'] =  index_file
@@ -1376,7 +1378,7 @@ class GitRepository(object):
         if work_tree:
             extra_env['GIT_WORK_TREE'] = work_tree
 
-        self._git_command("add", args + paths, extra_env)
+        self._git_command("add", args.args, extra_env)
 
     def remove_files(self, paths, verbose=False):
         """

@@ -19,6 +19,7 @@
     <cmdsynopsis>
       &gbp-buildpackage;
       <arg><option>--git-[no-]ignore-new</option></arg>
+      <arg><option>--git-[no-]ignore-untracked</option></arg>
       <arg><option>--git-tag</option></arg>
       <arg><option>--git-verbose</option></arg>
       <arg><option>--git-color=</option><replaceable>[auto|on|off]</replaceable></arg>
@@ -153,6 +154,16 @@
           Don't abort if there are uncommitted changes in the source tree or
           the current branch doesn't match the
           <replaceable>DEBIAN-BRANCH</replaceable>.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--git-[no-]ignore-untracked</option>
+        </term>
+        <listitem>
+          <para>
+          Don't abort if there are untracked files in the source tree.
+          Uncommitted changes to tracked files cause an error normally.
           </para>
         </listitem>
       </varlistentry>
@@ -514,9 +525,13 @@
           <para>
           Instead of exporting the current branch head, export the treeish
           object <replaceable>TREEISH</replaceable>. The special name
-          <replaceable>INDEX</replaceable> exports the current index whereas
-          the special name <replaceable>WC</replaceable> exports the current
-          working copy as is.
+          <replaceable>INDEX</replaceable> exports the current index,
+          <replaceable>WC.TRACKED</replaceable> exports all files tracked by
+          Git in the current working copy as is,
+          <replaceable>WC.UNTRACKED</replaceable> exports all untracked files
+          too whereas <replaceable>WC</replaceable> (or
+          <replaceable>WC.IGNORED</replaceable>) exports all files in the
+          current working directory, even ignored files.
           </para>
         </listitem>
       </varlistentry>

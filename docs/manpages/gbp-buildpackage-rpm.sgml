@@ -19,6 +19,7 @@
     <cmdsynopsis>
       &gbp-buildpackage-rpm;
       <arg><option>--git-[no-]ignore-new</option></arg>
+      <arg><option>--git-[no-]ignore-untracked</option></arg>
       <arg><option>--git-tag</option></arg>
       <arg><option>--git-verbose</option></arg>
       <arg><option>--git-color=</option><replaceable>[auto|on|off]</replaceable></arg>
@@ -63,6 +64,7 @@
       <arg><option>--git-arch</option>=<replaceable>ARCHITECTURE</replaceable></arg>
       <arg><option>--git-mock-options</option>=<replaceable>OPTIONS</replaceable></arg>
       <arg><option>--git-mock-root</option>=<replaceable>ROOT</replaceable></arg>
+      <arg><option>--git-spec-vcs-tag</option>=<replaceable>TAG_FORMAT</replaceable></arg>
     </cmdsynopsis>
   </refsynopsisdiv>
   <refsect1>
@@ -139,6 +141,15 @@
           Don't abort if there are uncommitted changes in the source tree or
           the current branch doesn't match the
           <replaceable>PACKAGING-BRANCH</replaceable>.
+          </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>--git-[no-]ignore-untracked</option>
+        </term>
+        <listitem>
+          <para>
+          Don't abort if there are untracked files in the source tree.
           </para>
         </listitem>
       </varlistentry>
@@ -457,8 +468,12 @@
           Instead of exporting the current branch head, export the treeish
           object <replaceable>TREEISH</replaceable>. The special name
           <replaceable>INDEX</replaceable> exports the current index,
-          <replaceable>WC</replaceable>) exports all files in the
-          current working directory.
+          <replaceable>WC.TRACKED</replaceable> exports all files tracked by
+          Git in the current working copy as is,
+          <replaceable>WC.UNTRACKED</replaceable> exports all untracked files
+          too whereas <replaceable>WC</replaceable> (or
+          <replaceable>WC.IGNORED</replaceable>) exports all files in the
+          current working directory, even ignored files.
           </para>
         </listitem>
       </varlistentry>
@@ -610,6 +625,22 @@
           </para>
         </listitem>
       </varlistentry>
+      <varlistentry>
+        <term><option>--git-spec-vcs-tag</option>=<replaceable>TAG_FORMAT</replaceable>
+        </term>
+        <listitem>
+          <para>
+          &gbp-buildpackage-rpm; always automatically sets/updates the 'VCS:'
+          tag in the spec file after exporting.  This option defines the format
+          string for the 'VCS:' tag. An empty value causes no 'VCS:' tag to be
+          inserted and possible old 'VCS:' tag to be removed. Otherwise, the
+          old 'VCS:' tag is updated or a new 'VCS:' tag is added if one does
+          not exist. In the format string '%(tagname)s' expands to the long tag
+          name (from git-describe) and '%(commit)s' expans to the sha1 of the
+          exported commit.
+          </para>
+        </listitem>
+      </varlistentry>
     </variablelist>
   </refsect1>
   <refsect1>
@@ -625,7 +656,7 @@
     changes included.
     </para>
     <screen>
-      &gbp-buildpackage-rpm; --git-ignore-branch --git-export=WC
+      &gbp-buildpackage-rpm; --git-ignore-branch --git-export=WC.UNTRACKED
     </screen>
   </refsect1>
   <refsect1>

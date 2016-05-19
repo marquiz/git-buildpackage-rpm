@@ -18,8 +18,10 @@
 #
 """Build an RPM package out of a Git repository"""
 
+from datetime import datetime
 from six.moves import configparser
 import os
+import re
 import shutil
 import sys
 
@@ -34,7 +36,7 @@ from gbp.pkg import compressor_opts
 from gbp.rpm.git import GitRepositoryError, RpmGitRepository
 from gbp.rpm.policy import RpmPkgPolicy
 from gbp.tmpfile import init_tmpdir, del_tmpdir, tempfile
-from gbp.scripts.common.buildpackage import (index_name, wc_name,
+from gbp.scripts.common.buildpackage import (index_name, wc_names,
                                              git_archive_submodules,
                                              git_archive_single, dump_tree,
                                              write_wc, drop_index)
@@ -163,9 +165,10 @@ def get_tree(repo, tree_name):
         if tree_name == index_name:
             # Write a tree of the index
             tree = repo.write_tree()
-        elif tree_name == wc_name:
+        elif tree_name in wc_names:
             # Write a tree of the working copy
-            tree = write_wc(repo)
+            tree = write_wc(repo, wc_names[tree_name]['force'],
+                            wc_names[tree_name]['untracked'])
         else:
             tree = tree_name
     except GitRepositoryError as err:
@@ -264,12 +267,60 @@ def setup_builder(options, builder_args):
             '--define "_sourcedir %%_topdir/%s"' % options.export_sourcedir])
 
 
+def packaging_tag_time_fields(repo, commit, tag_format_str, other_fields):
+    """Update string format fields for packaging tag"""
+    commit_info = repo.get_commit_info(commit)
+    fields = {}
+    fields['nowtime'] = datetime.now().\
+                            strftime(RpmPkgPolicy.tag_timestamp_format)
+
+    time = datetime.fromtimestamp(int(commit_info['author'].date.split()[0]))
+    fields['authortime'] = time.strftime(RpmPkgPolicy.tag_timestamp_format)
+    time = datetime.fromtimestamp(int(commit_info['committer'].date.split()[0]))
+    fields['committime'] = time.strftime(RpmPkgPolicy.tag_timestamp_format)
+
+    # Create re for finding  tags with incremental numbering
+    re_fields = dict(fields)
+    re_fields.update(other_fields)
+    re_fields['nowtimenum'] = fields['nowtime'] + "\.(?P<nownum>[0-9]+)"
+    re_fields['authortimenum'] = fields['authortime'] + "\.(?P<authornum>[0-9]+)"
+    re_fields['committimenum'] = fields['committime'] + "\.(?P<commitnum>[0-9]+)"
+
+    tag_re = re.compile("^%s$" % (format_str(tag_format_str, re_fields)))
+
+    # Defaults for numbered tags
+    fields['nowtimenum'] = fields['nowtime'] + ".1"
+    fields['authortimenum'] = fields['authortime'] + ".1"
+    fields['committimenum'] = fields['committime'] + ".1"
+
+    # Search for existing numbered tags
+    for tag in reversed(repo.get_tags()):
+        match = tag_re.match(tag)
+        if match:
+            match = match.groupdict()
+            # Increase numbering if a tag with the same "base" is found
+            if 'nownum' in match:
+                fields['nowtimenum'] = "%s.%s" % (fields['nowtime'],
+                                                  int(match['nownum'])+1)
+            if 'authornum' in match:
+                fields['authortimenum'] = "%s.%s" % (fields['authortime'],
+                                                     int(match['authornum'])+1)
+            if 'commitnum' in match:
+                fields['committimenum'] = "%s.%s" % (fields['committime'],
+                                                     int(match['commitnum'])+1)
+            break
+    return fields
+
+
 def packaging_tag_data(repo, commit, name, version, options):
     """Compose packaging tag name and msg"""
     version_dict = dict(version, version=rpm.compose_version_str(version))
 
     # Compose tag name and message
     tag_name_fields = dict(version_dict, vendor=options.vendor.lower())
+    tag_name_fields.update(packaging_tag_time_fields(repo, commit,
+                                                     options.packaging_tag,
+                                                     tag_name_fields))
     tag_name = repo.version_to_tag(options.packaging_tag, tag_name_fields)
 
     tag_msg = format_str(options.packaging_tag_msg,
@@ -316,7 +367,7 @@ def build_parser(name, prefix=None, git_treeish=None):
     """Construct config/option parser"""
     try:
         parser = GbpOptionParserRpm(command=os.path.basename(name),
-                                    prefix=prefix)
+                                    prefix=prefix, git_treeish=git_treeish)
     except configparser.ParsingError as err:
         gbp.log.err(err)
         return None
@@ -339,6 +390,8 @@ def build_parser(name, prefix=None, git_treeish=None):
 
     parser.add_boolean_config_file_option(option_name="ignore-new",
                     dest="ignore_new")
+    parser.add_boolean_config_file_option(option_name = "ignore-untracked",
+                    dest="ignore_untracked")
     parser.add_option("--git-verbose", action="store_true", dest="verbose",
                     default=False, help="verbose command execution")
     parser.add_config_file_option(option_name="tmp-dir", dest="tmp_dir")
@@ -440,6 +493,7 @@ def build_parser(name, prefix=None, git_treeish=None):
                     dest="packaging_dir")
     export_group.add_config_file_option(option_name="spec-file",
                     dest="spec_file")
+    export_group.add_config_file_option("spec-vcs-tag", dest="spec_vcs_tag")
     return parser
 
 
@@ -507,11 +561,12 @@ def main(argv):
 
         Command(options.cleaner, shell=True)()
         if not options.ignore_new:
-            ret, out = repo.is_clean()
+            ret, out = repo.is_clean(options.ignore_untracked)
             if not ret:
                 gbp.log.err("You have uncommitted changes in your source tree:")
                 gbp.log.err(out)
-                raise GbpError("Use --git-ignore-new to ignore.")
+                raise GbpError("Use --git-ignore-new or --git-ignore-untracked "
+                               "to ignore.")
 
         if not options.ignore_new and not options.ignore_branch:
             if branch != options.packaging_branch:
@@ -622,6 +677,10 @@ def main(argv):
                                    'GBP_SHA1': sha})()
         else:
             vcs_info = get_vcs_info(repo, tree)
+
+        # Put 'VCS:' tag to .spec
+        spec.set_tag('VCS', None, format_str(options.spec_vcs_tag, vcs_info))
+        spec.write_spec_file()
 
     except CommandExecFailed:
         retval = 1
