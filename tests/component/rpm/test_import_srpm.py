@@ -181,6 +181,68 @@ class TestImportPacked(ComponentTestBase):
                  'gbp-test.spec', 'my.patch', 'my2.patch', 'my3.patch'])
         self._check_repo_state(repo, 'master', ['master', 'upstream'], files)
 
+    def test_tagging(self):
+        """Test tag options of import-srpm"""
+        srpm = os.path.join(DATA_DIR, 'gbp-test-1.0-1.src.rpm')
+
+        # Invalid packaging tag keywords
+        eq_(mock_import(['--no-pristine-tar', '--packaging-tag=%(foo)s', srpm]),
+            1)
+        self._check_log(-1, ".*Missing value 'foo' in {'release': '1', "
+                            "'upstreamversion': '1.0', 'version': '1.0-1', "
+                            "'vendor': 'downstream'}")
+        # Remove upstream tag
+        repo = GitRepository('gbp-test')
+        repo.delete_tag('upstream/1.0')
+
+        # Invalid upstream tag keywords
+        eq_(mock_import(['--no-pristine-tar', '--upstream-tag=%(foo)s', srpm]),
+            1)
+        self._check_log(-1, ".*Missing value 'foo' in "
+                            "{'upstreamversion': '1.0', 'version': '1.0'}")
+
+        # Try with good keywords, with --skip-packaging-tag
+        eq_(mock_import(['--no-pristine-tar', '--vendor=foo',
+                         '--skip-packaging-tag',
+                         '--packaging-tag=%(vendor)s/%(version)s',
+                         '--upstream-tag=upst/%(version)s', srpm]), 0)
+        eq_(repo.describe('upstream'), 'upst/1.0')
+        eq_(len(repo.get_tags()), 1)
+
+        # Re-import, creating packaging tag
+        eq_(mock_import(['--no-pristine-tar', '--vendor=foo',
+                         '--packaging-tag=%(vendor)s/%(version)s',
+                         '--upstream-tag=upst/%(version)s', srpm]), 0)
+        eq_(repo.describe('HEAD'), 'foo/1.0-1')
+        eq_(len(repo.get_tags()), 2)
+
+    def test_tagging_native(self):
+        """Test tagging of native packages with import-srpm"""
+        srpm = os.path.join(DATA_DIR, 'gbp-test-native-1.0-1.src.rpm')
+
+        # Invalid packaging tag keywords
+        eq_(mock_import(['--no-pristine-tar', '--packaging-tag=%(foo)s',
+                         srpm, '--native']), 1)
+        self._check_log(-1, ".*Missing value 'foo' in {'release': '1', "
+                            "'upstreamversion': '1.0', 'version': '1.0-1', "
+                            "'vendor': 'downstream'}")
+
+        # Try with good keywords, with --skip-packaging-tag.
+        # Upstream tag format should not matter
+        eq_(mock_import(['--no-pristine-tar', '--vendor=foo', '--native',
+                         '--skip-packaging-tag',
+                         '--packaging-tag=%(vendor)s/%(version)s',
+                         '--upstream-tag=%(foo)s', srpm]), 0)
+        repo = GitRepository('gbp-test-native')
+        eq_(len(repo.get_tags()), 0)
+
+        # Run again, now creating packaging tag
+        eq_(mock_import(['--no-pristine-tar', '--vendor=foo', '--native',
+                         '--packaging-tag=%(vendor)s/%(version)s',
+                         '--upstream-tag=%(foo)s', srpm]), 0)
+        eq_(repo.describe('HEAD'), 'foo/1.0-1')
+
+
     def test_misc_options(self):
         """Test various options of git-import-srpm"""
         srpm = os.path.join(DATA_DIR, 'gbp-test2-2.0-0.src.rpm')
