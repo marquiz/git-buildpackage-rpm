@@ -78,7 +78,7 @@ class TestPqRpm(RpmRepoTestBase):
         # Test import
         eq_(mock_pq(['import']), 0)
         files = ['AUTHORS', 'dummy.sh', 'Makefile', 'NEWS', 'README',
-                 'mydir/myfile.txt']
+                 'mydir/myfile.txt', '.gbp.conf']
         branches.append('patch-queue/master')
         self._check_repo_state(repo, 'patch-queue/master', branches, files)
         eq_(repo.get_merge_base('upstream', 'patch-queue/master'),
@@ -87,7 +87,7 @@ class TestPqRpm(RpmRepoTestBase):
             len(repo.get_commits('', 'patch-queue/master')))
 
         # Test export
-        eq_(mock_pq(['export', '--upstream-tag', 'upstream/%(version)s']), 0)
+        eq_(mock_pq(['export']), 0)
         files = ['.gbp.conf', '.gitignore', 'bar.tar.gz', 'foo.txt',
                  'gbp-test.spec', '0001-my-gz.patch', '0002-my-bzip2.patch',
                  '0003-my2.patch', 'my.patch']
@@ -106,15 +106,28 @@ class TestPqRpm(RpmRepoTestBase):
         repo.set_branch('master-orphan')
         # Import
         eq_(mock_pq(['import']), 0)
-        files = ['dummy.sh', 'Makefile', 'README', 'mydir/myfile.txt']
+        files = ['dummy.sh', 'Makefile', 'README', 'mydir/myfile.txt',
+                 '.gbp.conf']
         self._check_repo_state(repo, 'patch-queue/master-orphan', branches,
                                files)
 
-        # Test export
-        eq_(mock_pq(['export', '--upstream-tag', 'upstream/%(version)s',
-                     '--spec-file', 'packaging/gbp-test2.spec']), 0)
+        # Test export with --drop
+        branches.remove('patch-queue/master-orphan')
+        eq_(mock_pq(['export', '--drop']), 0)
         self._check_repo_state(repo, 'master-orphan', branches)
         eq_(repo.status()[' M'], ['packaging/gbp-test2.spec'])
+
+    def test_import_in_subdir(self):
+        """Test running gbp-rpm-pq from a subdir in the git tree"""
+        repo = self.init_test_repo('gbp-test2')
+        repo.set_branch('master-orphan')
+        branches = repo.get_local_branches() + ['patch-queue/master-orphan']
+        os.chdir('packaging')
+
+        # Running from subdir should be ok
+        eq_(mock_pq(['import']), 0)
+        self._check_repo_state(repo, 'patch-queue/master-orphan', branches)
+
 
     def test_rebase(self):
         """Basic test for rebase action"""
@@ -195,8 +208,6 @@ class TestPqRpm(RpmRepoTestBase):
         repo.force_head('master', hard=True)
         self._check_repo_state(repo, 'patch-queue/master', branches, pkg_files)
         eq_(mock_pq(['import', '--force']), 0)
-        # .gbp.conf won't get imported by pq
-        pq_files.remove('.gbp.conf')
         self._check_repo_state(repo, 'patch-queue/master', branches, pq_files)
 
         # Switch back to master
@@ -283,8 +294,7 @@ class TestPqRpm(RpmRepoTestBase):
         eq_(mock_pq(['import', '--spec-file=gbp-test.spec']), 0)
 
         # Force import on top to test parsing spec from another branch
-        eq_(mock_pq(['import', '--spec-file=gbp-test.spec', '--force',
-                     '--upstream-tag', 'upstream/%(version)s']), 0)
+        eq_(mock_pq(['import', '--spec-file=gbp-test.spec', '--force']), 0)
 
         # Test with export, too
         eq_(mock_pq(['export', '--spec-file=foo.spec']), 1)
@@ -302,8 +312,7 @@ class TestPqRpm(RpmRepoTestBase):
         eq_(mock_pq(['import', '--packaging-dir=.']), 0)
 
         # Test with export, --spec-file option should override packaging dir
-        eq_(mock_pq(['export', '--packaging-dir=foo', '--upstream-tag',
-                     'upstream/%(version)s',
+        eq_(mock_pq(['export', '--packaging-dir=foo',
                      '--spec-file=gbp-test.spec']), 0)
 
     def test_export_with_merges(self):
@@ -329,6 +338,31 @@ class TestPqRpm(RpmRepoTestBase):
                  'gbp-test.spec', 'my.patch',
                   '%s-to-%s.diff' % (upstr_rev, merge_rev), '0002-my2.patch']
         self._check_repo_state(repo, 'master', branches, files)
+
+    def test_option_import_files(self):
+        """Test the --import-files cmdline option"""
+        repo = self.init_test_repo('gbp-test')
+
+        # Import with default settings (should import gbp conf files)
+        branches = repo.get_local_branches() + ['patch-queue/master']
+        eq_(mock_pq(['import']), 0)
+        self._check_repo_state(repo, 'patch-queue/master', branches)
+        ok_('.gbp.conf' in repo.list_files())
+
+        # Re-import with user-defined files
+        eq_(mock_pq(['import', '--force', '--import-files',
+                     'foo.txt,my.patch']), 0)
+        self._check_repo_state(repo, 'patch-queue/master', branches)
+        ok_('foo.txt' in repo.list_files())
+        ok_('my.patch' in repo.list_files())
+
+        # Drop and re-import with no files
+        eq_(mock_pq(['switch']), 0)
+        eq_(mock_pq(['drop']), 0)
+        eq_(mock_pq(['import', '--import-files=']), 0)
+        self._check_repo_state(repo, 'patch-queue/master', branches)
+        ok_('debian/gbp.conf' not in repo.list_files())
+        ok_('.gbp.conf' not in repo.list_files())
 
     def test_import_unapplicable_patch(self):
         """Test import when a patch does not apply"""
