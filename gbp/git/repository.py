@@ -1043,8 +1043,8 @@ class GitRepository(object):
         args = GitArgs('-z')
 
         for mode, type_, sha1, name in contents:
-            name = to_bin(name)
-            objs += b'%s %s %s\t%s\0' % (mode.encode(), type_.encode(), sha1.encode(), name)
+            m_t_s = '%s %s %s\t' % (mode, type_, sha1)
+            objs +=  m_t_s.encode() + to_bin(name) + b'\0'
 
         sha1, err, ret = self._git_inout('mktree',
                                          args.args,
